@@ -181,6 +181,19 @@ Damit beträgt die **Artikelsumme nach den dokumentierten Einzelpreisen 68,62 �
 - Zusätzliche Displays, Taster, Lautsprecher, Steckbrett, Batterieteile und Echtzeituhr sind für den zunächst beschriebenen USB-Prototyp nicht erforderlich.
 - Die offizielle Lötanleitung beschreibt den LED-Ring als anspruchsvolleren Schritt und empfiehlt ihn für Anfänger zuletzt. Der Aufbau soll entsprechend schrittweise erfolgen.
 
+### Einkaufsliste Bauhaus Kassel, Holländische Str. 203a (Stand 20. November 2026)
+
+Bestand auf bauhaus.info unter „Reservieren & Abholen in Kassel“ am 20. November 2026 nachgesehen. Bestände ändern sich; nicht gekauft, nur vorgeschlagen.
+
+| Artikel | Prod.-Nr. | Preis | In Kassel | Wozu |
+| --- | --- | --- | --- | --- |
+| [CFH Löthilfe LA 240](https://www.bauhaus.info/loetzubehoer/cfh-loethilfe-la-240/p/30525555) („dritte Hand“, 2 Krokodilklemmen, ohne Lupe) | 30525555 | 7,50 € | 3 Stück | Hält Platine oder Drähte beim Löten, z. B. am Pololu-Wandler und an der Tastenplatine. |
+| [Profi Depot Digital-Multimeter MM 2500](https://www.bauhaus.info/multimeter/profi-depot-digital-multimeter-mm-2500/p/22183127) | 22183127 | 24,90 € | 13 Stück | Nur falls bei BerryBase kein Multimeter mitbestellt wurde. Durchgangsprüfung (Piepser-Symbol) auf der Verpackung prüfen; auf der Website nicht bestätigt. |
+| [Alpha Tools Digitaler Messschieber](https://www.bauhaus.info/schieblehren-messschieber/alpha-tools-digitaler-messschieber/p/20497503) | 20497503 | 15,95 € | 16 Stück | Optional: Maße im Retro Gamer (Displayfenster, freie Höhe) und später die Bauhöhe des Waveshare. |
+| Feinsteinzeugfliese 30 × 60 cm, z. B. [My Style](https://www.bauhaus.info/feinsteinzeugfliesen/feinsteinzeugfliese-my-style/p/31098786) | 31098786 | 12,54 € je Karton | vorrätig | Hitzefeste Unterlage für den Lötplatz. Wird nur im Karton verkauft; im Markt nach einer einzelnen Fliese oder Bruchware fragen. Eine Silikon-Lötmatte war in Kassel nicht vorrätig. |
+
+Nicht empfohlen: Abisolierzangen im Bauhaus beginnen bei 0,2 mm². Die dünnen Jumperkabel (AWG 28, etwa 0,08 mm²) sind dafür zu dünn.
+
 ## 10. Bisherige Kandidaten für das spätere tragbare Gerät
 
 ### Displayauswahl vom 17. November 2026
@@ -354,8 +367,8 @@ Die Zerlegeansicht des Tamagotchi aus „Ideen und Infos.md“ dient zusätzlich
 - Lötkolben: älteres Gerät vorhanden; neue Zhongdi ZD-99-Lötstation am 20. November 2026 angekommen.
 - Beschaffung: alle Funduino- und BerryBase-Artikel gemäß Abschnitt 8 laut Nutzerin bestellt. Keine Bestellung der Knipex-Zange; die günstige Funduino-Zange bleibt die Auswahl.
 - Lieferung: Funduino am 19. November 2026, BerryBase am 20. November 2026 angekommen (laut Nutzerin). Vollständigkeit und Zustand der Teile vor dem Aufbau anhand der Anleitung prüfen.
-- Montage, Programmierung und praktische Tests: noch nicht erfolgt.
-- Nächste Schritte: Lieferung entgegennehmen und prüfen, Arbeitsplatz und neue Lötstation vorbereiten, Cube nach Anleitung aufbauen und Display, Taster, Ton sowie USB-Programmierung prüfen. Danach kleinste spielbare Version konkretisieren.
+- Montage begonnen (19. November 2026, laut Nutzerin, mit dem alten Lötkolben): Display, Nano, eine LED, einige Widerstände und ein Taster sind angelötet. Eine Textanzeige auf dem Display funktioniert. Welche Bauteile noch fehlen (z. B. Summer, LED-Ring, Sensor), ist nicht dokumentiert.
+- Nächste Schritte: restliche Bauteile nach Anleitung löten, Taster und Ton prüfen, dann `software/schritt-04` auf den echten Cube übertragen. Danach kleinste spielbare Version konkretisieren.
 
 ## Quellen
 
