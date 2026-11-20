@@ -74,4 +74,4 @@ Noch nicht fertig:
 - Beide Programme mit avr-gcc 7.3 und dem Arduino-AVR-Kern 1.8.6 für den Nano (ATmega328P) übersetzt, ohne Warnungen. U8g2 war in dieser Umgebung nicht verfügbar und wurde durch einen Stellvertreter mit denselben Aufrufen ersetzt. Ohne U8g2 belegt Evi 7,7 KB Programmspeicher und 623 Byte Arbeitsspeicher, der Cube-Test 6,8 KB. U8g2 kommt mit schätzungsweise 10–14 KB dazu; der Nano hat 30 KB.
 - Die 32 Prüfungen der Spielregeln aus `checks.h` am PC bestanden.
 - 26 Prüfungen in einer Nachbildung des Sketches am PC bestanden: Taster an D9 über den Interrupt, Klick, Halten und Doppelklick, Töne, LED-Farben, Einschlafen und Aufwachen ohne Flackern, Hungerton erst nach dem Aufwachen und Displayadresse 0x3D.
-- **Noch nicht auf dem echten Cube getestet.** Die erste Übersetzung mit der echten U8g2-Bibliothek passiert in der Arduino IDE.
+- **Auf dem echten Cube (20. November 2026, laut Nutzerin):** `evi-cube` ließ sich in der Arduino IDE mit der echten U8g2-Bibliothek übersetzen und aufspielen. Anzeige, Taster, Hunger-LEDs, Hungerton und Fütter-Melodie funktionieren. Noch nicht ausprobiert: Einschlafen bei Dunkelheit und `cube-test`.
