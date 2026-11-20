@@ -189,6 +189,8 @@ Bestand auf bauhaus.info unter „Reservieren & Abholen in Kassel“ am 20. Nove
 | --- | --- | --- | --- | --- |
 | [CFH Löthilfe LA 240](https://www.bauhaus.info/loetzubehoer/cfh-loethilfe-la-240/p/30525555) („dritte Hand“, 2 Krokodilklemmen, ohne Lupe) | 30525555 | 7,50 € | 3 Stück | Hält Platine oder Drähte beim Löten, z. B. am Pololu-Wandler und an der Tastenplatine. |
 | [Profi Depot Digital-Multimeter MM 2500](https://www.bauhaus.info/multimeter/profi-depot-digital-multimeter-mm-2500/p/22183127) | 22183127 | 24,90 € | 13 Stück | Nur falls bei BerryBase kein Multimeter mitbestellt wurde. Durchgangsprüfung (Piepser-Symbol) auf der Verpackung prüfen; auf der Website nicht bestätigt. |
+| [CFH Entlötlitze EL 235](https://www.bauhaus.info/entloetlitzen/cfh-entloetlitze-el-235/p/30527773) | 30527773 | 4,95 € | vorrätig | Saugt überschüssiges Zinn auf, z. B. bei Zinnbrücken zwischen Nano-Pins; ergänzt die Entlötpumpe. |
+| [Robbyrob Isopropanol 99,9 %, 0,5 l mit Sprühkopf](https://www.bauhaus.info/profi-reinigungsmittel/robbyrob-reinigungsmittel-isopropanol-999-/p/33018151) | 33018151 | 7,95 € | vorrätig | Optional: Flussmittelreste von der Platine putzen (mit alter Zahnbürste). |
 | [Alpha Tools Digitaler Messschieber](https://www.bauhaus.info/schieblehren-messschieber/alpha-tools-digitaler-messschieber/p/20497503) | 20497503 | 15,95 € | 16 Stück | Optional: Maße im Retro Gamer (Displayfenster, freie Höhe) und später die Bauhöhe des Waveshare. |
 
 Unterlage: Eine Fliese wurde von der Nutzerin abgelehnt. Eine Silikon-Lötmatte war in Kassel nicht vorrätig. Für den Anfang reicht ein altes Holzbrett; eine Silikon-Lötmatte kann bei der nächsten BerryBase-Bestellung mitkommen.
