@@ -102,6 +102,30 @@ So kann ein möglichst großer Teil der Spiellogik beim späteren Hardwarewechse
 
 Unter `software/schritt-04` liefert die Knopferkennung die Befehle Weiter, Bestätigen und Zurück. Diese Befehle können später auch von einzelnen Tasten oder von einem Steuerkreuz mit weiteren Tasten kommen. Der Simulator verwendet eine vorläufige Tasterbelegung an D2. Die tatsächlichen Anschlüsse und die Funktionsweise am Cube sind vor der Übertragung zu prüfen.
 
+### Pinbelegung des Cube
+
+Am 20. November 2026 von der Platinenbeschriftung in der [offiziellen Lötanleitung V2](https://funduinoshop.com/media/pdf/eb/80/f6/Loetanleitung-Funduino-Cube-DE-V2.pdf) abgelesen (Seite „Referenz: Die unbestückte Platine“). Am echten Cube noch nicht nachgemessen.
+
+| Nr. in der Anleitung | Bauteil | Bezeichnung auf der Platine | Nano-Pin | Hinweis |
+| --- | --- | --- | --- | --- |
+| 0 | Nano R3 | A1, zwei Buchsenleisten | – | USB zeigt zur oberen Kante. |
+| 1 | LED 1 rot, LED 2 gelb, LED 3 grün | D1–D3 mit R1 200 Ω, R2 200 Ω, R3 330 Ω | **D12, D11, D10** | Kurzes Bein (flache Seite) ins eckige Loch neben „GND“. |
+| 2 | Taster | SW1 mit R4 10 kΩ | **D9** | R4 zieht nach GND, der Taster verbindet mit 5 V. **Gedrückt = HIGH.** D9 kann keinen externen Interrupt. `software/schritt-04` nimmt noch D2 mit `INPUT_PULLUP` und Interrupt an und muss angepasst werden. |
+| 3 | Bewegungsmelder (PIR) | U1 | D8 | |
+| 4 | Lautsprecher | BZ1 | **D7** | „+“ zum eckigen Loch bei D7. |
+| 5 | Ultraschall HC-SR04 | U2 | D5, D6 | Reihenfolge auf der Platine: GND, D5, D6, 5V. |
+| 6 | LED-Ring WS2812B, 12 LEDs | U3 | D4 | Laut Anleitung der schwierigste Schritt, zuletzt löten. |
+| 7 | Servo-Stiftleiste | – | D3 | |
+| 8 | Infrarot-Empfänger VS1838B | U4 | D2 | |
+| 9 | Fotowiderstand (LDR) | R5, dazu R6 10 kΩ | A7 | |
+| 10 | Potentiometer | RV1 | A6 | |
+| 11 | OLED 128 × 64, SSD1306 | U5 | A4 (SDA), A5 (SCL) | I²C. |
+| 12 | MPU-6050 | U7 | A4, A5 | I²C, gleiche Leitung wie das OLED. |
+| 13 | DHT11 | U6 mit R7 1,2 kΩ | A3 | |
+| 14 | Extern 1 / 2 / 3 | Buchsen- und Stiftleisten | I²C (A4, A5) / Seriell (D0, D1) / A1, A2 | An Extern 1 könnte später der MCP23017 zum Testen der Retro-Gamer-Tasten. |
+
+Für Evi auf dem Cube wichtig: OLED, Taster, Lautsprecher. Nützliche Extras: LEDs als Hinweis „Evi braucht dich“, Fotowiderstand für „Licht aus = Schlafenszeit“, Potentiometer als Drehrad für das Menü.
+
 ## 7. Kaufmöglichkeiten und bisherige Suche in Kassel
 
 Aktueller Stand: Cube und ausgewähltes Zubehör wurden laut Nutzerin bei Funduino bestellt. Die folgenden lokalen Kaufhinweise dokumentieren die frühere Recherche; sie sind keine noch offene Voraussetzung für den Einstieg.
