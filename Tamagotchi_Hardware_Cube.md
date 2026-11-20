@@ -1,7 +1,7 @@
 # Tamagotchi-Projekt – Hardware-Einstieg mit dem Funduino Cube
 
 Stand: 17. November 2026  
-Status: Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 am 16. November 2026 laut Nutzerin bestellt. **Am 20. November 2026 sind Lötzinn und Lötstation (BerryBase) laut Nutzerin angekommen.** Die Funduino-Lieferung (Cube und Zubehör), Montage und Funktionstests sind noch nicht bestätigt.
+Status: Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 am 16. November 2026 laut Nutzerin bestellt. **Alles ist laut Nutzerin angekommen:** Funduino (Cube und Zubehör) am 19. November 2026, Lötzinn und Lötstation (BerryBase) am 20. November 2026. Montage und Funktionstests stehen noch aus.
 
 Diese Zusammenfassung ergänzt die [Projektanforderungen](Tamagotchi_Anforderungen.md). Sie beschreibt den ersten Prototyp auf dem Funduino Cube und in Abschnitt 10 den möglichen Umbau des vorhandenen Billig-Game-Boys.
 
@@ -131,11 +131,11 @@ Ein gefundenes Kaufland-Angebot war ein Online-Marktplatzangebot vom Verkäufer 
 
 ## 8. Bestellte Artikel und nachgeschlagene Produktnamen
 
-Die Nutzerin hat am **16. November 2026** in diesem Projektchat bestätigt, den Cube, das Funduino-Zubehör, Lötzinn und einen neuen Lötkolben bestellt zu haben. Das Lötkolbenmodell **Zhongdi ZD-99** wurde auf Nachfrage ausdrücklich bestätigt. Die Produktnamen und die bisherigen Warenkorbpreise wurden im Chat „Warenkorb prüfen“ nachgeschlagen. Bestellbestätigungen und Rechnungen wurden nicht eingesehen; Versandkosten und tatsächliche Endbeträge sind deshalb noch nicht dokumentiert. Lieferstand: **BerryBase-Lieferung (Lötzinn und Zhongdi ZD-99) laut Nutzerin am 20. November 2026 angekommen.** Die Funduino-Lieferung ist noch nicht bestätigt.
+Die Nutzerin hat am **16. November 2026** in diesem Projektchat bestätigt, den Cube, das Funduino-Zubehör, Lötzinn und einen neuen Lötkolben bestellt zu haben. Das Lötkolbenmodell **Zhongdi ZD-99** wurde auf Nachfrage ausdrücklich bestätigt. Die Produktnamen und die bisherigen Warenkorbpreise wurden im Chat „Warenkorb prüfen“ nachgeschlagen. Bestellbestätigungen und Rechnungen wurden nicht eingesehen; Versandkosten und tatsächliche Endbeträge sind deshalb noch nicht dokumentiert. Lieferstand laut Nutzerin: **Funduino-Lieferung am 19. November 2026 angekommen, BerryBase-Lieferung (Lötzinn und Zhongdi ZD-99) am 20. November 2026 angekommen.** Damit ist die Bestellung vom 16. November vollständig da; ob jedes Teil im Paket war, wurde nicht einzeln geprüft.
 
 ### Funduino
 
-Bestellt: jeweils ein Artikel beziehungsweise ein Set gemäß der zuvor festgelegten Einkaufsliste.
+Bestellt: jeweils ein Artikel beziehungsweise ein Set gemäß der zuvor festgelegten Einkaufsliste. **Angekommen am 19. November 2026** (laut Nutzerin).
 
 | Ausgewählter Artikel | Preis laut Warenkorb-Chat | Zweck |
 | --- | --- | --- |

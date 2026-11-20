@@ -68,7 +68,7 @@ Geprüft: 13 neue Regelprüfungen in `handy-app/tests/pet.test.mjs`. Sie liefen 
 
 ## Wo wir stehen
 
-- Der Funduino Cube, Lötzubehör, Lötzinn und die Lötstation sind laut Nutzerin bestellt. **Lötstation Zhongdi ZD-99 und Lötzinn (BerryBase) sind am 20. November 2026 angekommen.** Die Funduino-Lieferung (Cube, Zange, Spitzenreiniger, Pinzetten, Entlötpumpe), Aufbau und Tests am echten Gerät stehen noch aus.
+- Der Funduino Cube, Lötzubehör, Lötzinn und die Lötstation sind laut Nutzerin bestellt. **Alles ist angekommen:** die Funduino-Lieferung (Cube, Zange, Spitzenreiniger, Pinzetten, Entlötpumpe) am 19. November 2026, Lötstation Zhongdi ZD-99 und Lötzinn (BerryBase) am 20. November 2026. Aufbau des Cubes und Tests am echten Gerät stehen noch aus.
 - Die Anforderungen stehen in `Tamagotchi_Anforderungen.md`, die Hardwareplanung in `Tamagotchi_Hardware_Cube.md`.
 - Die Software liegt unter `software/`. Die Ordner `schritt-01` bis `schritt-04` bewahren die bisherigen Entwicklungsstände jeweils getrennt auf.
 - Der aktuelle Stand ist `software/schritt-04`. Dort liegen der Programmcode, der virtuelle Aufbau (`diagram.json`), die benötigte Bibliothek (`libraries.txt`), eine Vorschau und eine Anleitung zum Wiederherstellen in Wokwi.

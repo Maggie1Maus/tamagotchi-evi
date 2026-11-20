@@ -1,7 +1,7 @@
 # Tamagotchi-Projekt – Anforderungen und offene Entscheidungen
 
 Stand: 17. November 2026  
-Das Waveshare RP2350-Touch-LCD-2.8 ist der Favorit für die Erprobung. Beim Retro Gamer stehen die Maße und Anschlüsse hinter dem Originaldisplay zur Prüfung an. Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 sind laut Nutzerin bestellt. Lötzinn und Zhongdi ZD-99 sind am 20. November 2026 angekommen; die Funduino-Lieferung und der Aufbau stehen noch aus.
+Das Waveshare RP2350-Touch-LCD-2.8 ist der Favorit für die Erprobung. Beim Retro Gamer stehen die Maße und Anschlüsse hinter dem Originaldisplay zur Prüfung an. Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 sind laut Nutzerin bestellt. Die Funduino-Lieferung ist am 19. November 2026 angekommen, Lötzinn und Zhongdi ZD-99 am 20. November 2026; der Aufbau steht noch aus.
 
 ## 1. Ziel und Rahmen
 
