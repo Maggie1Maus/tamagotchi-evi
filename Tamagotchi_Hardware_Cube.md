@@ -190,7 +190,8 @@ Bestand auf bauhaus.info unter „Reservieren & Abholen in Kassel“ am 20. Nove
 | [CFH Löthilfe LA 240](https://www.bauhaus.info/loetzubehoer/cfh-loethilfe-la-240/p/30525555) („dritte Hand“, 2 Krokodilklemmen, ohne Lupe) | 30525555 | 7,50 € | 3 Stück | Hält Platine oder Drähte beim Löten, z. B. am Pololu-Wandler und an der Tastenplatine. |
 | [Profi Depot Digital-Multimeter MM 2500](https://www.bauhaus.info/multimeter/profi-depot-digital-multimeter-mm-2500/p/22183127) | 22183127 | 24,90 € | 13 Stück | Nur falls bei BerryBase kein Multimeter mitbestellt wurde. Durchgangsprüfung (Piepser-Symbol) auf der Verpackung prüfen; auf der Website nicht bestätigt. |
 | [Alpha Tools Digitaler Messschieber](https://www.bauhaus.info/schieblehren-messschieber/alpha-tools-digitaler-messschieber/p/20497503) | 20497503 | 15,95 € | 16 Stück | Optional: Maße im Retro Gamer (Displayfenster, freie Höhe) und später die Bauhöhe des Waveshare. |
-| Feinsteinzeugfliese 30 × 60 cm, z. B. [My Style](https://www.bauhaus.info/feinsteinzeugfliesen/feinsteinzeugfliese-my-style/p/31098786) | 31098786 | 12,54 € je Karton | vorrätig | Hitzefeste Unterlage für den Lötplatz. Wird nur im Karton verkauft; im Markt nach einer einzelnen Fliese oder Bruchware fragen. Eine Silikon-Lötmatte war in Kassel nicht vorrätig. |
+
+Unterlage: Eine Fliese wurde von der Nutzerin abgelehnt. Eine Silikon-Lötmatte war in Kassel nicht vorrätig. Für den Anfang reicht ein altes Holzbrett; eine Silikon-Lötmatte kann bei der nächsten BerryBase-Bestellung mitkommen.
 
 Nicht empfohlen: Abisolierzangen im Bauhaus beginnen bei 0,2 mm². Die dünnen Jumperkabel (AWG 28, etwa 0,08 mm²) sind dafür zu dünn.
 
