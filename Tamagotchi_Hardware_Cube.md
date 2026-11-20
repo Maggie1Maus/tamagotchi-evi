@@ -395,7 +395,8 @@ Die Zerlegeansicht des Tamagotchi aus „Ideen und Infos.md“ dient zusätzlich
 - Beschaffung: alle Funduino- und BerryBase-Artikel gemäß Abschnitt 8 laut Nutzerin bestellt. Keine Bestellung der Knipex-Zange; die günstige Funduino-Zange bleibt die Auswahl.
 - Lieferung: Funduino am 19. November 2026, BerryBase am 20. November 2026 angekommen (laut Nutzerin). Vollständigkeit und Zustand der Teile vor dem Aufbau anhand der Anleitung prüfen.
 - Montage begonnen (19. November 2026, laut Nutzerin, mit dem alten Lötkolben): Display, Nano, eine LED, einige Widerstände und ein Taster sind angelötet. Eine Textanzeige auf dem Display funktioniert. Welche Bauteile noch fehlen (z. B. Summer, LED-Ring, Sensor), ist nicht dokumentiert.
-- Nächste Schritte: restliche Bauteile nach Anleitung löten, Taster und Ton prüfen, dann `software/schritt-04` auf den echten Cube übertragen. Danach kleinste spielbare Version konkretisieren.
+- Am 20. November 2026 für Evi fertig gelötet: Widerstände, Fotowiderstand, drei LEDs, Taster, Lautsprecher (zusätzlich zu Display und Nano). Die übrigen Sensoren und der LED-Ring sind für Evi nicht nötig und noch offen.
+- Nächste Schritte: `software/schritt-05/cube-test` aufspielen und alle Bauteile prüfen, dann `software/schritt-05/evi-cube`.
 
 ## Quellen
 
