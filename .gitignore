@@ -1,0 +1,13 @@
+# Alte Build-/Deploy-Pakete und Sicherungen (Inhalt steckt schon im Projekt bzw. in der Git-Historie)
+*.tar.gz
+Tamagotchi_Handy_Sicherung_*.zip
+entwuerfe/evi/Evi-Emotionen-alle-Altersstufen.zip
+
+# Lokale Claude-Einstellungen dieses PCs
+.claude/settings.local.json
+
+# Systemdateien
+Thumbs.db
+desktop.ini
+.DS_Store
+node_modules/

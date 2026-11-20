@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "author": "Tamagotchi-Projekt",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-nano", "id": "nano", "top": -110, "left": 30, "attrs": {} },
+    { "type": "board-ssd1306", "id": "oled", "top": 40, "left": 55, "attrs": { "i2cAddress": "0x3c" } },
+    { "type": "wokwi-pushbutton", "id": "button", "top": 190, "left": 80, "attrs": { "color": "green", "label": "Fuettern", "key": " " } }
+  ],
+  "connections": [
+    [ "nano:5V", "oled:VCC", "red", [] ],
+    [ "nano:GND.1", "oled:GND", "black", [] ],
+    [ "nano:A4", "oled:SDA", "green", [] ],
+    [ "nano:A5", "oled:SCL", "blue", [] ],
+    [ "nano:2", "button:1.l", "green", [ "v-25", "h90", "v350", "h-80" ] ],
+    [ "nano:GND.2", "button:2.l", "black", [ "v15", "h85", "v210", "h-90" ] ]
+  ],
+  "dependencies": {}
+}

@@ -1,0 +1,67 @@
+# Kleines Zuhause – Handy-Prototyp 0.8
+
+**Neu in 0.8:** Die Emotionen der Besitzerin sind eingebaut, je 7 Zustände für Baby, Teenager, Erwachsen und Oma, wieder 1:1 übernommen. Welches Bild erscheint:
+
+| Zustand im Spiel | Bild |
+| --- | --- |
+| Alle Werte ab 60, oder kurz nach Füttern, Spielen, Putzen, Schlüpfen und Entwicklung | glücklich |
+| Kein Wert niedrig, aber nicht alle ab 60 | Grundzeichnung (bei Erwachsen: glücklich) |
+| Sättigung am niedrigsten und ≤ 30 | hungrig |
+| Stimmung am niedrigsten und ≤ 30 | traurig |
+| Sauberkeit am niedrigsten und ≤ 30 | schmutzig |
+| Krank | krank |
+| 22–23 Uhr, wenn sonst alles in Ordnung ist | müde |
+| 23–7 Uhr | schlafend |
+
+Die Bilder entstehen mit `tools/build-art.ps1` aus `../entwuerfe/evi/`. Das Skript schneidet aus, entfernt die Beschriftung, verkleinert alle Bilder einer Lebensphase im selben Maßstab und schreibt `dist/img/*.png` und `dist/art.js`. Neue oder geänderte Zeichnungen: Dateien gleich benennen und das Skript erneut ausführen. Die Pixel-Evi aus `evi-sprite.js` wird nur noch für das Grab gebraucht und dient als Ersatz, falls ein Bild fehlt.
+
+## Version 0.7
+
+**Neu in 0.7:** Ei, Baby, Teenager und Oma sind die Zeichnungen der Besitzerin aus `../entwuerfe/evi/`. Sie sind unverändert übernommen, nur zugeschnitten, verkleinert und außen durchsichtig gemacht (`dist/img/`). Die erwachsene Evi zeichnet weiterhin `evi-sprite.js`. Neu ist auch die Oma-Phase von 2 Tagen mit Tod durch Alter. „Spielen“ öffnet eine Auswahl aus drei Spielen im Vollbild: Ballfangen, Links oder rechts?, Melodie merken. Die Spielstände liegen unter dem neuen Schlüssel `kleines-zuhause.pet.v2`. Damit beginnt das Spiel neu mit einem Ei, das einmalig nach einer Minute schlüpft.
+
+Eigenständiger Einstieg für die spätere tragbare Tamagotchi-Version. Tier, Zimmer, Bedienung und App-Symbole verwenden Schwarz und Weiß. Konturen, Muster und Gesichtsausdrücke müssen ohne Farbinformation funktionieren; die Grafiken sind direkt entsprechend gezeichnet, ohne nachträglichen Graustufenfilter. Die Cube-Übungen unter `software/` bleiben separat erhalten.
+
+## Lokal öffnen
+
+Im Ordner `handy-app` mit installiertem Node.js: `npm start`. Anschließend `http://127.0.0.1:4173` öffnen. ES-Module und Offline-Speicherung brauchen einen Webserver; `index.html` nicht nur per Doppelklick öffnen. Der lokale Vorschau-Server ist nur am Computer erreichbar. Der veröffentlichte HTTPS-Link ist für das Handy vorgesehen.
+
+## Spielen
+
+- Die Schwarz-Weiß-Spielszene im Seitenverhältnis 7:5 zeigt Evi und den Tierstatus. Napf, Herz und Glanzsymbol stehen für Sättigung, Stimmung und Sauberkeit.
+- Evi (seit 0.5) ist ein eigenes, Evoli-artiges Pixeltier, gezeichnet als 82 × 64-Pixel-Grafik. Sie hat riesige Ohren mit schwarzer Innenseite, große glänzende Augen, eine flauschige helle Halskrause und einen buschigen Schwanz mit heller Spitze. Braunes Fell wird als Punktraster dargestellt, helles Fell rein weiß. Das Gesicht bleibt ohne Raster, damit es gut lesbar ist.
+- Bewegungen: Evi atmet, blinzelt, zuckt mit den Ohren und wedelt mit dem Schwanz, wenn sie zufrieden ist. Bei Hunger hat sie besorgte Brauen und einen offenen Mund. Ist sie traurig, hängen Ohren und Schwanz herab. Ist sie schmutzig, hat sie müde Augen, Flecken im Fell und Geruchswölkchen. Beim Füttern kaut sie, beim Spielen hüpft sie, beim Putzen wackelt sie. Bei „Bewegung reduzieren“ in den Systemeinstellungen bleiben nur die Gesichtsausdrücke.
+- Die mittlere der drei Tasten öffnet das Spielmenü und bestätigt die markierte Auswahl. Links wechselst du zum nächsten Eintrag, rechts schließt du das Menü.
+- Das Menü passt sich an. Tagsüber gibt es Füttern, Spielen und Saubermachen, bei Krankheit zusätzlich Medizin. Nachts gibt es Licht aus/an. Nach dem Tod gibt es „Neues Ei“. Immer verfügbar sind Name ändern, Ton an/aus und Hilfe. Der bisherige Standardname „Momo“ wechselt beim Öffnen zu „Evi“. Ein eigener Name hat Vorrang.
+- **Lebenslauf:** Ei 30 Minuten → Baby 1 Tag → Teenager 2 Tage → erwachsen 5 Tage → Oma 2 Tage → stirbt an Altersschwäche. Bei der Oma sinkt die Sättigung um 18 statt 20 pro Stunde. Das Ei schlüpft auch ohne Spielerin. Ist die App offen, wackelt das Ei, bekommt einen Riss, und Evi schlüpft live mit Ton.
+- **Pflegetakt:** Abnahme pro Stunde im Wachzustand (Sättigung/Stimmung/Sauberkeit): Baby 45/35/30, Teenager 28/22/18, erwachsen 20/15/12. Ein voller Wert fällt damit nach etwa 1,5 / 2,5 / 3,5 Stunden auf „niedrig“ (30).
+- **Aktionen:** Füttern +40 Sättigung. Saubermachen +60 Sauberkeit. Medizin heilt, kostet aber 5 Stimmung. Bei voller Anzeige passiert nichts.
+- **Spiele:** Jedes Spiel hat 5 Runden, und jeder Erfolg bringt 2 Münzen. Die Stimmung steigt um 15 plus 7 pro Erfolg, also höchstens um 50. Sättigung −8, Sauberkeit −5.
+  - **Ballfangen:** Drück Mitte oder links, wenn der Ball im Feld ist. Rechts bricht ab. Der Ball wird von Runde zu Runde schneller.
+  - **Links oder rechts?:** Rate mit links oder rechts, wohin Evi springt. Die Mitte bricht ab.
+  - **Melodie merken:** Die Tonfolge beginnt mit 2 Tönen und wird jede Runde einen Ton länger. Ein falscher Ton beendet das Spiel, geschaffte Runden zählen.
+- **Schlaf:** 23 bis 7 Uhr, für alle Lebensphasen. Die Bedürfnisse sinken dann nur mit 15 % des Tagestempos. Licht aus gibt einmal pro Nacht +10 Stimmung, und die Stimmung sinkt kaum. Bleibt das Licht an, sinkt sie mit 60 %. Morgens geht das Licht von selbst an.
+- **Krankheit und Tod:** Steht ein Wert insgesamt 4 Stunden auf null, wird Evi krank: Stimmung sinkt 1,5-mal so schnell, Spielen geht nicht. Ohne Medizin stirbt sie nach 24 Stunden Krankheit, bei Dauervernachlässigung nach 30 Stunden. Danach startet „Neues Ei“ die nächste Generation; Münzen bleiben erhalten.
+- **Ton:** Signale bei Schlüpfen, Entwicklung, Krankheit, Tod und wenn ein Wert niedrig wird; abschaltbar. Web-Apps können keine Benachrichtigung senden, solange sie geschlossen sind – Ereignisse in der Abwesenheit werden beim nächsten Öffnen kurz gemeldet.
+- Tatsächlich vergangene Zeit wird beim Öffnen minutengenau nachgerechnet, einschließlich Nacht, Entwicklung und Krankheit. Keine laufende Ausführung im Hintergrund nötig.
+- Spielstände aus 0.4/0.5 werden übernommen; das Tier gilt dann als erwachsen.
+- Automatisches Speichern nur auf diesem Gerät, in diesem Browser bzw. dieser installierten Web-App. Kein Cloud-Abgleich. Das Entfernen von Browserdaten kann den Stand löschen. Unlesbare bzw. unbekannte Spielstände werden nicht überschrieben; in diesem Fehlerfall läuft nur eine ungespeicherte Sitzung.
+- Nach vollständig erfolgreichem Laden der Offline-Dateien auch offline nutzbar. Eine Hosting-Anmeldung und Updates benötigen Internet. Keine Benachrichtigungen.
+- Möbel im Bild sind vorläufige Kulisse. Kauf, Einrichtung und weitere Räume folgen als Nächstes, dann haben die Münzen einen Zweck. Partnersuche und Vererbung kommen später.
+
+## Auf dem Handy
+
+Öffne auf dem iPhone den veröffentlichten Link in Chrome oder Safari und wähle „Teilen → Zum Home-Bildschirm“. Aktiviere „Als Web-App öffnen“, wenn diese Option angezeigt wird. Melde dich bei Bedarf mit dem berechtigten Konto an. Auf Android findest du „Installieren“ oder „Zum Startbildschirm hinzufügen“ im Browsermenü. Die Anleitung steht im Spielmenü unter „Hilfe“.
+
+## Vorbereitung auf das spätere Gerät
+
+`dist/pet.js` enthält ausschließlich Zustand und Spielregeln. Zeit und Befehle werden als Parameter übergeben; zurück kommt ein neuer Zustand. Kein DOM, kein `localStorage`, keine Timer und keine Grafik in diesem Modul. `dist/app.js` verbindet die Regeln mit Browser-Uhr, Speicherung und Oberfläche und steuert Evis Bewegungen. `dist/evi-sprite.js` zeichnet Evi: Eine Pose (Augen, Mund, Ohren- und Schwanzwinkel, Atmung, Schmutz) wird zu einem Pixelraster aus Schwarz und Weiß. Das Modul hat keine Abhängigkeit vom Browser. Damit lassen sich die Einzelbilder später als Bitmaps für das Gerät exportieren, zum Beispiel für die 320 × 240 Pixel des Waveshare. Die Anzeige benötigt keine externen Dateien oder Schriftanbieter.
+
+Die spätere Hardware ist noch offen. JavaScript ist daher kein Versprechen unveränderter Übernahme auf einen Mikrocontroller. Zustandsmodell, Regeln und Verhaltensprüfungen dienen als klare Vorlage für einen gegebenenfalls nötigen C++-Port. Anzeige, Tasten, Uhr und Speicher brauchen eigene Hardwareadapter. Die drei Pflegeaktionen sind Spielbefehle. Die Cube-Testregeln werden nicht automatisch verändert.
+
+Die drei Touch-Tasten erproben die Bedienung des späteren Geräts. Ein Steuerkreuz und zusätzliche Tasten kommen beim Umbau des vorhandenen Retro Gamer infrage.
+
+## Prüfen und ändern
+
+`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen sowie die Oma-Phase mit Tod durch Alter (15 Prüfungen). `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
+
+Bei Offline-Änderungen die Cache-Version in `dist/sw.js` erhöhen. Die `.openai/hosting.json` ordnet diesen Unterordner seiner privaten Site zu. Andere Projektdateien werden nicht mit hochgeladen.

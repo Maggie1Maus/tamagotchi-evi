@@ -1,0 +1,20 @@
+Evis Emotionen – alle vier Altersstufen
+18. November 2026
+
+28 PNG-Bilder: Baby, Teenager, erwachsene Evi und Oma.
+Jede Altersstufe hat dieselben sieben Zustände:
+- Glücklich
+- Hungrig
+- Traurig
+- Müde
+- Krank
+- Schmutzig
+- Schlafend
+
+Dateien stehen in den Ordnern baby, teenager, erwachsen und oma.
+Alle sind separate Schwarz-Weiß-Bildentwürfe mit weißem Hintergrund.
+Erstellt mit der integrierten Bildgenerierung anhand der jeweiligen freigegebenen Alterszeichnung.
+Die genauen Bildprompts liegen als Textdateien bei.
+Die ersten sechs Erwachsenen-Bilder wurden aus dem vorherigen Entwurfssatz übernommen.
+22 Bilder wurden in dieser Ergänzung neu erstellt.
+Kein Bild wurde in die App integriert; der Spielcode wurde nicht verändert.
