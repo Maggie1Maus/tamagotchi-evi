@@ -1,7 +1,7 @@
 # Tamagotchi-Projekt – Hardware-Einstieg mit dem Funduino Cube
 
 Stand: 17. November 2026  
-Status: Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 am 16. November 2026 laut Nutzerin bestellt. Lieferung, Montage und Funktionstests noch nicht bestätigt.
+Status: Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 am 16. November 2026 laut Nutzerin bestellt. **Am 20. November 2026 sind Lötzinn und Lötstation (BerryBase) laut Nutzerin angekommen.** Die Funduino-Lieferung (Cube und Zubehör), Montage und Funktionstests sind noch nicht bestätigt.
 
 Diese Zusammenfassung ergänzt die [Projektanforderungen](Tamagotchi_Anforderungen.md). Sie beschreibt den ersten Prototyp auf dem Funduino Cube und in Abschnitt 10 den möglichen Umbau des vorhandenen Billig-Game-Boys.
 
@@ -131,7 +131,7 @@ Ein gefundenes Kaufland-Angebot war ein Online-Marktplatzangebot vom Verkäufer 
 
 ## 8. Bestellte Artikel und nachgeschlagene Produktnamen
 
-Die Nutzerin hat am **16. November 2026** in diesem Projektchat bestätigt, den Cube, das Funduino-Zubehör, Lötzinn und einen neuen Lötkolben bestellt zu haben. Das Lötkolbenmodell **Zhongdi ZD-99** wurde auf Nachfrage ausdrücklich bestätigt. Die Produktnamen und die bisherigen Warenkorbpreise wurden im Chat „Warenkorb prüfen“ nachgeschlagen. Bestellbestätigungen und Rechnungen wurden nicht eingesehen; Versandkosten und tatsächliche Endbeträge sind deshalb noch nicht dokumentiert. Lieferung und Empfang sind noch nicht bestätigt.
+Die Nutzerin hat am **16. November 2026** in diesem Projektchat bestätigt, den Cube, das Funduino-Zubehör, Lötzinn und einen neuen Lötkolben bestellt zu haben. Das Lötkolbenmodell **Zhongdi ZD-99** wurde auf Nachfrage ausdrücklich bestätigt. Die Produktnamen und die bisherigen Warenkorbpreise wurden im Chat „Warenkorb prüfen“ nachgeschlagen. Bestellbestätigungen und Rechnungen wurden nicht eingesehen; Versandkosten und tatsächliche Endbeträge sind deshalb noch nicht dokumentiert. Lieferstand: **BerryBase-Lieferung (Lötzinn und Zhongdi ZD-99) laut Nutzerin am 20. November 2026 angekommen.** Die Funduino-Lieferung ist noch nicht bestätigt.
 
 ### Funduino
 
@@ -155,12 +155,14 @@ Nachprüfung zur Zange: Die aktuelle Funduino-Produktseite beschreibt hauptsäch
 - Preis laut Warenkorb-Chat und Produktseite: **7,90 € zuzüglich Versand**.
 - Es handelt sich um Elektroniklot mit Flussmittelseele für die Lötverbindungen. Verzinnter Kupferdraht ist kein Ersatz dafür. Der bei Funduino gefundene „PCB-Lötdraht“ hatte widersprüchliche Beschreibungen und wurde nicht als Lötzinn ausgewählt.
 - Bestellung bei BerryBase von der Nutzerin bestätigt. Im anderen Chat wurden die 20 g für den ersten Cube-Aufbau als ausreichend eingeschätzt; eine Aufstockung auf 50 g war nicht vorgesehen.
+- **Angekommen am 20. November 2026** (laut Nutzerin).
 
-### Neue Lötstation: Zhongdi ZD-99 bestellt
+### Neue Lötstation: Zhongdi ZD-99 – angekommen
 
 - **Zhongdi ZD-99 Analoge Lötstation, Temperaturregelung 150–450 °C, Lötspitzenwechsel, 58 W, 230 V; Artikelnummer ZD-99-58W.**
 - Bei BerryBase bestellt; Modell und Bestellung von der Nutzerin ausdrücklich bestätigt. Die frühere offene Neukaufentscheidung ist damit erledigt.
 - Bisher dokumentierter Preis: **18,90 € zuzüglich Versand**. Laut bisheriger Produktbeschreibung sind Lötkolben und Halterung enthalten; nach Lieferung den tatsächlichen Lieferumfang prüfen.
+- **Angekommen am 20. November 2026** (laut Nutzerin). Lieferumfang und ein erster Funktionstest (Aufheizen) sind noch nicht geprüft.
 - Ein älterer Lötkolben ist weiterhin vorhanden, sein Modell ist nicht bekannt. Seine Prüfung ist keine Voraussetzung mehr für die Beschaffung der neuen Station.
 - Ein zusätzlicher separater Lötkolbenständer wurde ausdrücklich nicht gewünscht und nicht hinzugefügt.
 - Eine hitzefeste Arbeitsfläche und geeignete Belüftung für die Lötarbeiten vorsehen. Der tatsächliche Arbeitsplatz wurde noch nicht geprüft.

@@ -1,7 +1,7 @@
 # Tamagotchi-Projekt – Anforderungen und offene Entscheidungen
 
 Stand: 17. November 2026  
-Das Waveshare RP2350-Touch-LCD-2.8 ist der Favorit für die Erprobung. Beim Retro Gamer stehen die Maße und Anschlüsse hinter dem Originaldisplay zur Prüfung an. Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 sind laut Nutzerin bestellt. Lieferung und Aufbau stehen noch aus.
+Das Waveshare RP2350-Touch-LCD-2.8 ist der Favorit für die Erprobung. Beim Retro Gamer stehen die Maße und Anschlüsse hinter dem Originaldisplay zur Prüfung an. Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 sind laut Nutzerin bestellt. Lötzinn und Zhongdi ZD-99 sind am 20. November 2026 angekommen; die Funduino-Lieferung und der Aufbau stehen noch aus.
 
 ## 1. Ziel und Rahmen
 
@@ -115,7 +115,7 @@ Der vorhandene Retro Gamer (Art.-Nr. 3307) ist ein möglicher Gehäusespender. B
 - Bei der späteren Kostenschätzung sollen Bauteile, Gehäuse und gegebenenfalls benötigtes Werkzeug berücksichtigt werden.
 - Der Elektronikaufbau soll für eine Einsteigerin lernbar bleiben.
 - Am 16. November 2026 hat die Nutzerin die Bestellung bestätigt: Cube, Zange, Lötspitzenreiniger, Pinzettenset und Entlötpumpe bei Funduino; Goobay-Elektronik-Lötzinn (20 g, 0,8 mm) und Zhongdi ZD-99-Lötstation bei BerryBase. Die genauen Artikel stehen in „Tamagotchi_Hardware_Cube.md“.
-- Ein älterer Lötkolben ist bereits vorhanden. Für den Einstieg wurde nun zusätzlich die Zhongdi ZD-99 bestellt; der Neukauf ist damit entschieden. Lieferung und praktische Erprobung sind noch nicht bestätigt.
+- Ein älterer Lötkolben ist bereits vorhanden. Für den Einstieg wurde nun zusätzlich die Zhongdi ZD-99 bestellt; der Neukauf ist damit entschieden. Die Station ist am 20. November 2026 angekommen; die praktische Erprobung steht noch aus.
 
 ## 10. Ergänzende Vorschläge – noch nicht ausdrücklich beschlossen
 
