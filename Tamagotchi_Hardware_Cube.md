@@ -351,9 +351,9 @@ Die Zerlegeansicht des Tamagotchi aus „Ideen und Infos.md“ dient zusätzlich
 - Entwicklungsrichtung: erster kleiner spielbarer Prototyp auf dem Funduino Cube.
 - Späterer Hardwarewechsel: akzeptiert.
 - Bausatz: geprüft und für diesen Einstieg empfohlen.
-- Lötkolben: älteres Gerät vorhanden; neue Zhongdi ZD-99-Lötstation bestellt.
+- Lötkolben: älteres Gerät vorhanden; neue Zhongdi ZD-99-Lötstation am 20. November 2026 angekommen.
 - Beschaffung: alle Funduino- und BerryBase-Artikel gemäß Abschnitt 8 laut Nutzerin bestellt. Keine Bestellung der Knipex-Zange; die günstige Funduino-Zange bleibt die Auswahl.
-- Lieferung: noch nicht bestätigt; nach Eingang Vollständigkeit und Zustand der Teile prüfen.
+- Lieferung: Funduino am 19. November 2026, BerryBase am 20. November 2026 angekommen (laut Nutzerin). Vollständigkeit und Zustand der Teile vor dem Aufbau anhand der Anleitung prüfen.
 - Montage, Programmierung und praktische Tests: noch nicht erfolgt.
 - Nächste Schritte: Lieferung entgegennehmen und prüfen, Arbeitsplatz und neue Lötstation vorbereiten, Cube nach Anleitung aufbauen und Display, Taster, Ton sowie USB-Programmierung prüfen. Danach kleinste spielbare Version konkretisieren.
 
