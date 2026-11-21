@@ -52,4 +52,4 @@ Beim ersten Start beginnt eine neue Evi. Ab dann merkt sie sich ihren Stand.
 - Für den Nano übersetzt (ohne echte U8g2, wie in Schritt 5): 11,9 KB Programmspeicher, 645 Byte Arbeitsspeicher. Mit U8g2 werden es schätzungsweise 22–26 KB von 30 KB.
 - 54 Prüfungen aus `checks.h` am PC bestanden: Tempo der drei Werte wach und im Schlaf, Füttern, Spielen, Putzen, Bildauswahl, Überlauf der Uhr, Speichern und Laden, 300 Speicherungen reihum, beschädigter Platz, neue Evi.
 - 21 Prüfungen in einer Nachbildung des ganzen Sketches bestanden, mit den Vorschaubildern oben: Menü, Halten, alle drei Pflegen mit Melodie, Hinweiston nach Stunden, rote LED, Speichern alle 10 Minuten, Schlafen, Spielstand nach Neustart und neue Evi per Taster.
-- **Noch nicht auf dem echten Cube getestet.**
+- **Auf dem echten Cube (21. November 2026, laut Nutzerin):** Alles funktioniert, auch Zeichnungen, LEDs und Fotosensor. Der Spielstand über Nacht ohne Strom ist noch nicht ausprobiert.
