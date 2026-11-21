@@ -1,6 +1,23 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
-Stand: 18. November 2026
+Stand: 21. November 2026
+
+## Planung „Evis Tag“ (21. November 2026, noch nicht gebaut)
+
+Die Nutzerin möchte vor dem Laden zuerst Evis Tagesablauf ausbauen. Neue Ideen sollen über Wochen nach und nach dazukommen: zuerst in der Handy-App ausprobieren, später aufs Waveshare RP2350 übertragen (16 MB Flash, 520 KB RAM, dort ist genug Platz; der Cube ist mit Schritt 7 nahezu voll und bleibt Lerngerät).
+
+Von der Nutzerin beschlossen:
+- **Morgens müde:** Evi steht weiter um 7 Uhr von selbst auf und ist bis 7:30 Uhr noch müde. Kein Wecken durch die Spielerin, weil Evi meist vorher wach ist.
+- **Abendritual**, **Mahlzeiten und Naschen**, **Evis Wünsche**: gewünscht, Einzelheiten siehe Vorschlag.
+- **Mittagsschlaf fürs Baby:** 12 bis 13 Uhr.
+- **Streicheln:** erst auf dem Waveshare mit Touch, nicht in der Handy-App.
+
+Vorschlag von Claude, wartet auf Bestätigung:
+- Abendritual: Von 22 bis 23 Uhr gibt es im Menü „Gute Nacht“. Ablauf: Zähne putzen, kurze Gute-Nacht-Geschichte, zudecken, Licht aus. Evi schläft sofort ein. Belohnung: +10 Stimmung, zusätzlich zum Lichtbonus. Am nächsten Morgen ist sie ausgeschlafen und nicht müde. Ohne Ritual schläft sie wie bisher um 23 Uhr allein ein.
+- Mahlzeiten: Frühstück 7–9, Mittagessen 11–14, Abendessen 17–20 Uhr. Das erste Füttern in diesem Zeitraum gibt +50 statt +40 Sättigung und +5 Stimmung. Eine verpasste Mahlzeit hat keine Folgen.
+- Naschen: neuer Menüpunkt, +10 Sättigung, +10 Stimmung. Bis zu 3 am Tag sind in Ordnung. Der 4. Snack gibt 2 Stunden Bauchweh: Bild „krank“, die Stimmung sinkt schneller. Medizin hilft sofort. Bauchweh führt nicht zum Tod.
+- Wünsche: 3–4 Mal am Tag wünscht sich Evi etwas, zum Beispiel ein bestimmtes Spiel, Naschen, Baden oder eine Mahlzeit. Das gilt nicht nachts, nicht während des Mittagsschlafs und nicht bei Krankheit. Ein Wunsch gilt 1 Stunde. Wird er erfüllt, gibt es +10 Stimmung und 3 Münzen.
+- Mittagsschlaf: Bild „schlafend“, die Bedürfnisse sinken langsam wie nachts. Pflege und Spiele sind in dieser Zeit gesperrt.
 
 ## Neue Handy-Version
 
