@@ -22,6 +22,8 @@ export const RULES = Object.freeze({
   // meal times, snacks, a nap for the baby and a few wishes a day.
   tired: { evening: 22, morningMinutes: 30 },
   ritual: { from: 22, mood: 10 },
+  // Woken at night, Evi stays up while someone plays with her and falls asleep again after 5 quiet minutes.
+  wake: { awake: 5 * MINUTE },
   nap: { stage: 'baby', from: 12, to: 13 },
   meals: { windows: [['breakfast', 7, 9], ['lunch', 11, 14], ['dinner', 17, 20]], satiety: 10, mood: 5 },
   snack: { perDay: 3, tummyAche: 2 * HOUR },
@@ -59,7 +61,7 @@ export function createPet(now, { name = DEFAULT_NAME, customName = false, coins 
 }
 // Fields added in version 0.9; older saves get these values.
 const DAY_DEFAULTS = Object.freeze({ ritualNight: null, lastMeal: null, snackDay: null, snackCount: 0,
-  tummyUntil: 0, wishDone: 0 });
+  tummyUntil: 0, wishDone: 0, awakeUntil: 0 });
 
 const LIFESPAN = Object.values(RULES.stages).reduce((sum, ms) => sum + ms, 0);
 /** Life stage at time t: egg, baby, teen, adult, senior or dead. */
@@ -74,25 +76,34 @@ export function stageAt(pet, t = pet.updatedAt) {
   return 'senior';
 }
 
-/** Why Evi sleeps at time t: 'night' (23–7, or from 22 after the evening ritual), 'nap' or null. */
+/** Bedtime: 23–7, or from 22 o'clock after the evening ritual. */
+const bedtime = (pet, t) => isNight(t) || (hourOf(t) >= RULES.ritual.from && pet.ritualNight === nightKey(t));
+/** Woken up at bedtime and not yet asleep again. */
+export const isWoken = (pet, t = pet.updatedAt) => bedtime(pet, t) && t < pet.awakeUntil;
+/** Why Evi sleeps at time t: 'night' (bedtime, unless she was woken), 'nap' or null. */
 export function sleepKind(pet, t = pet.updatedAt) {
   const stage = stageAt(pet, t);
   if (stage === 'egg' || stage === 'dead') return null;
-  if (isNight(t)) return 'night';
+  if (bedtime(pet, t)) return t < pet.awakeUntil ? null : 'night';
   const h = hourOf(t);
-  if (h >= RULES.ritual.from && pet.ritualNight === nightKey(t)) return 'night';
   if (stage === RULES.nap.stage && h >= RULES.nap.from && h < RULES.nap.to) return 'nap';
   return null;
+}
+/** Any key press while woken keeps Evi up for another 5 minutes. */
+export function stayAwake(pet, now) {
+  const next = advancePet(pet, now);
+  if (isWoken(next, now)) next.awakeUntil = Math.max(next.awakeUntil, now + RULES.wake.awake);
+  return next;
 }
 export const isAsleep = (pet, t = pet.updatedAt) => sleepKind(pet, t) !== null;
 const awake = (pet, t) => !['egg', 'dead'].includes(stageAt(pet, t)) && !sleepKind(pet, t);
 /** Woke up rested: the evening ritual was done the night before. */
 const ritualLastNight = (pet, t) => pet.ritualNight !== null && pet.ritualNight === dayKey(t - 12 * HOUR);
 const earlyMorning = t => { const d = new Date(t); return d.getHours() === RULES.sleep.to && d.getMinutes() < RULES.tired.morningMinutes; };
-/** Tired: the hour before bedtime, and the first half hour of the morning unless she slept well. */
+/** Tired: the hour before bedtime, when woken at night, and the first half hour of the morning unless she slept well. */
 export function isTired(pet, t = pet.updatedAt) {
   if (!awake(pet, t)) return false;
-  return hourOf(t) === RULES.tired.evening || (earlyMorning(t) && !ritualLastNight(pet, t));
+  return isNight(t) || hourOf(t) === RULES.tired.evening || (earlyMorning(t) && !ritualLastNight(pet, t));
 }
 export const isRested = (pet, t = pet.updatedAt) => awake(pet, t) && earlyMorning(t) && ritualLastNight(pet, t);
 export const hasTummyAche = (pet, t = pet.updatedAt) => !pet.dead && t < pet.tummyUntil;
@@ -164,10 +175,13 @@ export function restorePet(value, now) {
     return null;
   }
   // Version 2 (0.6–0.8) has no day fields yet: Evi keeps everything and starts her new day routine.
-  const day = value.version === 2 ? DAY_DEFAULTS : value;
+  // Fields added later within version 3 start with their default value.
+  const day = Object.fromEntries(Object.entries(DAY_DEFAULTS).map(([key, fallback]) =>
+    [key, value.version === 2 ? fallback : value[key] ?? fallback]));
   const keyOrNull = v => v === null || typeof v === 'string';
   if (!keyOrNull(day.ritualNight) || !keyOrNull(day.lastMeal) || !keyOrNull(day.snackDay) ||
-      !Number.isSafeInteger(day.snackCount) || day.snackCount < 0 || !finite(day.tummyUntil) || !finite(day.wishDone)) {
+      !Number.isSafeInteger(day.snackCount) || day.snackCount < 0 || !finite(day.tummyUntil) || !finite(day.wishDone) ||
+      !finite(day.awakeUntil)) {
     return null;
   }
   const keys = Object.keys(createPet(0));
@@ -195,7 +209,8 @@ export function advancePet(pet, now) {
     }
     if (stage !== 'egg') {
       const asleep = sleepKind(next, t);
-      if (asleep !== 'night') next.lightOff = false;
+      // The light comes on by itself in the morning; a woken Evi falls asleep again in the same light.
+      if (!bedtime(next, t)) next.lightOff = false;
       const rate = RULES.decay[stage];
       const needs = asleep ? RULES.sleep.needs : 1;
       // A nap is as restful as a dark night.
@@ -228,9 +243,11 @@ export function blockedReason(pet, action, now = pet.updatedAt) {
   if (stage === 'egg') return 'egg';
   const asleep = sleepKind(pet, now);
   if (action === 'light') return asleep === 'night' ? null : 'day';
+  if (action === 'wake') return asleep === 'night' ? null : 'awake';
   if (asleep === 'night') return 'asleep';
   if (asleep === 'nap') return 'nap';
   if (action === 'ritual' && hourOf(now) !== RULES.ritual.from) return 'early';
+  if (action === 'ritual' && pet.ritualNight === nightKey(now)) return 'done';
   if (action === 'play' && pet.sick) return 'sick';
   if (action === 'medicine' && !pet.sick && !hasTummyAche(pet, now)) return 'healthy';
   if (action === 'snack' && hasTummyAche(pet, now)) return 'tummy';
@@ -255,10 +272,10 @@ function applyEffect(pet, effect) {
   for (const key of stats) pet[key] = clamp(pet[key] + (effect[key] ?? 0));
 }
 
-/** Care commands: feed, snack, clean, medicine, light, ritual, newEgg. Playing goes through finishPlay. */
+/** Care commands: feed, snack, clean, medicine, light, ritual, wake, newEgg. Playing goes through finishPlay. */
 export function careForPet(pet, action, now) {
   const next = advancePet(pet, now);
-  const known = ['feed', 'snack', 'clean', 'medicine', 'light', 'ritual', 'newEgg'];
+  const known = ['feed', 'snack', 'clean', 'medicine', 'light', 'ritual', 'wake', 'newEgg'];
   if (!known.includes(action)) return { pet: next, changed: false, reason: 'unknown' };
   const reason = blockedReason(next, action, now);
   if (reason) return { pet: next, changed: false, reason };
@@ -276,6 +293,10 @@ export function careForPet(pet, action, now) {
   if (action === 'light') {
     if (next.lightOff) { next.lightOff = false; return { pet: next, changed: true, bonus: false }; }
     return { pet: next, changed: true, bonus: lightOut() };
+  }
+  if (action === 'wake') {
+    next.awakeUntil = now + RULES.wake.awake;
+    return { pet: next, changed: true };
   }
   if (action === 'ritual') {
     // Brush teeth, a story, tucked in, light off: Evi falls asleep at once and wakes rested.
@@ -306,6 +327,7 @@ export function careForPet(pet, action, now) {
   }
   result.wish = grantWish(next, wish, action);
   next.careCount++;
+  if (isWoken(next, now)) next.awakeUntil = Math.max(next.awakeUntil, now + RULES.wake.awake);
   return result;
 }
 
@@ -321,6 +343,7 @@ export function finishPlay(pet, hits, now, game = 'ball') {
   const coins = caught * RULES.play.coinsPerHit;
   next.coins += coins;
   next.careCount++;
+  if (isWoken(next, now)) next.awakeUntil = Math.max(next.awakeUntil, now + RULES.wake.awake);
   return { pet: next, changed: true, coins, wish: grantWish(next, wish, game) };
 }
 

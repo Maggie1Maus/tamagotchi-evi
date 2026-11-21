@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RULES, createPet, restorePet, advancePet, careForPet, finishPlay, renamePet, describePet, stageAt,
-  isNight as isNightAt, sleepKind, isTired, isRested, hasTummyAche, mealAt, mealDue, wishesOn, currentWish
-} from '../dist/pet.js';
+  isNight as isNightAt, sleepKind, isTired, isRested, hasTummyAche, mealAt, mealDue, wishesOn, currentWish,
+  isWoken, stayAwake } from '../dist/pet.js';
 
 const MIN = 60000, H = 60 * MIN, DAY = 24 * H;
 // Fixed local times, so day and night are predictable in every time zone.
@@ -337,6 +337,47 @@ test('A wish can be fulfilled even when the need is already met, but never while
   assert.fail('no clean wish found');
 });
 
+test('Woken at night, Evi stays up while someone plays and sleeps again after 5 quiet minutes', () => {
+  const night = at(21, 2);
+  const dark = careForPet(adultAt(night, { satiety: 40 }), 'light', night).pet;
+  assert.equal(careForPet(dark, 'feed', night).reason, 'asleep');
+  assert.equal(careForPet(adultAt(at(21, 12)), 'wake', at(21, 12)).reason, 'awake');
+  assert.equal(careForPet(createPet(night), 'wake', night).reason, 'egg');
+  const woken = careForPet(dark, 'wake', night).pet;
+  assert.equal(isWoken(woken, night + MIN), true);
+  assert.equal(describePet(woken, night + MIN).mood, 'happy');
+  assert.equal(isTired(woken, night + MIN), true);
+  // Feeding at 2:03 keeps her up until 2:08.
+  const fed = careForPet(woken, 'feed', night + 3 * MIN);
+  assert.equal(fed.changed, true);
+  assert.equal(fed.pet.satiety > 70, true);
+  assert.equal(sleepKind(fed.pet, night + 7 * MIN), null);
+  assert.equal(sleepKind(fed.pet, night + 8 * MIN), 'night');
+  // A key press counts as well: 2:07 keeps her up until 2:12.
+  const touched = stayAwake(fed.pet, night + 7 * MIN);
+  assert.equal(sleepKind(touched, night + 11 * MIN), null);
+  const asleep = advancePet(touched, night + 13 * MIN);
+  assert.equal(describePet(asleep, asleep.updatedAt).mood, 'sleeping');
+  assert.equal(asleep.lightOff, true, 'the light is still off');
+  // Once asleep again, a key press does not wake her.
+  assert.equal(sleepKind(stayAwake(asleep, night + 14 * MIN), night + 14 * MIN), 'night');
+  // While awake her needs drop at the normal rate.
+  const awakeCost = touched.satiety - advancePet(touched, night + 11 * MIN).satiety;
+  assert.ok(Math.abs(awakeCost - RULES.decay.adult.satiety * 4 / 60) < 1e-9, String(awakeCost));
+  // A game finished while woken counts and keeps her up.
+  const played = finishPlay(woken, 3, night + 4 * MIN, 'ball');
+  assert.equal(played.changed, true);
+  assert.equal(isWoken(played.pet, night + 8 * MIN), true);
+});
+
+test('Woken after the evening ritual: no second ritual the same night', () => {
+  const ritual = careForPet(adultAt(at(21, 22, 5)), 'ritual', at(21, 22, 5)).pet;
+  const woken = careForPet(ritual, 'wake', at(21, 22, 20)).pet;
+  assert.equal(sleepKind(woken, at(21, 22, 21)), null);
+  assert.equal(careForPet(woken, 'ritual', at(21, 22, 21)).reason, 'done');
+  assert.equal(sleepKind(woken, at(21, 22, 26)), 'night');
+});
+
 test('Saves from version 0.8 keep Evi and add the new day fields', () => {
   const t = at(21, 12);
   const { ritualNight, lastMeal, snackDay, snackCount, tummyUntil, wishDone, ...v8 } = adultAt(t, { coins: 23, mood: 44 });
@@ -351,4 +392,7 @@ test('Saves from version 0.8 keep Evi and add the new day fields', () => {
   assert.deepEqual(restorePet(JSON.parse(JSON.stringify(restored)), t), restored);
   assert.equal(restorePet({ ...restored, snackCount: -1 }, t), null);
   assert.equal(restorePet({ ...restored, ritualNight: 5 }, t), null);
+  const { awakeUntil, ...withoutWake } = restored;
+  assert.equal(restorePet(withoutWake, t).awakeUntil, 0);
+  assert.equal(restorePet({ ...restored, awakeUntil: -5 }, t), null);
 });

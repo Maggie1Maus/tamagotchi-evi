@@ -1,6 +1,6 @@
 import { RULES, createPet, restorePet, advancePet, careForPet, finishPlay, renamePet, describePet,
   stageAt, stageName, blockedReason, isNight, isAsleep, sleepKind, isTired, isRested, mealAt, mealDue,
-  currentWish } from './pet.js';
+  currentWish, isWoken, stayAwake } from './pet.js';
 import { drawEvi } from './evi-sprite.js';
 import { ART } from './art.js';
 
@@ -292,6 +292,7 @@ function moodMessage(d) {
     case 'dirty': return 'Zeit für ein Bad';
     case 'sad': return 'Spielst du mit mir?';
     default: {
+      if (isWoken(pet, now)) return `Gähn … wach für ${Math.max(1, Math.ceil((pet.awakeUntil - now) / 60000))} Min.`;
       const wish = currentWish(pet, now);
       if (wish) return 'Ein Wunsch!';
       if (isRested(pet, now)) return 'Ausgeschlafen! Guten Morgen';
@@ -310,6 +311,8 @@ function reasonText(reason, action) {
     asleep: `${name} schläft gerade.`,
     nap: `Psst, ${name} macht Mittagsschlaf.`,
     early: `Gute Nacht gibt es ab ${RULES.ritual.from} Uhr.`,
+    done: 'Heute gab es schon Gute Nacht.',
+    awake: `${name} ist schon wach.`,
     tummy: `${name} hat Bauchweh. Erst mal nichts Süßes.`,
     sick: `${name} ist zu krank zum Spielen.`,
     healthy: `${name} ist gesund.`,
@@ -420,6 +423,7 @@ function announce(before, after) {
     return;
   }
   if (!before.sick && after.sick) { beep('alert'); flash(`${name} ist krank geworden!`, 5000); return; }
+  if (isWoken(before, before.updatedAt) && sleepKind(after, now) === 'night') { flash(`${name} ist wieder eingeschlafen.`, 5000); return; }
   if (!isAsleep(after, now) && ['satiety', 'mood', 'cleanliness'].some(key => before[key] > RULES.low && after[key] <= RULES.low)) beep('alert');
 }
 
@@ -440,7 +444,7 @@ function menuEntries() {
   const entries = [];
   const asleep = sleepKind(pet, now);
   if (stage !== 'egg') {
-    if (asleep === 'night') entries.push(['light', 'i-bulb', pet.lightOff ? 'Licht an' : 'Licht aus']);
+    if (asleep === 'night') entries.push(['wake', 'i-sun', 'Aufwecken'], ['light', 'i-bulb', pet.lightOff ? 'Licht an' : 'Licht aus']);
     else if (!asleep) {
       if (!blockedReason(pet, 'ritual', now)) entries.push(['ritual', 'i-moon', 'Gute Nacht']);
       if (!blockedReason(pet, 'medicine', now)) entries.push(['medicine', 'i-pill', 'Medizin']);
@@ -525,6 +529,8 @@ function performAction(action) {
     flash(pet.lightOff ? (result.bonus ? 'Gute Nacht! ♥' : 'Licht aus') : 'Licht an');
   } else if (action === 'ritual') {
     startRitualShow();
+  } else if (action === 'wake') {
+    flash(`Gähn … ${pet.name} ist wach.`, 3000);
   } else if (action === 'newEgg') {
     flash('Ein neues Ei! Es schlüpft in 30 Minuten.', 5000);
   } else {
@@ -737,7 +743,16 @@ function endGame(aborted) {
 
 // ---------- Keys ----------
 
+/** Every key press counts as playing with Evi: woken at night, she stays up 5 more minutes. */
+function touch() {
+  const now = Date.now();
+  if (!isWoken(pet, now)) return;
+  pet = stayAwake(pet, now);
+  save();
+}
+
 $('next-button').addEventListener('click', () => {
+  touch();
   if (ritualShow.active) { endRitualShow(); return; }
   if (game.active) { gameKey('left'); return; }
   if (gameMenu.hidden) { showMenu(true); return; }
@@ -745,6 +760,7 @@ $('next-button').addEventListener('click', () => {
   renderSelection();
 });
 confirmButton.addEventListener('click', () => {
+  touch();
   if (ritualShow.active) { endRitualShow(); return; }
   if (game.active) { gameKey('mid'); return; }
   if (gameMenu.hidden) { showMenu(true); return; }
@@ -753,6 +769,7 @@ confirmButton.addEventListener('click', () => {
   performAction(action);
 });
 $('back-button').addEventListener('click', () => {
+  touch();
   if (ritualShow.active) { endRitualShow(); return; }
   if (game.active) { gameKey('right'); return; }
   // In the game choice, "back" returns to the main menu.

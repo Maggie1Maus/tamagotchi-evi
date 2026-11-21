@@ -1,4 +1,4 @@
-const CACHE = 'kleines-zuhause-v9-evis-tag';
+const CACHE = 'kleines-zuhause-v9-1-aufwecken';
 const ASSETS = ['./', './index.html', './style.css', './app.js', './pet.js', './evi-sprite.js', './art.js',
   './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
 // Evi's drawings (img/*.png, listed in art.js) are stored as soon as they are first shown.
