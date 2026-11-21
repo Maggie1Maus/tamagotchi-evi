@@ -1,7 +1,7 @@
 # Neue Tamagotchis – Vorschläge (21. November 2026)
 
-16 Ideen für Partner von Evi und für spätere eigene Tamagotchis: 8 männliche, 8 weibliche.
-Jedes ist ein **eigenes Wesen** mit einer kleinen Anspielung auf einen Spieleklassiker, keine Kopie der Originalfigur
+20 Ideen für Partner von Evi und für spätere eigene Tamagotchis: 10 männliche, 10 weibliche.
+Jedes ist ein **eigenes Wesen** mit einer deutlichen Anspielung auf einen bekannten Spieleklassiker oder Disney-Film, keine genaue Kopie der Originalfigur
 (so wie Evi ein eigener Entwurf im Evoli-Stil ist).
 
 Das „Wesen“ ist ein Vorschlag für eine Persönlichkeit, die sich später im Spiel auswirken könnte. Noch nichts davon ist beschlossen.
@@ -17,6 +17,9 @@ für jede Figur ein fertiger Auftrag für das Bild „glücklich“.
 2. Den Auftrag der Figur einfügen (der ganze Text im grauen Kasten).
 3. Gefällt das Bild, hier ablegen als `name-gluecklich.png`, zum Beispiel `funke-gluecklich.png`.
 
+Die Aufträge nennen die Originalfiguren absichtlich nicht beim Namen. Wiedererkennbar sind sie an ihren typischen Merkmalen
+(Haarbüschel, Riesenohren, Tupfen …). Nach dem Original zu fragen, lehnt der Bildgenerator oft ab.
+
 ## Übersicht
 
 | | Name | Tier | Anspielung | Wesen |
@@ -29,14 +32,18 @@ für jede Figur ein fertiger Auftrag für das Bild „glücklich“.
 | ♂ | Bit | Roboterhund | Game Boy, Mega Man | neugierig, schlau |
 | ♂ | Blubber | kleiner Drache | Bubble Bobble, Spyro | sanft, tollpatschig |
 | ♂ | Groschen | Waschbär | Animal Crossing | sparsam, geschäftstüchtig |
-| ♀ | Lulla | Wolkenschaf | Pummeluff (singt alle in den Schlaf) | verträumt, verschlafen |
+| ♂ | Leo | Löwenjunges | Simba (Der König der Löwen) | selbstbewusst, angeberisch |
+| ♂ | Blip | Außerirdischer | Stitch (Lilo & Stitch) | frech, chaotisch |
 | ♀ | Kiwi | Dino | Yoshi | fröhlich, verfressen |
 | ♀ | Mimi | Schnecke | Super-Mario-Pilz | gemütlich, ordentlich |
 | ♀ | Glöckchen | Hündin | Animal Crossing | hilfsbereit |
-| ♀ | Tropfi | Schleim | Dragon Quest, Ditto | anhänglich, robust |
-| ♀ | Piepa | Laufvogel-Küken | Chocobo (Final Fantasy) | lauffreudig |
 | ♀ | Lumi | Glühwürmchen-Fee | Feen aus Zelda („Hey, hör zu!“) | neugierig, redselig |
 | ♀ | Spuki | Geisterkätzchen | Pac-Man-Geister, Buu Huu | schüchtern, treu |
+| ♀ | Moosi | Waldgeist | Krogs (Zelda: Breath of the Wild) | verspielt, versteckt sich gern |
+| ♀ | Mia | Kätzchen | Marie (Aristocats) | vornehm, eitel |
+| ♀ | Lotti | Rehkitz | Bambi | verträumt, staunend |
+| ♀ | Klecksi | Dalmatinerwelpe | 101 Dalmatiner | wild, verspielt |
+| ♀ | Ella | Elefantenbaby | Dumbo | lieb, etwas unsicher |
 
 ---
 
@@ -122,19 +129,29 @@ Character: GROSCHEN, a small plump male raccoon shopkeeper. A solid black eye-ma
 Caption verbatim: "GROSCHEN".
 ```
 
----
-
-## Weiblich
-
-### Lulla – Wolkenschaf
-Anspielung: Pummeluff, das alle in den Schlaf singt. Ihre Wolle ist eine weiße Wolke, auf der Stirn eine dicke Locke, neben ihr schweben Noten.
-Wesen: verträumt und verschlafen – passt zum Gute-Nacht-Ritual, ihre Lieder könnten dort einen Extra-Bonus geben.
+### Leo – Löwenjunges
+Anspielung: Simba aus „Der König der Löwen“. Ein Löwenjunges mit Haarbüschel auf dem Kopf, noch ohne Mähne, stolz auf einem kleinen Felsen.
+Wesen: selbstbewusst und ein bisschen angeberisch – will immer im Mittelpunkt stehen.
 
 ```
 Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
-Character: LULLA, a small female lamb. Her round body is fluffy pure white wool with a scalloped cloud-shaped outline. A big curly swirl of wool on her forehead, small curled horns, floppy ears and short legs with dotted fur, tiny hooves. She is singing happily, with two tiny music notes floating beside her head. Seated pose.
-Caption verbatim: "LULLA".
+Character: LEO, a small male lion cub. Round head with big rounded ears, a small tuft of hair sticking up on top of his head (no mane yet), white muzzle and chest, dotted fur on body, sturdy paws, a long thin tail ending in a dotted tuft on the viewer's right. Proud pose, chest out, sitting on top of a small pointed rock ledge.
+Caption verbatim: "LEO".
 ```
+
+### Blip – Außerirdischer
+Anspielung: Stitch aus „Lilo & Stitch“. Riesige Ohren mit kleinen Kerben, große runde Nase, breites Grinsen, Fühler auf dem Kopf. Passt zum Familienthema: „Ohana heißt Familie“.
+Wesen: frech und chaotisch – macht ab und zu Unordnung, hat aber ein großes Herz.
+
+```
+Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
+Character: BLIP, a small male alien creature, somewhere between a koala and a puppy. Very large ears sticking out sideways, each with a small notch in the edge, a big round nose, a very wide cheeky grin, two short antennae on his head, a small row of spikes on his back, short legs with tiny claws. Dotted fur on body and ears, white chest tuft and white inner ears. Mischievous seated pose, leaning slightly forward.
+Caption verbatim: "BLIP".
+```
+
+---
+
+## Weiblich
 
 ### Kiwi – Dino
 Anspielung: Yoshi. Runde große Schnauze, kleine Rückenplatten, und sie hält stolz ein geflecktes Ei – passend zum Thema Nachwuchs.
@@ -166,26 +183,6 @@ Character: GLÖCKCHEN, a small female puppy. Long floppy ears with dotted fur, a
 Caption verbatim: "GLÖCKCHEN".
 ```
 
-### Tropfi – Schleim
-Anspielung: der berühmte Schleim aus Dragon Quest und Ditto. Ein großer Tropfen mit Zwirbelspitze und einer kleinen Schleife.
-Wesen: anhänglich und robust – wird seltener krank.
-
-```
-Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
-Character: TROPFI, a small female slime creature shaped like a big water drop with a curled pointy tip on top and a wide, flat bottom that spreads slightly on the ground. A big glossy white highlight on one side, a tiny bow on the tip. Mostly white body with a black stepped outline and a few dots near the bottom edge. No arms or legs.
-Caption verbatim: "TROPFI".
-```
-
-### Piepa – Laufvogel-Küken
-Anspielung: der Chocobo aus Final Fantasy. Ein großes flauschiges Küken mit Federkrone und kräftigen Laufbeinen.
-Wesen: lauffreudig – liebt Ausflüge.
-
-```
-Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
-Character: PIEPA, a fluffy female running-bird chick. Round fluffy body, a crest of three long feathers on her head, a short rounded beak, tiny stubby wings, strong long legs with three-toed feet, a short fluffy tail. White chest, dotted fluff on back and wings. Cheerful standing pose.
-Caption verbatim: "PIEPA".
-```
-
 ### Lumi – Glühwürmchen-Fee
 Anspielung: die Feen aus The Legend of Zelda („Hey, hör zu!“). Rundes Körperchen, große Flügel und ein leuchtendes Hinterteil.
 Wesen: neugierig und redselig – meldet sich gern, wenn sie einen Wunsch hat.
@@ -204,4 +201,54 @@ Wesen: schüchtern, aber treu – versteckt sich, wenn Besuch kommt.
 Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
 Character: SPUKI, a small female ghost kitten. A floating ghost-shaped body with a rounded top and a wavy scalloped bottom hem instead of legs, two pointed cat ears, a cute bow on one ear, tiny paws in front, small whiskers, a little curled wisp like a tail. Mostly white body with a black stepped outline and a few dots on the ears. A small flat shadow ellipse below her.
 Caption verbatim: "SPUKI".
+```
+
+### Moosi – Waldgeist
+Anspielung: die kleinen Waldgeister (Krogs) aus „Zelda: Breath of the Wild“. Ein Körperchen aus Holz, dünne Zweigbeine, ein rundes Blattgesicht und ein großes Blatt auf dem Kopf.
+Wesen: verspielt, versteckt sich gern – Idee für ein neues Minispiel „Wo ist Moosi?“: sie versteckt sich unter einem von drei Steinen.
+
+```
+Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
+Character: MOOSI, a tiny female forest spirit. A small round wooden body with thin twig arms and twig legs, her face is a flat round leaf-shaped mask with the happy eyes and smiling mouth on it, one big leaf sprouting from the top of her head like a little hat, a tiny twig tail. She holds a small leaf like a fan. Dotted wood texture on body and limbs, mask mostly white with a stepped outline and a central leaf vein.
+Caption verbatim: "MOOSI".
+```
+
+### Mia – Kätzchen
+Anspielung: Marie aus „Aristocats“. Ein weißes, flauschiges Kätzchen mit großer Schleife auf dem Kopf, das sehr vornehm dasitzt.
+Wesen: vornehm und eitel – Saubermachen macht sie besonders glücklich, Schmutz mag sie gar nicht.
+
+```
+Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
+Character: MIA, a small elegant female kitten with long fluffy pure white fur. A big neat bow on top of her head between her pointed ears, a smaller ribbon bow at her neck, long whiskers, a fluffy tail curling up on the viewer's right, only a few dots on the bow and ear tips. She sits very upright and proud with her chin slightly raised.
+Caption verbatim: "MIA".
+```
+
+### Lotti – Rehkitz
+Anspielung: Bambi. Ein Rehkitz mit großen Augen, langen Wimpern, wackeligen dünnen Beinen und weißen Tupfen auf dem Rücken.
+Wesen: verträumt und staunend – freut sich über jede Kleinigkeit.
+
+```
+Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
+Character: LOTTI, a small female fawn. Big head with large ears, long eyelashes, a small black nose, white muzzle and chest, slender long legs standing a little wobbly, a short white tail. Dotted body with several rows of clear white round spots along her back. Sweet, slightly shy standing pose.
+Caption verbatim: "LOTTI".
+```
+
+### Klecksi – Dalmatinerwelpe
+Anspielung: „101 Dalmatiner“. Ein weißer Welpe mit schwarzen Flecken, ein Ohr schwarz, ein Fleck ums Auge, Halsband mit Marke.
+Wesen: wild und verspielt – wird schneller schmutzig, aber bei ihren Flecken sieht man es kaum.
+
+```
+Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
+Character: KLECKSI, a small female dalmatian puppy. Short white fur covered with irregular solid black round spots (instead of the dot pattern), one black floppy ear and one white floppy ear, a black spot around one eye, a small collar with a round tag, a thin tail on the viewer's right. Playful seated pose with one front paw raised.
+Caption verbatim: "KLECKSI".
+```
+
+### Ella – Elefantenbaby
+Anspielung: Dumbo. Ein Elefantenbaby mit riesigen Ohren, mit denen es fast fliegen könnte, und einem kleinen Zirkushütchen.
+Wesen: lieb und etwas unsicher – Lob, Spielen und erfüllte Wünsche machen sie besonders schnell glücklich.
+
+```
+Use case: stylized-concept. Asset type: standalone character design drawing for a black-and-white virtual pet game. The attached image shows Evi, a pet from the same game: use it ONLY as reference for drawing style, line weight, dot pattern and overall size, NOT for species or features. Original character, not a copy of any existing game or franchise character. Strict pure black and white pixel art, crisp stepped pixel outlines, sparse regular black square dot dithering only on darker fur or skin areas, clean white face; no gray, no color, no gradients, no smooth vector lines, no 3D. White background, one large centered full-body character with generous white margins, no room, no UI, no watermark, no border, no props unless described. Expression: VERY HAPPY, matching the reference: joyful closed upward-curving crescent eyes, wide cute open smile, two tiny paired pixel cheek marks. One small discreet black pixel-font caption directly below the feet, no other text.
+Character: ELLA, a small female baby elephant. Enormous floppy ears much bigger than her head, spread out a little as if she could fly with them, white inner ears. A short trunk curled up happily, a tiny round pointed circus hat on top of her head, a little ruffled collar, short stubby legs, a thin tail with a small tuft. Sparse dot texture on body and outer ears. Cheerful seated pose.
+Caption verbatim: "ELLA".
 ```
