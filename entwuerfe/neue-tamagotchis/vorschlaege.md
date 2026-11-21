@@ -6,6 +6,8 @@ Jedes ist ein **eigenes Wesen** mit einer deutlichen Anspielung auf einen bekann
 
 Das „Wesen“ ist ein Vorschlag für eine Persönlichkeit, die sich später im Spiel auswirken könnte. Noch nichts davon ist beschlossen.
 
+Unter jedem Vorschlag steht eine Zeichnung der erwachsenen, glücklichen Figur im Schwarz-Weiß-Pixelstil von Evi. Die einzelnen PNGs liegen neben dieser Datei.
+
 ## So entstehen die Bilder
 
 Claude kann keine Bilder erzeugen. Evis Bilder kamen aus dem Bildgenerator von ChatGPT, deshalb steht unten
@@ -50,6 +52,9 @@ Die Aufträge nennen die Originalfiguren absichtlich nicht beim Namen. Wiedererk
 ## Männlich
 
 ### Funke – Elektro-Eichhörnchen
+
+<img src="./funke-gluecklich.png" alt="Funke, erwachsen und glücklich" width="272">
+
 Anspielung: die Elektro-Tiere aus Pokémon. Kleine Blitze auf den Backen, buschiger Schwanz in Zickzack-Blitzform.
 Wesen: aufgedreht und verspielt – Spielen macht ihn besonders glücklich, aber er wird auch schnell wieder unruhig.
 
@@ -60,6 +65,9 @@ Caption verbatim: "FUNKE".
 ```
 
 ### Rolli – Igel
+
+<img src="./rolli-gluecklich.png" alt="Rolli, erwachsen und glücklich" width="272">
+
 Anspielung: Sonic. Nach hinten gekämmte Stacheln, ein kleiner flatternder Schal, als wäre er gerade angehalten, und ein Ring in der Pfote.
 Wesen: flink und ungeduldig – liebt Ballfangen, mag nicht lange warten.
 
@@ -70,6 +78,9 @@ Caption verbatim: "ROLLI".
 ```
 
 ### Tetro – Schildkröte
+
+<img src="./tetro-gluecklich.png" alt="Tetro, erwachsen und glücklich" width="272">
+
 Anspielung: Tetris und Schiggy. Sein Panzer besteht aus ineinandergesteckten Tetris-Steinen.
 Wesen: ruhig und ordentlich – wird langsamer schmutzig, mag Ratespiele wie „Links oder rechts?“.
 
@@ -80,6 +91,9 @@ Caption verbatim: "TETRO".
 ```
 
 ### Mampf – Hamster
+
+<img src="./mampf-gluecklich.png" alt="Mampf, erwachsen und glücklich" width="272">
+
 Anspielung: Pac-Man. Kugelrund, riesige Backentaschen, beim Lachen ein Maul wie ein ausgeschnittenes Tortenstück, in der Pfote ein Keks.
 Wesen: verfressen – wird schneller hungrig, freut sich über Essen doppelt.
 
@@ -90,6 +104,9 @@ Caption verbatim: "MAMPF".
 ```
 
 ### Linus – Hase
+
+<img src="./linus-gluecklich.png" alt="Linus, erwachsen und glücklich" width="272">
+
 Anspielung: The Legend of Zelda. Ein kleiner Held: die langen Ohren schauen durch eine Zipfelmütze, dazu ein Holzschild und ein Holzschwert auf dem Rücken.
 Wesen: mutig und abenteuerlustig – passt zu Ausflügen und zur kleinen Welt, die später kommen soll.
 
@@ -100,6 +117,9 @@ Caption verbatim: "LINUS".
 ```
 
 ### Bit – Roboterhund
+
+<img src="./bit-gluecklich.png" alt="Bit, erwachsen und glücklich" width="272">
+
 Anspielung: Game Boy und Mega Man. Sein Körper sieht aus wie eine kleine Spielkonsole, auf dem Bauch ein Bildschirm mit einem Pixelherz.
 Wesen: neugierig und schlau – besonders gut bei „Melodie merken“.
 
@@ -110,6 +130,9 @@ Caption verbatim: "BIT".
 ```
 
 ### Blubber – kleiner Drache
+
+<img src="./blubber-gluecklich.png" alt="Blubber, erwachsen und glücklich" width="272">
+
 Anspielung: Bubble Bobble und Spyro. Kleine Flügel, Rückenzacken, und statt Feuer pustet er Seifenblasen.
 Wesen: sanft und ein bisschen tollpatschig.
 
@@ -120,6 +143,9 @@ Caption verbatim: "BLUBBER".
 ```
 
 ### Groschen – Waschbär
+
+<img src="./groschen-gluecklich.png" alt="Groschen, erwachsen und glücklich" width="272">
+
 Anspielung: der Ladenbesitzer aus Animal Crossing. Augenmaske, geringelter Schwanz, Schürze und ein Münzbeutel.
 Wesen: sparsam und geschäftstüchtig – könnte auch der Händler im geplanten Möbel-Laden sein.
 
@@ -130,6 +156,9 @@ Caption verbatim: "GROSCHEN".
 ```
 
 ### Leo – Löwenjunges
+
+<img src="./leo-gluecklich.png" alt="Leo, erwachsen und glücklich" width="272">
+
 Anspielung: Simba aus „Der König der Löwen“. Ein Löwenjunges mit Haarbüschel auf dem Kopf, noch ohne Mähne, stolz auf einem kleinen Felsen.
 Wesen: selbstbewusst und ein bisschen angeberisch – will immer im Mittelpunkt stehen.
 
@@ -140,6 +169,9 @@ Caption verbatim: "LEO".
 ```
 
 ### Blip – Außerirdischer
+
+<img src="./blip-gluecklich.png" alt="Blip, erwachsen und glücklich" width="272">
+
 Anspielung: Stitch aus „Lilo & Stitch“. Riesige Ohren mit kleinen Kerben, große runde Nase, breites Grinsen, Fühler auf dem Kopf. Passt zum Familienthema: „Ohana heißt Familie“.
 Wesen: frech und chaotisch – macht ab und zu Unordnung, hat aber ein großes Herz.
 
@@ -154,6 +186,9 @@ Caption verbatim: "BLIP".
 ## Weiblich
 
 ### Kiwi – Dino
+
+<img src="./kiwi-gluecklich.png" alt="Kiwi, erwachsen und glücklich" width="272">
+
 Anspielung: Yoshi. Runde große Schnauze, kleine Rückenplatten, und sie hält stolz ein geflecktes Ei – passend zum Thema Nachwuchs.
 Wesen: fröhlich und verfressen.
 
@@ -164,6 +199,9 @@ Caption verbatim: "KIWI".
 ```
 
 ### Mimi – Schnecke
+
+<img src="./mimi-gluecklich.png" alt="Mimi, erwachsen und glücklich" width="272">
+
 Anspielung: der gepunktete Pilz aus Super Mario. Ihr Schneckenhaus ist eine schwarze Pilzkappe mit großen weißen Punkten.
 Wesen: gemütlich und ordentlich – langsam, aber immer sauber.
 
@@ -174,6 +212,9 @@ Caption verbatim: "MIMI".
 ```
 
 ### Glöckchen – Hündin
+
+<img src="./gloeckchen-gluecklich.png" alt="Glöckchen, erwachsen und glücklich" width="272">
+
 Anspielung: die hilfsbereite Sekretärin aus Animal Crossing. Schlappohren, ein Glöckchen an einer Schleife um den Hals, in der Pfote ein kleines Notizbuch.
 Wesen: hilfsbereit – könnte später die Betreuung übernehmen, wenn du keine Zeit hast.
 
@@ -184,6 +225,9 @@ Caption verbatim: "GLÖCKCHEN".
 ```
 
 ### Lumi – Glühwürmchen-Fee
+
+<img src="./lumi-gluecklich.png" alt="Lumi, erwachsen und glücklich" width="272">
+
 Anspielung: die Feen aus The Legend of Zelda („Hey, hör zu!“). Rundes Körperchen, große Flügel und ein leuchtendes Hinterteil.
 Wesen: neugierig und redselig – meldet sich gern, wenn sie einen Wunsch hat.
 
@@ -194,6 +238,9 @@ Caption verbatim: "LUMI".
 ```
 
 ### Spuki – Geisterkätzchen
+
+<img src="./spuki-gluecklich.png" alt="Spuki, erwachsen und glücklich" width="272">
+
 Anspielung: die Geister aus Pac-Man und Buu Huu aus Super Mario. Ein schwebender Geisterkörper mit Katzenohren und einer Schleife.
 Wesen: schüchtern, aber treu – versteckt sich, wenn Besuch kommt.
 
@@ -204,6 +251,9 @@ Caption verbatim: "SPUKI".
 ```
 
 ### Moosi – Waldgeist
+
+<img src="./moosi-gluecklich.png" alt="Moosi, erwachsen und glücklich" width="272">
+
 Anspielung: die kleinen Waldgeister (Krogs) aus „Zelda: Breath of the Wild“. Ein Körperchen aus Holz, dünne Zweigbeine, ein rundes Blattgesicht und ein großes Blatt auf dem Kopf.
 Wesen: verspielt, versteckt sich gern – Idee für ein neues Minispiel „Wo ist Moosi?“: sie versteckt sich unter einem von drei Steinen.
 
@@ -214,6 +264,9 @@ Caption verbatim: "MOOSI".
 ```
 
 ### Mia – Kätzchen
+
+<img src="./mia-gluecklich.png" alt="Mia, erwachsen und glücklich" width="272">
+
 Anspielung: Marie aus „Aristocats“. Ein weißes, flauschiges Kätzchen mit großer Schleife auf dem Kopf, das sehr vornehm dasitzt.
 Wesen: vornehm und eitel – Saubermachen macht sie besonders glücklich, Schmutz mag sie gar nicht.
 
@@ -224,6 +277,9 @@ Caption verbatim: "MIA".
 ```
 
 ### Lotti – Rehkitz
+
+<img src="./lotti-gluecklich.png" alt="Lotti, erwachsen und glücklich" width="272">
+
 Anspielung: Bambi. Ein Rehkitz mit großen Augen, langen Wimpern, wackeligen dünnen Beinen und weißen Tupfen auf dem Rücken.
 Wesen: verträumt und staunend – freut sich über jede Kleinigkeit.
 
@@ -234,6 +290,9 @@ Caption verbatim: "LOTTI".
 ```
 
 ### Klecksi – Dalmatinerwelpe
+
+<img src="./klecksi-gluecklich.png" alt="Klecksi, erwachsen und glücklich" width="272">
+
 Anspielung: „101 Dalmatiner“. Ein weißer Welpe mit schwarzen Flecken, ein Ohr schwarz, ein Fleck ums Auge, Halsband mit Marke.
 Wesen: wild und verspielt – wird schneller schmutzig, aber bei ihren Flecken sieht man es kaum.
 
@@ -244,6 +303,9 @@ Caption verbatim: "KLECKSI".
 ```
 
 ### Ella – Elefantenbaby
+
+<img src="./ella-gluecklich.png" alt="Ella, erwachsen und glücklich" width="272">
+
 Anspielung: Dumbo. Ein Elefantenbaby mit riesigen Ohren, mit denen es fast fliegen könnte, und einem kleinen Zirkushütchen.
 Wesen: lieb und etwas unsicher – Lob, Spielen und erfüllte Wünsche machen sie besonders schnell glücklich.
 
