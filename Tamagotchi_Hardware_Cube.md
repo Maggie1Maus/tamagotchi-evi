@@ -120,7 +120,7 @@ Am 20. November 2026 von der Platinenbeschriftung in der [offiziellen Lötanleit
 | 9 | Fotowiderstand (LDR) | R5, dazu R6 10 kΩ | A7 | |
 | 10 | Potentiometer | RV1 | A6 | |
 | 11 | OLED 128 × 64, SSD1306 | U5 | A4 (SDA), A5 (SCL) | I²C. |
-| 12 | MPU-6050 | U7 | A4, A5 | I²C, gleiche Leitung wie das OLED. |
+| 12 | MPU-6050 | U7 | A4, A5 | I²C, gleiche Leitung wie das OLED. Am 21. November 2026 verdreht eingelötet und wieder entfernt; Platz derzeit leer. |
 | 13 | DHT11 | U6 mit R7 1,2 kΩ | A3 | |
 | 14 | Extern 1 / 2 / 3 | Buchsen- und Stiftleisten | I²C (A4, A5) / Seriell (D0, D1) / A1, A2 | An Extern 1 könnte später der MCP23017 zum Testen der Retro-Gamer-Tasten. |
 

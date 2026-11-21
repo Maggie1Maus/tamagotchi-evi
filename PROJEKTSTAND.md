@@ -109,4 +109,6 @@ Die Dateien in diesem Projektordner sind lokal gespeichert. Das momentan geöffn
 
 ## Beim nächsten Mal am Cube
 
-Vom Stand `software/schritt-07` weiterarbeiten. Er läuft auf dem Cube. Offen: bestätigen, dass der Spielstand nach dem Ausstecken über Nacht erhalten bleibt. Mögliche nächste Ideen: kleines Spiel statt einfachem Spielen, Lebensphasen mit den Baby-, Teenager- und Oma-Zeichnungen (Speicher prüfen), Krankheit.
+Vom Stand `software/schritt-07` weiterarbeiten. Er läuft auf dem Cube. Offen: bestätigen, dass der Spielstand nach dem Ausstecken über Nacht erhalten bleibt.
+
+**MPU-6050 entfernt (21. November 2026):** Das Modul war verdreht eingelötet. Entlöten mit der Pumpe klappte nicht; das Modul wurde geopfert, die Pins gekürzt und mit etwas Kraft herausgezogen. Für Evi wird das MPU nicht gebraucht. Vor dem nächsten Einstecken auf Zinnreste und Brücken an den 8 Löchern achten (besonders 5V/GND). Falls später gewünscht: neues GY-521-Modul (etwa 3–5 €); vorher prüfen, ob die Löcher noch durchgehend leiten. Für künftiges Entlöten Entlötlitze besorgen. Mögliche nächste Ideen: kleines Spiel statt einfachem Spielen, Lebensphasen mit den Baby-, Teenager- und Oma-Zeichnungen (Speicher prüfen), Krankheit.
