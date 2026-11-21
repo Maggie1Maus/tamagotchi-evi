@@ -2,6 +2,14 @@
 
 Stand: 21. November 2026
 
+## Ideen: Partner, Nachwuchs und neue Tamagotchis (21. November 2026, nur Brainstorming)
+
+Die Nutzerin möchte Evi umfassend ausbauen, Richtung Partnerwahl und Nachwuchs. Besprochen, **noch nichts beschlossen:**
+- Lebensbogen: Partner kennenlernen in den ersten Erwachsenentagen, Herzchen sammeln, ein Ei, Mama/Oma und Kind gemeinsam, Oma stirbt etwa dann, wenn das Kind erwachsen wird. Die jetzigen Lebenszeiten passen dafür fast ohne Änderung.
+- Weitere Ideen: Besuch an der Tür oder Ausflug, Geschenke aus dem Laden fürs Date, Wesen/Persönlichkeit vererben, Familienalbum, Findel-Ei, wenn kein Partner gefunden wird.
+- **Automatisch erzeugte Babybilder** (Bildgenerator im Spiel, eigener OpenAI-API-Schlüssel, Kosten pro Bild): von der Nutzerin **vorerst abgelehnt**. Ein Zusammensetzen aus Bildteilen geht nicht, weil Ohren, Schwanz und Haltung in jedem der 28 Evi-Bilder anders sind.
+- **16 Vorschläge für neue Tamagotchis** (8 männlich als mögliche Partner, 8 weiblich), eigene Figuren mit Anspielungen auf Spieleklassiker: `entwuerfe/neue-tamagotchis/vorschlaege.md`. Dort steht für jede Figur ein fertiger Auftrag für das Bild „glücklich“ im ChatGPT-Bildgenerator, mit Evis Bild als Stilvorlage. **Nächster Schritt:** Die Nutzerin lässt Bilder erzeugen, legt die gefallenen dort ab und wählt aus. Diese Bilder gelten dann wie Evis als ihre Zeichnungen (1:1 verwenden).
+
 ## Version 0.9: Evis Tag (21. November 2026, gebaut, noch nicht veröffentlicht)
 
 Die Nutzerin möchte vor dem Laden zuerst Evis Tagesablauf ausbauen. Neue Ideen sollen über Wochen nach und nach dazukommen: zuerst in der Handy-App ausprobieren, später aufs Waveshare RP2350 übertragen (16 MB Flash, 520 KB RAM, dort ist genug Platz; der Cube ist mit Schritt 7 nahezu voll und bleibt Lerngerät).

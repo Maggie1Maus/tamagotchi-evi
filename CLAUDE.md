@@ -9,6 +9,7 @@ Alles Wichtige muss deshalb **im Repository** stehen, nicht nur im lokalen Gedä
 - `handy-app/` – spielbare Web-App (siehe `handy-app/README.md`), Spielregeln in `handy-app/dist/pet.js`.
 - `software/` – Arduino-/Hardware-Schritte.
 - `entwuerfe/evi/` – Evis Zeichnungen von der Nutzerin.
+- `entwuerfe/neue-tamagotchis/` – Vorschläge für Partner und weitere Tamagotchis mit Bildaufträgen.
 
 ## Feste Regeln
 - **Evis Zeichnungen 1:1 verwenden.** Nur zuschneiden, verkleinern, außen transparent machen (`handy-app/tools/build-art.ps1`). Nie neu zeichnen oder „interpretieren“ – ein nachgebautes Baby wurde am 18.11.2026 deutlich abgelehnt. Für neue Varianten die Nutzerin um Zeichnungen bitten.
