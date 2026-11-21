@@ -1,10 +1,10 @@
 // Pure game rules: no browser, display, storage, timer or hardware dependencies.
 // The adapter supplies the current time in milliseconds and one action command.
-// Local time of day (sleep from 23 to 7 o'clock) is read with the standard Date object.
+// Local time of day (sleep, meals, nap, wishes) is read with the standard Date object.
 const MINUTE = 60000, HOUR = 60 * MINUTE, DAY = 24 * HOUR;
 
 export const RULES = Object.freeze({
-  version: 2,
+  version: 3,
   // Life cycle, measured from the moment the egg hatches.
   eggDuration: 30 * MINUTE,
   // Durations after hatching; after the senior phase the pet dies of old age.
@@ -18,8 +18,18 @@ export const RULES = Object.freeze({
     senior: { satiety: 18, mood: 15, cleanliness: 12 }
   },
   sleep: { from: 23, to: 7, needs: 0.15, moodDark: 0.1, moodLight: 0.6, lightBonus: 10 },
+  // Evi's day (version 0.9): tired before bed and right after waking, an evening ritual,
+  // meal times, snacks, a nap for the baby and a few wishes a day.
+  tired: { evening: 22, morningMinutes: 30 },
+  ritual: { from: 22, mood: 10 },
+  nap: { stage: 'baby', from: 12, to: 13 },
+  meals: { windows: [['breakfast', 7, 9], ['lunch', 11, 14], ['dinner', 17, 20]], satiety: 10, mood: 5 },
+  snack: { perDay: 3, tummyAche: 2 * HOUR },
+  wishes: { slots: [[8, 11], [11, 14], [14, 18], [18, 22]], duration: HOUR, mood: 10, coins: 3,
+    kinds: ['ball', 'guess', 'simon', 'snack', 'clean', 'feed'] },
   actions: {
     feed: { satiety: 40, mood: 3, cleanliness: -2 },
+    snack: { satiety: 10, mood: 10, cleanliness: 0 },
     clean: { satiety: 0, mood: 3, cleanliness: 60 },
     medicine: { satiety: 0, mood: -5, cleanliness: 0 }
   },
@@ -36,16 +46,20 @@ const DEFAULT_NAME = 'Evi';
 const clamp = value => Math.min(100, Math.max(0, value));
 const hourOf = t => new Date(t).getHours();
 export const isNight = t => { const h = hourOf(t); return h >= RULES.sleep.from || h < RULES.sleep.to; };
-// One key per night (the evening's date), so the light bonus is given once per night.
-const nightKey = t => { const d = new Date(t - RULES.sleep.to * HOUR); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+const dayKey = t => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+// One key per night (the evening's date), so the light bonus and the ritual count once per night.
+const nightKey = t => dayKey(t - RULES.sleep.to * HOUR);
 
 export function createPet(now, { name = DEFAULT_NAME, customName = false, coins = 0, generation = 1,
   eggDuration = RULES.eggDuration } = {}) {
   return { version: RULES.version, name, customName, generation, bornAt: now, hatchAt: now + eggDuration,
     updatedAt: now, satiety: 80, mood: 80, cleanliness: 100, careCount: 0, coins,
     sick: false, neglectMs: 0, sickMs: 0, lightOff: false, lightBonusNight: null,
-    dead: false, diedAt: null, causeOfDeath: null };
+    dead: false, diedAt: null, causeOfDeath: null, ...DAY_DEFAULTS };
 }
+// Fields added in version 0.9; older saves get these values.
+const DAY_DEFAULTS = Object.freeze({ ritualNight: null, lastMeal: null, snackDay: null, snackCount: 0,
+  tummyUntil: 0, wishDone: 0 });
 
 const LIFESPAN = Object.values(RULES.stages).reduce((sum, ms) => sum + ms, 0);
 /** Life stage at time t: egg, baby, teen, adult, senior or dead. */
@@ -59,7 +73,67 @@ export function stageAt(pet, t = pet.updatedAt) {
   }
   return 'senior';
 }
-export const isAsleep = (pet, t = pet.updatedAt) => !['egg', 'dead'].includes(stageAt(pet, t)) && isNight(t);
+
+/** Why Evi sleeps at time t: 'night' (23–7, or from 22 after the evening ritual), 'nap' or null. */
+export function sleepKind(pet, t = pet.updatedAt) {
+  const stage = stageAt(pet, t);
+  if (stage === 'egg' || stage === 'dead') return null;
+  if (isNight(t)) return 'night';
+  const h = hourOf(t);
+  if (h >= RULES.ritual.from && pet.ritualNight === nightKey(t)) return 'night';
+  if (stage === RULES.nap.stage && h >= RULES.nap.from && h < RULES.nap.to) return 'nap';
+  return null;
+}
+export const isAsleep = (pet, t = pet.updatedAt) => sleepKind(pet, t) !== null;
+const awake = (pet, t) => !['egg', 'dead'].includes(stageAt(pet, t)) && !sleepKind(pet, t);
+/** Woke up rested: the evening ritual was done the night before. */
+const ritualLastNight = (pet, t) => pet.ritualNight !== null && pet.ritualNight === dayKey(t - 12 * HOUR);
+const earlyMorning = t => { const d = new Date(t); return d.getHours() === RULES.sleep.to && d.getMinutes() < RULES.tired.morningMinutes; };
+/** Tired: the hour before bedtime, and the first half hour of the morning unless she slept well. */
+export function isTired(pet, t = pet.updatedAt) {
+  if (!awake(pet, t)) return false;
+  return hourOf(t) === RULES.tired.evening || (earlyMorning(t) && !ritualLastNight(pet, t));
+}
+export const isRested = (pet, t = pet.updatedAt) => awake(pet, t) && earlyMorning(t) && ritualLastNight(pet, t);
+export const hasTummyAche = (pet, t = pet.updatedAt) => !pet.dead && t < pet.tummyUntil;
+
+/** The meal that fits time t ('breakfast', 'lunch', 'dinner') or null. */
+export function mealAt(t) {
+  const h = hourOf(t);
+  return RULES.meals.windows.find(([, from, to]) => h >= from && h < to)?.[0] ?? null;
+}
+const mealKey = t => `${dayKey(t)}-${mealAt(t)}`;
+/** The meal Evi can still have now, or null when there is none or she already ate it. */
+export const mealDue = (pet, t = pet.updatedAt) => (mealAt(t) && pet.lastMeal !== mealKey(t) ? mealAt(t) : null);
+
+// Wishes: up to one per time slot, at a pseudo-random but fixed minute, so a closed app and
+// an open app agree. They depend on the day and on the pet, and can be fulfilled once.
+function hash(text) {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+  h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13;
+  return h >>> 0;
+}
+/** Today's wishes: [{ kind, start }], 3 or 4 of them. */
+export function wishesOn(pet, t) {
+  const d = new Date(t), key = dayKey(t), seed = `${pet.bornAt}:${key}`;
+  const drop = hash(`${seed}:drop`);
+  const dropped = drop & 1 ? (drop >>> 1) % RULES.wishes.slots.length : -1;
+  return RULES.wishes.slots.flatMap(([from, to], i) => {
+    if (i === dropped) return [];
+    const h = hash(`${seed}:${i}`);
+    // Each wish ends within its slot, so two wishes never overlap.
+    const latest = (to - from) * 60 - RULES.wishes.duration / MINUTE;
+    const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), from, h % (latest + 1)).getTime();
+    return [{ kind: RULES.wishes.kinds[(h >>> 12) % RULES.wishes.kinds.length], start }];
+  });
+}
+/** The wish Evi has at time t, or null. A wish lasts an hour; it pauses while she sleeps or feels ill. */
+export function currentWish(pet, t = pet.updatedAt) {
+  if (!awake(pet, t) || pet.sick || hasTummyAche(pet, t)) return null;
+  const wish = wishesOn(pet, t).find(w => t >= w.start && t < w.start + RULES.wishes.duration);
+  return wish && wish.start !== pet.wishDone ? { ...wish, until: wish.start + RULES.wishes.duration } : null;
+}
 
 const finite = (v, min = 0) => Number.isFinite(v) && v >= min;
 export function restorePet(value, now) {
@@ -80,7 +154,7 @@ export function restorePet(value, now) {
       satiety: value.satiety, mood: value.mood, cleanliness: value.cleanliness };
     return advancePet(migrated, now);
   }
-  if (value.version !== RULES.version || typeof value.customName !== 'boolean' ||
+  if (![2, RULES.version].includes(value.version) || typeof value.customName !== 'boolean' ||
       !Number.isSafeInteger(value.generation) || value.generation < 1 || !finite(value.hatchAt) ||
       !Number.isSafeInteger(value.coins) || value.coins < 0 || typeof value.sick !== 'boolean' ||
       !finite(value.neglectMs) || !finite(value.sickMs) || typeof value.lightOff !== 'boolean' ||
@@ -89,8 +163,16 @@ export function restorePet(value, now) {
       ![undefined, null, 'neglect', 'sickness', 'age'].includes(value.causeOfDeath)) {
     return null;
   }
+  // Version 2 (0.6–0.8) has no day fields yet: Evi keeps everything and starts her new day routine.
+  const day = value.version === 2 ? DAY_DEFAULTS : value;
+  const keyOrNull = v => v === null || typeof v === 'string';
+  if (!keyOrNull(day.ritualNight) || !keyOrNull(day.lastMeal) || !keyOrNull(day.snackDay) ||
+      !Number.isSafeInteger(day.snackCount) || day.snackCount < 0 || !finite(day.tummyUntil) || !finite(day.wishDone)) {
+    return null;
+  }
   const keys = Object.keys(createPet(0));
-  const pet = Object.fromEntries(keys.map(key => [key, value[key]]));
+  const pet = Object.fromEntries(keys.map(key => [key, key in DAY_DEFAULTS ? day[key] : value[key]]));
+  pet.version = RULES.version;
   pet.causeOfDeath ??= pet.dead ? 'neglect' : null;
   pet.name = name;
   return advancePet(pet, now);
@@ -112,14 +194,16 @@ export function advancePet(pet, now) {
       return next;
     }
     if (stage !== 'egg') {
-      const asleep = isNight(t);
-      if (!asleep) next.lightOff = false;
+      const asleep = sleepKind(next, t);
+      if (asleep !== 'night') next.lightOff = false;
       const rate = RULES.decay[stage];
       const needs = asleep ? RULES.sleep.needs : 1;
-      const moodSleep = asleep ? (next.lightOff ? RULES.sleep.moodDark : RULES.sleep.moodLight) : 1;
+      // A nap is as restful as a dark night.
+      const moodSleep = !asleep ? 1 : asleep === 'nap' || next.lightOff ? RULES.sleep.moodDark : RULES.sleep.moodLight;
+      const unwell = next.sick || t < next.tummyUntil ? RULES.sickMoodFactor : 1;
       next.satiety = clamp(next.satiety - rate.satiety * needs * hours);
       next.cleanliness = clamp(next.cleanliness - rate.cleanliness * needs * hours);
-      next.mood = clamp(next.mood - rate.mood * moodSleep * (next.sick ? RULES.sickMoodFactor : 1) * hours);
+      next.mood = clamp(next.mood - rate.mood * moodSleep * unwell * hours);
       const neglected = stats.some(key => next[key] <= 0);
       next.neglectMs = neglected ? next.neglectMs + dt : Math.max(0, next.neglectMs - dt);
       if (next.sick) next.sickMs += dt;
@@ -142,24 +226,39 @@ export function blockedReason(pet, action, now = pet.updatedAt) {
   if (stage === 'dead') return action === 'newEgg' ? null : 'dead';
   if (action === 'newEgg') return 'alive';
   if (stage === 'egg') return 'egg';
-  if (action === 'light') return isNight(now) ? null : 'day';
-  if (isNight(now)) return 'asleep';
+  const asleep = sleepKind(pet, now);
+  if (action === 'light') return asleep === 'night' ? null : 'day';
+  if (asleep === 'night') return 'asleep';
+  if (asleep === 'nap') return 'nap';
+  if (action === 'ritual' && hourOf(now) !== RULES.ritual.from) return 'early';
   if (action === 'play' && pet.sick) return 'sick';
-  if (action === 'medicine' && !pet.sick) return 'healthy';
+  if (action === 'medicine' && !pet.sick && !hasTummyAche(pet, now)) return 'healthy';
+  if (action === 'snack' && hasTummyAche(pet, now)) return 'tummy';
+  // A wish can always be fulfilled, even when the need is already met.
+  if (currentWish(pet, now)?.kind === action) return null;
   if (action === 'feed' && pet.satiety >= 99.5) return 'full';
   if (action === 'clean' && pet.cleanliness >= 99.5) return 'full';
   if (action === 'play' && pet.mood >= 99.5) return 'full';
   return null;
 }
 
+/** Fulfils the wish if the action matches it: +10 mood, +3 coins. */
+function grantWish(pet, wish, action) {
+  if (!wish || wish.kind !== action) return false;
+  pet.wishDone = wish.start;
+  pet.mood = clamp(pet.mood + RULES.wishes.mood);
+  pet.coins += RULES.wishes.coins;
+  return true;
+}
+
 function applyEffect(pet, effect) {
   for (const key of stats) pet[key] = clamp(pet[key] + (effect[key] ?? 0));
 }
 
-/** Care commands: feed, clean, medicine, light, newEgg. Playing goes through finishPlay. */
+/** Care commands: feed, snack, clean, medicine, light, ritual, newEgg. Playing goes through finishPlay. */
 export function careForPet(pet, action, now) {
   const next = advancePet(pet, now);
-  const known = ['feed', 'clean', 'medicine', 'light', 'newEgg'];
+  const known = ['feed', 'snack', 'clean', 'medicine', 'light', 'ritual', 'newEgg'];
   if (!known.includes(action)) return { pet: next, changed: false, reason: 'unknown' };
   const reason = blockedReason(next, action, now);
   if (reason) return { pet: next, changed: false, reason };
@@ -167,34 +266,62 @@ export function careForPet(pet, action, now) {
     return { pet: createPet(now, { name: next.name, customName: next.customName, coins: next.coins,
       generation: next.generation + 1 }), changed: true };
   }
+  const lightOut = () => {
+    next.lightOff = true;
+    if (next.lightBonusNight === nightKey(now)) return false;
+    next.lightBonusNight = nightKey(now);
+    next.mood = clamp(next.mood + RULES.sleep.lightBonus);
+    return true;
+  };
   if (action === 'light') {
-    next.lightOff = !next.lightOff;
-    let bonus = false;
-    if (next.lightOff && next.lightBonusNight !== nightKey(now)) {
-      next.lightBonusNight = nightKey(now);
-      next.mood = clamp(next.mood + RULES.sleep.lightBonus);
-      bonus = true;
-    }
-    return { pet: next, changed: true, bonus };
+    if (next.lightOff) { next.lightOff = false; return { pet: next, changed: true, bonus: false }; }
+    return { pet: next, changed: true, bonus: lightOut() };
   }
+  if (action === 'ritual') {
+    // Brush teeth, a story, tucked in, light off: Evi falls asleep at once and wakes rested.
+    next.ritualNight = nightKey(now);
+    next.mood = clamp(next.mood + RULES.ritual.mood);
+    next.careCount++;
+    return { pet: next, changed: true, bonus: lightOut() };
+  }
+  const wish = currentWish(next, now);
+  const result = { pet: next, changed: true };
   applyEffect(next, RULES.actions[action]);
-  if (action === 'medicine') Object.assign(next, { sick: false, sickMs: 0, neglectMs: 0 });
+  if (action === 'feed' && mealDue(next, now)) {
+    result.meal = mealAt(now);
+    next.lastMeal = mealKey(now);
+    applyEffect(next, { satiety: RULES.meals.satiety, mood: RULES.meals.mood });
+  }
+  if (action === 'snack') {
+    if (next.snackDay !== dayKey(now)) Object.assign(next, { snackDay: dayKey(now), snackCount: 0 });
+    next.snackCount++;
+    if (next.snackCount > RULES.snack.perDay) {
+      next.tummyUntil = now + RULES.snack.tummyAche;
+      result.tummy = true;
+    }
+  }
+  if (action === 'medicine') {
+    if (next.sick) Object.assign(next, { sick: false, sickMs: 0, neglectMs: 0 });
+    next.tummyUntil = 0;
+  }
+  result.wish = grantWish(next, wish, action);
   next.careCount++;
-  return { pet: next, changed: true };
+  return result;
 }
 
-/** Result of one round of the ball game: hits out of RULES.play.rounds. */
-export function finishPlay(pet, hits, now) {
+/** Result of one game ('ball', 'guess' or 'simon'): hits out of RULES.play.rounds. */
+export function finishPlay(pet, hits, now, game = 'ball') {
   const next = advancePet(pet, now);
   const reason = blockedReason(next, 'play', now);
   if (reason && reason !== 'full') return { pet: next, changed: false, reason, coins: 0 };
+  const wish = currentWish(next, now);
   const caught = Math.max(0, Math.min(RULES.play.rounds, Math.floor(hits) || 0));
   applyEffect(next, { mood: RULES.play.mood + caught * RULES.play.moodPerHit,
     satiety: RULES.play.satiety, cleanliness: RULES.play.cleanliness });
   const coins = caught * RULES.play.coinsPerHit;
   next.coins += coins;
   next.careCount++;
-  return { pet: next, changed: true, coins };
+  return { pet: next, changed: true, coins, wish: grantWish(next, wish, game) };
 }
 
 export function renamePet(pet, name) {
@@ -205,12 +332,13 @@ export function renamePet(pet, name) {
 const STAGE_NAMES = { egg: 'Ei', baby: 'Baby', teen: 'Teenager', adult: 'Erwachsen', senior: 'Oma', dead: 'Gestorben' };
 export const stageName = stage => STAGE_NAMES[stage];
 
-/** Stage and the most pressing state: dead, egg, sleeping, sick, hungry, dirty, sad or happy. */
+/** Stage and the most pressing state: dead, egg, sleeping, sick, tummy, hungry, dirty, sad or happy. */
 export function describePet(pet, now = pet.updatedAt) {
   const stage = stageAt(pet, now);
   if (stage === 'dead' || stage === 'egg') return { stage, mood: stage };
-  if (isNight(now)) return { stage, mood: 'sleeping' };
+  if (sleepKind(pet, now)) return { stage, mood: 'sleeping' };
   if (pet.sick) return { stage, mood: 'sick' };
+  if (hasTummyAche(pet, now)) return { stage, mood: 'tummy' };
   const lowest = Math.min(...stats.map(key => pet[key]));
   if (lowest <= RULES.low) {
     if (pet.satiety === lowest) return { stage, mood: 'hungry' };

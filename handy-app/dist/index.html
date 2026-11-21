@@ -29,6 +29,8 @@
     <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8"/></symbol>
     <symbol id="i-arrows" viewBox="0 0 24 24"><path d="M9 6 3 12l6 6M15 6l6 6-6 6"/></symbol>
     <symbol id="i-note" viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></symbol>
+    <symbol id="i-cookie" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 9h.01M14 7.5h.01M15.5 13h.01M9.5 15h.01M12 11.5h.01"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5ZM17 3v3m-1.5-1.5h3"/></symbol>
   </svg>
   <main class="handheld" aria-label="Kleines Zuhause">
     <div class="scene-wrap" id="scene-wrap">
@@ -105,6 +107,9 @@
           <span class="need-value" id="cleanliness-value" aria-hidden="true">80%</span>
         </div>
       </div>
+      <!-- Evi's wish (or her thanks) in a speech bubble; the bedtime story above her. -->
+      <p class="wish-bubble" id="wish-bubble" role="status" hidden><svg aria-hidden="true"><use href="#i-ball"/></svg><span></span></p>
+      <p class="story" id="story" role="status" hidden></p>
       <!-- Entries depend on the situation (egg, day, night, sick, dead); app.js fills them. -->
       <ul class="game-menu" id="game-menu" aria-label="Spielmenü" hidden></ul>
       <div class="display-caption">
@@ -140,7 +145,11 @@
     <p>Die mittlere Taste öffnet das Menü und bestätigt die Auswahl. Links wechselst du zum nächsten Eintrag, rechts gehst du zurück.</p>
     <p>Napf, Herz und Glanzsymbol zeigen Sättigung, Stimmung und Sauberkeit. Die Bedürfnisse verändern sich mit echter Zeit, auch wenn du die App schließt.</p>
     <p><strong>Lebenslauf:</strong> Nach 30 Minuten schlüpft Evi aus dem Ei, auch wenn du nicht hinschaust. Als Baby braucht sie etwa alle 1–2 Stunden Pflege, nach einem Tag als Teenager alle 2–3 Stunden, danach 5 Tage als Erwachsene 3–4 Mal am Tag. Zum Schluss ist sie 2 Tage lang Oma und schläft dann friedlich für immer ein.</p>
-    <p><strong>Nachts</strong> schläft Evi von 23 bis 7 Uhr. Mach ihr das Licht aus, dann schläft sie besser und freut sich.</p>
+    <p><strong>Nachts</strong> schläft Evi von 23 bis 7 Uhr. Mach ihr das Licht aus, dann schläft sie besser und freut sich. Ab 22 Uhr ist sie müde, morgens bis halb acht auch noch.</p>
+    <p><strong>Gute Nacht:</strong> Ab 22 Uhr kannst du Evi ins Bett bringen: Zähne putzen, eine Geschichte, zudecken, Licht aus. Jede Taste überspringt den Ablauf. Evi schläft dann sofort, freut sich und ist am nächsten Morgen ausgeschlafen statt müde.</p>
+    <p><strong>Essen:</strong> Frühstück (7–9 Uhr), Mittagessen (11–14 Uhr) und Abendessen (17–20 Uhr) machen satter und froher als Füttern zwischendurch. <strong>Naschen</strong> macht glücklich, aber mehr als 3 Süßigkeiten am Tag geben 2 Stunden Bauchweh. Medizin hilft sofort.</p>
+    <p><strong>Wünsche:</strong> Ein paar Mal am Tag wünscht sich Evi etwas, zum Beispiel ein bestimmtes Spiel. Erfüllst du den Wunsch innerhalb einer Stunde, bekommst du 3 Münzen und Evi freut sich. Verpasst du ihn, ist das nicht schlimm.</p>
+    <p><strong>Mittagsschlaf:</strong> Das Baby schläft von 12 bis 13 Uhr. Dann bitte nicht stören.</p>
     <p><strong>Vorsicht:</strong> Bleibt ein Wert lange bei null, wird Evi krank und braucht Medizin. Wer sie zu lange vergisst, verliert sie.</p>
     <p><strong>Spielen</strong> öffnet drei Spiele mit je 5 Runden. Jeder Erfolg bringt 2 Münzen:</p>
     <p><strong>Ballfangen:</strong> Drück die Mitte, wenn der Ball im gepunkteten Feld ist. Rechts beendet das Spiel.<br>

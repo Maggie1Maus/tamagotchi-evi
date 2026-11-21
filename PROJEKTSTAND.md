@@ -2,22 +2,23 @@
 
 Stand: 21. November 2026
 
-## Planung „Evis Tag“ (21. November 2026, noch nicht gebaut)
+## Version 0.9: Evis Tag (21. November 2026, gebaut, noch nicht veröffentlicht)
 
 Die Nutzerin möchte vor dem Laden zuerst Evis Tagesablauf ausbauen. Neue Ideen sollen über Wochen nach und nach dazukommen: zuerst in der Handy-App ausprobieren, später aufs Waveshare RP2350 übertragen (16 MB Flash, 520 KB RAM, dort ist genug Platz; der Cube ist mit Schritt 7 nahezu voll und bleibt Lerngerät).
 
-Von der Nutzerin beschlossen:
-- **Morgens müde:** Evi steht weiter um 7 Uhr von selbst auf und ist bis 7:30 Uhr noch müde. Kein Wecken durch die Spielerin, weil Evi meist vorher wach ist.
-- **Abendritual**, **Mahlzeiten und Naschen**, **Evis Wünsche**: gewünscht, Einzelheiten siehe Vorschlag.
-- **Mittagsschlaf fürs Baby:** 12 bis 13 Uhr.
+Von der Nutzerin beschlossen und in 0.9 umgesetzt (Einzelheiten und Zahlen in `handy-app/README.md`):
+- **Morgens müde:** Evi steht um 7 Uhr von selbst auf und ist bis 7:30 Uhr noch müde. Kein Wecken durch die Spielerin, weil Evi meist vorher wach ist.
+- **Abendritual „Gute Nacht“:** von 22 bis 23 Uhr im Menü. Ablauf: Zähne putzen, Gute-Nacht-Geschichte (10 kurze Geschichten), zudecken, Licht aus. Evi schläft sofort, bekommt +10 Stimmung und den Lichtbonus. Am nächsten Morgen ist sie ausgeschlafen statt müde.
+- **Mahlzeiten:** Frühstück 7–9, Mittagessen 11–14, Abendessen 17–20 Uhr. Das erste Füttern darin gibt +50 statt +40 Sättigung und +5 Stimmung extra. Eine verpasste Mahlzeit hat keine Folgen.
+- **Naschen:** +10 Sättigung, +10 Stimmung. Bis zu 3 am Tag sind in Ordnung. Ab dem 4. gibt es 2 Stunden Bauchweh: Bild „krank“, die Stimmung sinkt schneller. Medizin hilft sofort. Bauchweh ist nie tödlich.
+- **Wünsche:** 3–4 Mal am Tag zwischen 8 und 22 Uhr, als Sprechblase, jeweils 1 Stunde lang. Wird ein Wunsch erfüllt, gibt es +10 Stimmung und 3 Münzen. **Ein verpasster Wunsch hat keine Folgen** (ausdrücklicher Wunsch der Nutzerin).
+- **Mittagsschlaf fürs Baby:** 12 bis 13 Uhr, Pflege gesperrt.
 - **Streicheln:** erst auf dem Waveshare mit Touch, nicht in der Handy-App.
+- **Spielstand:** Spielstände von 0.7/0.8 werden übernommen. Liegt im Browser nur ein Spielstand von 0.4/0.5, bleibt diese Evi erhalten, statt mit einem Ei neu zu beginnen.
 
-Vorschlag von Claude, wartet auf Bestätigung:
-- Abendritual: Von 22 bis 23 Uhr gibt es im Menü „Gute Nacht“. Ablauf: Zähne putzen, kurze Gute-Nacht-Geschichte, zudecken, Licht aus. Evi schläft sofort ein. Belohnung: +10 Stimmung, zusätzlich zum Lichtbonus. Am nächsten Morgen ist sie ausgeschlafen und nicht müde. Ohne Ritual schläft sie wie bisher um 23 Uhr allein ein.
-- Mahlzeiten: Frühstück 7–9, Mittagessen 11–14, Abendessen 17–20 Uhr. Das erste Füttern in diesem Zeitraum gibt +50 statt +40 Sättigung und +5 Stimmung. Eine verpasste Mahlzeit hat keine Folgen.
-- Naschen: neuer Menüpunkt, +10 Sättigung, +10 Stimmung. Bis zu 3 am Tag sind in Ordnung. Der 4. Snack gibt 2 Stunden Bauchweh: Bild „krank“, die Stimmung sinkt schneller. Medizin hilft sofort. Bauchweh führt nicht zum Tod.
-- Wünsche: 3–4 Mal am Tag wünscht sich Evi etwas, zum Beispiel ein bestimmtes Spiel, Naschen, Baden oder eine Mahlzeit. Das gilt nicht nachts, nicht während des Mittagsschlafs und nicht bei Krankheit. Ein Wunsch gilt 1 Stunde. Wird er erfüllt, gibt es +10 Stimmung und 3 Münzen.
-- Mittagsschlaf: Bild „schlafend“, die Bedürfnisse sinken langsam wie nachts. Pflege und Spiele sind in dieser Zeit gesperrt.
+Geprüft: 24 Regelprüfungen mit `npm test`, auch in anderen Zeitzonen. Dazu kamen 36 Prüfungen in Chromium mit vorgestellter Uhrzeit, bei 390 und 320 Pixeln Breite: Übernahme eines 0.8-Spielstands, Frühstück, morgens müde, Gute Nacht mit Geschichte und Überspringen, ausgeschlafen am Morgen, Naschen bis zum Bauchweh, Medizin, Mittagsschlaf, Wunsch mit „Danke!“ und Münzen, Übernahme eines 0.5-Spielstands, neues Ei ohne Spielstand. Keine Konsolenfehler.
+
+**Veröffentlichen:** Die Nutzerin spielt über den ChatGPT-Link (`momos-kleines-zuhause…chatgpt.site`, Projekt in `handy-app/.openai/hosting.json`). Eine Claude-Cloud-Sitzung kann dorthin nicht veröffentlichen. Das muss von ChatGPT aus geschehen: `git pull` und dann `handy-app/dist` unter dem bestehenden Projekt neu veröffentlichen. Nur unter derselben Adresse bleibt der Spielstand im Browser erhalten. Welche Version dort bisher lief, ist nicht dokumentiert.
 
 ## Neue Handy-Version
 

@@ -157,6 +157,63 @@ button { cursor: pointer; touch-action: manipulation; }
 .sleep-z text, .reaction-symbols text { font-family: system-ui, sans-serif; }
 #pet-message { text-align: right; }
 
+/* Evi's wish: a speech bubble above her, the tail points down to her head. */
+.wish-bubble {
+  position: absolute;
+  top: calc(var(--status-height) + 12%);
+  left: 58%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 40%;
+  margin: 0;
+  padding: 4px 8px;
+  border: 2px solid #000;
+  border-radius: 12px;
+  background: #fff;
+  font-size: clamp(11px, 3.4vw, 13px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.wish-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border: solid #000;
+  border-width: 0 0 2px 2px;
+  background: #fff;
+  transform: skewY(-35deg);
+}
+.wish-bubble svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.scene-wrap.playing .wish-bubble { display: none; }
+
+/* The bedtime ritual: one line of text after the other, above Evi. */
+.story {
+  position: absolute;
+  top: calc(var(--status-height) + 6px);
+  left: 3%;
+  right: 3%;
+  margin: 0;
+  padding: 4px 7px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  background: #fff;
+  font-size: clamp(10px, 3.1vw, 13px);
+  line-height: 1.25;
+}
+
 .game-menu {
   right: 5px;
   bottom: calc(var(--caption-height) + 5px);

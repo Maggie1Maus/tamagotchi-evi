@@ -1,11 +1,13 @@
 import { RULES, createPet, restorePet, advancePet, careForPet, finishPlay, renamePet, describePet,
-  stageAt, stageName, blockedReason, isNight } from './pet.js';
+  stageAt, stageName, blockedReason, isNight, isAsleep, sleepKind, isTired, isRested, mealAt, mealDue,
+  currentWish } from './pet.js';
 import { drawEvi } from './evi-sprite.js';
 import { ART } from './art.js';
 
-// Version 0.7 starts the game anew: a new save slot, so the first egg replaces the old pet.
-// The earlier slot 'kleines-zuhause.pet.v1' stays untouched in the browser.
+// Version 0.7 started the game anew in a new save slot. Since 0.9 a browser that never had
+// 0.7 or 0.8 keeps its Evi from the earlier slot instead of starting with a new egg.
 const SAVE_KEY = 'kleines-zuhause.pet.v2';
+const OLD_SAVE_KEY = 'kleines-zuhause.pet.v1';
 const RESTART_EGG_MS = 60000;             // one-off: this first egg hatches after one minute
 const SETTINGS_KEY = 'kleines-zuhause.settings';
 const $ = id => document.getElementById(id);
@@ -40,12 +42,12 @@ function missedEvents(before, after) {
 }
 
 try {
-  const raw = localStorage.getItem(SAVE_KEY);
+  const raw = localStorage.getItem(SAVE_KEY) ?? localStorage.getItem(OLD_SAVE_KEY);
   if (raw) {
     let parsed = null;
     try { parsed = JSON.parse(raw); pet = restorePet(parsed, Date.now()); } catch { pet = null; }
     invalidSave = !pet;
-    if (pet && parsed?.version === RULES.version) missedNote = missedEvents(parsed, pet);
+    if (pet && parsed?.version >= 2) missedNote = missedEvents(parsed, pet);
   }
 } catch { storageError = true; }
 pet ??= createPet(Date.now(), { eggDuration: RESTART_EGG_MS });
@@ -88,7 +90,8 @@ const SOUNDS = {
   sad: [[330, 220], [262, 360]],
   coin: [[1320, 60], [1760, 90]],
   miss: [[196, 140]],
-  crack: [[440, 40]]
+  crack: [[440, 40]],
+  wish: [[784, 90], [1047, 140]]
 };
 function beep(name) {
   if (!settings.sound || !audio) return;
@@ -105,7 +108,7 @@ function beep(name) {
     }
     t += ms / 1000 + 0.03;
   }
-  if (name !== 'coin' && name !== 'miss' && name !== 'crack') {
+  if (!['coin', 'miss', 'crack', 'wish'].includes(name)) {
     try { navigator.vibrate?.(160); } catch { /* not supported */ }
   }
 }
@@ -158,7 +161,7 @@ function eviPose() {
   if (evi.mood === 'hungry') Object.assign(pose, { brows: true, mouth: 'open', tail: 0.18, earL: -0.12, earR: -0.12 });
   if (evi.mood === 'sad') Object.assign(pose, { brows: true, mouth: 'frown', tail: 0.3, earL: -0.3, earR: -0.3 });
   if (evi.mood === 'dirty') Object.assign(pose, { eyes: 'tired', mouth: 'flat' });
-  if (evi.mood === 'sick') Object.assign(pose, { eyes: 'tired', brows: true, mouth: 'frown', sick: true, tail: 0.25, earL: -0.25, earR: -0.25 });
+  if (evi.mood === 'sick' || evi.mood === 'tummy') Object.assign(pose, { eyes: 'tired', brows: true, mouth: 'frown', sick: true, tail: 0.25, earL: -0.25, earR: -0.25 });
   if (!still) {
     if (t < evi.blinkUntil) pose.eyes = 'closed';
     if (evi.mood === 'happy' && t < evi.wagUntil) pose.tail = [0, 0.08, 0, -0.08][Math.floor(t / 2) % 4];
@@ -179,7 +182,7 @@ function eviPose() {
 // Scene units per picture pixel:
 const ART_SCALE = { egg: 0.232, baby: 0.344, teen: 0.372, adult: 0.38, senior: 0.4 };
 const FLOOR = { x: 167, y: 180 };
-const MOOD_ART = { sleeping: 'schlafend', sick: 'krank', hungry: 'hungrig', dirty: 'schmutzig', sad: 'traurig' };
+const MOOD_ART = { sleeping: 'schlafend', sick: 'krank', tummy: 'krank', hungry: 'hungrig', dirty: 'schmutzig', sad: 'traurig' };
 
 /** Which drawing fits Evi right now, or null to use the pixel sprite. */
 function artChoice(pose) {
@@ -253,7 +256,7 @@ function react(action, ticks = Math.round(2400 / TICK_MS)) {
   evi.reactionUntil = evi.tick + ticks;
   scene.classList.remove('reacting');
   scene.dataset.action = action;
-  $('reaction-symbol').textContent = { feed: '♥', play: '♪', clean: '✦', medicine: '+', hatch: '✦', evolve: '✦' }[action] ?? '♥';
+  $('reaction-symbol').textContent = { feed: '♥', snack: '♥', play: '♪', clean: '✦', medicine: '+', hatch: '✦', evolve: '✦' }[action] ?? '♥';
   void scene.getBoundingClientRect();
   scene.classList.add('reacting');
   setTimeout(() => scene.classList.remove('reacting'), 2400);
@@ -261,20 +264,40 @@ function react(action, ticks = Math.round(2400 / TICK_MS)) {
 
 // ---------- Texts ----------
 
+const MEAL_NAMES = { breakfast: 'Frühstück', lunch: 'Mittagessen', dinner: 'Abendessen' };
+/** Icon and short text of a wish, for the speech bubble and the caption. */
+function wishText(wish, now) {
+  const meal = mealDue(pet, now);
+  return {
+    ball: ['i-ball', 'Ballfangen!'], guess: ['i-arrows', 'Links oder rechts?'], simon: ['i-note', 'Melodie merken!'],
+    snack: ['i-cookie', 'Was Süßes!'], clean: ['i-clean', 'Baden!'], feed: ['i-food', meal ? `${MEAL_NAMES[meal]}!` : 'Hunger!']
+  }[wish.kind];
+}
+
 function moodMessage(d) {
-  const name = pet.name;
+  const name = pet.name, now = Date.now();
+  if (ritualShow.active) return 'Gute Nacht …';
   switch (d.mood) {
     case 'dead': return pet.causeOfDeath === 'age' ? `${name} ist friedlich eingeschlafen. Menü: neues Ei` : `${name} ist gestorben. Menü: neues Ei`;
     case 'egg': {
       const minutes = Math.max(1, Math.ceil((pet.hatchAt - Date.now()) / 60000));
       return `Schlüpft in ca. ${minutes} Min.`;
     }
-    case 'sleeping': return pet.lightOff ? 'Psst … schläft' : 'Schläft · Licht ausmachen?';
+    case 'sleeping':
+      if (sleepKind(pet, now) === 'nap') return `Psst … Mittagsschlaf bis ${RULES.nap.to} Uhr`;
+      return pet.lightOff ? 'Psst … schläft' : 'Schläft · Licht ausmachen?';
     case 'sick': return 'Krank · braucht Medizin';
+    case 'tummy': return 'Bauchweh … zu viel genascht';
     case 'hungry': return 'Mein Bauch knurrt';
     case 'dirty': return 'Zeit für ein Bad';
     case 'sad': return 'Spielst du mit mir?';
-    default: return 'Mitte öffnet das Menü';
+    default: {
+      const wish = currentWish(pet, now);
+      if (wish) return 'Ein Wunsch!';
+      if (isRested(pet, now)) return 'Ausgeschlafen! Guten Morgen';
+      if (isTired(pet, now)) return new Date(now).getHours() < 12 ? 'Gähn … guten Morgen' : 'Gähn … Zeit für Gute Nacht?';
+      return 'Mitte öffnet das Menü';
+    }
   }
 }
 
@@ -285,6 +308,9 @@ function reasonText(reason, action) {
     egg: `Erst muss ${name} schlüpfen.`,
     day: 'Es ist noch hell. Schlafenszeit ist um 23 Uhr.',
     asleep: `${name} schläft gerade.`,
+    nap: `Psst, ${name} macht Mittagsschlaf.`,
+    early: `Gute Nacht gibt es ab ${RULES.ritual.from} Uhr.`,
+    tummy: `${name} hat Bauchweh. Erst mal nichts Süßes.`,
     sick: `${name} ist zu krank zum Spielen.`,
     healthy: `${name} ist gesund.`,
     full: { feed: 'Schon satt', clean: 'Schon sauber', play: 'Schon glücklich' }[action] ?? 'Gerade nicht nötig'
@@ -316,6 +342,8 @@ function renderCaption() {
 function render() {
   const now = Date.now();
   const d = describePet(pet, now);
+  // During the evening ritual Evi is shown awake and tired until the light goes out.
+  if (ritualShow.active) d.mood = 'happy';
   $('pet-name').textContent = pet.name;
   document.title = `${pet.name}s kleines Zuhause`;
   $('room-title').textContent = `${pet.name} (${stageName(d.stage)}) im Zimmer`;
@@ -329,9 +357,9 @@ function render() {
   evi.sick = pet.sick;
   evi.eggSoon = d.stage === 'egg' && pet.hatchAt - now < 2 * 60000;
   evi.dirty = !['egg', 'dead'].includes(d.stage) && Math.round(pet.cleanliness) <= RULES.low;
-  // Tired: the last hour before bedtime. Glad: every need is at 60 or more.
-  evi.tired = d.mood === 'happy' && new Date(now).getHours() === RULES.sleep.from - 1;
-  evi.allGood = ['satiety', 'mood', 'cleanliness'].every(key => pet[key] >= 60);
+  // Tired: the hour before bedtime and just after waking. Glad: every need at 60 or more, or well rested.
+  evi.tired = ritualShow.active || (d.mood === 'happy' && isTired(pet, now));
+  evi.allGood = ['satiety', 'mood', 'cleanliness'].every(key => pet[key] >= 60) || isRested(pet, now);
   drawEviNow();
   for (const key of ['satiety', 'mood', 'cleanliness']) {
     const value = Math.round(pet[key]);
@@ -341,8 +369,33 @@ function render() {
     meter.firstElementChild.style.width = `${value}%`;
     meter.parentElement.classList.toggle('low', value <= RULES.low && !['egg', 'dead'].includes(d.stage));
   }
-  $('window-sky').setAttribute('fill', isNight(now) ? '#000000' : '#ffffff');
+  $('window-sky').setAttribute('fill', isNight(now) || sleepKind(pet, now) === 'night' ? '#000000' : '#ffffff');
+  renderWish(now);
   renderCaption();
+}
+
+// ---------- Wishes ----------
+
+let shownWish = null;      // start time of the wish in the bubble, to notice a new one
+let thanksUntil = 0;
+function renderWish(now) {
+  const bubble = $('wish-bubble');
+  const wish = ritualShow.active || game.active ? null : currentWish(pet, now);
+  if (wish && wish.start !== shownWish && shownWish !== null) beep('wish');
+  shownWish = wish ? wish.start : 0;
+  const thanks = now < thanksUntil;
+  bubble.hidden = !wish && !thanks;
+  if (bubble.hidden) return;
+  const [icon, text] = thanks ? ['i-heart', 'Danke!'] : wishText(wish, now);
+  bubble.querySelector('use').setAttribute('href', `#${icon}`);
+  bubble.querySelector('span').textContent = text;
+  bubble.setAttribute('aria-label', thanks ? 'Wunsch erfüllt' : `${pet.name} wünscht sich: ${text}`);
+}
+/** After a fulfilled wish: thanks in the bubble and a coin sound. */
+function wishGranted() {
+  thanksUntil = Date.now() + 3000;
+  beep('coin');
+  setTimeout(() => render(), 3100);
 }
 
 /** Sounds and messages for things that happen while the app is open. */
@@ -367,7 +420,7 @@ function announce(before, after) {
     return;
   }
   if (!before.sick && after.sick) { beep('alert'); flash(`${name} ist krank geworden!`, 5000); return; }
-  if (!isNight(now) && ['satiety', 'mood', 'cleanliness'].some(key => before[key] > RULES.low && after[key] <= RULES.low)) beep('alert');
+  if (!isAsleep(after, now) && ['satiety', 'mood', 'cleanliness'].some(key => before[key] > RULES.low && after[key] <= RULES.low)) beep('alert');
 }
 
 function tick() {
@@ -385,11 +438,14 @@ function menuEntries() {
   const stage = stageAt(pet, now);
   if (stage === 'dead') return [['newEgg', 'i-egg', 'Neues Ei'], ['help', 'i-help', 'Hilfe']];
   const entries = [];
+  const asleep = sleepKind(pet, now);
   if (stage !== 'egg') {
-    if (isNight(now)) entries.push(['light', 'i-bulb', pet.lightOff ? 'Licht an' : 'Licht aus']);
-    else {
-      if (pet.sick) entries.push(['medicine', 'i-pill', 'Medizin']);
-      entries.push(['feed', 'i-food', 'Füttern'], ['play', 'i-ball', 'Spielen'], ['clean', 'i-clean', 'Saubermachen']);
+    if (asleep === 'night') entries.push(['light', 'i-bulb', pet.lightOff ? 'Licht an' : 'Licht aus']);
+    else if (!asleep) {
+      if (!blockedReason(pet, 'ritual', now)) entries.push(['ritual', 'i-moon', 'Gute Nacht']);
+      if (!blockedReason(pet, 'medicine', now)) entries.push(['medicine', 'i-pill', 'Medizin']);
+      entries.push(['feed', 'i-food', mealDue(pet, now) ? MEAL_NAMES[mealAt(now)] : 'Füttern'], ['snack', 'i-cookie', 'Naschen'],
+        ['play', 'i-ball', 'Spielen'], ['clean', 'i-clean', 'Saubermachen']);
     }
   }
   entries.push(['rename', 'i-edit', 'Name ändern'], ['sound', 'i-sound', settings.sound ? 'Ton aus' : 'Ton an'], ['help', 'i-help', 'Hilfe']);
@@ -437,7 +493,7 @@ function openRename() {
   nameInput.select();
 }
 
-const careMessages = { feed: 'Mmh, lecker!', clean: 'Blitzblank!', medicine: 'Bäh … aber es hilft!' };
+const careMessages = { feed: 'Mmh, lecker!', snack: 'Mmh, ein Keks!', clean: 'Blitzblank!', medicine: 'Bäh … aber es hilft!' };
 
 function performAction(action) {
   if (action === 'rename') { openRename(); return; }
@@ -467,14 +523,65 @@ function performAction(action) {
     flash(reasonText(result.reason, action));
   } else if (action === 'light') {
     flash(pet.lightOff ? (result.bonus ? 'Gute Nacht! ♥' : 'Licht aus') : 'Licht an');
+  } else if (action === 'ritual') {
+    startRitualShow();
   } else if (action === 'newEgg') {
     flash('Ein neues Ei! Es schlüpft in 30 Minuten.', 5000);
   } else {
     react(action);
-    flash(careMessages[action]);
+    let message = careMessages[action];
+    if (result.meal) message = `Mmh, ${MEAL_NAMES[result.meal]}!`;
+    if (action === 'snack' && pet.snackCount === RULES.snack.perDay) message = 'Mmh! Jetzt ist aber genug Süßes.';
+    if (result.tummy) { message = 'Aua, Bauchweh! Zu viel genascht.'; beep('miss'); }
+    flash(message);
   }
+  if (result.wish) wishGranted();
   render();
   save();
+}
+
+// ---------- Evening ritual ----------
+// Brush teeth, a bedtime story, tucked in, light off. The rules apply at once (pet.js);
+// this only shows it. Any key skips to the end.
+
+const STORIES = [
+  'Ein kleiner Stern konnte nicht schlafen. Da summte ihm der Mond ein Lied, und der Stern funkelte ganz leise ein.',
+  'Ein Igel suchte im Wald das weichste Blatt für sein Bett. Am Ende lag es direkt vor seiner Haustür.',
+  'Ein Fuchs zählte abends die Sterne über seinem Bau. Bei hundertzwei fielen ihm die Augen zu.',
+  'Die Maus Pina backte einen Käsekuchen für den Mond. Der Mond lächelte und schickte ihr dafür einen schönen Traum.',
+  'Im Garten flüsterten die Blumen sich Gute-Nacht-Witze zu. Die Glühwürmchen lachten so sehr, dass sie leuchteten.',
+  'Eine kleine Eule flog heute zum ersten Mal drei Bäume weit. Danach schlief sie stolz in ihrem Astloch ein.',
+  'Ein Teddybär hält heimlich Wache, damit nur schöne Träume kommen. Dafür bekommt er morgen eine extra Umarmung.',
+  'Ein Fuchs und ein Hase wetteten, wer schneller einschläft. Am Ende schnarchten beide gleichzeitig.',
+  'Eine Schneeflocke landete auf {name}s Nase. Es war dort so gemütlich, dass sie gar nicht schmelzen wollte.',
+  'Der Wind trug eine kleine Wolke über das Meer. Sie wurde ganz müde und kuschelte sich an einen Berg.'
+];
+const ritualShow = { active: false, timers: [] };
+function startRitualShow() {
+  const story = STORIES[random(0, STORIES.length - 1)].replaceAll('{name}', pet.name);
+  const steps = [
+    ['Zähne putzen … schrubb, schrubb!', 2600, () => react('clean')],
+    [`Gute-Nacht-Geschichte: ${story}`, 8000],
+    ['Zudecken … schön kuschelig.', 2600, () => react('feed')],
+    [`Licht aus. Gute Nacht, ${pet.name}! ♥`, 2400]
+  ];
+  ritualShow.active = true;
+  let at = 0;
+  for (const [text, ms, effect] of steps) {
+    ritualShow.timers.push(setTimeout(() => { $('story').textContent = text; $('story').hidden = false; effect?.(); }, at));
+    at += ms;
+  }
+  ritualShow.timers.push(setTimeout(endRitualShow, at));
+  render();
+}
+function endRitualShow() {
+  if (!ritualShow.active) return;
+  ritualShow.active = false;
+  for (const timer of ritualShow.timers) clearTimeout(timer);
+  ritualShow.timers = [];
+  $('story').hidden = true;
+  flash(`Psst … ${pet.name} schläft.`);
+  render();
 }
 
 // ---------- Games ----------
@@ -616,8 +723,9 @@ function endGame(aborted) {
   for (const pad of document.querySelectorAll('.pad')) pad.classList.remove('lit');
   scene.classList.remove('playing');
   if (aborted) { flash('Spiel abgebrochen'); return; }
-  const result = finishPlay(pet, game.hits, Date.now());
+  const result = finishPlay(pet, game.hits, Date.now(), game.kind);
   pet = result.pet;
+  if (result.wish) wishGranted();
   if (result.changed) {
     react('play');
     const done = { ball: 'gefangen', guess: 'richtig geraten', simon: 'Melodien geschafft' }[game.kind];
@@ -630,12 +738,14 @@ function endGame(aborted) {
 // ---------- Keys ----------
 
 $('next-button').addEventListener('click', () => {
+  if (ritualShow.active) { endRitualShow(); return; }
   if (game.active) { gameKey('left'); return; }
   if (gameMenu.hidden) { showMenu(true); return; }
   selected = (selected + 1) % gameMenu.children.length;
   renderSelection();
 });
 confirmButton.addEventListener('click', () => {
+  if (ritualShow.active) { endRitualShow(); return; }
   if (game.active) { gameKey('mid'); return; }
   if (gameMenu.hidden) { showMenu(true); return; }
   const action = gameMenu.children[selected].dataset.option;
@@ -643,6 +753,7 @@ confirmButton.addEventListener('click', () => {
   performAction(action);
 });
 $('back-button').addEventListener('click', () => {
+  if (ritualShow.active) { endRitualShow(); return; }
   if (game.active) { gameKey('right'); return; }
   // In the game choice, "back" returns to the main menu.
   if (!gameMenu.hidden && menuMode === 'games') { showMenu(true); return; }
@@ -665,7 +776,7 @@ nameInput.addEventListener('input', () => nameInput.setCustomValidity(''));
 for (const button of document.querySelectorAll('[data-close]')) button.addEventListener('click', () => button.closest('dialog').close());
 
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState !== 'visible') endGame(true);
+  if (document.visibilityState !== 'visible') { endGame(true); endRitualShow(); }
   tick();
 });
 window.addEventListener('pagehide', tick);

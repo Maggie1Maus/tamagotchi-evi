@@ -1,4 +1,16 @@
-# Kleines Zuhause – Handy-Prototyp 0.8
+# Kleines Zuhause – Handy-Prototyp 0.9
+
+**Neu in 0.9: Evis Tag.** Beschlossen mit der Besitzerin am 21. November 2026. Alle Zahlen stehen in `RULES` in `dist/pet.js`.
+
+- **Morgens müde:** Evi steht um 7 Uhr auf und ist bis 7:30 Uhr noch müde. Ab 22 Uhr ist sie wieder müde.
+- **Gute Nacht (Abendritual):** Von 22 bis 23 Uhr gibt es im Menü „Gute Nacht“. Der Ablauf dauert etwa 15 Sekunden: Zähne putzen, eine von 10 kurzen Gute-Nacht-Geschichten, zudecken, Licht aus. Jede Taste überspringt ihn. Evi schläft danach sofort und bekommt +10 Stimmung, dazu den Lichtbonus von +10. Am nächsten Morgen ist sie ausgeschlafen: Statt „müde“ zeigt sie das glückliche Bild.
+- **Mahlzeiten:** Frühstück 7–9, Mittagessen 11–14, Abendessen 17–20 Uhr. Das erste Füttern in diesem Zeitraum heißt im Menü wie die Mahlzeit und gibt +50 Sättigung (statt +40) und +8 Stimmung (statt +3). Eine verpasste Mahlzeit hat keine Folgen.
+- **Naschen:** neuer Menüpunkt. Ein Keks gibt +10 Sättigung und +10 Stimmung. Bis zu 3 Kekse am Tag sind in Ordnung. Ab dem 4. hat Evi 2 Stunden Bauchweh: Bild „krank“, die Stimmung sinkt 1,5-mal so schnell, kein Naschen mehr. Medizin hilft sofort. Am Bauchweh stirbt sie nicht. Um Mitternacht beginnt die Zählung neu.
+- **Wünsche:** 3–4 Mal am Tag zwischen 8 und 22 Uhr wünscht sich Evi etwas: eines der drei Spiele, Naschen, Baden oder Essen (zur Essenszeit die passende Mahlzeit). Eine Sprechblase zeigt den Wunsch eine Stunde lang. Wird er erfüllt, gibt es +10 Stimmung und 3 Münzen, und die Blase sagt „Danke!“. Ein Wunsch lässt sich auch dann erfüllen, wenn der Wert schon voll ist. Ein verpasster Wunsch hat keine Folgen. Während Schlaf, Krankheit und Bauchweh wünscht sie sich nichts. Die Wunschzeiten stehen für jeden Tag und jede Evi fest, deshalb gelten sie auch bei geschlossener App.
+- **Mittagsschlaf:** Das Baby schläft von 12 bis 13 Uhr. Die Bedürfnisse sinken dann wie nachts bei ausgeschaltetem Licht, Pflege ist gesperrt.
+- **Spielstand:** Der Spielstand von 0.7/0.8 wird übernommen und bekommt die neuen Angaben dazu (Speicherformat 3). Gibt es im Browser nur einen Spielstand von 0.4/0.5, bleibt diese Evi erhalten, statt mit einem neuen Ei zu beginnen.
+
+## Version 0.8
 
 **Neu in 0.8:** Die Emotionen der Besitzerin sind eingebaut, je 7 Zustände für Baby, Teenager, Erwachsen und Oma, wieder 1:1 übernommen. Welches Bild erscheint:
 
@@ -31,7 +43,7 @@ Im Ordner `handy-app` mit installiertem Node.js: `npm start`. Anschließend `htt
 - Evi (seit 0.5) ist ein eigenes, Evoli-artiges Pixeltier, gezeichnet als 82 × 64-Pixel-Grafik. Sie hat riesige Ohren mit schwarzer Innenseite, große glänzende Augen, eine flauschige helle Halskrause und einen buschigen Schwanz mit heller Spitze. Braunes Fell wird als Punktraster dargestellt, helles Fell rein weiß. Das Gesicht bleibt ohne Raster, damit es gut lesbar ist.
 - Bewegungen: Evi atmet, blinzelt, zuckt mit den Ohren und wedelt mit dem Schwanz, wenn sie zufrieden ist. Bei Hunger hat sie besorgte Brauen und einen offenen Mund. Ist sie traurig, hängen Ohren und Schwanz herab. Ist sie schmutzig, hat sie müde Augen, Flecken im Fell und Geruchswölkchen. Beim Füttern kaut sie, beim Spielen hüpft sie, beim Putzen wackelt sie. Bei „Bewegung reduzieren“ in den Systemeinstellungen bleiben nur die Gesichtsausdrücke.
 - Die mittlere der drei Tasten öffnet das Spielmenü und bestätigt die markierte Auswahl. Links wechselst du zum nächsten Eintrag, rechts schließt du das Menü.
-- Das Menü passt sich an. Tagsüber gibt es Füttern, Spielen und Saubermachen, bei Krankheit zusätzlich Medizin. Nachts gibt es Licht aus/an. Nach dem Tod gibt es „Neues Ei“. Immer verfügbar sind Name ändern, Ton an/aus und Hilfe. Der bisherige Standardname „Momo“ wechselt beim Öffnen zu „Evi“. Ein eigener Name hat Vorrang.
+- Das Menü passt sich an. Tagsüber gibt es Füttern (zur Essenszeit als Frühstück, Mittagessen oder Abendessen), Naschen, Spielen und Saubermachen, bei Krankheit oder Bauchweh zusätzlich Medizin, ab 22 Uhr „Gute Nacht“. Nachts gibt es Licht aus/an. Nach dem Tod gibt es „Neues Ei“. Immer verfügbar sind Name ändern, Ton an/aus und Hilfe. Der bisherige Standardname „Momo“ wechselt beim Öffnen zu „Evi“. Ein eigener Name hat Vorrang.
 - **Lebenslauf:** Ei 30 Minuten → Baby 1 Tag → Teenager 2 Tage → erwachsen 5 Tage → Oma 2 Tage → stirbt an Altersschwäche. Bei der Oma sinkt die Sättigung um 18 statt 20 pro Stunde. Das Ei schlüpft auch ohne Spielerin. Ist die App offen, wackelt das Ei, bekommt einen Riss, und Evi schlüpft live mit Ton.
 - **Pflegetakt:** Abnahme pro Stunde im Wachzustand (Sättigung/Stimmung/Sauberkeit): Baby 45/35/30, Teenager 28/22/18, erwachsen 20/15/12. Ein voller Wert fällt damit nach etwa 1,5 / 2,5 / 3,5 Stunden auf „niedrig“ (30).
 - **Aktionen:** Füttern +40 Sättigung. Saubermachen +60 Sauberkeit. Medizin heilt, kostet aber 5 Stimmung. Bei voller Anzeige passiert nichts.
@@ -39,6 +51,7 @@ Im Ordner `handy-app` mit installiertem Node.js: `npm start`. Anschließend `htt
   - **Ballfangen:** Drück Mitte oder links, wenn der Ball im Feld ist. Rechts bricht ab. Der Ball wird von Runde zu Runde schneller.
   - **Links oder rechts?:** Rate mit links oder rechts, wohin Evi springt. Die Mitte bricht ab.
   - **Melodie merken:** Die Tonfolge beginnt mit 2 Tönen und wird jede Runde einen Ton länger. Ein falscher Ton beendet das Spiel, geschaffte Runden zählen.
+- **Tagesablauf (seit 0.9):** siehe oben – müde Zeiten, Gute Nacht, Mahlzeiten, Naschen, Wünsche, Mittagsschlaf fürs Baby.
 - **Schlaf:** 23 bis 7 Uhr, für alle Lebensphasen. Die Bedürfnisse sinken dann nur mit 15 % des Tagestempos. Licht aus gibt einmal pro Nacht +10 Stimmung, und die Stimmung sinkt kaum. Bleibt das Licht an, sinkt sie mit 60 %. Morgens geht das Licht von selbst an.
 - **Krankheit und Tod:** Steht ein Wert insgesamt 4 Stunden auf null, wird Evi krank: Stimmung sinkt 1,5-mal so schnell, Spielen geht nicht. Ohne Medizin stirbt sie nach 24 Stunden Krankheit, bei Dauervernachlässigung nach 30 Stunden. Danach startet „Neues Ei“ die nächste Generation; Münzen bleiben erhalten.
 - **Ton:** Signale bei Schlüpfen, Entwicklung, Krankheit, Tod und wenn ein Wert niedrig wird; abschaltbar. Web-Apps können keine Benachrichtigung senden, solange sie geschlossen sind – Ereignisse in der Abwesenheit werden beim nächsten Öffnen kurz gemeldet.
@@ -62,6 +75,6 @@ Die drei Touch-Tasten erproben die Bedienung des späteren Geräts. Ein Steuerkr
 
 ## Prüfen und ändern
 
-`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen sowie die Oma-Phase mit Tod durch Alter (15 Prüfungen). `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
+`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen, die Oma-Phase mit Tod durch Alter sowie seit 0.9 müde Zeiten, Abendritual, Mahlzeiten, Naschen und Bauchweh, Mittagsschlaf, Wünsche und die Übernahme von 0.8-Spielständen (24 Prüfungen). `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
 
 Bei Offline-Änderungen die Cache-Version in `dist/sw.js` erhöhen. Die `.openai/hosting.json` ordnet diesen Unterordner seiner privaten Site zu. Andere Projektdateien werden nicht mit hochgeladen.
