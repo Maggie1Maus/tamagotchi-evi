@@ -283,6 +283,8 @@ Am 20. November 2026 kritisch überarbeitet. Die erste Fassung enthielt zu viel 
 
 **Einspeisestelle für die Batterie:** Laut [Waveshare-Pinbelegung](https://www.waveshare.com/wiki/RP2350-Touch-LCD-2.8) führt der 12-polige Stecker **VBus (5 V)** und GND. Dort speist der Pololu-Wandler über die Schottky-Diode ein (Anode am Wandler, Kathode an VBus). Die USB-C-Buchse bleibt frei zum Programmieren; die Diode verhindert, dass USB-Strom in den Wandler zurückfließt.
 
+**Botland und Waveshare (Websuche am 23. November 2026, Seite selbst nicht geöffnet):** Botland führt Waveshare, auch kleine Displays, z. B. 1,28" rund mit Touch (Waveshare 24155, 18,90 €, laut Seite keine Nachlieferung geplant), 1,54" 240 × 240 (18079), 1,69" 240 × 280 (24382) und Boards mit eingebautem Display (RP2040-LCD-0.96, RP2040 mit 1,28" rundem Display 24580). Unser RP2350-Touch-LCD-2.8 (30706) wurde dort nicht gefunden. Reine Displays brauchen einen eigenen Mikrocontroller, Boards mit Display nicht.
+
 EXP-Tech verkauft laut Nutzerin nur an Unternehmen und scheidet aus. RobotShop EU ließ sich wegen einer Bot-Prüfung nicht prüfen.
 
 **Zum Multimeter:** Ein Mikroampere-Bereich ist laut Produktseite nicht bestätigt, aber auch nicht nötig. Für eine Woche mit 4 × AAA darf das Gerät im Mittel höchstens etwa 5 mA brauchen. Ein Milliampere-Bereich reicht dafür aus.
