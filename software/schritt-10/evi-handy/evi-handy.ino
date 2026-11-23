@@ -9,7 +9,7 @@
 // Echte Retro-Gamer-Tasten über den MCP23017 (tasten.h, Belegung vom 23.11.2026):
 //   Steuerkreuz hoch/runter = Auswahl im Menü bewegen (Festhalten blättert)
 //   A = Menü öffnen / OK, B = zurück / schließen, START = Menü öffnen oder schließen
-//   L und R werden in den Spielen gebraucht, RESET hat noch keine Aufgabe.
+//   L und R werden in den Spielen gebraucht, RESET schaltet den Bildschirm aus und an.
 // Etappe 2: die drei Spiele (spiele.ino). Etappe 3: Name ändern und Hilfe (name-hilfe.ino).
 // Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, ab Baby bis Oma).
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
@@ -33,7 +33,9 @@
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 80;
-const uint32_t DUNKEL_NACH_MS = 60000;       // ohne Berührung geht die Beleuchtung nach 1 Minute aus
+// Wunsch der Nutzerin vom 24.11.2026: Der Bildschirm bleibt an; RESET schaltet ihn aus und wieder an.
+// Eine Zahl > 0 lässt ihn wieder von selbst ausgehen (z. B. 60000 = nach 1 Minute ohne Berührung).
+const uint32_t DUNKEL_NACH_MS = 0;
 const ms_t SPEICHERN_ALLE = 30 * MINUTE;     // Flash schonen: sonst nur bei Ereignissen
 const uint32_t TAKT_MS = 120;                // wie TICK_MS in der App
 const ms_t ERSTES_EI = MINUTE;               // wie RESTART_EGG_MS: das allererste Ei schlüpft nach 1 Minute
@@ -738,8 +740,21 @@ void taste(Taste k) {
   }
 }
 
+// RESET schaltet den Bildschirm aus. Ein laufendes Spiel wird dabei abgebrochen, Gute Nacht und
+// Momente enden. Wieder an geht er mit jeder Taste, jedem Tipper und bei wichtigen Ereignissen.
+void bildschirmAus() {
+  if (spiel.aktiv) spielEnde(true);
+  if (ritual.aktiv) ritualBeenden();
+  momentStoppen(true);
+  menueZeigen(false);
+  bildschirmAn = false;
+  helligkeit(0);
+  dunkelSeit = jetztMs();
+}
+
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
+  if (k == K_RESET) { bildschirmAus(); return; }
   if (spiel.aktiv) {                               // im Spiel gehören die Tasten dem Spiel
     const ms_t jetzt = jetztMs();
     if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);
@@ -981,8 +996,9 @@ void loop() {
     ritualWeiter();
     momentTakt(jetzt);
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
-    // Dunkel nach 1 Minute ohne Berührung, aber nicht mitten in Gute Nacht, einem Spiel oder einem Moment
-    if (bildschirmAn && m - letzteBeruehrung > DUNKEL_NACH_MS && !ritual.aktiv && !spiel.aktiv && moment.art == M_KEINER) {
+    // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)
+    if (DUNKEL_NACH_MS > 0 && bildschirmAn && m - letzteBeruehrung > DUNKEL_NACH_MS && !ritual.aktiv && !spiel.aktiv &&
+        moment.art == M_KEINER) {
       bildschirmAn = false;
       menueZeigen(false);
       helligkeit(0);

@@ -237,7 +237,7 @@ void spielTaste(int k) {
 // Die echten Tasten des Retro Gamers im Spiel
 void spielKnopf(int k) {
   if (k == K_B || k == K_START) { spielTaste(ST_ABBRUCH); return; }
-  if (k == K_RESET) return;
+  if (k == K_RESET) return;          // RESET schaltet den Bildschirm (knopf in evi-handy.ino)
   if (spiel.art == SPIEL_BALL) {
     spielTaste(ST_LINKS);                                  // A und das ganze Steuerkreuz fangen
   } else if (spiel.art == SPIEL_RATEN) {

@@ -24,15 +24,20 @@ void simDisplayVergleichen() {
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
 void laufen(uint32_t ms) { for (uint32_t t = 0; t < ms; t += 10) { simMillis += 10; loop(); } }
+// Eine echte Taste über den nachgebildeten MCP23017 drücken und loslassen
+void druecken(int k) { simTaste(k, true); laufen(60); simTaste(k, false); laufen(60); }
 int main() {
   bildschirmStarten(); bild.cp437(true);
   const ms_t utc = ausOrtszeit(2026, 11, 23, 12, 0);
   uhrSetzen(utc); pet = neuesTier(utc - 4 * TAG); pet.aktualisiert = utc; pet.satt = pet.laune = pet.sauber = 90;
   himmel = himmelBei(utc); moment.naechster = utc + 10 * MINUTE;
   moment.letzterBesonderer = utc;           // heute schon gesehen
+  PRUEFE(tastenStarten(), "Tasten (nachgebildeter MCP23017) bereit");
   bildschirmAn = true; letzteBeruehrung = millis();
-  laufen(70000);
-  PRUEFE(!bildschirmAn, "Bildschirm nach gut 1 Minute dunkel");
+  laufen(5 * 60000);
+  PRUEFE(bildschirmAn, "Bildschirm bleibt an (auch nach 5 Minuten)");
+  druecken(K_RESET);
+  PRUEFE(!bildschirmAn, "RESET schaltet den Bildschirm aus");
   PRUEFE(dunkelSeit > 0, "dunkelSeit gesetzt");
   // Besuch wird fällig, während der Bildschirm dunkel ist
   MomentArt arten[2]; ms_t um[2]; int n = besuchHeute(jetztMs(), arten, um);
@@ -49,13 +54,22 @@ int main() {
   PRUEFE(moment.art == M_KEINER, "Besuch vorbei");
   PRUEFE(immerAn, "Bildschirm blieb an, solange Besuch da war");
   laufen(70000);
-  PRUEFE(!bildschirmAn, "danach wieder dunkel");
-  // nach 4 Minuten Aufwecken: Begrüßung
+  PRUEFE(bildschirmAn, "bleibt nach dem Besuch an");
+  druecken(K_RESET);
+  PRUEFE(!bildschirmAn, "RESET schaltet wieder aus");
+  // nach 4 Minuten mit RESET wieder an: Begrüßung
   laufen(4 * 60000);
   evi.reaktion = R_KEINE;
-  bildschirmEin(); aufgeweckt();
+  druecken(K_RESET);
+  PRUEFE(bildschirmAn, "RESET schaltet wieder an");
   PRUEFE(evi.reaktion == R_GRUSS || evi.reaktion == R_JUBEL, "Begrüßung beim Aufwecken");
   printf("sagt: %s\n", sagen.text);
+  // RESET mitten im Spiel: Spiel abgebrochen, Bildschirm aus; A macht ihn wieder an (ohne Spielzug)
+  spielStarten(SPIEL_BALL); laufen(500);
+  druecken(K_RESET);
+  PRUEFE(!spiel.aktiv && !bildschirmAn, "RESET im Spiel: abgebrochen und aus");
+  druecken(K_A);
+  PRUEFE(bildschirmAn && !menueOffen, "erster Druck macht nur an");
   // kleiner Moment kommt bei hellem Bildschirm
   moment.naechster = jetztMs() + 5000; moment.ruheBisTakt = 0; evi.reaktionBisTakt = 0;
   for (int i = 0; i < 300 && moment.art == M_KEINER; i++) { laufen(100); letzteBeruehrung = millis(); }

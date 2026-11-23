@@ -148,7 +148,8 @@ struct HilfeAbsatz { const char* titel; const char* text; };
 const HilfeAbsatz HILFE[] = {
   {"Tasten", "Das Steuerkreuz ▲▼ wählt im Menü, A bestätigt, B geht zurück, START öffnet und schließt das Menü. "
              "Ohne Tasten geht es mit Tippen: linkes Drittel weiter, Mitte OK, rechtes Drittel zurück. "
-             "Ist der Bildschirm dunkel, macht ihn der erste Druck nur an."},
+             "Der Bildschirm bleibt an. RESET schaltet ihn aus; ist er aus, macht ihn der erste Druck oder Tipper "
+             "nur wieder an. Bei wichtigen Ereignissen und bei Besuch geht er von selbst an."},
   {"Anzeige", "Napf, Herz und Glanz zeigen Sättigung, Stimmung und Sauberkeit. Die Bedürfnisse verändern sich mit "
               "echter Zeit, auch wenn der Bildschirm aus ist."},
   {"Lebenslauf", "Nach 30 Minuten schlüpft Evi aus dem Ei. Als Baby braucht sie etwa alle 1–2 Stunden Pflege, nach "

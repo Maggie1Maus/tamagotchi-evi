@@ -20,7 +20,7 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 Die Etappen 2 bis 4 sind seit dem 23. November 2026 dabei, siehe unten.
 
 **Anders als in der App, wegen des Geräts:**
-- Die Beleuchtung geht nach **1 Minute** ohne Berührung aus. Der erste Tipper schaltet sie nur wieder an. Bei Ereignissen (Wert niedrig, krank, Entwicklung, neuer Wunsch) geht sie von selbst an.
+- **Seit 24. November 2026 bleibt der Bildschirm an** (Wunsch der Nutzerin). **RESET** schaltet ihn aus; dann macht ihn der erste Druck oder Tipper nur wieder an. Bei Ereignissen (Wert niedrig, krank, Entwicklung, neuer Wunsch) und bei Besuch geht er von selbst an. Bis dahin ging die Beleuchtung nach 1 Minute ohne Berührung aus; `DUNKEL_NACH_MS` in `evi-handy.ino` (0 = nie) stellt das bei Bedarf wieder ein.
 - **Gespeichert** wird bei jeder Pflege, bei Ereignissen und sonst alle 30 Minuten (Flash schonen). Die Uhr rechnet die Zeit nach, auch wenn das Board aus war.
 - Die Schrift ist die eingebaute 5×7-Pixelschrift (mit Umlauten). Symbole und Zeichnungen sind aus der App übernommen.
 
@@ -58,6 +58,12 @@ Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrec
 
 **Geprüft (23. November 2026, Cloud):** mit `tools/pc-nachbildung/pruefen.sh` ohne Fehler und Warnungen übersetzt; in der Nachbildung laufen alle drei Spiele bis zum Ende (Münzen, Meldung), alle neun Momente enden mit Evi zurück auf dem Teppich, Besuch schaltet den dunklen Bildschirm ein und der Bildschirm bleibt bis zum Ende an, Begrüßung beim Aufwecken, Name tippen, Hilfe blättern. Bildschirmbilder angesehen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
 
+## Bildschirm bleibt an, RESET schaltet ihn (24. November 2026)
+
+Wunsch der Nutzerin: Der Bildschirm geht nicht mehr nach 1 Minute aus, sondern bleibt an; RESET (hatte noch keine Aufgabe) schaltet ihn aus. `DUNKEL_NACH_MS = 0` in `evi-handy.ino`, `bildschirmAus()` beendet dabei ein Spiel (abgebrochen), Gute Nacht und einen Moment. Wieder an: jede Taste oder jeder Tipper (der erste Druck macht nur an, nach mindestens 3 Minuten begrüßt Evi), ein Ereignis oder Besuch. In der Hilfe ergänzt. Geprüft in der Nachbildung (`ablauf.cpp`, mit nachgebildetem MCP23017): bleibt nach 5 Minuten an, RESET aus und wieder an, Begrüßung, RESET im Spiel, Besuch schaltet ein. **Am Board noch nicht ausprobiert.**
+
+**Achtung Batterien:** Die Hintergrundbeleuchtung braucht den meisten Strom. Dauernd an leeren 4 × AAA deutlich schneller als mit Abschalten nach 1 Minute; wie lange sie halten, ist noch nicht gemessen. Mit Batterien also RESET zum Ausschalten nutzen, oder `DUNKEL_NACH_MS` wieder setzen.
+
 ## Momente in jeder Lebensphase (24. November 2026)
 
 Wie Version 0.12 der App: Die Momente, der Besuch, die Begrüßung und die Tageslaune gibt es jetzt als Baby, Teenager, Erwachsene und Oma (nicht als Ei), jeweils mit Evis eigenen acht Zeichnungen der Phase. `momente.h` (mit `tools/make-momente.mjs` aus `handy-app/dist/img/<phase>-*.png`, Maßstab je Phase wie `ART_SCALE` in der App) enthält `MOMENT_BILD[Phase][8]`; `momenteFuer(Phase)` in `momente.ino` entscheidet, in welchen Phasen. Geprüft in der PC-Nachbildung: Baby (gehen, Fenster, Begrüßung), Teenager (Schmetterling, summen), Oma (drehen, Vogel) zeigen ihre eigenen Zeichnungen, jedes Bild auf dem nachgebildeten Display stimmt. **Am Board noch nicht ausprobiert.**
@@ -91,8 +97,8 @@ Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board 
 | A | Menü öffnen / OK | nächstes Feld, nach der Minute fertig |
 | B | zurück / Menü schließen | Feld zurück |
 | START | Menü öffnen oder schließen | nächstes Feld |
-| Steuerkreuz links / rechts | noch keine Aufgabe (später für „Links oder rechts?“) | Feld zurück / weiter |
-| RESET | noch keine Aufgabe | – |
+| Steuerkreuz links / rechts | in den Spielen (Raten, Melodie) | Feld zurück / weiter |
+| RESET | Bildschirm aus (ein laufendes Spiel wird abgebrochen); ist er aus, macht jede Taste ihn wieder an | – |
 
 - Der erste Druck bei dunklem Bildschirm macht ihn nur an, wie beim Tippen. Jede Taste überspringt „Gute Nacht“.
 - Die Hinweise unten zeigen „▲▼ wählen · A OK · B zurück“ und „A öffnet das Menü“, sobald der MCP23017 gefunden ist; sonst die alten Touch-Hinweise.
