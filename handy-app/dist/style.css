@@ -284,6 +284,22 @@ button { cursor: pointer; touch-action: manipulation; }
 .scene-wrap[data-action="feed"].reacting .pet-character { animation: munch .48s steps(2, end) 4; }
 .scene-wrap[data-action="clean"].reacting .pet-character { animation: wiggle .45s steps(3, end) 3; }
 
+.scene-wrap[data-action="greet"].reacting .pet-character { animation: hop .42s steps(3, end) 2; }
+.scene-wrap[data-action="greet"].reacting .pet-shadow { animation: shadow .42s steps(3, end) 2; }
+.scene-wrap[data-action="cheer"].reacting .pet-character { animation: hop .42s steps(3, end) 4; }
+.scene-wrap[data-action="cheer"].reacting .pet-shadow { animation: shadow .42s steps(3, end) 4; }
+
+/* Evi's own moments: thought cloud, humming notes. The cloud is drawn as black circles with
+   slightly smaller white circles on top, so only its outer outline stays black. */
+.thought .cloud-line { fill: #000; }
+.thought .cloud-fill { fill: #fff; }
+#thought-icon { fill: none; stroke: #000; stroke-width: 1.8px; stroke-linecap: round; stroke-linejoin: round; }
+.hum-notes { visibility: hidden; }
+.hum-notes text { font-family: system-ui, sans-serif; }
+.scene-wrap.humming .hum-notes { visibility: visible; animation: notes 1.6s steps(4, end) infinite; }
+.scene-wrap.playing .thought, .scene-wrap.playing .hum-notes, .scene-wrap.playing #butterfly { display: none; }
+@keyframes notes { from { transform: translateY(4px); } to { transform: translateY(-12px); } }
+
 @keyframes shadow { 50% { transform: scaleX(.8); } }
 @keyframes hop { 50% { transform: translateY(-14px); } }
 @keyframes munch { 50% { transform: translateY(2px); } }

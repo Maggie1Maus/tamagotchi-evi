@@ -8,7 +8,7 @@ Alles Wichtige muss deshalb **im Repository** stehen, nicht nur im lokalen Gedä
 - `Tamagotchi_Anforderungen.md`, `Tamagotchi_Hardware_Cube.md`, `Ideen und Infos.md` – Anforderungen, Hardware, Ideen.
 - `handy-app/` – spielbare Web-App (siehe `handy-app/README.md`), Spielregeln in `handy-app/dist/pet.js`.
 - `software/` – Arduino-/Hardware-Schritte.
-- `entwuerfe/evi/` – Evis Zeichnungen von der Nutzerin.
+- `entwuerfe/evi/` – Evis Zeichnungen von der Nutzerin. In `entwuerfe/evi/momente/` stehen die Bildaufträge für das, was Evi von selbst tut.
 - `entwuerfe/neue-tamagotchis/` – Vorschläge für Partner und weitere Tamagotchis mit Bildaufträgen.
 
 ## Feste Regeln

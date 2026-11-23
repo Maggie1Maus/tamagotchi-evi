@@ -1,4 +1,17 @@
-# Kleines Zuhause – Handy-Prototyp 0.9
+# Kleines Zuhause – Handy-Prototyp 0.10
+
+**Neu in 0.10: Evi tut selbst etwas.** Wunsch der Besitzerin vom 23. November 2026: Evi soll sie ab und zu überraschen. **Vorerst nur die erwachsene Evi.** Was wann passiert, steht in `MOMENTS` in `dist/moments.js`, die Darstellung in `dist/app.js`. Die Momente ändern keine Werte, Münzen oder Regeln.
+
+- **Kleine Momente** alle 5 bis 10 Minuten, solange die App offen ist und Evi wach ist: ein kleiner Spaziergang, zum Fenster gehen und hinausschauen, eine Gedankenwolke (Keks, Ball, Herz, Lied, Essen), summen mit Noten, gähnen, im Kreis drehen. Nie zweimal dasselbe hintereinander. Ist Evi hungrig, traurig oder schmutzig, denkt sie nur an Essen, Spielen oder Baden. Abends ab 22 Uhr und morgens noch müde gähnt sie nur. Kein Ton.
+- **Etwas Besonderes** ein- oder zweimal am Tag zwischen 9 und 21 Uhr, mit Ton: Ein Schmetterling flattert herein, kreist um Evi, landet auf ihrem Kopf („Hihi, das kitzelt!“) und fliegt davon, Evi läuft hinterher und hüpft. Die Zeiten stehen für jeden Tag und jede Evi fest. Der Moment wartet bis 22 Uhr, bis die App offen ist. Wurden beide verpasst, kommt nur einer.
+- **Begrüßung** beim Öffnen und nach mindestens 3 Minuten Abwesenheit: Evi hüpft und sagt „Da bist du ja!“, „Hallo!“ oder „Schön, dass du da bist!“. Beim ersten Besuch des Tages bis 11 Uhr „Guten Morgen!“, nach mehr als 4 Stunden „Da bist du ja endlich!“ (beide mit mehr Hüpfern), abends ab 18 Uhr „Guten Abend!“. Keine Begrüßung, wenn sie schläft oder krank ist.
+- **Bewegung:** Evis Zeichnungen bleiben unverändert. Das ganze Bild wird verschoben, angehoben und beim Laufen nach rechts gespiegelt (von der Besitzerin erlaubt). Gedankenwolke, Noten und Schmetterling sind Pixelgrafik des Spiels.
+- **Eigene Zeichnungen für die Momente:** Bildaufträge in `../entwuerfe/evi/momente/Bildauftraege.md` (laufen, hüpfen, gähnen, staunen, Fenster, denken, singen, drehen). `tools/build-art.ps1` übernimmt jede vorhandene Datei `evi-erwachsen-<name>.png` aus diesem Ordner, das Spiel benutzt sie dann sofort. Bis dahin: vorhandene Bilder (gähnen = „müde“, Schmetterling = „glücklich“).
+- **Unterbrechen:** Menü offen, Spiel, Gute Nacht oder ein Dialog verhindern neue Momente. Pflege beendet einen Moment, Evi läuft zurück auf ihren Teppich. Bei Spielstart, Gute Nacht, Einschlafen, Krankheit oder wenn die App in den Hintergrund geht, ist sie sofort wieder auf dem Teppich.
+- **Gespeichert** wird nur, wann zuletzt etwas Besonderes war (`kleines-zuhause.moments`), getrennt vom Spielstand.
+- Bei „Bewegung reduzieren“ in den Systemeinstellungen läuft und dreht Evi sich nicht, und der Schmetterling sitzt nur kurz auf ihrem Kopf.
+
+## Version 0.9
 
 **Neu in 0.9: Evis Tag.** Beschlossen mit der Besitzerin am 21. November 2026. Alle Zahlen stehen in `RULES` in `dist/pet.js`.
 
@@ -68,7 +81,7 @@ Im Ordner `handy-app` mit installiertem Node.js: `npm start`. Anschließend `htt
 
 ## Vorbereitung auf das spätere Gerät
 
-`dist/pet.js` enthält ausschließlich Zustand und Spielregeln. Zeit und Befehle werden als Parameter übergeben; zurück kommt ein neuer Zustand. Kein DOM, kein `localStorage`, keine Timer und keine Grafik in diesem Modul. `dist/app.js` verbindet die Regeln mit Browser-Uhr, Speicherung und Oberfläche und steuert Evis Bewegungen. `dist/evi-sprite.js` zeichnet Evi: Eine Pose (Augen, Mund, Ohren- und Schwanzwinkel, Atmung, Schmutz) wird zu einem Pixelraster aus Schwarz und Weiß. Das Modul hat keine Abhängigkeit vom Browser. Damit lassen sich die Einzelbilder später als Bitmaps für das Gerät exportieren, zum Beispiel für die 320 × 240 Pixel des Waveshare. Die Anzeige benötigt keine externen Dateien oder Schriftanbieter.
+`dist/pet.js` enthält ausschließlich Zustand und Spielregeln. `dist/moments.js` entscheidet ebenso ohne Browser, wann Evi etwas von selbst tut. Zeit und Befehle werden als Parameter übergeben; zurück kommt ein neuer Zustand. Kein DOM, kein `localStorage`, keine Timer und keine Grafik in diesem Modul. `dist/app.js` verbindet die Regeln mit Browser-Uhr, Speicherung und Oberfläche und steuert Evis Bewegungen. `dist/evi-sprite.js` zeichnet Evi: Eine Pose (Augen, Mund, Ohren- und Schwanzwinkel, Atmung, Schmutz) wird zu einem Pixelraster aus Schwarz und Weiß. Das Modul hat keine Abhängigkeit vom Browser. Damit lassen sich die Einzelbilder später als Bitmaps für das Gerät exportieren, zum Beispiel für die 320 × 240 Pixel des Waveshare. Die Anzeige benötigt keine externen Dateien oder Schriftanbieter.
 
 Die spätere Hardware ist noch offen. JavaScript ist daher kein Versprechen unveränderter Übernahme auf einen Mikrocontroller. Zustandsmodell, Regeln und Verhaltensprüfungen dienen als klare Vorlage für einen gegebenenfalls nötigen C++-Port. Anzeige, Tasten, Uhr und Speicher brauchen eigene Hardwareadapter. Die drei Pflegeaktionen sind Spielbefehle. Die Cube-Testregeln werden nicht automatisch verändert.
 
@@ -76,6 +89,6 @@ Die drei Touch-Tasten erproben die Bedienung des späteren Geräts. Ein Steuerkr
 
 ## Prüfen und ändern
 
-`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen, die Oma-Phase mit Tod durch Alter sowie seit 0.9 müde Zeiten, Abendritual, Mahlzeiten, Naschen und Bauchweh, Mittagsschlaf, Wünsche, Aufwecken in der Nacht und die Übernahme von 0.8-Spielständen (26 Prüfungen). `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
+`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen, die Oma-Phase mit Tod durch Alter sowie seit 0.9 müde Zeiten, Abendritual, Mahlzeiten, Naschen und Bauchweh, Mittagsschlaf, Wünsche, Aufwecken in der Nacht und die Übernahme von 0.8-Spielständen (26 Prüfungen). `tests/moments.test.mjs` prüft seit 0.10 Evis eigene Momente: nur Erwachsen, Abstand 5–10 Minuten, Auswahl je nach Zustand ohne Wiederholung, Zeiten und Warten der besonderen Momente sowie die Begrüßung (7 Prüfungen). `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
 
 Bei Offline-Änderungen die Cache-Version in `dist/sw.js` erhöhen. Die `.openai/hosting.json` ordnet diesen Unterordner seiner privaten Site zu. Andere Projektdateien werden nicht mit hochgeladen.

@@ -48,7 +48,7 @@ const DEFAULT_NAME = 'Evi';
 const clamp = value => Math.min(100, Math.max(0, value));
 const hourOf = t => new Date(t).getHours();
 export const isNight = t => { const h = hourOf(t); return h >= RULES.sleep.from || h < RULES.sleep.to; };
-const dayKey = t => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+export const dayKey = t => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
 // One key per night (the evening's date), so the light bonus and the ritual count once per night.
 const nightKey = t => dayKey(t - RULES.sleep.to * HOUR);
 
@@ -119,7 +119,7 @@ export const mealDue = (pet, t = pet.updatedAt) => (mealAt(t) && pet.lastMeal !=
 
 // Wishes: up to one per time slot, at a pseudo-random but fixed minute, so a closed app and
 // an open app agree. They depend on the day and on the pet, and can be fulfilled once.
-function hash(text) {
+export function hash(text) {
   let h = 2166136261;
   for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
   h ^= h >>> 15; h = Math.imul(h, 2246822507); h ^= h >>> 13;

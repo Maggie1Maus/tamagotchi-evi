@@ -2,9 +2,27 @@
 
 Stand: 23. November 2026
 
-## Ideen: Evi tut selbst Dinge (23. November 2026, nur Brainstorming)
+## Version 0.10: Evi tut selbst etwas (23. November 2026, gebaut, noch nicht veröffentlicht)
 
-Die Nutzerin hat Evi meist offen auf dem Handy und fände es süß, wenn Evi sie ab und zu mit etwas überrascht, das sie von selbst tut. Von Claude vorgeschlagen, **noch nichts beschlossen:**
+Beschlüsse der Nutzerin vom 23. November 2026, zur Ideensammlung unten:
+- Alle Ideen gefallen ihr; sie bleiben als Sammlung im Projektstand. Die **Schatzkiste noch nicht** umsetzen.
+- Evis Bild darf **gespiegelt** werden.
+- Häufigkeit: alle 5–10 Minuten etwas Kleines, 1–2 Mal am Tag etwas Besonderes. **Ton nur bei etwas Besonderem.**
+- Umsetzen sollte Claude zuerst die zwei, drei einfachsten Sachen.
+- Sie wünscht sich für das, was Evi tut, **eigene neue Zeichnungen**. Bis dahin werden die vorhandenen Bilder benutzt. **Erst einmal nur bei der erwachsenen Evi.**
+
+Umgesetzt in 0.10, Einzelheiten in `handy-app/README.md`:
+- **Begrüßung** beim Öffnen und nach mindestens 3 Minuten Abwesenheit: Evi hüpft und sagt zum Beispiel „Da bist du ja!“, „Guten Morgen!“ oder „Guten Abend!“.
+- **Kleine Momente** alle 5–10 Minuten: Spaziergang, zum Fenster gehen, Gedankenwolke, summen, gähnen, im Kreis drehen. Kein Ton.
+- **Besonderes** 1–2 Mal am Tag (9–21 Uhr, wartet bis 22 Uhr): Ein Schmetterling besucht Evi, mit Ton.
+- Nur die erwachsene Evi, nur bei offener App, nicht im Schlaf und nicht bei Krankheit. Die Momente ändern keine Werte. Neue Datei `handy-app/dist/moments.js` ohne Browserabhängigkeit, damit sie später aufs Waveshare passt.
+- **Bildaufträge** für 8 neue Zeichnungen der erwachsenen Evi: `entwuerfe/evi/momente/Bildauftraege.md` (laufen, hüpfen, gähnen, staunen, Fenster, denken, singen, drehen). Jede Zeichnung, die dort unter dem richtigen Namen liegt, übernimmt `build-art.ps1`, und das Spiel benutzt sie sofort. Die Erweiterung von `build-art.ps1` konnte in der Cloud nicht ausgeführt werden (kein PowerShell); beim ersten neuen Bild auf dem PC prüfen.
+- Geprüft: 33 Regelprüfungen mit `npm test` (7 neue), auch in zwei anderen Zeitzonen. Im Browser mit vorgestellter Uhr bei 390 und 320 Pixeln: alle sechs kleinen Momente in 75 Minuten im richtigen Abstand, Schmetterling von Anfang bis Ende, Spiegeln beim Laufen nach rechts, Begrüßung („Guten Morgen!“, nach 5 Minuten ja, nach 1 Minute nein), Menü offen verhindert Momente, Füttern beendet einen Moment, Spielstart holt Evi sofort zurück, „Links oder rechts?“ funktioniert weiter, nachts nichts, Baby/Teenager/Oma ohne Momente, „Danke!“ nach Wunsch, „Bewegung reduzieren“. Mit Platzhalterbildern geprüft, dass neue Zeichnungen (laufen, hüpfen, gähnen) sofort benutzt werden. Keine Konsolenfehler.
+- **Veröffentlichen** wie bei 0.9: von ChatGPT aus `git pull` und `handy-app/dist` unter dem bestehenden Projekt neu veröffentlichen.
+
+## Ideen: Evi tut selbst Dinge (23. November 2026, Ideensammlung)
+
+Die Nutzerin hat Evi meist offen auf dem Handy und fände es süß, wenn Evi sie ab und zu mit etwas überrascht, das sie von selbst tut. Von Claude vorgeschlagen, Beschlüsse siehe Version 0.10:
 - **Rahmen:** Die Zeichnungen bleiben 1:1. Bewegt wird nur das ganze Bild (laufen, hüpfen, wackeln, drehen), dazu Dinge um Evi herum (Blasen, Ball, Schmetterling, Fenster). Nur nette Überraschungen ohne Strafe, wie bei den Wünschen. Überraschungen hinterlassen Spuren, damit man nichts verpasst, wenn man nur ab und zu hinschaut.
 - **Alltagsmomente** alle paar Minuten bei offener App: durchs Zimmer laufen, aus dem Fenster schauen, Gedankenblasen (Keks, Ball, Herz, Mond), summen mit Noten, gähnen, niesen, Schwanz jagen, kurzes Nickerchen.
 - **Besuch im Zimmer:** Schmetterling, Vogel am Fenster, rollender Ball, Sternschnuppe nachts, Wetter im Fenster (Regen, Schnee, Regenbogen).
@@ -14,8 +32,7 @@ Die Nutzerin hat Evi meist offen auf dem Handy und fände es süß, wenn Evi sie
 - **Eigener Kopf:** Tageslaune (verspielt, verschmust, verfressen, verträumt), später vererbbar; Lieblingsspiel und Lieblingskeks; Tagebuch mit einem Satz pro Abend als Grundlage fürs Familienalbum.
 - **Besondere Tage:** Adventskalender vom 1. bis 24. Dezember, Schnee im Fenster, Weihnachten, Silvester, Entwicklungstag feiern.
 - **Hilfreiche neue Zeichnungen (nur auf Wunsch):** Evi von hinten am Fenster, Evi springt, Evi trägt etwas im Maul, Evi malt.
-- **Claudes Vorschlag zum Anfang:** Begrüßung, Alltagsmomente, Fundstücke mit Schatzkiste; Adventskalender bis zum 1. Dezember.
-- **Offene Fragen an die Nutzerin:** Darf Evis Bild gespiegelt werden, damit sie in beide Richtungen läuft? Wie oft sollen Momente kommen? Ton bei Überraschungen ja oder nein?
+- **Noch offen aus der Sammlung:** Schatzkiste (vorerst nicht), Bilder malen für die Wand, Verstecken, Ball bringen, „Während du weg warst …“, Schütteln, Tageslaune, Lieblingsspiel, Tagebuch, weiterer Besuch (Vogel, Sternschnuppe, Wetter), Adventskalender ab 1. Dezember, Feiertage.
 
 ## Ideen: Partner, Nachwuchs und neue Tamagotchis (21. November 2026, nur Brainstorming)
 

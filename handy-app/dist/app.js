@@ -2,6 +2,7 @@ import { RULES, createPet, restorePet, advancePet, careForPet, finishPlay, renam
   stageAt, stageName, blockedReason, isNight, isAsleep, sleepKind, isTired, isRested, mealAt, mealDue,
   currentWish, isWoken, stayAwake } from './pet.js';
 import { drawEvi } from './evi-sprite.js';
+import { MOMENTS, momentsFor, nextDelay, chooseMoment, dueSpecial, greeting } from './moments.js';
 import { ART } from './art.js';
 
 // Version 0.7 started the game anew in a new save slot. Since 0.9 a browser that never had
@@ -24,6 +25,7 @@ let lastSaved = '';
 let reactionMessage = '';
 let reactionTimer;
 let missedNote = '';
+let lastSeen = 0;           // when the app was last open, for Evi's greeting
 
 // ---------- Loading ----------
 
@@ -48,6 +50,7 @@ try {
     try { parsed = JSON.parse(raw); pet = restorePet(parsed, Date.now()); } catch { pet = null; }
     invalidSave = !pet;
     if (pet && parsed?.version >= 2) missedNote = missedEvents(parsed, pet);
+    if (pet && Number.isFinite(parsed?.updatedAt)) lastSeen = parsed.updatedAt;
   }
 } catch { storageError = true; }
 pet ??= createPet(Date.now(), { eggDuration: RESTART_EGG_MS });
@@ -91,7 +94,8 @@ const SOUNDS = {
   coin: [[1320, 60], [1760, 90]],
   miss: [[196, 140]],
   crack: [[440, 40]],
-  wish: [[784, 90], [1047, 140]]
+  wish: [[784, 90], [1047, 140]],
+  special: [[1047, 70], [1319, 70], [1568, 70], [2093, 200]]
 };
 function beep(name) {
   if (!settings.sound || !audio) return;
@@ -108,7 +112,7 @@ function beep(name) {
     }
     t += ms / 1000 + 0.03;
   }
-  if (!['coin', 'miss', 'crack', 'wish'].includes(name)) {
+  if (!['coin', 'miss', 'crack', 'wish', 'special'].includes(name)) {
     try { navigator.vibrate?.(160); } catch { /* not supported */ }
   }
 }
@@ -138,7 +142,8 @@ const evi = {
   twitchUntil: 0, twitchSide: 'L', nextTwitch: random(40, 90),
   wobbleUntil: 0, nextWobble: random(15, 40),
   hatchUntil: 0, hatchPending: false,
-  reaction: '', reactionUntil: 0
+  reaction: '', reactionUntil: 0,
+  artOverride: ''             // a moment can show another of her drawings for a while, e.g. 'muede' to yawn
 };
 
 function eviPose() {
@@ -191,7 +196,8 @@ function artChoice(pose) {
   if (!set) return null;
   if (stage === 'egg') return [stage, set.base];
   const cheering = evi.tick < evi.reactionUntil && evi.reaction !== 'medicine';
-  const mood = cheering ? 'gluecklich'
+  const glad = ['greet', 'cheer'].includes(evi.reaction) && set[MOMENT_ART.hop] ? MOMENT_ART.hop : 'gluecklich';
+  const mood = cheering ? glad : evi.artOverride && set[evi.artOverride] ? evi.artOverride
     : MOOD_ART[evi.mood] ?? (evi.tired ? 'muede' : evi.allGood ? 'gluecklich' : 'base');
   return [stage, set[mood] ?? set.base ?? set.gluecklich];
 }
@@ -246,6 +252,7 @@ function eviTick() {
     flash(`${pet.name} ist geschlüpft! Willkommen!`, 6000);
   }
   if (evi.mood === 'sleeping' && t % 8 === 0) $('sleep-z-text').textContent = ['z', 'zZ', 'zZz'][(t / 8) % 3];
+  runMoments();
   // Hatch exactly on time while someone is watching.
   if (evi.stage === 'egg' && Date.now() >= pet.hatchAt) tick();
   drawEviNow();
@@ -256,7 +263,8 @@ function react(action, ticks = Math.round(2400 / TICK_MS)) {
   evi.reactionUntil = evi.tick + ticks;
   scene.classList.remove('reacting');
   scene.dataset.action = action;
-  $('reaction-symbol').textContent = { feed: '♥', snack: '♥', play: '♪', clean: '✦', medicine: '+', hatch: '✦', evolve: '✦' }[action] ?? '♥';
+  $('reaction-symbol').textContent = { feed: '♥', snack: '♥', play: '♪', clean: '✦', medicine: '+', hatch: '✦', evolve: '✦',
+    greet: '♥', cheer: '♥' }[action] ?? '♥';
   void scene.getBoundingClientRect();
   scene.classList.add('reacting');
   setTimeout(() => scene.classList.remove('reacting'), 2400);
@@ -353,6 +361,7 @@ function render() {
   $('stage-badge').textContent = stageName(d.stage);
   $('coins-value').textContent = pet.coins;
   scene.dataset.mood = d.mood;
+  if (['egg', 'dead', 'sleeping', 'sick', 'tummy'].includes(d.mood) && (moment.gen || walker.x || walker.flip)) stopMoment(true);
   scene.classList.toggle('sleeping', d.mood === 'sleeping');
   scene.classList.toggle('lights-off', d.mood === 'sleeping' && pet.lightOff);
   evi.stage = d.stage;
@@ -380,23 +389,31 @@ function render() {
 // ---------- Wishes ----------
 
 let shownWish = null;      // start time of the wish in the bubble, to notice a new one
-let thanksUntil = 0;
+// Something Evi says for a few seconds ("Danke!", a greeting). It covers a wish only for that long.
+let saying = { text: '', icon: '', until: 0 };
+let sayTimer;
 function renderWish(now) {
   const bubble = $('wish-bubble');
   const wish = ritualShow.active || game.active ? null : currentWish(pet, now);
   if (wish && wish.start !== shownWish && shownWish !== null) beep('wish');
   shownWish = wish ? wish.start : 0;
-  const thanks = now < thanksUntil;
-  bubble.hidden = !wish && !thanks;
+  const talking = now < saying.until;
+  bubble.hidden = !wish && !talking;
   if (bubble.hidden) return;
-  const [icon, text] = thanks ? ['i-heart', 'Danke!'] : wishText(wish, now);
+  const [icon, text] = talking ? [saying.icon, saying.text] : wishText(wish, now);
   bubble.querySelector('use').setAttribute('href', `#${icon}`);
   bubble.querySelector('span').textContent = text;
-  bubble.setAttribute('aria-label', thanks ? 'Wunsch erfüllt' : `${pet.name} wünscht sich: ${text}`);
+  bubble.setAttribute('aria-label', talking ? `${pet.name} sagt: ${text}` : `${pet.name} wünscht sich: ${text}`);
+}
+function say(text, icon = 'i-heart', ms = 3000) {
+  saying = { text, icon, until: Date.now() + ms };
+  renderWish(Date.now());
+  clearTimeout(sayTimer);
+  sayTimer = setTimeout(() => renderWish(Date.now()), ms + 50);
 }
 /** After a fulfilled wish: thanks in the bubble and a coin sound. */
 function wishGranted() {
-  thanksUntil = Date.now() + 3000;
+  say('Danke!', 'i-heart', 3000);
   beep('coin');
   setTimeout(() => render(), 3100);
 }
@@ -519,6 +536,9 @@ function performAction(action) {
     else startGame(action.slice(5));
     return;
   }
+  // Whatever Evi was doing by herself, now you are taking care of her.
+  stopMoment();
+  moment.quietUntil = evi.tick + QUIET_TICKS;
   const before = pet;
   const result = careForPet(pet, action, now);
   pet = result.pet;
@@ -571,6 +591,7 @@ function startRitualShow() {
     ['Zudecken … schön kuschelig.', 2600, () => react('feed')],
     [`Licht aus. Gute Nacht, ${pet.name}! ♥`, 2400]
   ];
+  stopMoment(true);
   ritualShow.active = true;
   let at = 0;
   for (const [text, ms, effect] of steps) {
@@ -603,6 +624,7 @@ const later = (fn, ms) => game.timers.push(setTimeout(fn, ms));
 
 function startGame(kind) {
   showMenu(false);
+  stopMoment(true);
   for (const timer of game.timers) clearTimeout(timer);
   Object.assign(game, { active: true, kind, round: 1, hits: 0, note: '', timers: [], busy: false });
   scene.classList.add('playing');
@@ -741,6 +763,306 @@ function endGame(aborted) {
   save();
 }
 
+// ---------- Evi's own moments ----------
+// moments.js decides what and when; this shows it. Each moment is a small script (a generator):
+// it changes the picture, then yields how many ticks (120 ms) to wait before it goes on.
+// Evi's drawings stay as they are: she is only moved, lifted or mirrored as a whole.
+
+const MOMENTS_KEY = 'kleines-zuhause.moments';
+const QUIET_TICKS = 120;            // about 15 s without a new moment after a greeting or care
+const STEP = 2;                     // scene units per tick while walking
+let momentMemory = { lastSpecial: 0 };
+try { momentMemory = { ...momentMemory, ...JSON.parse(localStorage.getItem(MOMENTS_KEY) || '{}') }; } catch { /* defaults */ }
+function saveMoments() {
+  try { localStorage.setItem(MOMENTS_KEY, JSON.stringify(momentMemory)); } catch { /* only this session */ }
+}
+
+// The owner's drawings for the moments (entwuerfe/evi/momente/, see Bildauftraege.md). Each one is
+// used as soon as it exists in art.js; until then Evi shows her usual drawing for her mood.
+const MOMENT_ART = { walk: 'laufen', window: 'fenster', think: 'denken', hum: 'singen', yawn: 'gaehnen',
+  spin: 'drehen', hop: 'huepfen', wonder: 'staunen' };
+/** The first of these drawings that exists for Evi's stage, or '' for her usual one. */
+const drawn = (...names) => names.find(name => ART[evi.stage]?.[name]) ?? '';
+
+// Where Evi is: x is the distance from her rug, flip mirrors her picture, lift raises it (a step, a hop).
+const walker = { x: 0, flip: false, lift: 0 };
+const moment = { gen: null, kind: '', wait: 0, last: '', next: Date.now() + nextDelay(), quietUntil: 0 };
+
+function placeEvi() {
+  const pos = $('evi-pos'), flipper = $('evi-flip');
+  if (walker.x) pos.setAttribute('transform', `translate(${walker.x} 0)`);
+  else pos.removeAttribute('transform');
+  const mirror = walker.flip ? ` translate(${2 * FLOOR.x} 0) scale(-1 1)` : '';
+  if (walker.lift || mirror) flipper.setAttribute('transform', `translate(0 ${-walker.lift})${mirror}`);
+  else flipper.removeAttribute('transform');
+  // The speech bubble stays above her head, but inside the screen.
+  $('wish-bubble').style.left = `${Math.min(58, Math.max(4, 58 + walker.x / 3.2)).toFixed(1)}%`;
+}
+
+function* walkTo(x) {
+  if (walker.x === x) return;
+  const before = evi.artOverride;
+  evi.artOverride = drawn(MOMENT_ART.walk) || before;
+  walker.flip = x > walker.x;           // drawn facing left, tail on the right: mirrored when she walks right
+  for (let steps = 0; walker.x !== x; steps++) {
+    const left = x - walker.x;
+    walker.x += Math.sign(left) * Math.min(Math.abs(left), STEP);
+    walker.lift = Math.floor(steps / 2) % 2 ? 2 : 0;
+    placeEvi();
+    yield 1;
+  }
+  walker.lift = 0;
+  evi.artOverride = before;
+  placeEvi();
+}
+/** Back to her rug, facing you again. */
+function* walkHome() {
+  yield* walkTo(0);
+  walker.flip = false;
+  placeEvi();
+}
+function* hop(times = 1, height = 8) {
+  const before = evi.artOverride;
+  for (let i = 0; i < times; i++) {
+    evi.artOverride = drawn(MOMENT_ART.hop) || before;
+    for (const lift of [height / 2, height, height, height / 2, 0]) { walker.lift = lift; placeEvi(); yield 1; }
+    evi.artOverride = before;
+    yield 2;
+  }
+}
+
+const THOUGHTS = {
+  cookie: ['i-cookie', 'Denkt an Kekse'], ball: ['i-ball', 'Denkt ans Spielen'], heart: ['i-heart', 'Denkt an dich ♥'],
+  note: ['i-note', 'Denkt an ein Lied'], food: ['i-food', 'Denkt ans Essen'], clean: ['i-clean', 'Denkt ans Baden'],
+  sun: ['i-sun', 'Schaut aus dem Fenster'], moon: ['i-moon', 'Schaut aus dem Fenster']
+};
+function showThought(kind) {
+  const cloud = $('thought');
+  if (kind) $('thought-icon').setAttribute('href', `#${THOUGHTS[kind][0]}`);
+  cloud.setAttribute('visibility', kind ? 'visible' : 'hidden');
+}
+
+// The butterfly: two pixel pictures (wings open and closed), 15 × 12 pixels, drawn twice as large.
+const pixelPath = rows => rows.flatMap((row, y) => [...row].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
+const BUTTERFLY = [pixelPath([
+  '...#.......#...',
+  '....#.....#....',
+  '.####.#.#.####.',
+  '######.#.######',
+  '#...##.#.##...#',
+  '#...##.#.##...#',
+  '######.#.######',
+  '.####..#..####.',
+  '...##..#..##...',
+  '..####.#.####..',
+  '.#####.#.#####.',
+  '..##...#...##..'
+]), pixelPath([
+  '...#.......#...',
+  '....#.....#....',
+  '.....#.#.#.....',
+  '....##.#.##....',
+  '...###.#.###...',
+  '...#.#.#.#.#...',
+  '...###.#.###...',
+  '....##.#.##....',
+  '.....#.#.#.....',
+  '....##.#.##....',
+  '....##.#.##....',
+  '.......#.......'
+])];
+const BUTTERFLY_SIZE = { w: 30, h: 24 };
+function placeButterfly(x, y, open) {
+  const fly = $('butterfly');
+  fly.setAttribute('transform', `translate(${Math.round(x)} ${Math.round(y)})`);
+  $('butterfly-wings').setAttribute('d', BUTTERFLY[open ? 0 : 1]);
+  fly.setAttribute('visibility', 'visible');
+}
+const hideButterfly = () => $('butterfly').setAttribute('visibility', 'hidden');
+/** Where the butterfly sits on Evi's head (its top left corner), wherever she is. */
+function headSpot() {
+  const image = $('evi-image'), top = Number(image.getAttribute('y')) || 100, height = Number(image.getAttribute('height')) || 80;
+  return { x: FLOOR.x + walker.x - BUTTERFLY_SIZE.w / 2, y: top + height * 0.17 - BUTTERFLY_SIZE.h + 2 };
+}
+function* flutterTo(fly, x, y, speed = 2.4) {
+  while (Math.hypot(x - fly.x, y - fly.y) > speed) {
+    const angle = Math.atan2(y - fly.y, x - fly.x);
+    fly.x += Math.cos(angle) * speed;
+    fly.y += Math.sin(angle) * speed;
+    fly.t++;
+    placeButterfly(fly.x, fly.y + Math.sin(fly.t / 3) * 4, Math.floor(fly.t / 2) % 2 === 0);
+    yield 1;
+  }
+  Object.assign(fly, { x, y });
+}
+
+const SCRIPTS = {
+  *walk() {
+    const side = Math.random() < 0.5 ? -1 : 1;
+    flash('Ein kleiner Spaziergang …', 9000);
+    yield* walkTo(side * random(30, side < 0 ? 66 : 56));    // stays in the room
+    yield 10;
+    yield* hop(1, 5);
+    yield 12;
+    yield* walkHome();
+  },
+  *window() {
+    flash(THOUGHTS.sun[1], 12000);
+    yield* walkTo(-66);
+    walker.flip = false;
+    evi.artOverride = drawn(MOMENT_ART.window);
+    placeEvi();
+    yield 6;
+    showThought(new Date().getHours() < 17 ? 'sun' : 'moon');
+    yield 45;
+    showThought(null);
+    evi.artOverride = '';
+    yield* walkHome();
+  },
+  *think(icon) {
+    flash(THOUGHTS[icon][1], 6000);
+    evi.artOverride = drawn(MOMENT_ART.think);
+    showThought(icon);
+    yield 45;
+    showThought(null);
+    evi.artOverride = '';
+  },
+  *hum() {
+    flash('Summt ein Lied ♪', 6000);
+    evi.artOverride = drawn(MOMENT_ART.hum);
+    scene.classList.add('humming');
+    yield 45;
+    scene.classList.remove('humming');
+    evi.artOverride = '';
+  },
+  *yawn() {
+    flash('Gäähn …', 3000);
+    evi.artOverride = drawn(MOMENT_ART.yawn, 'muede');
+    yield 22;
+    evi.artOverride = '';
+  },
+  *spin() {
+    flash('Dreht sich im Kreis', 4000);
+    evi.artOverride = drawn(MOMENT_ART.spin);
+    for (let i = 0; i < 10; i++) { walker.flip = !walker.flip; walker.lift = i % 2 ? 0 : 3; placeEvi(); yield 3; }
+    Object.assign(walker, { flip: false, lift: 0 });
+    evi.artOverride = '';
+    placeEvi();
+    say('Hihi!', 'i-heart', 2000);
+    yield 16;
+  },
+  // Special: a butterfly flutters in through the window, circles Evi, rests on her head and
+  // flies off to the right. She runs after it a little and hops.
+  *butterfly() {
+    beep('special');
+    flash('Oh, ein Schmetterling!', 30000);
+    const fly = { x: -20, y: 96, t: 0 };
+    if (reducedMotion.matches) {
+      const spot = headSpot();
+      evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
+      placeButterfly(spot.x, spot.y, true);
+      yield 60;
+      hideButterfly();
+      evi.artOverride = '';
+      return;
+    }
+    let spot = headSpot();
+    yield* flutterTo(fly, spot.x, spot.y - 24);
+    evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
+    for (let i = 0; i < 48; i++, fly.t++) {
+      spot = headSpot();
+      placeButterfly(spot.x + Math.sin(i / 4) * 22, spot.y - 22 + Math.cos(i / 4) * 7, Math.floor(fly.t / 2) % 2 === 0);
+      yield 1;
+    }
+    Object.assign(fly, { x: spot.x, y: spot.y - 22 });
+    yield* flutterTo(fly, spot.x, spot.y, 1.5);
+    for (let i = 0; i < 32; i++) { placeButterfly(spot.x, spot.y, Math.floor(i / 8) % 2 === 0); yield 1; }
+    say('Hihi, das kitzelt!', 'i-heart', 2600);
+    yield 10;
+    evi.artOverride = 'gluecklich';
+    // Off it goes, and Evi runs after it for a bit.
+    const chase = walkTo(52);
+    for (let running = true; fly.x < 340; fly.t++) {
+      fly.x += 2.6;
+      fly.y -= fly.y > 40 ? 1.2 : 0;
+      placeButterfly(fly.x, fly.y + Math.sin(fly.t / 3) * 4, Math.floor(fly.t / 2) % 2 === 0);
+      if (running && fly.t % 2) running = !chase.next().done;
+      yield 1;
+    }
+    hideButterfly();
+    yield* chase;
+    yield* hop(2, 9);
+    evi.artOverride = '';
+    flash('Tschüss, Schmetterling!', 3000);
+    yield 14;
+    yield* walkHome();
+  }
+};
+
+function startMoment(kind, arg) {
+  Object.assign(moment, { kind, gen: SCRIPTS[kind](arg), wait: 0 });
+}
+/** Ends a moment's extras: thought, notes, butterfly, borrowed drawing. */
+function clearMoment() {
+  Object.assign(moment, { gen: null, kind: '', wait: 0 });
+  showThought(null);
+  scene.classList.remove('humming');
+  hideButterfly();
+  evi.artOverride = '';
+  walker.lift = 0;
+}
+/** Stops a moment. Evi walks back to her rug, or is there at once (snap) for games, the ritual and sleep. */
+function stopMoment(snap = false) {
+  const away = walker.x !== 0 || walker.flip;
+  clearMoment();
+  if (snap) {
+    Object.assign(walker, { x: 0, flip: false });
+    placeEvi();
+  } else if (away) Object.assign(moment, { kind: 'home', gen: walkHome() });
+}
+
+const momentAllowed = () => !game.active && !ritualShow.active && gameMenu.hidden && !document.querySelector('dialog[open]')
+  && !evi.hatchPending && evi.tick >= evi.reactionUntil && evi.tick >= moment.quietUntil;
+const RESTING = ['egg', 'dead', 'sleeping', 'sick', 'tummy'];
+
+/** Called every tick: runs the current moment, or about once a second looks whether a new one is due. */
+function runMoments() {
+  if (moment.gen) {
+    if (moment.wait > 0) { moment.wait--; return; }
+    const step = moment.gen.next();
+    if (step.done) { clearMoment(); placeEvi(); } else moment.wait = Math.max(0, (step.value ?? 1) - 1);
+    return;
+  }
+  if (evi.tick % 8 || !momentAllowed()) return;
+  const now = Date.now(), { stage, mood } = describePet(pet, now);
+  if (!momentsFor(stage) || RESTING.includes(mood) || isWoken(pet, now)) return;
+  const special = dueSpecial(pet.bornAt, now, momentMemory.lastSpecial);
+  if (special) {
+    momentMemory.lastSpecial = now;
+    saveMoments();
+    moment.next = Math.max(moment.next, now + MOMENTS.every[0]);
+    startMoment(special.kind);
+    return;
+  }
+  if (now < moment.next) return;
+  moment.next = now + nextDelay();
+  const choice = chooseMoment({ mood, tired: isTired(pet, now), still: reducedMotion.matches, last: moment.last });
+  if (!choice) return;
+  moment.last = choice.kind;
+  startMoment(choice.kind, choice.icon);
+}
+
+/** Evi is glad you are here: she hops and says hello. Not while she sleeps or feels ill; for now only as an adult. */
+function greet(since) {
+  const now = Date.now(), { stage, mood } = describePet(pet, now);
+  if (!momentsFor(stage) || RESTING.includes(mood) || isWoken(pet, now) || game.active || ritualShow.active) return;
+  const { text, big } = greeting(now, since);
+  stopMoment(true);
+  react(big ? 'cheer' : 'greet', big ? 20 : 12);
+  say(text, 'i-heart', 3500);
+  moment.quietUntil = evi.tick + QUIET_TICKS;
+}
+
 // ---------- Keys ----------
 
 /** Every key press counts as playing with Evi: woken at night, she stays up 5 more minutes. */
@@ -793,8 +1115,16 @@ nameInput.addEventListener('input', () => nameInput.setCustomValidity(''));
 for (const button of document.querySelectorAll('[data-close]')) button.addEventListener('click', () => button.closest('dialog').close());
 
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState !== 'visible') { endGame(true); endRitualShow(); }
+  if (document.visibilityState !== 'visible') {
+    endGame(true);
+    endRitualShow();
+    stopMoment(true);
+    lastSeen = Date.now();
+    tick();
+    return;
+  }
   tick();
+  if (lastSeen && Date.now() - lastSeen >= MOMENTS.greet.after) greet(lastSeen);
 });
 window.addEventListener('pagehide', tick);
 window.addEventListener('pageshow', tick);
@@ -811,6 +1141,7 @@ setInterval(eviTick, TICK_MS);
 render();
 save();
 if (missedNote) flash(missedNote, 8000);
+if (lastSeen && document.visibilityState === 'visible') setTimeout(() => greet(lastSeen), 700);
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => {
     // Gameplay still works online; offline availability is not guaranteed.

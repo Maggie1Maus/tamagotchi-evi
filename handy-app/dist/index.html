@@ -59,19 +59,32 @@
         <path id="night-shade" class="night-only" fill="url(#dither)" d="M0 0h320v224H0z" shape-rendering="crispEdges"/>
         <!-- While a game runs, it fills the whole screen: plain background and a floor line. -->
         <g class="game-only" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h320v224H0z"/><path fill="#000000" d="M0 184h320v2H0z"/></g>
+        <!-- evi-pos moves Evi through the room; everything inside walks with her. -->
         <g id="evi-pos">
           <ellipse class="pet-shadow" cx="167" cy="179" rx="34" ry="4" fill="#000000"/>
-          <!-- Evi is drawn as pixel art by evi-sprite.js: 2 scene units per pixel. -->
-          <g class="pet-character" shape-rendering="crispEdges">
-            <g id="evi-sprite" transform="translate(91 54) scale(2)">
-              <path id="evi-white" fill="#ffffff"/>
-              <path id="evi-black" fill="#000000"/>
+          <!-- evi-flip mirrors the whole picture when she walks to the right, and lifts it for a step. -->
+          <g id="evi-flip">
+            <!-- Evi is drawn as pixel art by evi-sprite.js: 2 scene units per pixel. -->
+            <g class="pet-character" shape-rendering="crispEdges">
+              <g id="evi-sprite" transform="translate(91 54) scale(2)">
+                <path id="evi-white" fill="#ffffff"/>
+                <path id="evi-black" fill="#000000"/>
+              </g>
+              <!-- Egg, baby, teenager and grandma: the owner's own drawings (img/), shown unchanged. -->
+              <image id="evi-image" visibility="hidden"/>
             </g>
-            <!-- Egg, baby, teenager and grandma: the owner's own drawings (img/), shown unchanged. -->
-            <image id="evi-image" visibility="hidden"/>
           </g>
+          <g class="reaction-symbols" aria-hidden="true"><text id="reaction-symbol" x="213" y="105" text-anchor="middle" font-size="23">♥</text><text x="234" y="116" font-size="14">✦</text></g>
+          <!-- Evi's own moments (moments.js): a thought cloud with one symbol, and humming notes. -->
+          <g id="thought" class="thought" visibility="hidden" aria-hidden="true">
+            <g class="cloud-line"><circle cx="222" cy="86" r="4"/><circle cx="229" cy="76" r="5.5"/><circle cx="238" cy="58" r="13"/><circle cx="252" cy="50" r="15"/><circle cx="266" cy="58" r="13"/><circle cx="252" cy="66" r="12"/></g>
+            <g class="cloud-fill"><circle cx="222" cy="86" r="2"/><circle cx="229" cy="76" r="3.5"/><circle cx="238" cy="58" r="11"/><circle cx="252" cy="50" r="13"/><circle cx="266" cy="58" r="11"/><circle cx="252" cy="66" r="10"/></g>
+            <use id="thought-icon" href="#i-heart" x="241" y="45" width="22" height="22"/>
+          </g>
+          <g class="hum-notes" aria-hidden="true"><text x="214" y="96" font-size="17">♪</text><text x="232" y="80" font-size="14">♫</text></g>
         </g>
-        <g class="reaction-symbols" aria-hidden="true"><text id="reaction-symbol" x="213" y="105" text-anchor="middle" font-size="23">♥</text><text x="234" y="116" font-size="14">✦</text></g>
+        <!-- A visitor for a special moment: a small pixel butterfly with two wing pictures. -->
+        <g id="butterfly" visibility="hidden" aria-hidden="true" shape-rendering="crispEdges"><path id="butterfly-wings" fill="#000000" transform="scale(2)"/></g>
         <g id="sleep-z" class="sleep-z" aria-hidden="true"><rect x="200" y="62" width="44" height="24" fill="#ffffff" stroke="#000000" stroke-width="2"/><text id="sleep-z-text" x="222" y="80" text-anchor="middle" font-size="16" font-weight="700">z</text></g>
         <!-- Ball game: press the middle key while the ball is inside the dotted zone. -->
         <g id="minigame" class="minigame game-ball-ui" aria-hidden="true" shape-rendering="crispEdges">
@@ -150,6 +163,7 @@
     <p><strong>Gute Nacht:</strong> Ab 22 Uhr kannst du Evi ins Bett bringen: Zähne putzen, eine Geschichte, zudecken, Licht aus. Jede Taste überspringt den Ablauf. Evi schläft dann sofort, freut sich und ist am nächsten Morgen ausgeschlafen statt müde.</p>
     <p><strong>Essen:</strong> Frühstück (7–9 Uhr), Mittagessen (11–14 Uhr) und Abendessen (17–20 Uhr) machen satter und froher als Füttern zwischendurch. <strong>Naschen</strong> macht glücklich, aber mehr als 3 Süßigkeiten am Tag geben 2 Stunden Bauchweh. Medizin hilft sofort.</p>
     <p><strong>Wünsche:</strong> Ein paar Mal am Tag wünscht sich Evi etwas, zum Beispiel ein bestimmtes Spiel. Erfüllst du den Wunsch innerhalb einer Stunde, bekommst du 3 Münzen und Evi freut sich. Verpasst du ihn, ist das nicht schlimm.</p>
+    <p><strong>Evi tut auch selbst etwas:</strong> Als Erwachsene läuft sie ab und zu herum, schaut aus dem Fenster, summt, gähnt, dreht sich im Kreis oder denkt an etwas. Ein- bis zweimal am Tag passiert etwas Besonderes, dann hörst du einen Ton. Kommst du nach einer Weile wieder, begrüßt sie dich.</p>
     <p><strong>Aufwecken:</strong> Nachts kannst du Evi aufwecken, zum Beispiel wenn sie Hunger hat. Solange du Tasten drückst, bleibt sie wach. Nach 5 Minuten ohne Tastendruck schläft sie wieder ein, im selben Licht wie vorher.</p>
     <p><strong>Mittagsschlaf:</strong> Das Baby schläft von 12 bis 13 Uhr. Dann bitte nicht stören.</p>
     <p><strong>Vorsicht:</strong> Bleibt ein Wert lange bei null, wird Evi krank und braucht Medizin. Wer sie zu lange vergisst, verliert sie.</p>
