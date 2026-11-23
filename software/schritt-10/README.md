@@ -7,7 +7,7 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
-## Etappe 1 (dieser Stand)
+## Etappe 1
 
 - **Zimmer** wie in der App, pixelgenau: von Microsoft Edge aus `handy-app/dist/index.html` abfotografiert (320 × 224, also 1:1). Das Fenster zeigt Tag, Dämmerung oder Nacht mit Mond und Sternen nach der echten Sonne (`himmel.h` = `sky.js`).
 - **Evi** mit allen Zeichnungen: Ei, Baby, Teenager, Erwachsen, Oma, je mit glücklich, hungrig, traurig, müde, krank, schmutzig, schlafend, im Maßstab der App, auf dem Teppich (Fußpunkt 167/180). Atmen (2 Pixel), Ei wackelt, Schatten. Nach dem Tod das Grab aus der App.
@@ -17,12 +17,46 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Töne** aus der App (Schlüpfen, Entwicklung, Achtung, Wunsch, Münze …).
 - Das **allererste Ei** schlüpft wie in der App nach 1 Minute, jedes neue Ei nach 30 Minuten.
 
-**Noch nicht dabei:** Die drei Spiele (das Menü zeigt sie, Auswählen sagt „kommen in Etappe 2“), Name ändern, Hilfe, Evis eigene Momente, Begrüßung, Tageslaune.
+Die Etappen 2 bis 4 sind seit dem 23. November 2026 dabei, siehe unten.
 
 **Anders als in der App, wegen des Geräts:**
 - Die Beleuchtung geht nach **1 Minute** ohne Berührung aus. Der erste Tipper schaltet sie nur wieder an. Bei Ereignissen (Wert niedrig, krank, Entwicklung, neuer Wunsch) geht sie von selbst an.
 - **Gespeichert** wird bei jeder Pflege, bei Ereignissen und sonst alle 30 Minuten (Flash schonen). Die Uhr rechnet die Zeit nach, auch wenn das Board aus war.
 - Die Schrift ist die eingebaute 5×7-Pixelschrift (mit Umlauten). Symbole und Zeichnungen sind aus der App übernommen.
+
+## Etappen 2 bis 4 (23. November 2026, Wunsch der Nutzerin: „die Spiele und der Rest, der fehlt“)
+
+Vorschau aus der Nachbildung am PC (Schrift dort nur Ersatz): [vorschau-etappe-2-4.png](vorschau-etappe-2-4.png)
+
+**Etappe 2: die drei Spiele** (`spiele.ino`, wie `app.js`): je 5 Runden, jeder Erfolg 2 Münzen, Regeln aus `pet.h` (`spielBeenden`), Wünsche „Ballfangen!“ usw. werden erfüllt. Während des Spiels: weißer Grund mit Bodenlinie, keine Balken oben, Spielstand in der Zeile unten.
+
+| Spiel | Tasten am Gerät | Touch (wie die App) |
+|---|---|---|
+| Ballfangen | A oder Steuerkreuz fängt; B oder START beendet | links oder Mitte fängt, rechts beendet |
+| Links oder rechts? | ◀ oder ▶ raten; B oder START beendet | links/rechts raten, Mitte beendet |
+| Melodie merken | ◀ linkes Feld, A (oder ▲▼) Mitte, ▶ rechtes Feld; B oder START bricht ab | die drei Drittel |
+
+Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrechen gibt keine Münzen („Spiel abgebrochen“). Im Spiel wird alle 40 ms neu gezeichnet, damit der Ball flüssig läuft; der Ball läuft nach echter Zeit.
+
+**Etappe 3: Name ändern und Hilfe** (`name-hilfe.ino`), statt der Dialoge der App eigene Bildschirme:
+- **Name ändern:** Buchstabentafel A–Z, Ä Ö Ü ß, Umschalten (Aa), Bindestrich, Leerzeichen, Löschen, Zurück, OK. Steuerkreuz wählt, A tippt, START speichert, B bricht ab; oder auf die Tafel tippen. Nach dem ersten Buchstaben geht es klein weiter, nach Leerzeichen und Bindestrich wieder groß. Höchstens 20 Bytes (Platz im Spielstand).
+- **Hilfe:** die Texte der App, angepasst an den Retro Gamer (Tasten, Uhr, Spielstand; ohne Handy-Hinweise), 7 Seiten. ◀▶ oder ▲▼ blättern, B oder START schließt; Touch: links zurück, Mitte schließen, rechts weiter.
+
+**Etappe 4: Evis eigene Momente** (`momente.ino`, wie `moments.js` und die Momente in `app.js`), nur für die erwachsene Evi:
+- **Kleine Momente** alle 5–10 Minuten: herumlaufen und hüpfen, aus dem Fenster schauen (Sonne oder Mond in der Gedankenwolke), an etwas denken, summen (♪ ♫), gähnen, sich im Kreis drehen. Hungrig, traurig oder schmutzig denkt sie nur an Essen, Spielen oder Baden; müde gähnt sie.
+- **Besuch** ein- bis zweimal am Tag zwischen 9 und 21 Uhr (wartet bis 22 Uhr): Schmetterling oder Vogel, im Dunkeln eine Sternschnuppe, mit Ton. Gleiche Zeiten wie in der App (Streuwert aus Geburtszeit und Datum).
+- **Begrüßung** mit Hüpfen und „Guten Morgen!“, „Da bist du ja endlich!“, „Guten Abend!“ oder „Hallo!“ …; beim ersten Gruß des Tages die **Tageslaune** (verspielt, verschmust, verfressen, verträumt), die auch die Momente beeinflusst. Unten steht die Laune alle 10 Sekunden im Wechsel.
+- Evis acht Zeichnungen der Momente (laufen, fenster, denken, singen, gaehnen, drehen, huepfen, staunen) 1:1 aus `handy-app/dist/img`, nur verkleinert (Maßstab 0,38) und schwarz-weiß: `momente.h`, erzeugt mit `tools/make-momente.mjs`. Nach rechts läuft sie gespiegelt, wie in der App.
+
+**Anders als in der App, wegen des Geräts:**
+- Kleine Momente nur bei hellem Bildschirm. **Besuch schaltet den Bildschirm ein.** Während eines Moments, eines Spiels und Gute Nacht bleibt der Bildschirm an.
+- Begrüßt wird nach dem Einschalten des Boards und wenn man den Bildschirm nach mindestens 3 Minuten Dunkelheit weckt (statt „App wieder geöffnet“), und morgens beim Aufwachen, wenn der Bildschirm an ist.
+- Wann der letzte Besuch war und ob die Tageslaune heute schon gesagt wurde, steht nur im Arbeitsspeicher; der Spielstand (`speicher.h`) bleibt unverändert. Nach einem Neustart kann darum ein Besuch vom selben Tag noch einmal kommen.
+- Die Zeichen ▲▼◀▶ und „ “ sind in `text.h` ergänzt (Zeichen der 5×7-Schrift).
+
+**Neue Dateien:** `spiele.ino`, `momente.ino`, `name-hilfe.ino` (die Arduino IDE zeigt sie als Reiter und setzt sie hinter `evi-handy.ino`), `extras.h` (Typen und Zustand für Spiele und Momente), `momente.h` (Bilder). Geändert: `evi-handy.ino`, `ton.h` (Töne „Besuch“ und „Zwitschern“, Einzelton), `text.h`.
+
+**Geprüft (23. November 2026, Cloud):** mit `tools/pc-nachbildung/pruefen.sh` ohne Fehler und Warnungen übersetzt; in der Nachbildung laufen alle drei Spiele bis zum Ende (Münzen, Meldung), alle neun Momente enden mit Evi zurück auf dem Teppich, Besuch schaltet den dunklen Bildschirm ein und der Bildschirm bleibt bis zum Ende an, Begrüßung beim Aufwecken, Name tippen, Hilfe blättern. Bildschirmbilder angesehen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
 
 ## Echte Retro-Gamer-Tasten (23. November 2026)
 
@@ -61,10 +95,13 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
   `powershell -ExecutionPolicy Bypass -File software\schritt-10\tools\make-assets.ps1`
 - `tools/preview-assets.ps1`: zeigt den Inhalt von `assets.h` als PNG.
 - `tools/bildschirmfoto.ps1`: holt über USB ein Bildschirmfoto vom laufenden Board (Zeichen `S` über die serielle Schnittstelle). Seriellen Monitor der IDE vorher schließen.
+- `tools/make-momente.mjs`: erzeugt `evi-handy/momente.h` (Evis Zeichnungen der Momente, Symbole der Gedankenwolke, Noten). Läuft in der Cloud mit Node und Playwright; auf dem Haupt-PC nicht nötig.
+- `tools/pc-nachbildung/`: Prüfung am PC ohne Arduino IDE (siehe dortige README).
 
 ## Dateien
 
 - `evi-handy.ino`: Bildschirm, Menü, Tasten-Drittel, Ereignisse, Gute-Nacht-Ablauf, Uhr stellen.
+- `spiele.ino`, `momente.ino`, `name-hilfe.ino`, `extras.h`, `momente.h`: Etappen 2 bis 4 (siehe oben). `tasten.h`: echte Tasten über den MCP23017.
 - `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js`.
 - `uhr.h`: Uhr PCF85063 (I²C 0x51). `speicher.h`: Spielstand mit Prüfsumme. `text.h`: Schrift mit Umlauten. `ton.h`: Töne der App.
 - `board.h`, `touch.h`, `bildschirm.h`: aus Schritt 8/9.

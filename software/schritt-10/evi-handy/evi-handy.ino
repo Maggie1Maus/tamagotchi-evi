@@ -1,4 +1,4 @@
-// Schritt 10, Etappe 1: Die Handy-App auf dem Waveshare RP2350-Touch-LCD-2.8
+// Schritt 10: Die Handy-App auf dem Waveshare RP2350-Touch-LCD-2.8 (Etappen 1–4)
 //
 // Alles an denselben Stellen wie in der Handy-App (handy-app/dist), nur ohne den Rahmen:
 // Zimmer, Balken oben, Zeile unten, Menü rechts, Evi auf dem Teppich, Wunschblase.
@@ -9,9 +9,10 @@
 // Echte Retro-Gamer-Tasten über den MCP23017 (tasten.h, Belegung vom 23.11.2026):
 //   Steuerkreuz hoch/runter = Auswahl im Menü bewegen (Festhalten blättert)
 //   A = Menü öffnen / OK, B = zurück / schließen, START = Menü öffnen oder schließen
-//   L, R und RESET haben noch keine Aufgabe (L/R später für „Links oder rechts?“).
-// Noch nicht dabei (spätere Etappen): die drei Spiele, Name ändern, Hilfe,
-// Evis eigene Momente, Begrüßung und Tageslaune.
+//   L und R werden in den Spielen gebraucht, RESET hat noch keine Aufgabe.
+// Etappe 2: die drei Spiele (spiele.ino). Etappe 3: Name ändern und Hilfe (name-hilfe.ino).
+// Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, nur erwachsen).
+// Gemeinsame Typen und Zustand dafür stehen in extras.h.
 //
 // Board in der Arduino IDE: „Raspberry Pi Pico 2“. Bibliothek: „Adafruit GFX Library“.
 
@@ -27,6 +28,8 @@
 #include "himmel.h"
 #include "speicher.h"
 #include "assets.h"
+#include "momente.h"
+#include "extras.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 80;
@@ -45,14 +48,16 @@ Tier pet;
 Himmel himmel = HIMMEL_TAG;
 ms_t letztesSpeichern = 0;
 bool uhrSollGestelltWerden = false;   // Menü „Uhr stellen“
-uint32_t letzterTakt = 0, letzteRunde = 0, letzteBeruehrung = 0;
+bool nameSollGeaendertWerden = false, hilfeSollGezeigtWerden = false;
+uint32_t letzterTakt = 0, letzteRunde = 0, letzteBeruehrung = 0, letztesBild = 0;
 bool bildschirmAn = true;
 
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_NAME, E_TON, E_HILFE, E_UHR, E_BALL, E_RATEN, E_MELODIE };
 enum Taste { LINKS, MITTE, RECHTS };
-enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG };
+enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
+                          R_GRUSS, R_JUBEL };   // Begrüßung: 2 bzw. 4 Hüpfer
 struct {
   uint32_t takt = 0;
   bool atem = false;
@@ -207,6 +212,9 @@ void melde(const Tier& vorher, ms_t jetzt) {
     piep(TON(TON_ACHTUNG));
     bildschirmEin();
   }
+  // Guten Morgen: Sie wacht auf, während du zuschaust.
+  if (bildschirmAn && schlafArt(vorher, vorher.aktualisiert) == NACHTS && !schlaeft(pet, jetzt) && !geweckt(pet, jetzt))
+    begruessen(vorher.aktualisiert);
 }
 
 // Alle 10 Sekunden und bei Bedarf: Zeit nachrechnen (tick in app.js)
@@ -241,6 +249,19 @@ void zeichneBild(const Bild& b, int x, int y) {
 
 void zeichneSymbol(const Bild& b, int x, int y, uint16_t farbe) { bild.drawBitmap(x, y, b.linien, b.w, b.h, farbe); }
 
+// Gespiegelt (Evi läuft nach rechts): innen weiß, Linien schwarz
+void zeichneBildGespiegelt(const Bild& b, int x, int y) {
+  const int zeile = (b.w + 7) / 8;
+  for (int r = 0; r < b.h; r++) {
+    for (int c = 0; c < b.w; c++) {
+      const int i = r * zeile + c / 8, bit = 0x80 >> (c % 8);
+      const int zx = x + b.w - 1 - c;
+      if (b.linien[i] & bit) bild.drawPixel(zx, y + r, 0);
+      else if (b.maske && (b.maske[i] & bit)) bild.drawPixel(zx, y + r, 1);
+    }
+  }
+}
+
 // Welches Bild passt gerade (artChoice in app.js)
 const Bild* eviBild(Stimmung s, bool jubelt, bool istMuede, bool allesGut, Phase ph) {
   // Reihenfolge in ART: base, gluecklich, hungrig, traurig, muede, krank, schmutzig, schlafend
@@ -264,7 +285,8 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   const bool reagiert = seit < 2400 && evi.reaktion != R_KEINE;
   int dx = 0, dy = 0;
   float schatten = 1;
-  if (reagiert && evi.reaktion == R_SPIELEN && seit < 1260) {          // hop .42s x3
+  const uint32_t hopDauer = evi.reaktion == R_SPIELEN ? 1260 : evi.reaktion == R_GRUSS ? 840 : evi.reaktion == R_JUBEL ? 1680 : 0;
+  if (reagiert && seit < hopDauer) {                                    // hop .42s x3 (Gruß x2, Jubel x4)
     const int k = (seit / 140) % 3; dy = k ? -9 : 0; schatten = k ? 0.87f : 1;
   } else if (reagiert && (evi.reaktion == R_FUETTERN || evi.reaktion == R_NASCHEN) && seit < 1920) {   // munch .48s x4
     dy = ((seit / 240) % 2) ? 2 : 0;
@@ -292,9 +314,20 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   const bool istMuede = ritual.aktiv || (s == S_GLUECKLICH && muede(pet, jetzt));
   const bool allesGut = (pet.satt >= 60 && pet.laune >= 60 && pet.sauber >= 60) || ausgeschlafen(pet, jetzt);
   const Stimmung gezeigt = ritual.aktiv ? S_GLUECKLICH : s;
-  const Bild* b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
-  ellipseFuellen(BODEN_X, BODEN_Y - 1, (int)(b->w * 0.32f * schatten + 0.5f), 4, 0);
-  zeichneBild(*b, BODEN_X + b->ox + dx, BODEN_Y + b->oy - (evi.atem ? 2 : 0) + dy);
+  // Welches Bild (artChoice in app.js): beim Begrüßen „hüpfen“, sonst ein Bild, das ein Moment ausleiht
+  const Bild* b = nullptr;
+  const bool gruss = jubelt && (evi.reaktion == R_GRUSS || evi.reaktion == R_JUBEL);
+  if (gruss && ph == ERWACHSEN) b = MOMENT_BILD[MB_HUEPFEN];
+  else if (!jubelt) b = momentBild(ph);
+  if (!b) b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
+  // Wo: auf dem Teppich, im Moment oder Spiel verschoben, gespiegelt oder angehoben
+  const int wx = geher.x + spiel.eviX;
+  ellipseFuellen(BODEN_X + wx, BODEN_Y - 1, (int)(b->w * 0.32f * schatten + 0.5f), 4, 0);
+  const int oben = BODEN_Y + b->oy - (evi.atem ? 2 : 0);
+  eviOben = oben;
+  eviHoehe = b->h;
+  if (geher.flip) zeichneBildGespiegelt(*b, BODEN_X - b->ox - b->w + wx + dx, oben - geher.lift + dy);
+  else zeichneBild(*b, BODEN_X + b->ox + wx + dx, oben - geher.lift + dy);
 }
 
 void zeichneZ() {
@@ -314,8 +347,9 @@ void zeichneReaktion() {
   const int dy = 6 - stufe * 22 / 4;
   const Bild& gross = evi.reaktion == R_SPIELEN ? SYM_R_NOTE : evi.reaktion == R_PUTZEN || evi.reaktion == R_SCHLUEPFEN ||
                       evi.reaktion == R_ENTWICKLUNG ? SYM_R_STERN : evi.reaktion == R_MEDIZIN ? SYM_R_PLUS : SYM_R_HERZ;
-  zeichneSymbol(gross, 213 - gross.w / 2, 105 - gross.h + dy, 0);
-  zeichneSymbol(SYM_R_STERN_KLEIN, 234, 116 - SYM_R_STERN_KLEIN.h + dy, 0);
+  const int wx = geher.x + spiel.eviX;    // die Zeichen gehen mit Evi mit (evi-pos in der App)
+  zeichneSymbol(gross, 213 + wx - gross.w / 2, 105 - gross.h + dy, 0);
+  zeichneSymbol(SYM_R_STERN_KLEIN, 234 + wx, 116 - SYM_R_STERN_KLEIN.h + dy, 0);
 }
 
 void wunschText(const Wunsch& w, ms_t jetzt, const Bild*& sym, char* text, size_t n) {
@@ -340,7 +374,11 @@ void zeichneBlase(ms_t jetzt) {
   if (redet) { sym = sagen.symbol; strncpy(text, sagen.text, sizeof(text)); }
   else wunschText(w, jetzt, sym, text, sizeof(text));
   // Wie .wish-bubble: oben 27 + 12 %, links 58 %, höchstens 40 % breit
-  const int x = 186, y = 54, maxB = 128;
+  // Die Blase bleibt über ihrem Kopf, aber im Bild: links 58 % + x/3,2, zwischen 4 % und 58 %
+  float prozent = 58 + geher.x / 3.2f;
+  if (prozent < 4) prozent = 4;
+  if (prozent > 58) prozent = 58;
+  const int x = 186 + (int)lroundf(BREITE * (prozent - 58) / 100), y = 54, maxB = 128;
   const int maxZeichen = (maxB - 4 - 16 - sym->w - 5) / 6;
   char zeilen[3][40];
   int n = 0;
@@ -440,6 +478,8 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
       if (aktuellerWunsch(pet, jetzt, w)) { snprintf(aus, n, "Ein Wunsch!"); return; }
       if (ausgeschlafen(pet, jetzt)) { snprintf(aus, n, "Ausgeschlafen! Guten Morgen"); return; }
       if (muede(pet, jetzt)) { snprintf(aus, n, "%s", stundeVon(jetzt) < 12 ? "Gähn … guten Morgen" : "Gähn … Zeit für Gute Nacht?"); return; }
+      // Alle 10 Sekunden im Wechsel sagt die erwachsene Evi ihre Tageslaune.
+      if (phaseBei(pet, jetzt) == ERWACHSEN && (jetzt / 10000) % 2) { launeZeile(jetzt, aus, n); return; }
       snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
     }
   }
@@ -529,7 +569,8 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
     schreibe(bild, RAND_LINKS + (BREITE - RAND_LINKS - textBreite(text)) / 2, 216, text, 0);
     return;
   }
-  if (millis() < meldungBis) snprintf(text, sizeof(text), "%s", meldung);
+  if (spiel.aktiv) spielText(text, sizeof(text));
+  else if (millis() < meldungBis) snprintf(text, sizeof(text), "%s", meldung);
   else stimmungsText(s, jetzt, text, sizeof(text));
   // Links: Name, Phase, Münzen
   int x = RAND_LINKS + 7;
@@ -564,21 +605,31 @@ void zeichneAlles() {
   // Zimmer: direkt in den Bildspeicher (dort 1 = weiß, im Zimmer 1 = schwarz)
   const uint8_t* zimmer = himmel == HIMMEL_TAG ? ZIMMER_TAG : himmel == HIMMEL_DAEMMERUNG ? ZIMMER_DAEMMERUNG : ZIMMER_NACHT;
   uint8_t* puffer = bild.getBuffer();
-  for (int i = 0; i < 40 * 224; i++) puffer[i] = ~zimmer[i];
+  if (spiel.aktiv) {
+    spielHintergrund();                            // Spiele nutzen den ganzen Bildschirm
+  } else {
+    for (int i = 0; i < 40 * 224; i++) puffer[i] = ~zimmer[i];
+    momentZeichnenHinten();                        // Vogel und Sternschnuppe im Fenster
+  }
   memset(puffer + 40 * 224, 0xFF, 40 * (HOEHE - 224));
   // Licht aus: das Zimmer wird zu 50 % gepunktet, Evi bleibt hell
-  if (s == S_SCHLAEFT && pet.lichtAus) {
+  if (!spiel.aktiv && s == S_SCHLAEFT && pet.lichtAus) {
     for (int y = 0; y < 224; y++) {
       const uint8_t m = (y % 2) ? 0xAA : 0x55;
       for (int i = 0; i < 40; i++) puffer[y * 40 + i] &= m;
     }
   }
   zeichneEvi(jetzt, s, ph);
-  if (s == S_SCHLAEFT && !ritual.aktiv) zeichneZ();
   zeichneReaktion();
-  zeichneBlase(jetzt);
+  if (spiel.aktiv) {
+    spielZeichnen();                               // Ball, Pfeile oder Felder liegen vor Evi
+  } else {
+    momentZeichnenVorne();                         // Gedankenwolke, Noten, Schmetterling
+    if (s == S_SCHLAEFT && !ritual.aktiv) zeichneZ();
+    zeichneBlase(jetzt);
+  }
   if (ritual.aktiv) zeichneGeschichte();
-  zeichneStatus(ph);
+  if (!spiel.aktiv) zeichneStatus(ph);            // im Spiel tritt die Leiste zur Seite
   zeichneZeile(ph, s, jetzt);
   if (menueOffen) zeichneMenue();
   zeigen();
@@ -586,6 +637,7 @@ void zeichneAlles() {
 
 // ---------- Aktionen (performAction in app.js) ----------
 void ritualBeginnen() {
+  momentStoppen(true);
   ritual.aktiv = true;
   ritual.start = millis();
   ritual.geschichte = random(0, 10);
@@ -615,7 +667,8 @@ void ritualWeiter() {
 void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
-  if (e == E_NAME || e == E_HILFE) { zeigeMeldung("Kommt in einer späteren Etappe."); return; }
+  if (e == E_NAME) { nameSollGeaendertWerden = true; return; }
+  if (e == E_HILFE) { hilfeSollGezeigtWerden = true; return; }
   if (e == E_UHR) { uhrSollGestelltWerden = true; return; }
   if (e == E_TON) {
     tonAn = !tonAn;
@@ -630,9 +683,12 @@ void aktionAusfuehren(Eintrag e) {
     const Grund g = gesperrt(probe, SPIELEN, jetzt);
     if (g != OK && g != G_VOLL) { grundText(g, SPIELEN, text, sizeof(text)); zeigeMeldung(text); return; }
     if (e == E_SPIELEN) menueZeigen(true, true);
-    else zeigeMeldung("Die Spiele kommen in Etappe 2.");
+    else spielStarten(e == E_BALL ? SPIEL_BALL : e == E_RATEN ? SPIEL_RATEN : SPIEL_MELODIE);
     return;
   }
+  // Was Evi gerade selbst tut: Jetzt kümmerst du dich um sie.
+  momentStoppen(false);
+  moment.ruheBisTakt = evi.takt + RUHE_TAKTE;
   const Aktion a = e == E_FUETTERN ? FUETTERN : e == E_NASCHEN ? NASCHEN : e == E_PUTZEN ? PUTZEN : e == E_MEDIZIN ? MEDIZIN :
                    e == E_LICHT ? LICHT : e == E_RITUAL ? RITUAL : e == E_AUFWECKEN ? AUFWECKEN : NEUES_EI;
   const Tier vorher = pet;
@@ -667,6 +723,7 @@ void taste(Taste k) {
   const ms_t jetzt = jetztMs();
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);   // touch() in app.js
   if (ritual.aktiv) { ritualBeenden(); return; }
+  if (spiel.aktiv) { spielTaste(k == LINKS ? ST_LINKS : k == MITTE ? ST_MITTE : ST_RECHTS); return; }
   if (k == LINKS) {
     if (!menueOffen) { menueZeigen(true); return; }
     gewaehlt = (gewaehlt + 1) % menueAnzahl;
@@ -683,6 +740,12 @@ void taste(Taste k) {
 
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
+  if (spiel.aktiv) {                               // im Spiel gehören die Tasten dem Spiel
+    const ms_t jetzt = jetztMs();
+    if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);
+    spielKnopf(k);
+    return;
+  }
   if (k == K_A) { taste(MITTE); return; }
   if (k == K_B) { taste(RECHTS); return; }
   const ms_t jetzt = jetztMs();
@@ -863,6 +926,8 @@ void setup() {
   himmel = himmelBei(jetzt);
   speichern(jetzt);
   letzteRunde = millis();
+  moment.naechster = jetzt + naechsterAbstand();
+  if (hatStand) begruessenPlanen(geladen.aktualisiert);   // wie beim Öffnen der App: Evi begrüßt dich
   bildschirmEin();
   zeichneAlles();
 }
@@ -876,10 +941,22 @@ void loop() {
     runde();
     bildschirmEin();
   }
+  if (nameSollGeaendertWerden) {
+    nameSollGeaendertWerden = false;
+    nameAendernBildschirm();
+    runde();
+    bildschirmEin();
+  }
+  if (hilfeSollGezeigtWerden) {
+    hilfeSollGezeigtWerden = false;
+    hilfeBildschirm();
+    runde();
+    bildschirmEin();
+  }
 
   int x, y;
   if (tipper(x, y)) {
-    if (!bildschirmAn) bildschirmEin();   // der erste Tipper weckt nur den Bildschirm
+    if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
       bildschirmEin();
       taste(tasteBei(x));
@@ -888,25 +965,32 @@ void loop() {
 
   const int k = naechsteTaste();
   if (k >= 0) {
-    if (!bildschirmAn) bildschirmEin();   // der erste Druck weckt nur den Bildschirm
+    if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Druck weckt nur den Bildschirm
     else {
       bildschirmEin();
       knopf((Knopf)k);
     }
   }
 
+  spielTakt();
   const uint32_t m = millis();
   if (m - letzterTakt >= TAKT_MS) {
     letzterTakt = m;
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
     ritualWeiter();
+    momentTakt(jetzt);
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
-    if (bildschirmAn && m - letzteBeruehrung > DUNKEL_NACH_MS && !ritual.aktiv) {
+    // Dunkel nach 1 Minute ohne Berührung, aber nicht mitten in Gute Nacht, einem Spiel oder einem Moment
+    if (bildschirmAn && m - letzteBeruehrung > DUNKEL_NACH_MS && !ritual.aktiv && !spiel.aktiv && moment.art == M_KEINER) {
       bildschirmAn = false;
       menueZeigen(false);
       helligkeit(0);
+      dunkelSeit = jetzt;
     }
-    if (bildschirmAn) zeichneAlles();
+    if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
+  } else if (spiel.aktiv && bildschirmAn && m - letztesBild >= 40) {
+    zeichneAlles();                       // im Spiel öfter zeichnen, damit der Ball flüssig läuft
+    letztesBild = millis();
   }
 }

@@ -17,6 +17,9 @@ const Note TON_MUENZE[] = {{1320, 60}, {0, 30}, {1760, 90}};
 const Note TON_DANEBEN[] = {{196, 140}};
 const Note TON_RISS[] = {{440, 40}};
 const Note TON_WUNSCH[] = {{784, 90}, {0, 30}, {1047, 140}};
+// Seit Version 0.10/0.11 der App: Besuch (special) und der Vogel (chirp)
+const Note TON_SPEZIAL[] = {{1047, 70}, {0, 30}, {1319, 70}, {0, 30}, {1568, 70}, {0, 30}, {2093, 200}};
+const Note TON_ZWITSCHERN[] = {{1976, 50}, {0, 90}, {2349, 70}, {0, 180}, {1976, 50}, {0, 90}, {2349, 70}};
 
 #define TON(name) name, int(sizeof(name) / sizeof(Note))
 
@@ -41,6 +44,14 @@ void piep(const Note* noten, int laenge) {
   melodieLaenge = laenge;
   notenNummer = 0;
   probenUebrig = 0;
+}
+
+// Ein einzelner Ton, z. B. für die Felder in „Melodie merken“ (tone() in app.js)
+static Note einzelNote[1];
+void tonEinzeln(uint16_t freq, uint16_t ms) {
+  einzelNote[0].freq = freq;
+  einzelNote[0].ms = ms;
+  piep(einzelNote, 1);
 }
 
 static bool naechsteNote() {

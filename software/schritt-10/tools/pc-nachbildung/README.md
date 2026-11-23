@@ -1,0 +1,14 @@
+# Nachbildung am PC (nur zum Prüfen)
+
+In der Cloud gibt es keine Arduino IDE. Damit Änderungen an `evi-handy` trotzdem vor dem Aufspielen geprüft werden können:
+
+```
+bash software/schritt-10/tools/pc-nachbildung/pruefen.sh
+```
+
+- `arduino_zusammensetzen.py` setzt `evi-handy.ino` und die anderen `.ino`-Dateien so zusammen wie die Arduino IDE (Hauptdatei zuerst, dann alphabetisch, Funktionsankündigungen vor die erste Funktion).
+- `ersatz/`: sehr einfache Ersatz-Bibliotheken (Arduino, Wire, SPI, EEPROM, I2S, Adafruit GFX). Die Zeit läuft nur, wenn das Prüfprogramm sie weiterstellt. Die Schrift ist ein Ersatz aus DejaVu Sans Mono, nicht die echte 5×7-Schrift.
+- `bilder.cpp`: Spiele, alle Momente, Begrüßung, Name ändern und Hilfe; speichert Bildschirmbilder als PBM.
+- `ablauf.cpp`: Bildschirm geht aus, Besuch schaltet ihn ein, Begrüßung beim Aufwecken, kleiner Moment.
+
+Ersetzt nicht den Test am Board: Ton, Touch, Tasten und Geschwindigkeit gibt es nur dort.

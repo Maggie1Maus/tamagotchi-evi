@@ -1,0 +1,182 @@
+#include "Arduino.h"
+#include <stdexcept>
+#include <string>
+uint32_t simMillis = 1000;
+SerialC Serial;
+#include "Wire.h"
+TwoWire Wire1;
+#include "SPI.h"
+SPIClass SPI1;
+void (*simNachBild)() = nullptr;
+int simZeilen = 0;
+#include "EEPROM.h"
+EEPROMC EEPROM;
+#include "evi-handy.ino"
+
+static int fehler = 0;
+#define PRUEFE(b, text) do { if (!(b)) { printf("FEHLER: %s\n", text); fehler++; } } while (0)
+
+void foto(const std::string& name) {
+  std::string p = "bilder/" + name + ".pbm";
+  FILE* f = fopen(p.c_str(), "wb");
+  fprintf(f, "P4\n320 240\n");
+  const uint8_t* b = bild.getBuffer();
+  for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
+  fclose(f);
+}
+// Programm laufen lassen: ms Millisekunden in Schritten von 10 ms
+void laufen(uint32_t ms) { for (uint32_t t = 0; t < ms; t += 10) { simMillis += 10; loop(); } }
+void zeichnenJetzt() { zeichneAlles(); }
+
+void vorbereiten(int stunde, int minute) {
+  simNachBild = nullptr;
+  bild.cp437(true);
+  const ms_t utc = ausOrtszeit(2026, 11, 23, stunde, minute);
+  uhrSetzen(utc);
+  pet = neuesTier(utc - 4 * TAG, R::EI_DAUER);   // seit gut 3 Tagen geschlüpft: erwachsen
+  pet.aktualisiert = utc;
+  pet.satt = 90; pet.laune = 90; pet.sauber = 90;
+  pet.muenzen = 12;
+  himmel = himmelBei(utc);
+  spiel = SpielZustand();
+  momentAufraeumen(); geher.x = 0; geher.flip = false;
+  moment.naechster = utc + 10 * MINUTE;
+  moment.ruheBisTakt = 0; moment.letzterBesonderer = utc;   // kein Besuch von selbst
+  menueOffen = false; ritual.aktiv = false;
+  bildschirmAn = true; letzteBeruehrung = millis();
+  evi.reaktion = R_KEINE; evi.reaktionBisTakt = 0;
+  tastenDa = true;
+}
+
+int main() {
+  bildschirmStarten();
+  // ---------- Zimmer und Menü ----------
+  vorbereiten(14, 0);
+  PRUEFE(phaseBei(pet, jetztMs()) == ERWACHSEN, "Evi ist nicht erwachsen");
+  laufen(300); foto("01-zimmer");
+  menueZeigen(true); zeichnenJetzt(); foto("02-menue");
+  menueZeigen(false);
+
+  // ---------- Ballfangen ----------
+  vorbereiten(14, 0);
+  spielStarten(SPIEL_BALL);
+  laufen(900); foto("10-ball");
+  int versuche = 0;
+  while (spiel.aktiv && versuche < 50) {
+    laufen(200);
+    if (spiel.pause <= 0) { const float m = spiel.x + 7; if (m >= 150 && m <= 170) { spielTaste(ST_LINKS); versuche++; if (versuche == 1) { zeichnenJetzt(); foto("11-ball-gefangen"); } } }
+  }
+  laufen(1500);
+  PRUEFE(!spiel.aktiv, "Ballspiel endet nicht");
+  printf("Ball: %d Versuche, Münzen jetzt %u, Meldung: %s\n", versuche, pet.muenzen, meldung);
+  zeichnenJetzt(); foto("12-ball-ende");
+
+  // ---------- Links oder rechts ----------
+  vorbereiten(14, 0);
+  spielStarten(SPIEL_RATEN);
+  laufen(300); foto("20-raten");
+  spielKnopf(K_L); laufen(300); foto("21-raten-sprung");
+  for (int i = 0; i < 10 && spiel.aktiv; i++) { laufen(1500); spielKnopf(i % 2 ? K_L : K_R); }
+  laufen(2500);
+  PRUEFE(!spiel.aktiv, "Raten endet nicht");
+  printf("Raten: Meldung: %s\n", meldung);
+
+  // ---------- Melodie merken ----------
+  vorbereiten(14, 0);
+  spielStarten(SPIEL_MELODIE);
+  laufen(800); foto("30-melodie-vorspielen");
+  for (int runde = 0; runde < 5 && spiel.aktiv; runde++) {
+    for (int w = 0; w < 100 && spiel.beschaeftigt; w++) laufen(100);
+    if (runde == 0) { zeichnenJetzt(); foto("31-melodie-du"); }
+    const int n = spiel.folgeLaenge;
+    for (int i = 0; i < n && spiel.aktiv; i++) { spielTaste(spiel.folge[i]); laufen(250); }
+    laufen(300);
+  }
+  laufen(2000);
+  PRUEFE(!spiel.aktiv, "Melodie endet nicht");
+  printf("Melodie: Meldung: %s\n", meldung);
+  vorbereiten(14, 0);
+  spielStarten(SPIEL_MELODIE);
+  for (int w = 0; w < 100 && spiel.beschaeftigt; w++) laufen(100);
+  spielTaste((spiel.folge[0] + 1) % 3); laufen(100); zeichnenJetzt(); foto("32-melodie-falsch");
+  laufen(1500);
+  PRUEFE(!spiel.aktiv, "falscher Ton beendet nicht");
+  vorbereiten(14, 0);
+  spielStarten(SPIEL_BALL); laufen(500); spielKnopf(K_B); laufen(200);
+  PRUEFE(!spiel.aktiv && strstr(meldung, "abgebrochen"), "B bricht Spiel nicht ab");
+
+  // ---------- Momente ----------
+  struct { MomentArt art; Gedanke g; int h; const char* name; } momente[] = {
+    {M_GEHEN, GD_KEINER, 14, "gehen"}, {M_FENSTER, GD_KEINER, 14, "fenster"}, {M_DENKEN, GD_KEKS, 14, "denken"},
+    {M_SUMMEN, GD_KEINER, 14, "summen"}, {M_GAEHNEN, GD_KEINER, 14, "gaehnen"}, {M_DREHEN, GD_KEINER, 14, "drehen"},
+    {M_FALTER, GD_KEINER, 14, "falter"}, {M_VOGEL, GD_KEINER, 14, "vogel"}, {M_STERN, GD_KEINER, 21, "stern"}};
+  for (auto& mo : momente) {
+    vorbereiten(mo.h, 0);
+    momentStarten(mo.art, mo.g);
+    int takte = 0, bilder = 0;
+    while (moment.art != M_KEINER && takte < 2000) {
+      simMillis += TAKT_MS; letzterTakt = 0; loop(); takte++;
+      if (takte % (mo.art >= M_FALTER ? 25 : 12) == 0 && bilder < 12) { char n[64]; snprintf(n, sizeof n, "40-%s-%02d", mo.name, bilder++); foto(n); }
+    }
+    printf("Moment %-8s: %4d Takte, Evi bei x=%d flip=%d\n", mo.name, takte, geher.x, geher.flip);
+    PRUEFE(moment.art == M_KEINER, "Moment endet nicht");
+    PRUEFE(geher.x == 0 && !geher.flip, "Evi nicht zurück auf dem Teppich");
+  }
+
+  // ---------- Begrüßung und Tageslaune ----------
+  vorbereiten(9, 0);
+  moment.launeTag = -1;
+  begruessen(jetztMs() - 10 * STUNDE);
+  laufen(600); foto("50-gruss");
+  laufen(3500); foto("51-laune");
+  printf("Laune heute: %d\n", launeHeute(jetztMs()));
+  // Pflege während eines Moments: Evi geht nach Hause
+  vorbereiten(14, 0);
+  momentStarten(M_FENSTER, GD_KEINER);
+  for (int i = 0; i < 40; i++) { simMillis += TAKT_MS; letzterTakt = 0; loop(); }
+  aktionAusfuehren(E_PUTZEN);
+  for (int i = 0; i < 80 && moment.art != M_KEINER; i++) { simMillis += TAKT_MS; letzterTakt = 0; loop(); }
+  PRUEFE(geher.x == 0, "nach Pflege nicht nach Hause");
+
+  // ---------- Besuch fällig? ----------
+  vorbereiten(14, 0);
+  moment.letzterBesonderer = 0;
+  MomentArt besuch; bool f = besuchFaellig(jetztMs(), besuch);
+  MomentArt arten[2]; ms_t um[2]; int n = besuchHeute(jetztMs(), arten, um);
+  for (int i = 0; i < n; i++) { Ortszeit o = ortszeit(um[i]); printf("Besuch %d: %s um %02d:%02d\n", i, arten[i] == M_FALTER ? "Schmetterling" : "Vogel", o.stunde, o.minute); }
+  printf("um 14 Uhr fällig: %d\n", f);
+
+  // ---------- Name ändern ----------
+  vorbereiten(14, 0);
+  {
+    static int schritt = 0;
+    schritt = 0;
+    simNachBild = [] {
+      const int k[] = {-2, K_DOWN, K_R, K_A, K_UP, K_A, -1};
+      if (schritt == 0) foto("60-name");
+      if (schritt == 3) foto("61-name-getippt");
+      const int was = k[schritt < 6 ? schritt : 6];
+      schritt++;
+      if (was >= 0) tastenEreignisse |= 1 << was;
+      if (was == -1) { foto("62-name-ende"); throw std::runtime_error("fertig"); }
+    };
+    try { nameAendernBildschirm(); } catch (std::exception&) {}
+    simNachBild = nullptr;
+  }
+  // ---------- Hilfe ----------
+  {
+    static int seiteBild = 0;
+    seiteBild = 0;
+    simNachBild = [] {
+      char n[32]; snprintf(n, sizeof n, "70-hilfe-%d", seiteBild);
+      foto(n);
+      seiteBild++;
+      if (seiteBild > 8) throw std::runtime_error("fertig");
+      tastenEreignisse |= 1 << K_R;
+    };
+    try { hilfeBildschirm(); } catch (std::exception&) {}
+    simNachBild = nullptr;
+  }
+  printf("%s: %d Fehler\n", fehler ? "NICHT OK" : "OK", fehler);
+  return fehler ? 1 : 0;
+}
