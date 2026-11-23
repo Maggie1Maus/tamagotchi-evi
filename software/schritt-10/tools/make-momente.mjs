@@ -5,6 +5,8 @@
 //    staunen) im Maßstab der App (ART_SCALE in app.js: baby 0.344, teen 0.372, adult 0.38, senior 0.4),
 //    nur verkleinert und in Schwarz/Weiß umgerechnet, genau wie make-assets.ps1 es mit den
 //    übrigen Zeichnungen macht (Linien: deckend und dunkel; Maske: deckend). Nichts wird neu gezeichnet.
+//  - Die Besuchsbilder der Nutzerin (Schmetterling 32 × 26, Vogel 23 × 20) aus handy-app/dist/besuch/
+//    (aufbereitet mit handy-app/tools/prepare_besuch.py), unverändert übernommen.
 //  - Die Symbole in der Gedankenwolke (22 px, Strich 1,8 wie #thought-icon in style.css)
 //    und die Summ-Noten ♪ (17 px) und ♫ (14 px).
 //
@@ -90,6 +92,26 @@ for (const [phase, phaseC, SCALE] of PHASEN) {
   lines.push(`static const Bild ${cname} = {${w}, ${h}, ${-Math.round(w / 2)}, ${-h}, ${cname}_L, ${cname}_M};`);
   zeichnungen[phaseC].push(cname);
  }
+}
+lines.push('');
+
+// ---------- Besuch: Schmetterling und Vogel (Bilder der Nutzerin) ----------
+for (const [datei, cname] of [['schmetterling', 'BESUCH_FALTER'], ['vogel', 'BESUCH_VOGEL']]) {
+  const png = readFileSync(join(dist, 'besuch', `${datei}.png`)).toString('base64');
+  const { w, h, data } = await page.evaluate(async png => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${png}`;
+    await img.decode();
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    const g = c.getContext('2d');
+    g.drawImage(img, 0, 0);
+    return { w: c.width, h: c.height, data: Array.from(g.getImageData(0, 0, c.width, c.height).data) };
+  }, png);
+  const at = (x, y) => (y * w + x) * 4;
+  addArray(`${cname}_L`, bits(w, h, (x, y) => data[at(x, y) + 3] > 127 && lum(data, at(x, y)) < 140));
+  addArray(`${cname}_M`, bits(w, h, (x, y) => data[at(x, y) + 3] > 127));
+  lines.push(`static const Bild ${cname} = {${w}, ${h}, 0, 0, ${cname}_L, ${cname}_M};`);
 }
 lines.push('');
 

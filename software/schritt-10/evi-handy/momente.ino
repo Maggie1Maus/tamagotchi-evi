@@ -325,10 +325,10 @@ int huepfen(int mal, int hoehe) {
   return 2;
 }
 
-// Wo der Schmetterling auf Evis Kopf sitzt (headSpot), wo sie auch ist
+// Wo der Schmetterling auf Evis Kopf sitzt (headSpot), wo sie auch ist (Bild 32 × 26)
 void kopfStelle(float& x, float& y) {
-  x = BODEN_X + geher.x - 15;
-  y = eviOben + eviHoehe * 0.17f - 24 + 2;
+  x = BODEN_X + geher.x - BESUCH_FALTER.w / 2;
+  y = eviOben + eviHoehe * 0.17f - BESUCH_FALTER.h + 2;
 }
 
 void falterZeigen(float x, float y, bool offen) {
@@ -354,7 +354,7 @@ bool flattern(float zx, float zy, float tempo) {
   return true;
 }
 
-// Vogel: Bild 0 sitzt, 1 Flügel oben, 2 Flügel unten. Koordinaten wie im Fenster der App.
+// Vogel: Koordinaten wie im Fenster der App. haltung wird seit dem Bild der Nutzerin nicht mehr gebraucht.
 void vogelZeigen(float x, float y, int haltung) {
   vogel.px = x;
   vogel.py = y;
@@ -369,7 +369,7 @@ bool vogelFliegen(float zx, float zy, float tempo) {
     vogel.x += cosf(w) * tempo;
     vogel.y += sinf(w) * tempo;
     vogel.t++;
-    vogelZeigen(vogel.x, vogel.y, (vogel.t / 2) % 2 ? 1 : 2);
+    vogelZeigen(vogel.x, vogel.y + ((vogel.t / 3) % 2 ? 1 : 0), 0);   // im Flug etwas auf und ab
     return false;
   }
   vogel.x = zx;
@@ -377,7 +377,7 @@ bool vogelFliegen(float zx, float zy, float tempo) {
   return true;
 }
 
-const float VOGEL_SITZ_X = 37, VOGEL_SITZ_Y = 43;   // BIRD_PERCH: auf dem Fensterkreuz, oben links
+const float VOGEL_SITZ_X = 37, VOGEL_SITZ_Y = 39;   // BIRD_PERCH: auf dem Fensterkreuz, oben links (Bild 23 × 20)
 
 // Führt den aktuellen Schritt aus. 0 = fertig (gleich weiter), n > 0 = n Takte warten.
 int aktSchritt(int nummer) {
@@ -589,19 +589,24 @@ void momentTakt(ms_t jetzt) {
 }
 
 // ---------- Zeichnen ----------
-// Pixelbilder der App: Schmetterling 15 × 12 (doppelt groß), Vogel 14 × 10 (anderthalbfach)
-const char* const FALTER_BILD[2][12] = {
-  {"...#.......#...", "....#.....#....", ".####.#.#.####.", "######.#.######", "#...##.#.##...#", "#...##.#.##...#",
-   "######.#.######", ".####..#..####.", "...##..#..##...", "..####.#.####..", ".#####.#.#####.", "..##...#...##.."},
-  {"...#.......#...", "....#.....#....", ".....#.#.#.....", "....##.#.##....", "...###.#.###...", "...#.#.#.#.#...",
-   "...###.#.###...", "....##.#.##....", ".....#.#.#.....", "....##.#.##....", "....##.#.##....", ".......#......."}};
-const char* const VOGEL_BILD[3][10] = {
-  {".......####...", "......######..", "......##.####.", "......########", "##...#######..", ".##.########..",
-   "..##########..", "...#########..", "....#######...", ".....#...#...."},
-  {"..###.........", "...###.####...", "....#######...", ".....##.####..", ".....########.", "##..#######...",
-   ".##########...", "...#######....", "", ""},
-  {"..............", ".......####...", "......######..", "......##.####.", "##....########", ".##.#######...",
-   "..#########...", "...######.....", "....###.......", "...###........"}};
+// Besuch seit 24.11.2026: die Bilder der Nutzerin (momente.h: BESUCH_FALTER 32 × 26, BESUCH_VOGEL 23 × 20),
+// innen weiß, Linien schwarz, außen durchsichtig. Der Vogel ist nach links gezeichnet und wird
+// gespiegelt, damit er in Flugrichtung und beim Sitzen ins Zimmer zu Evi schaut (wie in der App).
+// Zeichnet ein Bild gespiegelt und nur innerhalb des Rechtecks (für das Fenster)
+void zeichneBildBeschnitten(const Bild& b, int x, int y, bool spiegeln, int x0, int y0, int x1, int y1) {
+  const int zeile = (b.w + 7) / 8;
+  for (int r = 0; r < b.h; r++) {
+    const int py = y + r;
+    if (py < y0 || py >= y1) continue;
+    for (int c = 0; c < b.w; c++) {
+      const int px = x + (spiegeln ? b.w - 1 - c : c);
+      if (px < x0 || px >= x1) continue;
+      const int i = r * zeile + c / 8, bit = 0x80 >> (c % 8);
+      if (b.linien[i] & bit) bild.drawPixel(px, py, 0);
+      else if (b.maske && (b.maske[i] & bit)) bild.drawPixel(px, py, 1);
+    }
+  }
+}
 
 // Kreis mit Kommaradius wie <circle> im SVG
 void kreisFuellen(float cx, float cy, float r, uint16_t farbe) {
@@ -625,16 +630,7 @@ bool himmelPunkt(int x, int y) {
 void momentZeichnenHinten() {
   if (vogel.sichtbar) {
     const int bx = (int)lroundf(vogel.px), by = (int)lroundf(vogel.py) + 23;
-    for (int r = 0; r < 10; r++) {
-      const char* zeile = VOGEL_BILD[vogel.bild][r];
-      for (int c = 0; zeile[c]; c++) {
-        if (zeile[c] != '#') continue;
-        const int x0 = bx + (3 * c) / 2, x1 = bx + (3 * (c + 1)) / 2, y0 = by + (3 * r) / 2, y1 = by + (3 * (r + 1)) / 2;
-        for (int y = y0; y < y1; y++)
-          for (int x = x0; x < x1; x++)
-            if (x >= 33 && x < 95 && y >= 26 + 23 && y < 95 + 23) bild.drawPixel(x, y, 0);
-      }
-    }
+    zeichneBildBeschnitten(BESUCH_VOGEL, bx, by, true, 33, 26 + 23, 95, 95 + 23);   // nur im Fenster
     // Das Fensterkreuz liegt vor dem Vogel
     bild.fillRect(61, 24 + 23, 4, 75, 0);
     bild.fillRect(31, 58 + 23, 65, 4, 0);
@@ -670,10 +666,7 @@ void momentZeichnenVorne() {
     zeichneSymbol(SYM_NOTEN, 232 + wx, 80 - SYM_NOTEN.h + dy, 0);
   }
   if (falter.sichtbar) {
-    const int fx = (int)lroundf(falter.px), fy = (int)lroundf(falter.py);
-    for (int r = 0; r < 12; r++)
-      for (int c = 0; c < 15; c++)
-        if (FALTER_BILD[falter.bild][r][c] == '#') bild.fillRect(fx + 2 * c, fy + 2 * r, 2, 2, 0);
+    zeichneBild(BESUCH_FALTER, (int)lroundf(falter.px), (int)lroundf(falter.py));
   }
 }
 

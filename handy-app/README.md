@@ -2,6 +2,8 @@
 
 **Neu in 0.12: Evis Momente in jeder Lebensphase.** Wunsch der Besitzerin vom 24. November 2026. Für Baby, Teenager und Oma gibt es jetzt die acht Zeichnungen der Momente (laufen, fenster, denken, singen, gaehnen, drehen, huepfen, staunen) aus `../entwuerfe/evi/momente/`, wie immer nur zugeschnitten, verkleinert und außen durchsichtig (`dist/img/<phase>-<name>.png`, eingetragen in `dist/art.js`). `MOMENTS.stages` in `dist/moments.js` enthält jetzt Baby, Teenager, Erwachsen und Oma: kleine Momente, Besuch, Begrüßung und Tageslaune gibt es in jeder Phase außer dem Ei. `tools/build-art.ps1` verarbeitet die Momente für alle Phasen. Cache-Name `kleines-zuhause-v12-momente`.
 
+**Besuch mit eigenen Bildern (0.12):** Schmetterling und Vogel sind jetzt die kleinen Pixelbilder der Besitzerin aus `../entwuerfe/evi/momente/` (`schmetterling.png`, `vogel.png`), aufbereitet mit `tools/prepare_besuch.py` nach `dist/besuch/`: der Schmetterling unverändert (32 × 26), der Vogel auf drei Viertel verkleinert (23 × 20), damit er in eine Fensterscheibe passt. Es gibt je nur ein Bild: Der Schmetterling schwebt auf und ab statt mit den Flügeln zu schlagen, der Vogel wird gespiegelt (gezeichnet nach links, er schaut in Flugrichtung und beim Sitzen zu Evi). Beide stehen in `sw.js` in der Liste für den Offline-Speicher. `build-art.ps1` lässt `dist/besuch/` in Ruhe.
+
 ## Version 0.11
 
 **Neu in 0.11: Himmel, Tageslaune, mehr Besuch.** Beschlossen mit der Besitzerin am 23. November 2026, wieder nur für die erwachsene Evi (außer dem Himmel).

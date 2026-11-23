@@ -1,6 +1,6 @@
 const CACHE = 'kleines-zuhause-v12-momente';
 const ASSETS = ['./', './index.html', './style.css', './app.js', './pet.js', './moments.js', './sky.js', './evi-sprite.js', './art.js',
-  './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
+  './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest', './besuch/schmetterling.png', './besuch/vogel.png'];
 // Evi's drawings (img/*.png, listed in art.js) are stored as soon as they are first shown.
 const isArt = url => url.pathname.startsWith(new URL('./img/', self.registration.scope).pathname);
 self.addEventListener('install', event => {

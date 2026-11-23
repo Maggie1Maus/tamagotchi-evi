@@ -2,7 +2,7 @@
 
 Stand: 23. November 2026
 
-**Erledigt (24. November 2026): auch Baby, Teenager und Oma.** Je 8 Zeichnungen (`evi-baby-*.png`, `evi-teenager-*.png`, `evi-oma-*.png`) sind seit Version 0.12 in der Handy-App und auf dem Waveshare eingebaut; Evi tut jetzt in jeder Lebensphase außer dem Ei selbst etwas. `schmetterling.png` und `vogel.png` liegen hier ebenfalls, sind aber noch nicht eingebaut.
+**Erledigt (24. November 2026): auch Baby, Teenager und Oma.** Je 8 Zeichnungen (`evi-baby-*.png`, `evi-teenager-*.png`, `evi-oma-*.png`) sind seit Version 0.12 in der Handy-App und auf dem Waveshare eingebaut; Evi tut jetzt in jeder Lebensphase außer dem Ei selbst etwas. `schmetterling.png` und `vogel.png` sind seit 24. November 2026 ebenfalls eingebaut (App und Waveshare; der Vogel auf drei Viertel verkleinert, siehe `handy-app/tools/prepare_besuch.py`).
 
 **Erledigt (23. November 2026):** Alle 8 Zeichnungen sind da und seit Version 0.10.1 im Spiel eingebaut (`handy-app/dist/img/adult-<name>.png`). Bei „Drehen“ hat der Umriss am rechten Ohransatz eine winzige Lücke (1 Pixel). Deshalb erkennt das Werkzeug seitdem „außen“ mit 1 Pixel abgedichtetem Umriss. Die Zeichnung selbst wurde nicht verändert.
 

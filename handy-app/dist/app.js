@@ -853,40 +853,12 @@ function showThought(kind) {
   cloud.setAttribute('visibility', kind ? 'visible' : 'hidden');
 }
 
-// The butterfly: two pixel pictures (wings open and closed), 15 × 12 pixels, drawn twice as large.
-const pixelPath = rows => rows.flatMap((row, y) => [...row].map((c, x) => (c === '#' ? `M${x} ${y}h1v1h-1z` : ''))).join('');
-const BUTTERFLY = [pixelPath([
-  '...#.......#...',
-  '....#.....#....',
-  '.####.#.#.####.',
-  '######.#.######',
-  '#...##.#.##...#',
-  '#...##.#.##...#',
-  '######.#.######',
-  '.####..#..####.',
-  '...##..#..##...',
-  '..####.#.####..',
-  '.#####.#.#####.',
-  '..##...#...##..'
-]), pixelPath([
-  '...#.......#...',
-  '....#.....#....',
-  '.....#.#.#.....',
-  '....##.#.##....',
-  '...###.#.###...',
-  '...#.#.#.#.#...',
-  '...###.#.###...',
-  '....##.#.##....',
-  '.....#.#.#.....',
-  '....##.#.##....',
-  '....##.#.##....',
-  '.......#.......'
-])];
-const BUTTERFLY_SIZE = { w: 30, h: 24 };
-function placeButterfly(x, y, open) {
+// The butterfly: the owner's own picture (entwuerfe/evi/momente/schmetterling.png, 32 × 26, since
+// version 0.12), shown unchanged (dist/besuch/). It has one picture, so it floats up and down instead of flapping.
+const BUTTERFLY_SIZE = { w: 32, h: 26 };
+function placeButterfly(x, y) {
   const fly = $('butterfly');
   fly.setAttribute('transform', `translate(${Math.round(x)} ${Math.round(y)})`);
-  $('butterfly-wings').setAttribute('d', BUTTERFLY[open ? 0 : 1]);
   fly.setAttribute('visibility', 'visible');
 }
 const hideButterfly = () => $('butterfly').setAttribute('visibility', 'hidden');
@@ -901,55 +873,21 @@ function* flutterTo(fly, x, y, speed = 2.4) {
     fly.x += Math.cos(angle) * speed;
     fly.y += Math.sin(angle) * speed;
     fly.t++;
-    placeButterfly(fly.x, fly.y + Math.sin(fly.t / 3) * 4, Math.floor(fly.t / 2) % 2 === 0);
+    placeButterfly(fly.x, fly.y + Math.sin(fly.t / 3) * 4);
     yield 1;
   }
   Object.assign(fly, { x, y });
 }
 
-// The bird (version 0.11): seen through the window, 14 × 10 pixels, drawn 1.5 times as large.
-// It sits on the window cross, or flies with its wing up and down. Coordinates are those of the window.
-const BIRD = {
-  sit: pixelPath([
-    '.......####...',
-    '......######..',
-    '......##.####.',
-    '......########',
-    '##...#######..',
-    '.##.########..',
-    '..##########..',
-    '...#########..',
-    '....#######...',
-    '.....#...#....'
-  ]),
-  up: pixelPath([
-    '..###.........',
-    '...###.####...',
-    '....#######...',
-    '.....##.####..',
-    '.....########.',
-    '##..#######...',
-    '.##########...',
-    '...#######....'
-  ]),
-  down: pixelPath([
-    '..............',
-    '.......####...',
-    '......######..',
-    '......##.####.',
-    '##....########',
-    '.##.#######...',
-    '..#########...',
-    '...######.....',
-    '....###.......',
-    '...###........'
-  ])
-};
-const BIRD_PERCH = { x: 37, y: 43 };            // on the window cross, upper left pane
-function placeBird(x, y, frame) {
+// The bird (version 0.11): seen through the window. Since version 0.12 the owner's own picture
+// (entwuerfe/evi/momente/vogel.png), made three quarters as large so it fits one window pane
+// (tools/prepare_besuch.py, dist/besuch/vogel.png, 23 × 20). Drawn facing left, it is mirrored so it
+// looks the way it flies and, sitting, into the room toward Evi. Coordinates are those of the window.
+const BIRD_SIZE = { w: 23, h: 20 };
+const BIRD_PERCH = { x: 37, y: 39 };            // on the window cross, upper left pane
+function placeBird(x, y) {
   const bird = $('bird');
-  bird.setAttribute('transform', `translate(${Math.round(x)} ${Math.round(y)})`);
-  $('bird-body').setAttribute('d', BIRD[frame]);
+  bird.setAttribute('transform', `translate(${Math.round(x) + BIRD_SIZE.w} ${Math.round(y)}) scale(-1 1)`);
   bird.setAttribute('visibility', 'visible');
 }
 const hideBird = () => $('bird').setAttribute('visibility', 'hidden');
@@ -959,7 +897,7 @@ function* flyBird(bird, x, y, speed = 2) {
     bird.x += Math.cos(angle) * speed;
     bird.y += Math.sin(angle) * speed;
     bird.t++;
-    placeBird(bird.x, bird.y, Math.floor(bird.t / 2) % 2 ? 'up' : 'down');
+    placeBird(bird.x, bird.y + (Math.floor(bird.t / 3) % 2 ? 1 : 0));   // a little up and down in flight
     yield 1;
   }
   Object.assign(bird, { x, y });
@@ -1039,7 +977,7 @@ const SCRIPTS = {
     if (reducedMotion.matches) {
       const spot = headSpot();
       evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
-      placeButterfly(spot.x, spot.y, true);
+      placeButterfly(spot.x, spot.y);
       yield 60;
       hideButterfly();
       evi.artOverride = '';
@@ -1050,12 +988,13 @@ const SCRIPTS = {
     evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
     for (let i = 0; i < 48; i++, fly.t++) {
       spot = headSpot();
-      placeButterfly(spot.x + Math.sin(i / 4) * 22, spot.y - 22 + Math.cos(i / 4) * 7, Math.floor(fly.t / 2) % 2 === 0);
+      placeButterfly(spot.x + Math.sin(i / 4) * 22, spot.y - 22 + Math.cos(i / 4) * 7);
       yield 1;
     }
     Object.assign(fly, { x: spot.x, y: spot.y - 22 });
     yield* flutterTo(fly, spot.x, spot.y, 1.5);
-    for (let i = 0; i < 32; i++) { placeButterfly(spot.x, spot.y, Math.floor(i / 8) % 2 === 0); yield 1; }
+    placeButterfly(spot.x, spot.y);
+    yield 32;                                  // sits still on her head for a while
     say('Hihi, das kitzelt!', 'i-heart', 2600);
     yield 10;
     evi.artOverride = 'gluecklich';
@@ -1064,7 +1003,7 @@ const SCRIPTS = {
     for (let running = true; fly.x < 340; fly.t++) {
       fly.x += 2.6;
       fly.y -= fly.y > 40 ? 1.2 : 0;
-      placeButterfly(fly.x, fly.y + Math.sin(fly.t / 3) * 4, Math.floor(fly.t / 2) % 2 === 0);
+      placeButterfly(fly.x, fly.y + Math.sin(fly.t / 3) * 4);
       if (running && fly.t % 2) running = !chase.next().done;
       yield 1;
     }
@@ -1082,7 +1021,7 @@ const SCRIPTS = {
     flash('Ein Vogel am Fenster!', 30000);
     const bird = { x: 4, y: 18, t: 0 };
     if (reducedMotion.matches) {
-      placeBird(BIRD_PERCH.x, BIRD_PERCH.y, 'sit');
+      placeBird(BIRD_PERCH.x, BIRD_PERCH.y);
       evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
       yield 60;
       hideBird();
@@ -1097,12 +1036,12 @@ const SCRIPTS = {
       if (flying) flying = !flight.next().done;
       yield 1;
     }
-    placeBird(BIRD_PERCH.x, BIRD_PERCH.y, 'sit');
+    placeBird(BIRD_PERCH.x, BIRD_PERCH.y);
     evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
     yield 20;
     beep('chirp');
     flash('Piep, piep!', 4000);
-    for (let i = 0; i < 4; i++) { placeBird(BIRD_PERCH.x, BIRD_PERCH.y - (i % 2 ? 0 : 2), 'sit'); yield 3; }
+    for (let i = 0; i < 4; i++) { placeBird(BIRD_PERCH.x, BIRD_PERCH.y - (i % 2 ? 0 : 2)); yield 3; }
     yield* hop(2, 8);
     yield 16;
     // Off it flies, up and away to the right.
