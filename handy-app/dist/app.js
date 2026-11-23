@@ -307,7 +307,7 @@ function moodMessage(d) {
       if (wish) return 'Ein Wunsch!';
       if (isRested(pet, now)) return 'Ausgeschlafen! Guten Morgen';
       if (isTired(pet, now)) return new Date(now).getHours() < 12 ? 'Gähn … guten Morgen' : 'Gähn … Zeit für Gute Nacht?';
-      // Every other 10 seconds the grown-up Evi tells her mood of the day.
+      // Every other 10 seconds Evi tells her mood of the day (every stage with moments).
       if (momentsFor(d.stage) && Math.floor(now / 10000) % 2) return MOMENTS.tempers[temperOn(pet.bornAt, now)].text.replace('!', '');
       return 'Mitte öffnet das Menü';
     }
@@ -1202,7 +1202,7 @@ function runMoments() {
   startMoment(choice.kind, choice.icon);
 }
 
-/** Evi is glad you are here: she hops and says hello. Not while she sleeps or feels ill; for now only as an adult. */
+/** Evi is glad you are here: she hops and says hello. Not while she sleeps or feels ill, and not as an egg. */
 let lastGreet = 0;
 let temperTimer;
 function greet(since) {

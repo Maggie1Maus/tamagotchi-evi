@@ -42,7 +42,7 @@ Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrec
 - **Name ändern:** Buchstabentafel A–Z, Ä Ö Ü ß, Umschalten (Aa), Bindestrich, Leerzeichen, Löschen, Zurück, OK. Steuerkreuz wählt, A tippt, START speichert, B bricht ab; oder auf die Tafel tippen. Nach dem ersten Buchstaben geht es klein weiter, nach Leerzeichen und Bindestrich wieder groß. Höchstens 20 Bytes (Platz im Spielstand).
 - **Hilfe:** die Texte der App, angepasst an den Retro Gamer (Tasten, Uhr, Spielstand; ohne Handy-Hinweise), 7 Seiten. ◀▶ oder ▲▼ blättern, B oder START schließt; Touch: links zurück, Mitte schließen, rechts weiter.
 
-**Etappe 4: Evis eigene Momente** (`momente.ino`, wie `moments.js` und die Momente in `app.js`), nur für die erwachsene Evi:
+**Etappe 4: Evis eigene Momente** (`momente.ino`, wie `moments.js` und die Momente in `app.js`), zuerst nur für die erwachsene Evi, seit 24. November 2026 in jeder Phase außer dem Ei (siehe oben):
 - **Kleine Momente** alle 5–10 Minuten: herumlaufen und hüpfen, aus dem Fenster schauen (Sonne oder Mond in der Gedankenwolke), an etwas denken, summen (♪ ♫), gähnen, sich im Kreis drehen. Hungrig, traurig oder schmutzig denkt sie nur an Essen, Spielen oder Baden; müde gähnt sie.
 - **Besuch** ein- bis zweimal am Tag zwischen 9 und 21 Uhr (wartet bis 22 Uhr): Schmetterling oder Vogel, im Dunkeln eine Sternschnuppe, mit Ton. Gleiche Zeiten wie in der App (Streuwert aus Geburtszeit und Datum).
 - **Begrüßung** mit Hüpfen und „Guten Morgen!“, „Da bist du ja endlich!“, „Guten Abend!“ oder „Hallo!“ …; beim ersten Gruß des Tages die **Tageslaune** (verspielt, verschmust, verfressen, verträumt), die auch die Momente beeinflusst. Unten steht die Laune alle 10 Sekunden im Wechsel.
@@ -57,6 +57,10 @@ Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrec
 **Neue Dateien:** `spiele.ino`, `momente.ino`, `name-hilfe.ino` (die Arduino IDE zeigt sie als Reiter und setzt sie hinter `evi-handy.ino`), `extras.h` (Typen und Zustand für Spiele und Momente), `momente.h` (Bilder). Geändert: `evi-handy.ino`, `ton.h` (Töne „Besuch“ und „Zwitschern“, Einzelton), `text.h`.
 
 **Geprüft (23. November 2026, Cloud):** mit `tools/pc-nachbildung/pruefen.sh` ohne Fehler und Warnungen übersetzt; in der Nachbildung laufen alle drei Spiele bis zum Ende (Münzen, Meldung), alle neun Momente enden mit Evi zurück auf dem Teppich, Besuch schaltet den dunklen Bildschirm ein und der Bildschirm bleibt bis zum Ende an, Begrüßung beim Aufwecken, Name tippen, Hilfe blättern. Bildschirmbilder angesehen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
+
+## Momente in jeder Lebensphase (24. November 2026)
+
+Wie Version 0.12 der App: Die Momente, der Besuch, die Begrüßung und die Tageslaune gibt es jetzt als Baby, Teenager, Erwachsene und Oma (nicht als Ei), jeweils mit Evis eigenen acht Zeichnungen der Phase. `momente.h` (mit `tools/make-momente.mjs` aus `handy-app/dist/img/<phase>-*.png`, Maßstab je Phase wie `ART_SCALE` in der App) enthält `MOMENT_BILD[Phase][8]`; `momenteFuer(Phase)` in `momente.ino` entscheidet, in welchen Phasen. Geprüft in der PC-Nachbildung: Baby (gehen, Fenster, Begrüßung), Teenager (Schmetterling, summen), Oma (drehen, Vogel) zeigen ihre eigenen Zeichnungen, jedes Bild auf dem nachgebildeten Display stimmt. **Am Board noch nicht ausprobiert.**
 
 ## Flüssiger Ball: nur Geändertes senden (24. November 2026)
 

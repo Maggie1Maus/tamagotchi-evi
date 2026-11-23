@@ -11,7 +11,7 @@
 //   A = Menü öffnen / OK, B = zurück / schließen, START = Menü öffnen oder schließen
 //   L und R werden in den Spielen gebraucht, RESET hat noch keine Aufgabe.
 // Etappe 2: die drei Spiele (spiele.ino). Etappe 3: Name ändern und Hilfe (name-hilfe.ino).
-// Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, nur erwachsen).
+// Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, ab Baby bis Oma).
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
 //
 // Board in der Arduino IDE: „Raspberry Pi Pico 2“. Bibliothek: „Adafruit GFX Library“.
@@ -317,7 +317,7 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   // Welches Bild (artChoice in app.js): beim Begrüßen „hüpfen“, sonst ein Bild, das ein Moment ausleiht
   const Bild* b = nullptr;
   const bool gruss = jubelt && (evi.reaktion == R_GRUSS || evi.reaktion == R_JUBEL);
-  if (gruss && ph == ERWACHSEN) b = MOMENT_BILD[MB_HUEPFEN];
+  if (gruss && momenteFuer(ph)) b = MOMENT_BILD[ph][MB_HUEPFEN];
   else if (!jubelt) b = momentBild(ph);
   if (!b) b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
   // Wo: auf dem Teppich, im Moment oder Spiel verschoben, gespiegelt oder angehoben
@@ -478,8 +478,8 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
       if (aktuellerWunsch(pet, jetzt, w)) { snprintf(aus, n, "Ein Wunsch!"); return; }
       if (ausgeschlafen(pet, jetzt)) { snprintf(aus, n, "Ausgeschlafen! Guten Morgen"); return; }
       if (muede(pet, jetzt)) { snprintf(aus, n, "%s", stundeVon(jetzt) < 12 ? "Gähn … guten Morgen" : "Gähn … Zeit für Gute Nacht?"); return; }
-      // Alle 10 Sekunden im Wechsel sagt die erwachsene Evi ihre Tageslaune.
-      if (phaseBei(pet, jetzt) == ERWACHSEN && (jetzt / 10000) % 2) { launeZeile(jetzt, aus, n); return; }
+      // Alle 10 Sekunden im Wechsel sagt Evi ihre Tageslaune (ab Baby).
+      if (momenteFuer(phaseBei(pet, jetzt)) && (jetzt / 10000) % 2) { launeZeile(jetzt, aus, n); return; }
       snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
     }
   }

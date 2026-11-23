@@ -12,7 +12,15 @@ export const ART = {
     muede: ['img/baby-muede.png', 278, 241],
     krank: ['img/baby-krank.png', 287, 242],
     schmutzig: ['img/baby-schmutzig.png', 286, 241],
-    schlafend: ['img/baby-schlafend.png', 299, 202]
+    schlafend: ['img/baby-schlafend.png', 299, 202],
+    laufen: ['img/baby-laufen.png', 288, 262],
+    fenster: ['img/baby-fenster.png', 267, 260],
+    denken: ['img/baby-denken.png', 281, 262],
+    singen: ['img/baby-singen.png', 278, 262],
+    gaehnen: ['img/baby-gaehnen.png', 299, 272],
+    drehen: ['img/baby-drehen.png', 298, 253],
+    huepfen: ['img/baby-huepfen.png', 294, 253],
+    staunen: ['img/baby-staunen.png', 284, 272]
   },
   teen: {
     base: ['img/teen-base.png', 225, 285],
@@ -22,7 +30,15 @@ export const ART = {
     muede: ['img/teen-muede.png', 232, 251],
     krank: ['img/teen-krank.png', 241, 256],
     schmutzig: ['img/teen-schmutzig.png', 241, 255],
-    schlafend: ['img/teen-schlafend.png', 321, 181]
+    schlafend: ['img/teen-schlafend.png', 321, 181],
+    laufen: ['img/teen-laufen.png', 255, 285],
+    fenster: ['img/teen-fenster.png', 217, 293],
+    denken: ['img/teen-denken.png', 236, 285],
+    singen: ['img/teen-singen.png', 262, 259],
+    gaehnen: ['img/teen-gaehnen.png', 254, 255],
+    drehen: ['img/teen-drehen.png', 272, 285],
+    huepfen: ['img/teen-huepfen.png', 250, 268],
+    staunen: ['img/teen-staunen.png', 239, 287]
   },
   adult: {
     gluecklich: ['img/adult-gluecklich.png', 299, 304],
@@ -49,6 +65,14 @@ export const ART = {
     muede: ['img/senior-muede.png', 282, 265],
     krank: ['img/senior-krank.png', 274, 265],
     schmutzig: ['img/senior-schmutzig.png', 294, 266],
-    schlafend: ['img/senior-schlafend.png', 341, 212]
+    schlafend: ['img/senior-schlafend.png', 341, 212],
+    laufen: ['img/senior-laufen.png', 296, 272],
+    fenster: ['img/senior-fenster.png', 255, 279],
+    denken: ['img/senior-denken.png', 291, 268],
+    singen: ['img/senior-singen.png', 289, 268],
+    gaehnen: ['img/senior-gaehnen.png', 289, 269],
+    drehen: ['img/senior-drehen.png', 307, 274],
+    huepfen: ['img/senior-huepfen.png', 285, 254],
+    staunen: ['img/senior-staunen.png', 287, 274]
   }
 };

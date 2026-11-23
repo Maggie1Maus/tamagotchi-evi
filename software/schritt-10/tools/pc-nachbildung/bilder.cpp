@@ -39,12 +39,12 @@ void foto(const std::string& name) {
 void laufen(uint32_t ms) { for (uint32_t t = 0; t < ms; t += 10) { simMillis += 10; loop(); } }
 void zeichnenJetzt() { zeichneAlles(); }
 
-void vorbereiten(int stunde, int minute) {
+void vorbereiten(int stunde, int minute, ms_t seitGeburt = 4 * TAG) {
   simNachBild = nullptr;
   bild.cp437(true);
   const ms_t utc = ausOrtszeit(2026, 11, 23, stunde, minute);
   uhrSetzen(utc);
-  pet = neuesTier(utc - 4 * TAG, R::EI_DAUER);   // seit gut 3 Tagen geschlüpft: erwachsen
+  pet = neuesTier(utc - seitGeburt, R::EI_DAUER);   // Standard: seit gut 3 Tagen geschlüpft, erwachsen
   pet.aktualisiert = utc;
   pet.satt = 90; pet.laune = 90; pet.sauber = 90;
   pet.muenzen = 12;
@@ -144,6 +144,30 @@ int main() {
     PRUEFE(moment.art == M_KEINER, "Moment endet nicht");
     PRUEFE(geher.x == 0 && !geher.flip, "Evi nicht zurück auf dem Teppich");
   }
+
+  // ---------- Momente als Baby, Teenager und Oma (seit 24.11.2026) ----------
+  struct { ms_t alter; Phase ph; MomentArt art; const char* name; } phasen[] = {
+    {3 * STUNDE, BABY, M_GEHEN, "baby-gehen"}, {3 * STUNDE, BABY, M_FENSTER, "baby-fenster"},
+    {36 * STUNDE, TEEN, M_FALTER, "teen-falter"}, {36 * STUNDE, TEEN, M_SUMMEN, "teen-summen"},
+    {8 * TAG + 12 * STUNDE, OMA, M_DREHEN, "oma-drehen"}, {8 * TAG + 12 * STUNDE, OMA, M_VOGEL, "oma-vogel"}};
+  for (auto& p : phasen) {
+    vorbereiten(14, 0, p.alter);
+    PRUEFE(phaseBei(pet, jetztMs()) == p.ph, "Phase stimmt");
+    momentStarten(p.art, GD_KEINER);
+    int takte = 0, bilder = 0, mitBild = 0;
+    while (moment.art != M_KEINER && takte < 2000) {
+      simMillis += TAKT_MS; letzterTakt = 0; loop(); takte++;
+      if (momentBild(p.ph)) mitBild++;
+      if (takte % 25 == 0 && bilder < 4) { char n[64]; snprintf(n, sizeof n, "45-%s-%02d", p.name, bilder++); foto(n); }
+    }
+    printf("Moment %-12s: %4d Takte, %d Takte mit eigener Zeichnung\n", p.name, takte, mitBild);
+    PRUEFE(moment.art == M_KEINER && geher.x == 0, "Moment endet, Evi zurück");
+    PRUEFE(mitBild > 0, "Moment zeigt eine Zeichnung der Phase");
+  }
+  vorbereiten(9, 0, 3 * STUNDE);
+  begruessen(jetztMs() - 10 * STUNDE);
+  PRUEFE(evi.reaktion == R_GRUSS || evi.reaktion == R_JUBEL, "Baby begrüßt");
+  laufen(500); foto("46-baby-gruss");
 
   // ---------- Begrüßung und Tageslaune ----------
   vorbereiten(9, 0);

@@ -169,7 +169,7 @@ const HilfeAbsatz HILFE[] = {
               "Links oder rechts?: Rate mit ◀ oder ▶, wohin Evi springt. "
               "Melodie merken: Evi spielt Töne auf drei Feldern vor. Spiel sie mit ◀, A und ▶ nach; ein falscher Ton "
               "beendet das Spiel. B beendet jedes Spiel vorzeitig."},
-  {"Evi tut auch selbst etwas", "Als Erwachsene läuft sie ab und zu herum, schaut aus dem Fenster, summt, gähnt, dreht "
+  {"Evi tut auch selbst etwas", "Als Baby, Teenager, Erwachsene und Oma läuft sie ab und zu herum, schaut aus dem Fenster, summt, gähnt, dreht "
                                 "sich im Kreis oder denkt an etwas. Ein- bis zweimal am Tag kommt Besuch: ein "
                                 "Schmetterling oder ein Vogel, und wenn es draußen dunkel ist, eine Sternschnuppe. Dann "
                                 "hörst du einen Ton, und der Bildschirm geht an. Weckst du den Bildschirm nach einer "

@@ -1,4 +1,8 @@
-# Kleines Zuhause – Handy-Prototyp 0.11
+# Kleines Zuhause – Handy-Prototyp 0.12
+
+**Neu in 0.12: Evis Momente in jeder Lebensphase.** Wunsch der Besitzerin vom 24. November 2026. Für Baby, Teenager und Oma gibt es jetzt die acht Zeichnungen der Momente (laufen, fenster, denken, singen, gaehnen, drehen, huepfen, staunen) aus `../entwuerfe/evi/momente/`, wie immer nur zugeschnitten, verkleinert und außen durchsichtig (`dist/img/<phase>-<name>.png`, eingetragen in `dist/art.js`). `MOMENTS.stages` in `dist/moments.js` enthält jetzt Baby, Teenager, Erwachsen und Oma: kleine Momente, Besuch, Begrüßung und Tageslaune gibt es in jeder Phase außer dem Ei. `tools/build-art.ps1` verarbeitet die Momente für alle Phasen. Cache-Name `kleines-zuhause-v12-momente`.
+
+## Version 0.11
 
 **Neu in 0.11: Himmel, Tageslaune, mehr Besuch.** Beschlossen mit der Besitzerin am 23. November 2026, wieder nur für die erwachsene Evi (außer dem Himmel).
 
@@ -98,6 +102,6 @@ Die drei Touch-Tasten erproben die Bedienung des späteren Geräts. Ein Steuerkr
 
 ## Prüfen und ändern
 
-`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen, die Oma-Phase mit Tod durch Alter sowie seit 0.9 müde Zeiten, Abendritual, Mahlzeiten, Naschen und Bauchweh, Mittagsschlaf, Wünsche, Aufwecken in der Nacht und die Übernahme von 0.8-Spielständen (26 Prüfungen). `tests/moments.test.mjs` prüft seit 0.10 Evis eigene Momente: nur Erwachsen, Abstand 5–10 Minuten, Auswahl je nach Zustand ohne Wiederholung, Zeiten und Warten der besonderen Momente sowie die Begrüßung (7 Prüfungen), seit 0.11 auch Tageslaune und Besuch (3 weitere). `tests/sky.test.mjs` vergleicht Sonnenauf- und -untergang mit veröffentlichten Zeiten für Berlin, Frankfurt, München und Hamburg (höchstens 3 Minuten Abweichung) und prüft Tag, Dämmerung und Nacht im Winter und im Sommer (3 Prüfungen). Zusammen 39. `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
+`npm test` prüft Lebensphasen, Schlüpfen, Pflegetakt, Schlaf und Lichtbonus, Krankheit, Tod und neues Ei, Ballspiel-Münzen, Wertebereiche, rückwärts verstellte Uhr, gespeicherte Daten, Übernahme alter Spielstände und Namen, die Oma-Phase mit Tod durch Alter sowie seit 0.9 müde Zeiten, Abendritual, Mahlzeiten, Naschen und Bauchweh, Mittagsschlaf, Wünsche, Aufwecken in der Nacht und die Übernahme von 0.8-Spielständen (26 Prüfungen). `tests/moments.test.mjs` prüft seit 0.10 Evis eigene Momente: seit 0.12 in jeder Phase außer dem Ei (vorher nur Erwachsen), Abstand 5–10 Minuten, Auswahl je nach Zustand ohne Wiederholung, Zeiten und Warten der besonderen Momente sowie die Begrüßung (7 Prüfungen), seit 0.11 auch Tageslaune und Besuch (3 weitere). `tests/sky.test.mjs` vergleicht Sonnenauf- und -untergang mit veröffentlichten Zeiten für Berlin, Frankfurt, München und Hamburg (höchstens 3 Minuten Abweichung) und prüft Tag, Dämmerung und Nacht im Winter und im Sommer (3 Prüfungen). Zusammen 39. `node --check dist/app.js` und `node --check dist/sw.js` prüfen die Syntax. `node make-icons.mjs` erzeugt die PNG-App-Symbole ohne Zusatzpakete.
 
 Bei Offline-Änderungen die Cache-Version in `dist/sw.js` erhöhen. Die `.openai/hosting.json` ordnet diesen Unterordner seiner privaten Site zu. Andere Projektdateien werden nicht mit hochgeladen.

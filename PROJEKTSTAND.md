@@ -1,6 +1,13 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
-Stand: 23. November 2026
+Stand: 24. November 2026
+
+## Version 0.12: Evis Momente in jeder Lebensphase (24. November 2026, gebaut, noch nicht veröffentlicht)
+
+Wunsch der Nutzerin: Evis neue Zeichnungen der Momente für **Baby, Teenager und Oma** (je 8: laufen, fenster, denken, singen, gaehnen, drehen, huepfen, staunen; `entwuerfe/evi/momente/`, hochgeladen am 24. November 2026) einbauen, „nicht mehr nur für die Erwachsene“.
+- **Handy-App:** 24 Zeichnungen mit `handy-app/tools/prepare_art.py` aufbereitet (wie immer nur zugeschnitten, verkleinert, außen durchsichtig) und in `art.js` eingetragen. `MOMENTS.stages` ist jetzt Baby, Teenager, Erwachsen und Oma: Momente, Besuch, Begrüßung und Tageslaune gibt es in jeder Phase außer dem Ei. Hilfe angepasst, `build-art.ps1` verarbeitet die Momente jetzt für alle Phasen, Cache `kleines-zuhause-v12-momente`. 39 Prüfungen bestanden; im Browser mit vorgespulter Zeit gesehen: Baby hüpft und dreht sich, Teenager denkt, summt und dreht sich, Oma läuft.
+- **Waveshare (Schritt 10):** `momente.h` enthält die Zeichnungen aller vier Phasen (im Maßstab der App), Momente, Begrüßung und Tageslaune ab Baby. In der PC-Nachbildung geprüft (Baby, Teenager, Oma mit eigenen Zeichnungen, Display ohne Abweichung), am Board noch nicht.
+- Ebenfalls neu im Entwurfsordner: `schmetterling.png` (32 × 26) und `vogel.png` (31 × 27), eigene kleine Bilder für den Besuch. **Noch nicht eingebaut**; die Nutzerin wird gefragt (Vogel müsste fürs Fenster verkleinert werden, Flügelschlag fiele weg).
 
 ## Version 0.11: Himmel, Tageslaune, mehr Besuch (23. November 2026, gebaut, noch nicht veröffentlicht)
 

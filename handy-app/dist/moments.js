@@ -7,8 +7,9 @@ const MINUTE = 60000, HOUR = 60 * MINUTE;
 const hourOf = t => new Date(t).getHours();
 
 export const MOMENTS = Object.freeze({
-  // For now only the grown-up Evi does things by herself (wish of the owner, 23 November 2026).
-  stages: ['adult'],
+  // Since version 0.12 Evi does things by herself in every life stage, with her own drawings
+  // for baby, teenager, grown-up and grandma (wish of the owner, 24 November 2026). Not as an egg.
+  stages: ['baby', 'teen', 'adult', 'senior'],
   // A small moment every 5 to 10 minutes while the app is open and Evi is awake.
   every: [5 * MINUTE, 10 * MINUTE],
   small: ['walk', 'window', 'think', 'hum', 'yawn', 'spin'],

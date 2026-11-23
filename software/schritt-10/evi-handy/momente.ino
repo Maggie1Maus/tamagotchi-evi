@@ -1,7 +1,8 @@
 // Schritt 10, Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch
 // (moments.js und der Abschnitt „Evi's own moments“ in app.js).
 //
-// Nur die erwachsene Evi tut selbst etwas (Wunsch der Nutzerin vom 23.11.2026). Momente ändern
+// Seit 24.11.2026 in jeder Lebensphase außer dem Ei, mit ihren eigenen Zeichnungen für Baby, Teenager,
+// Erwachsen und Oma (Wunsch der Nutzerin; vorher nur erwachsen). Momente ändern
 // nie die Spielwerte. Ein Moment ist eine Liste von Schritten (Akt); jeder Takt (120 ms) führt
 // den aktuellen Schritt weiter, so wie die Generatoren in app.js mit „yield“.
 //
@@ -53,6 +54,9 @@ void launeZeile(ms_t jetzt, char* aus, size_t n) { snprintf(aus, n, "%s", LAUNEN
 
 // ---------- Wann was passiert ----------
 ms_t naechsterAbstand() { return MOMENT_MIN + (ms_t)random(0, (long)(MOMENT_MAX - MOMENT_MIN)); }
+
+// In welchen Lebensphasen Evi selbst etwas tut (momentsFor): alle außer Ei (und tot)
+bool momenteFuer(Phase ph) { return ph == BABY || ph == TEEN || ph == ERWACHSEN || ph == OMA; }
 
 bool ruhend(Stimmung s) { return s == S_TOT || s == S_EI || s == S_SCHLAEFT || s == S_KRANK || s == S_BAUCH; }
 
@@ -515,10 +519,10 @@ const char* grussText(ms_t jetzt, ms_t seit, bool& gross) {
   return TEXTE[random(0, 3)];
 }
 
-// Evi freut sich, dass du da bist: Sie hüpft und sagt Hallo. Nicht im Schlaf, nicht krank, nur erwachsen.
+// Evi freut sich, dass du da bist: Sie hüpft und sagt Hallo. Nicht im Schlaf, nicht krank, nicht als Ei.
 void begruessen(ms_t seit) {
   const ms_t jetzt = jetztMs();
-  if (phaseBei(pet, jetzt) != ERWACHSEN || ruhend(beschreiben(pet, jetzt)) || geweckt(pet, jetzt) || spiel.aktiv || ritual.aktiv) return;
+  if (!momenteFuer(phaseBei(pet, jetzt)) || ruhend(beschreiben(pet, jetzt)) || geweckt(pet, jetzt) || spiel.aktiv || ritual.aktiv) return;
   if (moment.letzterGruss != 0 && millis() - moment.letzterGruss < 5000) return;   // Einschalten und Aufwachen kommen oft zusammen
   moment.letzterGruss = millis();
   const int laune = launeHeute(jetzt);
@@ -565,7 +569,7 @@ void momentTakt(ms_t jetzt) {
   }
   if (moment.art != M_KEINER) { momentAusfuehren(); return; }
   if (evi.takt % 8 || !momentErlaubt()) return;
-  if (phaseBei(pet, jetzt) != ERWACHSEN || ruhend(s) || geweckt(pet, jetzt)) return;
+  if (!momenteFuer(phaseBei(pet, jetzt)) || ruhend(s) || geweckt(pet, jetzt)) return;
   MomentArt besuch;
   if (besuchFaellig(jetzt, besuch)) {
     moment.letzterBesonderer = jetzt;
@@ -675,7 +679,7 @@ void momentZeichnenVorne() {
 
 // Welches Bild ein Moment gerade für Evi ausleiht (nullptr = das übliche)
 const Bild* momentBild(Phase ph) {
-  if (ph != ERWACHSEN || moment.bild == MB_KEINS) return nullptr;
-  if (moment.bild == MB_GLUECKLICH) return ART[ERWACHSEN][1];
-  return MOMENT_BILD[moment.bild];
+  if (!momenteFuer(ph) || moment.bild == MB_KEINS) return nullptr;
+  if (moment.bild == MB_GLUECKLICH) return ART[ph][1];
+  return MOMENT_BILD[ph][moment.bild];
 }

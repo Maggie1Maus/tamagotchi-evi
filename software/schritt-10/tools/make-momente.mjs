@@ -1,7 +1,8 @@
 // Erzeugt evi-handy/momente.h: was das Board für Evis eigene Momente zusätzlich braucht.
 //
-//  - Evis Zeichnungen der Momente (handy-app/dist/img/adult-*.png: laufen, fenster, denken,
-//    singen, gaehnen, drehen, huepfen, staunen) im Maßstab der App (ART_SCALE adult = 0.38),
+//  - Evis Zeichnungen der Momente für Baby, Teenager, Erwachsen und Oma
+//    (handy-app/dist/img/<phase>-*.png: laufen, fenster, denken, singen, gaehnen, drehen, huepfen,
+//    staunen) im Maßstab der App (ART_SCALE in app.js: baby 0.344, teen 0.372, adult 0.38, senior 0.4),
 //    nur verkleinert und in Schwarz/Weiß umgerechnet, genau wie make-assets.ps1 es mit den
 //    übrigen Zeichnungen macht (Linien: deckend und dunkel; Maske: deckend). Nichts wird neu gezeichnet.
 //  - Die Symbole in der Gedankenwolke (22 px, Strich 1,8 wie #thought-icon in style.css)
@@ -23,7 +24,8 @@ const dist = join(root, 'handy-app', 'dist');
 const out = join(here, '..', 'evi-handy', 'momente.h');
 
 const MOMENTE = ['laufen', 'fenster', 'denken', 'singen', 'gaehnen', 'drehen', 'huepfen', 'staunen'];
-const SCALE = 0.38;   // ART_SCALE.adult in app.js
+// Phasen wie in pet.h (EI, BABY, TEEN, ERWACHSEN, OMA); das Ei hat keine Momente
+const PHASEN = [['baby', 'BABY', 0.344], ['teen', 'TEEN', 0.372], ['adult', 'ERWACHSEN', 0.38], ['senior', 'OMA', 0.4]];
 const ICONS = [['HERZ', 'i-heart'], ['KEKS', 'i-cookie'], ['BALL', 'i-ball'], ['NOTE', 'i-note'],
   ['FUTTER', 'i-food'], ['PUTZEN', 'i-clean'], ['SONNE', 'i-sun'], ['MOND', 'i-moon']];
 const NOTEN = [['NOTE_KLEIN', '&#x266A;', 17], ['NOTEN', '&#x266B;', 14]];
@@ -34,7 +36,7 @@ const library = index.slice(libStart, index.indexOf('</svg>', libStart) + 6);
 
 const lines = [
   '// Erzeugt von software/schritt-10/tools/make-momente.mjs - nicht von Hand ändern.',
-  '// Evis Zeichnungen der Momente (Erwachsen) und die Symbole der Gedankenwolke, aus der Handy-App.',
+  '// Evis Zeichnungen der Momente (Baby, Teenager, Erwachsen, Oma) und die Symbole der Gedankenwolke, aus der Handy-App.',
   '// 1 Bit pro Punkt, Zeile für Zeile, linkes Pixel im höchsten Bit. 1 = schwarz. Bild steht in assets.h.',
   '#pragma once',
   '#include "assets.h"',
@@ -62,9 +64,11 @@ const page = await browser.newPage({ deviceScaleFactor: 1 });
 await page.setContent('<!doctype html><html><body style="margin:0;background:#fff"><canvas id="c"></canvas></body></html>');
 
 // ---------- Evis Zeichnungen ----------
-const zeichnungen = [];
-for (const name of MOMENTE) {
-  const png = readFileSync(join(dist, 'img', `adult-${name}.png`)).toString('base64');
+const zeichnungen = {};
+for (const [phase, phaseC, SCALE] of PHASEN) {
+ zeichnungen[phaseC] = [];
+ for (const name of MOMENTE) {
+  const png = readFileSync(join(dist, 'img', `${phase}-${name}.png`)).toString('base64');
   const res = await page.evaluate(async ({ png, scale }) => {
     const img = new Image();
     img.src = `data:image/png;base64,${png}`;
@@ -80,11 +84,12 @@ for (const name of MOMENTE) {
   }, { png, scale: SCALE });
   const { w, h, data } = res;
   const at = (x, y) => (y * w + x) * 4;
-  const cname = `ART_ERWACHSEN_${name.toUpperCase()}`;
+  const cname = `ART_${phaseC}_${name.toUpperCase()}`;
   addArray(`${cname}_L`, bits(w, h, (x, y) => data[at(x, y) + 3] > 127 && lum(data, at(x, y)) < 140));
   addArray(`${cname}_M`, bits(w, h, (x, y) => data[at(x, y) + 3] > 127));
   lines.push(`static const Bild ${cname} = {${w}, ${h}, ${-Math.round(w / 2)}, ${-h}, ${cname}_L, ${cname}_M};`);
-  zeichnungen.push(cname);
+  zeichnungen[phaseC].push(cname);
+ }
 }
 lines.push('');
 
@@ -124,8 +129,12 @@ NOTEN.forEach(([name], i) => symbol(name, i * cell, cell));
 await browser.close();
 
 lines.push('');
-lines.push('// Reihenfolge wie MOMENT_ART in app.js: laufen, fenster, denken, singen, gaehnen, drehen, huepfen, staunen');
-lines.push(`static const Bild* const MOMENT_BILD[${MOMENTE.length}] = {${zeichnungen.map(n => '&' + n).join(', ')}};`);
+lines.push('// [Phase][Bild]: Phase wie in pet.h (EI hat keine), Bild wie MOMENT_ART in app.js:');
+lines.push('// laufen, fenster, denken, singen, gaehnen, drehen, huepfen, staunen');
+lines.push(`static const Bild* const MOMENT_BILD[5][${MOMENTE.length}] = {`);
+lines.push(`  {${MOMENTE.map(() => 'nullptr').join(', ')}},  // Ei`);
+for (const [phase, phaseC] of PHASEN) lines.push(`  {${zeichnungen[phaseC].map(n => '&' + n).join(', ')}},  // ${phase}`);
+lines.push('};');
 lines.push('// Gedankenwolke: herz, keks, ball, note, futter, putzen, sonne, mond');
 lines.push(`static const Bild* const GEDANKE_BILD[${ICONS.length}] = {${ICONS.map(([n]) => '&SYM_G_' + n).join(', ')}};`);
 writeFileSync(out, lines.join('\n') + '\n');

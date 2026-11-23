@@ -8,9 +8,9 @@ const at = (day, hour, minute = 0) => new Date(2026, 10, day, hour, minute).getT
 const seed = at(20, 8);
 const fixed = values => { let i = 0; return () => values[i++ % values.length]; };
 
-test('Moments: for now only the grown-up Evi does things by herself', () => {
-  assert.equal(momentsFor('adult'), true);
-  for (const stage of ['egg', 'baby', 'teen', 'senior', 'dead']) assert.equal(momentsFor(stage), false);
+test('Moments: Evi does things by herself in every life stage, not as an egg', () => {
+  for (const stage of ['baby', 'teen', 'adult', 'senior']) assert.equal(momentsFor(stage), true);
+  for (const stage of ['egg', 'dead']) assert.equal(momentsFor(stage), false);
 });
 
 test('Moments: a small one every 5 to 10 minutes', () => {
