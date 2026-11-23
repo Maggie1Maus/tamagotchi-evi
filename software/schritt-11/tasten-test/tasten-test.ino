@@ -85,7 +85,10 @@ const int ANZAHL = sizeof(tasten) / sizeof(tasten[0]);
 uint8_t rohA = 0xFF, rohB = 0xFF;
 char geraete[64] = "";
 
-void tasteZeichnen(const Taste& t) {
+// Bekommt die Nummer der Taste, nicht die Taste selbst: Die Arduino IDE setzt
+// Funktionsankündigungen an den Anfang der Datei, noch vor „struct Taste“.
+void tasteZeichnen(int nummer) {
+  const Taste& t = tasten[nummer];
   const uint16_t vorne = t.gedrueckt ? 0 : 1;
   bild.fillRect(t.x, t.y, t.b, t.h, t.gedrueckt ? 1 : 0);
   bild.drawRect(t.x, t.y, t.b, t.h, 1);
@@ -142,7 +145,7 @@ void rohZeichnen() {
 void allesZeichnen() {
   bild.fillScreen(0);
   kopfZeichnen();
-  for (int i = 0; i < ANZAHL; i++) tasteZeichnen(tasten[i]);
+  for (int i = 0; i < ANZAHL; i++) tasteZeichnen(i);
   rohZeichnen();
   zeigen();
 }
@@ -230,7 +233,7 @@ void loop() {
   }
 
   if (geaendert) {
-    for (int i = 0; i < ANZAHL; i++) tasteZeichnen(tasten[i]);
+    for (int i = 0; i < ANZAHL; i++) tasteZeichnen(i);
     rohZeichnen();
     zeigen();
   }

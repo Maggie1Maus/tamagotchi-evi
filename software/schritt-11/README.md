@@ -59,4 +59,5 @@ Ohne MCP23017 sucht das Programm jede Sekunde neu.
 
 ## Geprüft (23. November 2026, in der Cloud)
 
-- Kein Arduino-Paket in der Cloud: nur mit g++ und Ersatz-Headern auf Schreibfehler geprüft (ohne Fehler). **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
+- Kein Arduino-Paket in der Cloud: nur mit g++ und Ersatz-Headern auf Schreibfehler geprüft (ohne Fehler).
+- **Erster Versuch in der Arduino IDE (23. November 2026):** Fehler „'Taste' does not name a type“. Grund: Die IDE setzt automatisch Funktionsankündigungen vor die erste Funktion, also vor `struct Taste`. `tasteZeichnen` bekommt deshalb jetzt die Nummer der Taste statt der Taste. In der Cloud mit nachgebildeten Ankündigungen erneut geprüft (ohne Fehler). Neu in der IDE übersetzen.
