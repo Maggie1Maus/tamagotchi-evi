@@ -66,6 +66,15 @@ Dabei behoben: Nach der letzten Ballrunde ließ sich der Ball bis zum Spielende 
 
 Geprüft in der PC-Nachbildung, jetzt mit nachgebildetem Display: In 3913 Bildern (Spiele, Momente, Name, Hilfe) stand auf dem Display genau das Bild des Programms, ohne falschen Punkt. **Am Board noch nicht ausprobiert.**
 
+## Tasten reagieren schneller (24. November 2026)
+
+Laut Nutzerin fühlte sich das Steuerkreuz schwerfällig an. Mechanisch wird die Gummimatte über den Lötpunkten von L, R und DOWN eingeschnitten (Nutzerin, geplant). Im Programm (`tasten.h`):
+- Ein Druck zählt **sofort** beim ersten Lesen (vorher erst nach zwei gleichen Lesungen im Abstand von 8 ms). Entprellt wird nur noch das Loslassen: 20 ms ohne Druck, damit ein flackernder Kohlekontakt nicht doppelt zählt.
+- Der MCP23017 **merkt sich jede Änderung** (Interrupt bei Änderung, Register INTF/INTCAP), ohne dass der INT-Ausgang angeschlossen ist. Ein kurzes Antippen zwischen zwei Abfragen geht nicht mehr verloren. Grenze: Werden zwei verschiedene Tasten innerhalb weniger ms angetippt und beide vor der nächsten Abfrage losgelassen, zählt nur die erste.
+- Abfrage etwa alle 3 ms (vorher 8 ms). Festhalten wiederholt nur, solange die Taste wirklich gedrückt ist.
+
+Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 10-ms-Tipper während 40 ms Zeichnen wird erkannt (die alte Abfrage verpasste ihn), Halten zählt einmal, Steuerkreuz wiederholt, Flackern zählt nicht doppelt, zwei schnelle Tipper zählen zweimal. **Am Board noch nicht ausprobiert.**
+
 ## Echte Retro-Gamer-Tasten (23. November 2026)
 
 Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board (`tasten.h`). Belegung nach Wunsch der Nutzerin:
