@@ -18,7 +18,7 @@ Tastenplatine ──9 Drähte──▶ MCP23017 ──Kabel Adafruit 4401──�
 | B | blauer Punkt über B | gelb | A5 |
 | START | blauer Punkt rechts über START | orange | A6 |
 | RESET | blauer Punkt rechts über RESET | braun | B0 |
-| Minus | 10 | schwarz | GND (neben VIN) |
+| Minus | 10 | schwarz | GND (Masse-Loch direkt unter B0 oder neben VIN) |
 
 Lötpunkte und Farben: [Lötplan](../../retro-gamer-loetplan.jpg). Jede Taste verbindet beim Drücken ihre Leitung mit Minus. Der MCP23017 hält jede Leitung über einen eingebauten Widerstand (Pull-up) auf „nicht gedrückt“. VIN, SCL und SDA am MCP23017 bleiben frei, Strom und Daten kommen über das Kabel.
 
