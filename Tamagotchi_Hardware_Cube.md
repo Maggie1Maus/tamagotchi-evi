@@ -394,9 +394,25 @@ Die Nutzerin misst vorerst nicht. Passt der Retro Gamer nicht, kommt ein eigenes
   | START | unten | oben |
   | RESET | unten | oben |
 
-  Die Platine ist **einseitig**: Leiterbahnen und Lötpunkte nur auf der Vorderseite (Tastenseite), Rückseite blank mit ein paar Löchern. Für A, B, START und RESET gibt es je einen runden Kupferpunkt auf der eigenen Leitung (nach Foto, Leiterbahn sichtbar). Für das Steuerkreuz kommen acht kleine Punkte in Frage, nummeriert in [retro-gamer-messpunkte.jpg](retro-gamer-messpunkte.jpg). **Gemessen (23. November 2026, laut Nutzerin):** UP = Punkt 1, R = 2, L = 3, DOWN = 4. Damit hat jede Taste einen Lötpunkt (in der Bilddatei jetzt blau beschriftet). Die Ohm-Messung entfällt: Auf der Tastenplatine sind nur noch Kondensatoren (C10, C13, C16) und die Drahtbrücke R20 („0“ = 0 Ω) übrig, die keine Taste dauerhaft mit Minus verbinden können; beim Piepen war jeweils nur eine Hälfte mit der gemeinsamen Leitung verbunden. **Noch gesucht: ein Lötpunkt für die gemeinsame Leitung (GND).** Kandidaten 5–10 in der Bilddatei (gelb), gegen die linke Hälfte von A messen.
+  Die Platine ist **einseitig**: Leiterbahnen und Lötpunkte nur auf der Vorderseite (Tastenseite), Rückseite blank mit ein paar Löchern. Für A, B, START und RESET gibt es je einen runden Kupferpunkt auf der eigenen Leitung (nach Foto, Leiterbahn sichtbar). Für das Steuerkreuz kommen acht kleine Punkte in Frage, nummeriert in [retro-gamer-messpunkte.jpg](retro-gamer-messpunkte.jpg). **Gemessen (23. November 2026, laut Nutzerin):** UP = Punkt 1, R = 2, L = 3, DOWN = 4. Damit hat jede Taste einen Lötpunkt (in der Bilddatei jetzt blau beschriftet). Die Ohm-Messung entfällt: Auf der Tastenplatine sind nur noch Kondensatoren (C10, C13, C16) und die Drahtbrücke R20 („0“ = 0 Ω) übrig, die keine Taste dauerhaft mit Minus verbinden können; beim Piepen war jeweils nur eine Hälfte mit der gemeinsamen Leitung verbunden. **Gemeinsame Leitung (GND): Punkt 10** (quadratisches Lötauge mit Loch unten links), laut Nutzerin piept nur dieser; 5–9 nicht.
+
+  **Geplante Belegung des MCP23017** (GPA7 und GPB7 bleiben frei, weil sie laut Datenblatt nur Ausgänge sind; Aufdrucke am Modul noch am Foto prüfen):
+
+  | Taste | Lötpunkt | MCP23017 |
+  |---|---|---|
+  | UP | 1 | GPA0 |
+  | DOWN | 4 | GPA1 |
+  | L | 3 | GPA2 |
+  | R | 2 | GPA3 |
+  | A | blauer Punkt über A | GPA4 |
+  | B | blauer Punkt über B | GPA5 |
+  | START | blauer Punkt rechts über START | GPA6 |
+  | RESET | blauer Punkt rechts über RESET | GPB0 |
+  | gemeinsame Leitung | 10 | GND |
+
+  MCP23017 zum Waveshare über das 4-polige SH1.0-/STEMMA-QT-Kabel (GND, 3V3, SDA, SCL). Eingänge mit eingeschaltetem Pull-up, gedrückt = LOW. Adresse voraussichtlich 0x20 (kein Konflikt mit Touch 0x1A/0x58, Uhr 0x51). **Vor dem Löten klären:** (a) Liegen die Gummimatten auf Lötpunkten? R, L und DOWN liegen innerhalb des weißen Kreises vom Steuerkreuz, also vermutlich unter der Gummimatte; ein Lötklecks könnte sie anheben. Dann stattdessen außerhalb auf der Leiterbahn löten (Lack abkratzen). (b) Wo der MCP23017 sitzt und wie die Drähte von der Vorderseite nach hinten kommen. (c) Aufdrucke des Moduls (Foto).
 - **Lautsprecher (Nachtrag 23. November 2026):** Der Waveshare-Lautsprecher passt nicht an die Stelle des alten. Der alte ist mit dem Gehäuse verschmolzen und lässt sich nicht herausnehmen. Wird **als Letztes** entschieden. Möglichkeiten: den alten drin lassen und über das Steckerkabel des Waveshare-Lautsprechers anschließen (Lautstärke in der Software begrenzen, 0,25 W), oder den Waveshare-Lautsprecher an einer anderen Stelle unterbringen.
-- **Noch offen am Retro Gamer:** (1) Kante glatt feilen. (2) Tasten mit dem Multimeter prüfen (Piepen gemeinsame Leitung, Ohm-Bereich eigene Leitungen). (3) Lautsprecher (als Letztes, siehe oben). (4) MCP23017 verdrahten: Lötpunkte an der Tastenplatine festlegen, Platz für das Modul suchen. (5) Öffnung für USB-C. (6) Stromversorgung: Batteriedrähte → Pololu S9V11F5 → Diode 1N5819 → 5 V des Boards. (7) Prüfen, ob die Gehäusehälften schließen.
+- **Noch offen am Retro Gamer:** (1) Kante glatt feilen. (2) ~~Tasten messen~~ erledigt. (3) Lautsprecher (als Letztes, siehe oben). (4) MCP23017 verdrahten: Lötpunkte an der Tastenplatine festlegen, Platz für das Modul suchen. (5) Öffnung für USB-C. (6) Stromversorgung: Batteriedrähte → Pololu S9V11F5 → Diode 1N5819 → 5 V des Boards. (7) Prüfen, ob die Gehäusehälften schließen.
 - Das Waveshare-Board liegt mit seiner Platine dort, wo jetzt die obere Hälfte der grünen Platine ist. Vermutlich muss die grüne Platine oberhalb der Tasten abgetrennt werden (Idee „Tastenplatine“). Vorher die Leitungen der Tasten mit dem Multimeter prüfen.
 
 #### Eingänge für die Spieltasten
