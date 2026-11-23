@@ -65,16 +65,16 @@ struct Taste {
   const char* name;
   bool reiheB;      // false = Reihe A, true = Reihe B
   uint8_t bit;
-  int x, y, b, h;   // Kästchen auf dem Bildschirm
+  int x, y, b, h;   // Kästchen auf dem Bildschirm (Steuerkreuz um RAND_LINKS = 8 nach rechts)
   bool gedrueckt;
   int zaehler;
 };
 
 Taste tasten[] = {
-  {"UP",     false, 0,  58,  70, 52, 40, false, 0},
-  {"DOWN",   false, 1,  58, 160, 52, 40, false, 0},
-  {"L",      false, 2,   4, 115, 52, 40, false, 0},
-  {"R",      false, 3, 112, 115, 52, 40, false, 0},
+  {"UP",     false, 0,  66,  70, 52, 40, false, 0},
+  {"DOWN",   false, 1,  66, 160, 52, 40, false, 0},
+  {"L",      false, 2,  12, 115, 52, 40, false, 0},
+  {"R",      false, 3, 120, 115, 52, 40, false, 0},
   {"A",      false, 4, 180, 100, 62, 46, false, 0},
   {"B",      false, 5, 252, 100, 62, 46, false, 0},
   {"START",  false, 6, 230, 206, 84, 30, false, 0},
@@ -109,11 +109,11 @@ void kopfZeichnen() {
   bild.fillRect(0, 0, BREITE, 62, 0);
   bild.setTextColor(1);
   bild.setTextSize(2);
-  bild.setCursor(4, 4);
+  bild.setCursor(RAND_LINKS + 4, 4);
   bild.print("Tasten-Test");
 
   bild.setTextSize(1);
-  bild.setCursor(4, 26);
+  bild.setCursor(RAND_LINKS + 4, 26);
   if (mcpAdresse) {
     char zeile[40];
     snprintf(zeile, sizeof(zeile), "MCP23017 gefunden (0x%02X)", mcpAdresse);
@@ -121,10 +121,10 @@ void kopfZeichnen() {
   } else {
     bild.print("MCP23017 NICHT gefunden");
   }
-  bild.setCursor(4, 38);
+  bild.setCursor(RAND_LINKS + 4, 38);
   bild.print("I2C: ");
   bild.print(geraete);
-  bild.setCursor(4, 50);
+  bild.setCursor(RAND_LINKS + 4, 50);
   bild.print(mcpAdresse ? "Bitte jede Taste einmal dr\x81" "cken."
                         : "Kabel und L\x94tstellen pr\x81" "fen.");
 }
@@ -134,10 +134,10 @@ void rohZeichnen() {
   if (!mcpAdresse) return;
   char zeile[32];
   bild.setTextSize(1);
-  bild.setCursor(4, 212);
+  bild.setCursor(RAND_LINKS + 4, 212);
   snprintf(zeile, sizeof(zeile), "Reihe A: %02X", rohA);
   bild.print(zeile);
-  bild.setCursor(4, 224);
+  bild.setCursor(RAND_LINKS + 4, 224);
   snprintf(zeile, sizeof(zeile), "Reihe B: %02X", rohB);
   bild.print(zeile);
 }

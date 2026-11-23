@@ -43,6 +43,10 @@ Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board 
 - Entprellt: Ein Druck zählt, wenn zwei Lesungen im Abstand von 8 ms gleich sind.
 - Geprüft (23. November 2026, Cloud): mit g++ und Ersatz-Headern ohne Fehler und Warnungen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
 
+## Linker Bildrand im Retro Gamer (23. November 2026)
+
+Am Gerät sind die ersten 8 Bildspalten links nicht zu sehen. `RAND_LINKS = 8` in `bildschirm.h`: Die drei Balken oben teilen sich jetzt die Breite ab x = 8, Name/Phase/Münzen unten beginnen bei x = 15, der Menühinweis ist im sichtbaren Teil mittig. Das Zimmer bleibt unverändert (links 8 Punkte Hintergrund verdeckt). Geprüft mit g++ und Ersatz-Headern; noch nicht in der IDE übersetzt.
+
 ## Aufspielen
 
 1. In der Arduino IDE `software/schritt-10/evi-handy/evi-handy.ino` öffnen, Board **Raspberry Pi Pico 2**, hochladen.

@@ -9,6 +9,10 @@
 const int BREITE = 320;
 const int HOEHE  = 240;
 
+// Die ersten Spalten links sind am Gerät nicht zu sehen (Foto vom 23.11.2026:
+// Schrift ab x = 4 war bis einschließlich x = 7 verdeckt).
+const int RAND_LINKS = 8;
+
 // Steht das Bild auf dem Kopf? Dann hier 1 statt 0 eintragen.
 #define BILD_DREHEN 0
 

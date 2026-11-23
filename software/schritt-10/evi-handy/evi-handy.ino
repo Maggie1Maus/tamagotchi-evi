@@ -396,7 +396,8 @@ void zeichneStatus(Phase ph) {
   const double werte[3] = {pet.satt, pet.laune, pet.sauber};
   const Bild* symbole[3] = {&SYM_NAPF, &SYM_HERZ, &SYM_GLANZ};
   for (int i = 0; i < 3; i++) {
-    const int x0 = (i * BREITE + 1) / 3, x1 = ((i + 1) * BREITE + 1) / 3;
+    const int nutzbar = BREITE - RAND_LINKS;
+    const int x0 = RAND_LINKS + (i * nutzbar + 1) / 3, x1 = RAND_LINKS + ((i + 1) * nutzbar + 1) / 3;
     const int wert = (int)(werte[i] + 0.5);
     const bool niedrig = wert <= R::NIEDRIG && ph != EI && ph != TOT;
     const uint16_t vorne = niedrig ? 1 : 0;
@@ -525,13 +526,13 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
   char text[100];
   if (menueOffen) {
     snprintf(text, sizeof(text), "%s", tastenDa ? "▲▼ wählen · A OK · B zurück" : "Links weiter · Mitte OK · Rechts zurück");
-    schreibe(bild, (BREITE - textBreite(text)) / 2, 216, text, 0);
+    schreibe(bild, RAND_LINKS + (BREITE - RAND_LINKS - textBreite(text)) / 2, 216, text, 0);
     return;
   }
   if (millis() < meldungBis) snprintf(text, sizeof(text), "%s", meldung);
   else stimmungsText(s, jetzt, text, sizeof(text));
   // Links: Name, Phase, Münzen
-  int x = 7;
+  int x = RAND_LINKS + 7;
   const int y = 216;
   schreibe(bild, x, y, pet.name, 0, 1, true);
   x += textBreite(pet.name) + 1 + 6;
