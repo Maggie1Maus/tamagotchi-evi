@@ -48,4 +48,4 @@ Regeln wie auf dem Cube und in der Handy-App (erwachsene Evi): pro Stunde wach �
 
 - Für „Raspberry Pi Pico 2“ ohne Fehler und Warnungen übersetzt: 96,5 KB Programm, 13,2 KB Arbeitsspeicher.
 - Die umgerechneten Bilder am PC angesehen: alle fünf Zeichnungen gut erkennbar.
-- **Noch nicht auf dem Board ausprobiert.**
+- **Auf dem Board (23. November 2026, Foto der Nutzerin):** Evi, Balken und Knöpfe werden richtig angezeigt. Auf dem Foto wirkt der weiße Grund hellblau, vermutlich durch die Kamera. Knöpfe, Licht und Speichern noch nicht rückgemeldet.
