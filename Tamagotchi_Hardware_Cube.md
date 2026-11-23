@@ -371,6 +371,12 @@ Die Nutzerin misst vorerst nicht. Passt der Retro Gamer nicht, kommt ein eigenes
 3. Freie Höhe zwischen Front und Rückschale an der Stelle des Displays, bei geschlossenem Gehäuse.
 4. Mit Batterien prüfen: Schaltet der Schiebeschalter das Gerät ein und aus? Ändert das Rad die Lautstärke?
 
+#### Einbauversuch mit dem Waveshare-Board (23. November 2026, Foto der Nutzerin)
+
+- Das Waveshare-Board ist laut Nutzerin **ein paar Millimeter zu groß** für die Öffnung im Gehäuse. Sie will etwas Plastik wegschneiden.
+- Die grüne Originalplatine trägt den Aufdruck **WL0218-04-24P**. Unten liegen die Kontakte für Steuerkreuz (unter durchsichtiger Gummimatte), A, B, START und RESET, jeweils als runde, vergoldete Kammkontakte. Oben sitzen der alte Chip (Aufdruck SPANSION), ein schwarzer Chip-Klecks und das Flachbandkabel TF-280S006-B-A2 zum alten Display. Links sind das Lautstärkerad (VR), der Regler 6206A 3.6V und der Lautsprecher mit zwei schwarzen Drähten.
+- Das Waveshare-Board liegt mit seiner Platine dort, wo jetzt die obere Hälfte der grünen Platine ist. Vermutlich muss die grüne Platine oberhalb der Tasten abgetrennt werden (Idee „Tastenplatine“). Vorher die Leitungen der Tasten mit dem Multimeter prüfen.
+
 #### Eingänge für die Spieltasten
 
 - Für drei bis vier Taster kommen **GP28 und GP29** sowie **GP0 und GP1** bei freiem UART infrage. Touch kann parallel Spielbefehle auslösen. [Waveshare-Schaltplan](https://files.waveshare.com/wiki/RP2350-Touch-LCD-2.8/RP2350-Touch-LCD-2.8-Schematic.pdf) · [Pinbelegung am 12-poligen Stecker](https://github.com/subtilitas/DshotDisplay/blob/main/src/board_rp2350_touch_lcd_2_8.h)
