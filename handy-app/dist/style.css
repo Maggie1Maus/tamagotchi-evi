@@ -298,6 +298,9 @@ button { cursor: pointer; touch-action: manipulation; }
 .hum-notes text { font-family: system-ui, sans-serif; }
 .scene-wrap.humming .hum-notes { visibility: visible; animation: notes 1.6s steps(4, end) infinite; }
 .scene-wrap.playing .thought, .scene-wrap.playing .hum-notes, .scene-wrap.playing #butterfly { display: none; }
+/* The sky in the window follows the real sun (sky.js): stars only at night. */
+.night-stars { visibility: hidden; }
+.scene-wrap[data-sky="night"] .night-stars { visibility: visible; }
 @keyframes notes { from { transform: translateY(4px); } to { transform: translateY(-12px); } }
 
 @keyframes shadow { 50% { transform: scaleX(.8); } }

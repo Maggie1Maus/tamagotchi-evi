@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MOMENTS, momentsFor, nextDelay, chooseMoment, specialsOn, dueSpecial, greeting } from '../dist/moments.js';
+import { MOMENTS, momentsFor, nextDelay, chooseMoment, specialsOn, dueSpecial, greeting, temperOn, specialFor } from '../dist/moments.js';
 
 const MIN = 60000, H = 60 * MIN;
 // Fixed local times, so the hours are the same in every time zone.
@@ -91,4 +91,38 @@ test('Greeting: good morning, good evening, and extra glad after a long time', (
   }
   // Seen this morning already: no second "Guten Morgen".
   assert.notEqual(greeting(at(21, 9, 30), at(21, 9)).text, 'Guten Morgen!');
+});
+
+test('Mood of the day: the same all day, changes between days, all four come up', () => {
+  const seen = new Set();
+  for (let day = 1; day <= 40; day++) {
+    const temper = temperOn(seed, at(day, 8));
+    assert.ok(Object.keys(MOMENTS.tempers).includes(temper));
+    assert.equal(temperOn(seed, at(day, 21, 59)), temper);
+    seen.add(temper);
+  }
+  assert.equal(seen.size, 4);
+});
+
+test('Mood of the day makes fitting moments more likely', () => {
+  const count = (temper, kind) => {
+    let n = 0;
+    for (let r = 0; r < 1; r += 0.001) if (chooseMoment({ mood: 'happy', temper }, fixed([r, r])).kind === kind) n++;
+    return n;
+  };
+  assert.ok(count('vertraeumt', 'window') > 2 * count('verspielt', 'window'));
+  assert.ok(count('verspielt', 'spin') > 2 * count('vertraeumt', 'spin'));
+  const hearts = temper => { let n = 0; for (let r = 0; r < 1; r += 0.001) { const c = chooseMoment({ mood: 'happy', temper }, fixed([0.45, r])); if (c.icon === 'heart') n++; } return n; };
+  assert.ok(hearts('verschmust') > 2 * hearts('verfressen'));
+  // Still never the same moment twice in a row.
+  for (let r = 0; r < 1; r += 0.01) assert.notEqual(chooseMoment({ mood: 'happy', temper: 'verspielt', last: 'spin' }, fixed([r])).kind, 'spin');
+});
+
+test('Special moments: butterfly or bird by day, a shooting star in the dark', () => {
+  const kinds = new Set();
+  for (let day = 1; day <= 60; day++) for (const s of specialsOn(seed, at(day, 12))) kinds.add(s.kind);
+  assert.deepEqual([...kinds].sort(), ['bird', 'butterfly']);
+  assert.equal(specialFor({ kind: 'bird' }, 'day'), 'bird');
+  assert.equal(specialFor({ kind: 'butterfly' }, 'dusk'), 'butterfly');
+  assert.equal(specialFor({ kind: 'bird' }, 'night'), 'star');
 });

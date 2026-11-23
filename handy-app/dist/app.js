@@ -1,8 +1,9 @@
 import { RULES, createPet, restorePet, advancePet, careForPet, finishPlay, renamePet, describePet,
-  stageAt, stageName, blockedReason, isNight, isAsleep, sleepKind, isTired, isRested, mealAt, mealDue,
-  currentWish, isWoken, stayAwake } from './pet.js';
+  stageAt, stageName, blockedReason, isAsleep, sleepKind, isTired, isRested, mealAt, mealDue,
+  currentWish, isWoken, stayAwake, dayKey } from './pet.js';
 import { drawEvi } from './evi-sprite.js';
-import { MOMENTS, momentsFor, nextDelay, chooseMoment, dueSpecial, greeting } from './moments.js';
+import { MOMENTS, momentsFor, nextDelay, chooseMoment, dueSpecial, greeting, temperOn, specialFor } from './moments.js';
+import { skyAt } from './sky.js';
 import { ART } from './art.js';
 
 // Version 0.7 started the game anew in a new save slot. Since 0.9 a browser that never had
@@ -95,7 +96,8 @@ const SOUNDS = {
   miss: [[196, 140]],
   crack: [[440, 40]],
   wish: [[784, 90], [1047, 140]],
-  special: [[1047, 70], [1319, 70], [1568, 70], [2093, 200]]
+  special: [[1047, 70], [1319, 70], [1568, 70], [2093, 200]],
+  chirp: [[1976, 50], [0, 30], [2349, 70], [0, 120], [1976, 50], [0, 30], [2349, 70]]
 };
 function beep(name) {
   if (!settings.sound || !audio) return;
@@ -112,7 +114,7 @@ function beep(name) {
     }
     t += ms / 1000 + 0.03;
   }
-  if (!['coin', 'miss', 'crack', 'wish', 'special'].includes(name)) {
+  if (!['coin', 'miss', 'crack', 'wish', 'special', 'chirp'].includes(name)) {
     try { navigator.vibrate?.(160); } catch { /* not supported */ }
   }
 }
@@ -305,6 +307,8 @@ function moodMessage(d) {
       if (wish) return 'Ein Wunsch!';
       if (isRested(pet, now)) return 'Ausgeschlafen! Guten Morgen';
       if (isTired(pet, now)) return new Date(now).getHours() < 12 ? 'Gähn … guten Morgen' : 'Gähn … Zeit für Gute Nacht?';
+      // Every other 10 seconds the grown-up Evi tells her mood of the day.
+      if (momentsFor(d.stage) && Math.floor(now / 10000) % 2) return MOMENTS.tempers[temperOn(pet.bornAt, now)].text.replace('!', '');
       return 'Mitte öffnet das Menü';
     }
   }
@@ -381,7 +385,12 @@ function render() {
     meter.firstElementChild.style.width = `${value}%`;
     meter.parentElement.classList.toggle('low', value <= RULES.low && !['egg', 'dead'].includes(d.stage));
   }
-  $('window-sky').setAttribute('fill', isNight(now) || sleepKind(pet, now) === 'night' ? '#000000' : '#ffffff');
+  // The sky follows the real sun in Germany: light, dotted at dusk, black with stars at night.
+  const sky = skyAt(now);
+  if (scene.dataset.sky !== sky) {
+    scene.dataset.sky = sky;
+    $('window-sky').setAttribute('fill', { day: '#ffffff', dusk: 'url(#dither)', night: '#000000' }[sky]);
+  }
   renderWish(now);
   renderCaption();
 }
@@ -442,6 +451,8 @@ function announce(before, after) {
   if (!before.sick && after.sick) { beep('alert'); flash(`${name} ist krank geworden!`, 5000); return; }
   if (isWoken(before, before.updatedAt) && sleepKind(after, now) === 'night') { flash(`${name} ist wieder eingeschlafen.`, 5000); return; }
   if (!isAsleep(after, now) && ['satiety', 'mood', 'cleanliness'].some(key => before[key] > RULES.low && after[key] <= RULES.low)) beep('alert');
+  // Good morning: she wakes up while you are watching.
+  if (sleepKind(before, before.updatedAt) === 'night' && !isAsleep(after, now) && !isWoken(after, now)) greet(before.updatedAt);
 }
 
 function tick() {
@@ -896,6 +907,74 @@ function* flutterTo(fly, x, y, speed = 2.4) {
   Object.assign(fly, { x, y });
 }
 
+// The bird (version 0.11): seen through the window, 14 × 10 pixels, drawn 1.5 times as large.
+// It sits on the window cross, or flies with its wing up and down. Coordinates are those of the window.
+const BIRD = {
+  sit: pixelPath([
+    '.......####...',
+    '......######..',
+    '......##.####.',
+    '......########',
+    '##...#######..',
+    '.##.########..',
+    '..##########..',
+    '...#########..',
+    '....#######...',
+    '.....#...#....'
+  ]),
+  up: pixelPath([
+    '..###.........',
+    '...###.####...',
+    '....#######...',
+    '.....##.####..',
+    '.....########.',
+    '##..#######...',
+    '.##########...',
+    '...#######....'
+  ]),
+  down: pixelPath([
+    '..............',
+    '.......####...',
+    '......######..',
+    '......##.####.',
+    '##....########',
+    '.##.#######...',
+    '..#########...',
+    '...######.....',
+    '....###.......',
+    '...###........'
+  ])
+};
+const BIRD_PERCH = { x: 37, y: 43 };            // on the window cross, upper left pane
+function placeBird(x, y, frame) {
+  const bird = $('bird');
+  bird.setAttribute('transform', `translate(${Math.round(x)} ${Math.round(y)})`);
+  $('bird-body').setAttribute('d', BIRD[frame]);
+  bird.setAttribute('visibility', 'visible');
+}
+const hideBird = () => $('bird').setAttribute('visibility', 'hidden');
+function* flyBird(bird, x, y, speed = 2) {
+  while (Math.hypot(x - bird.x, y - bird.y) > speed) {
+    const angle = Math.atan2(y - bird.y, x - bird.x);
+    bird.x += Math.cos(angle) * speed;
+    bird.y += Math.sin(angle) * speed;
+    bird.t++;
+    placeBird(bird.x, bird.y, Math.floor(bird.t / 2) % 2 ? 'up' : 'down');
+    yield 1;
+  }
+  Object.assign(bird, { x, y });
+}
+/** A shooting star crosses the window from the upper right to the lower left, past the moon. */
+function* shootingStar(from = { x: 100, y: 8 }) {
+  const star = $('shooting-star');
+  star.setAttribute('visibility', 'visible');
+  for (let x = from.x, y = from.y; x > 6; x -= 3, y += 1.5) {
+    star.setAttribute('transform', `translate(${x} ${y})`);
+    yield 1;
+  }
+  star.setAttribute('visibility', 'hidden');
+}
+
 const SCRIPTS = {
   *walk() {
     const side = Math.random() < 0.5 ? -1 : 1;
@@ -913,7 +992,7 @@ const SCRIPTS = {
     evi.artOverride = drawn(MOMENT_ART.window);
     placeEvi();
     yield 6;
-    showThought(new Date().getHours() < 17 ? 'sun' : 'moon');
+    showThought(skyAt(Date.now()) === 'day' ? 'sun' : 'moon');
     yield 45;
     showThought(null);
     evi.artOverride = '';
@@ -996,6 +1075,74 @@ const SCRIPTS = {
     flash('Tschüss, Schmetterling!', 3000);
     yield 14;
     yield* walkHome();
+  },
+  // Special: a bird lands on the window cross. Evi comes closer, marvels and hops when it sings.
+  *bird() {
+    beep('chirp');
+    flash('Ein Vogel am Fenster!', 30000);
+    const bird = { x: 4, y: 18, t: 0 };
+    if (reducedMotion.matches) {
+      placeBird(BIRD_PERCH.x, BIRD_PERCH.y, 'sit');
+      evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
+      yield 60;
+      hideBird();
+      evi.artOverride = '';
+      return;
+    }
+    // The bird flies in while Evi walks a little toward the window, so both stay in view.
+    const approach = walkTo(-30);
+    const flight = flyBird(bird, BIRD_PERCH.x, BIRD_PERCH.y, 1.6);
+    for (let walking = true, flying = true; walking || flying;) {
+      if (walking) walking = !approach.next().done;
+      if (flying) flying = !flight.next().done;
+      yield 1;
+    }
+    placeBird(BIRD_PERCH.x, BIRD_PERCH.y, 'sit');
+    evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
+    yield 20;
+    beep('chirp');
+    flash('Piep, piep!', 4000);
+    for (let i = 0; i < 4; i++) { placeBird(BIRD_PERCH.x, BIRD_PERCH.y - (i % 2 ? 0 : 2), 'sit'); yield 3; }
+    yield* hop(2, 8);
+    yield 16;
+    // Off it flies, up and away to the right.
+    yield* flyBird(bird, 104, -4, 2.2);
+    hideBird();
+    evi.artOverride = '';
+    say('Tschüss, Vögelchen!', 'i-heart', 2600);
+    yield 20;
+    yield* walkHome();
+  },
+  // Special in the dark: a shooting star. Evi watches, makes a wish, and sees a second one.
+  *star() {
+    beep('special');
+    flash('Eine Sternschnuppe!', 30000);
+    yield* walkTo(-30);
+    walker.flip = false;
+    evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
+    placeEvi();
+    yield 6;
+    if (reducedMotion.matches) {
+      const star = $('shooting-star');
+      star.setAttribute('transform', 'translate(60 40)');
+      star.setAttribute('visibility', 'visible');
+      yield 16;
+      star.setAttribute('visibility', 'hidden');
+    } else yield* shootingStar();
+    flash('Ich wünsch mir was …', 5000);
+    evi.artOverride = drawn(MOMENT_ART.think, 'gluecklich');
+    showThought('heart');
+    yield 40;
+    showThought(null);
+    evi.artOverride = drawn(MOMENT_ART.wonder, 'gluecklich');
+    if (!reducedMotion.matches) {
+      yield* shootingStar({ x: 100, y: 44 });     // this one falls behind the hills
+      say('Noch eine!', 'i-heart', 2400);
+      yield* hop(1, 8);
+    }
+    yield 14;
+    evi.artOverride = '';
+    yield* walkHome();
   }
 };
 
@@ -1008,6 +1155,8 @@ function clearMoment() {
   showThought(null);
   scene.classList.remove('humming');
   hideButterfly();
+  hideBird();
+  $('shooting-star').setAttribute('visibility', 'hidden');
   evi.artOverride = '';
   walker.lift = 0;
 }
@@ -1041,26 +1190,41 @@ function runMoments() {
     momentMemory.lastSpecial = now;
     saveMoments();
     moment.next = Math.max(moment.next, now + MOMENTS.every[0]);
-    startMoment(special.kind);
+    startMoment(specialFor(special, skyAt(now)));
     return;
   }
   if (now < moment.next) return;
   moment.next = now + nextDelay();
-  const choice = chooseMoment({ mood, tired: isTired(pet, now), still: reducedMotion.matches, last: moment.last });
+  const choice = chooseMoment({ mood, tired: isTired(pet, now), still: reducedMotion.matches, last: moment.last,
+    temper: temperOn(pet.bornAt, now) });
   if (!choice) return;
   moment.last = choice.kind;
   startMoment(choice.kind, choice.icon);
 }
 
 /** Evi is glad you are here: she hops and says hello. Not while she sleeps or feels ill; for now only as an adult. */
+let lastGreet = 0;
+let temperTimer;
 function greet(since) {
   const now = Date.now(), { stage, mood } = describePet(pet, now);
   if (!momentsFor(stage) || RESTING.includes(mood) || isWoken(pet, now) || game.active || ritualShow.active) return;
+  if (now - lastGreet < 5000) return;          // opening the app and waking up can come together
+  lastGreet = now;
+  const temper = temperOn(pet.bornAt, now);
   const { text, big } = greeting(now, since);
+  const cheer = big || temper === 'verschmust';  // on a cuddly day she always hops a little more
   stopMoment(true);
-  react(big ? 'cheer' : 'greet', big ? 20 : 12);
+  react(cheer ? 'cheer' : 'greet', cheer ? 20 : 12);
   say(text, 'i-heart', 3500);
   moment.quietUntil = evi.tick + QUIET_TICKS;
+  // The first greeting of the day: she tells you her mood of the day.
+  if (momentMemory.temperDay !== dayKey(now)) {
+    momentMemory.temperDay = dayKey(now);
+    saveMoments();
+    const { text: mood, icon } = MOMENTS.tempers[temper];
+    clearTimeout(temperTimer);
+    temperTimer = setTimeout(() => { if (!game.active && !ritualShow.active) say(mood, `i-${icon}`, 4000); }, 3600);
+  }
 }
 
 // ---------- Keys ----------

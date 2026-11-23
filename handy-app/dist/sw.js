@@ -1,5 +1,5 @@
-const CACHE = 'kleines-zuhause-v10-1-zeichnungen';
-const ASSETS = ['./', './index.html', './style.css', './app.js', './pet.js', './moments.js', './evi-sprite.js', './art.js',
+const CACHE = 'kleines-zuhause-v11-himmel';
+const ASSETS = ['./', './index.html', './style.css', './app.js', './pet.js', './moments.js', './sky.js', './evi-sprite.js', './art.js',
   './icon.svg', './icon-192.png', './icon-512.png', './manifest.webmanifest'];
 // Evi's drawings (img/*.png, listed in art.js) are stored as soon as they are first shown.
 const isArt = url => url.pathname.startsWith(new URL('./img/', self.registration.scope).pathname);

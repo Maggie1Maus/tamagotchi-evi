@@ -2,6 +2,16 @@
 
 Stand: 23. November 2026
 
+## Version 0.11: Himmel, Tageslaune, mehr Besuch (23. November 2026, gebaut, noch nicht veröffentlicht)
+
+Wunsch der Nutzerin: aus den Vorschlägen „mehr Besuch“ und „Tageslaune“; dazu soll es dunkel werden, wenn in Deutschland die Sonne untergeht, und das soll immer aktuell bleiben. Einzelheiten in `handy-app/README.md`.
+- **Himmel im Fenster nach der echten Sonne:** hell, in der Dämmerung gepunktet, nachts schwarz mit Mond und Sternen. Neue Datei `handy-app/dist/sky.js` rechnet Sonnenauf- und -untergang für jeden Tag selbst aus, ohne Internet, mit Sommerzeit. Nichts muss nachgetragen werden; das funktioniert auch später auf dem Waveshare mit seiner Uhr. Ort: Mitte Deutschlands (in Aachen/Görlitz bis zu etwa 20 Minuten Unterschied). Geprüft gegen veröffentlichte Zeiten für Berlin, Frankfurt, München, Hamburg: höchstens 2 Minuten Abweichung. Das Zimmer selbst bleibt hell (Licht an), bis Evi schläft. Falls die Nutzerin ihre Stadt nennt, kann `SKY` darauf gestellt werden.
+- **Mehr Besuch:** Neben dem Schmetterling landet ein Vogel auf dem Fensterkreuz (mit Zwitscherton). Im Dunkeln kommt stattdessen eine Sternschnuppe; Evi wünscht sich etwas, eine zweite fällt hinter die Hügel. Vogel und Sternschnuppe sind Pixelgrafik des Spiels; Evi nutzt die Zeichnungen „laufen“, „staunen“, „hüpfen“ und „denken“.
+- **Tageslaune:** verspielt, verschmust, verfressen oder verträumt, fest für jeden Tag und jede Evi. Evi sagt sie bei der ersten Begrüßung des Tages; danach steht sie im Wechsel mit „Mitte öffnet das Menü“ unten in der Zeile. Je nach Laune kommen passende Momente öfter.
+- **Guten Morgen** auch, wenn Evi um 7 Uhr bei offener App aufwacht.
+- Geprüft: 39 Regelprüfungen (6 neue), auch in zwei anderen Zeitzonen. Im Browser mit deutscher Uhrzeit: Himmel um 12 Uhr hell, 16:40 Dämmerung, 18 Uhr Nacht, Übergang 16:55 → 17:05 bei offener App; Tageslaune nach der ersten Begrüßung und im Wechsel in der Zeile, nicht bei der zweiten Begrüßung; „Guten Morgen!“ beim Aufwachen; Vogel von Anfang bis Ende; Sternschnuppe mit Wunsch und zweiter Sternschnuppe. Keine Konsolenfehler.
+- **Veröffentlichen** wie bei 0.9/0.10: von ChatGPT aus `git pull` und `handy-app/dist` unter dem bestehenden Projekt neu veröffentlichen.
+
 ## Version 0.10: Evi tut selbst etwas (23. November 2026, gebaut, noch nicht veröffentlicht)
 
 Beschlüsse der Nutzerin vom 23. November 2026, zur Ideensammlung unten:
@@ -34,7 +44,7 @@ Die Nutzerin hat Evi meist offen auf dem Handy und fände es süß, wenn Evi sie
 - **Eigener Kopf:** Tageslaune (verspielt, verschmust, verfressen, verträumt), später vererbbar; Lieblingsspiel und Lieblingskeks; Tagebuch mit einem Satz pro Abend als Grundlage fürs Familienalbum.
 - **Besondere Tage:** Adventskalender vom 1. bis 24. Dezember, Schnee im Fenster, Weihnachten, Silvester, Entwicklungstag feiern.
 - **Hilfreiche neue Zeichnungen (nur auf Wunsch):** Evi von hinten am Fenster, Evi springt, Evi trägt etwas im Maul, Evi malt.
-- **Noch offen aus der Sammlung:** Schatzkiste (vorerst nicht), Bilder malen für die Wand, Verstecken, Ball bringen, „Während du weg warst …“, Schütteln, Tageslaune, Lieblingsspiel, Tagebuch, weiterer Besuch (Vogel, Sternschnuppe, Wetter), Adventskalender ab 1. Dezember, Feiertage.
+- **Noch offen aus der Sammlung:** Schatzkiste (vorerst nicht), Bilder malen für die Wand, Verstecken (von Claude als nächstes größeres Spiel vorgeschlagen), Ball bringen, „Während du weg warst …“, Schütteln, Lieblingsspiel und Lieblingsessen, Tagebuch, Wetter und Schnee im Fenster, Adventskalender ab 1. Dezember, Feiertage. Erledigt in 0.11: Tageslaune, Vogel, Sternschnuppe.
 
 ## Ideen: Partner, Nachwuchs und neue Tamagotchis (21. November 2026, nur Brainstorming)
 
