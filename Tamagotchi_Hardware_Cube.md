@@ -256,7 +256,7 @@ Verworfen wurde das **Sharp Memory LCD 2,7″ (Adafruit 4694)**. Es passt sehr g
 
 ### Einkaufsliste bei BerryBase (Stand 20. November 2026)
 
-**Bestellstatus 20. November 2026:** Laut Nutzerin sind die Artikel der BerryBase- und der Botland-Bestellung unten bestellt, außer der Pufferbatterie. Ob Multimeter und USB-C-Kabel dabei waren (nur „falls nicht vorhanden“), wurde nicht angegeben. Bestellbestätigungen wurden nicht eingesehen. **Botland-Lieferung am 23. November 2026 angekommen** (Foto der Nutzerin): Pololu S9V11F5 und das Dioden-Set. Die BerryBase-Lieferung mit dem Waveshare-Board ist noch nicht bestätigt.
+**Bestellstatus 20. November 2026:** Laut Nutzerin sind die Artikel der BerryBase- und der Botland-Bestellung unten bestellt, außer der Pufferbatterie. Ob Multimeter und USB-C-Kabel dabei waren (nur „falls nicht vorhanden“), wurde nicht angegeben. Bestellbestätigungen wurden nicht eingesehen. **Botland-Lieferung am 23. November 2026 angekommen** (Foto der Nutzerin): Pololu S9V11F5 und das Dioden-Set. **BerryBase-Lieferung mit dem Waveshare-Board am 23. November 2026 angekommen** (laut Nutzerin; Inhalt noch nicht geprüft).
 
 Am 20. November 2026 kritisch überarbeitet. Die erste Fassung enthielt zu viel Testzubehör und einen ungeeigneten Wandler.
 
