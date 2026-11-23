@@ -2,6 +2,21 @@
 
 Stand: 23. November 2026
 
+## Ideen: Evi tut selbst Dinge (23. November 2026, nur Brainstorming)
+
+Die Nutzerin hat Evi meist offen auf dem Handy und fände es süß, wenn Evi sie ab und zu mit etwas überrascht, das sie von selbst tut. Von Claude vorgeschlagen, **noch nichts beschlossen:**
+- **Rahmen:** Die Zeichnungen bleiben 1:1. Bewegt wird nur das ganze Bild (laufen, hüpfen, wackeln, drehen), dazu Dinge um Evi herum (Blasen, Ball, Schmetterling, Fenster). Nur nette Überraschungen ohne Strafe, wie bei den Wünschen. Überraschungen hinterlassen Spuren, damit man nichts verpasst, wenn man nur ab und zu hinschaut.
+- **Alltagsmomente** alle paar Minuten bei offener App: durchs Zimmer laufen, aus dem Fenster schauen, Gedankenblasen (Keks, Ball, Herz, Mond), summen mit Noten, gähnen, niesen, Schwanz jagen, kurzes Nickerchen.
+- **Besuch im Zimmer:** Schmetterling, Vogel am Fenster, rollender Ball, Sternschnuppe nachts, Wetter im Fenster (Regen, Schnee, Regenbogen).
+- **Evi bringt etwas:** Fundstücke (Münze, Blume, Feder, Stein, Blatt) mit „Für dich!“, gesammelt in einer Schatzkiste, manche selten. Evi malt Bilder, die danach an der Wand hängen. Passt zum geplanten Laden.
+- **Spielen aus eigenem Antrieb:** Verstecken (raten mit links/Mitte/rechts, passt zu den drei Tasten und zum Waveshare), Evi bringt den Ball und fragt „Spielen?“.
+- **Evi merkt, dass man da ist:** Begrüßung beim Öffnen („Da bist du ja!“, „Guten Morgen!“), „Während du weg warst …“, Schütteln über den Bewegungssensor (Handy; das Waveshare hat laut Händler eine IMU).
+- **Eigener Kopf:** Tageslaune (verspielt, verschmust, verfressen, verträumt), später vererbbar; Lieblingsspiel und Lieblingskeks; Tagebuch mit einem Satz pro Abend als Grundlage fürs Familienalbum.
+- **Besondere Tage:** Adventskalender vom 1. bis 24. Dezember, Schnee im Fenster, Weihnachten, Silvester, Entwicklungstag feiern.
+- **Hilfreiche neue Zeichnungen (nur auf Wunsch):** Evi von hinten am Fenster, Evi springt, Evi trägt etwas im Maul, Evi malt.
+- **Claudes Vorschlag zum Anfang:** Begrüßung, Alltagsmomente, Fundstücke mit Schatzkiste; Adventskalender bis zum 1. Dezember.
+- **Offene Fragen an die Nutzerin:** Darf Evis Bild gespiegelt werden, damit sie in beide Richtungen läuft? Wie oft sollen Momente kommen? Ton bei Überraschungen ja oder nein?
+
 ## Ideen: Partner, Nachwuchs und neue Tamagotchis (21. November 2026, nur Brainstorming)
 
 Die Nutzerin möchte Evi umfassend ausbauen, Richtung Partnerwahl und Nachwuchs. Besprochen, **noch nichts beschlossen:**
