@@ -32,6 +32,13 @@ Ab dem zweiten Mal reicht meist der Pfeil, der Port heißt dann „COM…“. Kl
 
 Das Malprogramm vom Werk wird dabei überschrieben. Waveshare stellt es auf seiner Wiki-Seite zum Download bereit, falls es einmal gebraucht wird.
 
+## Ergebnis am Board (23. November 2026, laut Nutzerin)
+
+- „Hallo Evi!“ steht richtig herum, wenn der USB-Stecker **rechts** ist. `BILD_DREHEN` bleibt 0.
+- Der Malpunkt liegt genau unter dem Finger, die Spiegel-Schalter bleiben 0.
+- Touch-Chip: **CST328 (V1)**.
+- Melodie, TON und NEU funktionieren. Der Ton war recht laut; `LAUTSTAERKE` danach von 2000 auf 700 gesenkt (noch nicht angehört).
+
 ## Was zurückmelden
 
 - Steht „Hallo Evi!“ richtig herum und lesbar da? Wenn das Bild auf dem Kopf steht: in `bildschirm.h` `BILD_DREHEN` auf `1` setzen.
@@ -43,5 +50,5 @@ Das Malprogramm vom Werk wird dabei überschrieben. Waveshare stellt es auf sein
 
 - `board.h`: alle Anschlüsse. Sie stammen aus Waveshares Beispielprogramm „Demo V2“ vom 14. Oktober 2026 (`DEV_Config.h`, `bsp_*.h`). Bildschirm an SPI1 (10, 11, 13, 14, 15), Beleuchtung 16, Touch, Uhr und Lagesensor an I²C1 (6, 7), Touch-Reset 17 und -Meldung 18, Ton über I²S (2, 3, 4).
 - `bildschirm.h`: eigener kleiner Treiber für den ST7789T3 mit Waveshares Einstellungen. Gezeichnet wird in ein 1-Bit-Bild (9,6 KB, Adafruit GFX `GFXcanvas1`). `zeigen()` überträgt es als Schwarz und Weiß. Das passt zu Evis Zeichnungen und lässt später Farbe zu.
-- `touch.h`: Seit Oktober 2026 baut Waveshare den Touch-Chip **CST3530** ein, vorher den **CST328**. Das Programm erkennt den Chip an seiner I²C-Adresse (0x58 bzw. 0x1A). Der CST3530 wird gelesen wie in Waveshares Beispiel. Der CST328 ist nach dessen Registerbelegung geschrieben und nicht am Board geprüft.
+- `touch.h`: Seit Oktober 2026 baut Waveshare den Touch-Chip **CST3530** ein, vorher den **CST328**. Das Programm erkennt den Chip an seiner I²C-Adresse (0x58 bzw. 0x1A). Der CST3530 wird gelesen wie in Waveshares Beispiel. Der CST328 ist nach dessen Registerbelegung geschrieben. **Das Board der Nutzerin hat den CST328 (V1)**, obwohl es im November 2026 gekauft wurde.
 - `ton.h`: Rechtecktöne über die I²S-Bibliothek des Board-Pakets, absichtlich leise.

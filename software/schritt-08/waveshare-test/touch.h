@@ -1,6 +1,6 @@
 // Touch: erkennt selbst, welcher Chip verbaut ist.
 //  - CST3530 (Adresse 0x58): Boards ab Oktober 2026 („V2“). Ablauf wie in Waveshares CST3530.cpp.
-//  - CST328  (Adresse 0x1A): ältere Boards („V1“). Nach dem CST328-Datenblatt, noch nicht am Board geprüft.
+//  - CST328  (Adresse 0x1A): ältere Boards („V1“). Das Board der Nutzerin hat diesen Chip; am 23.11.2026 geprüft.
 // Liefert die Fingerposition im Querformat 320 x 240.
 #pragma once
 #include <Wire.h>

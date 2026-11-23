@@ -5,7 +5,7 @@
 #include "board.h"
 
 const int ABTASTRATE = 22050;
-const int LAUTSTAERKE = 2000;   // von 32767; höher = lauter
+const int LAUTSTAERKE = 700;    // von 32767; höher = lauter (2000 war laut Nutzerin recht laut)
 
 I2S i2s(OUTPUT);
 
