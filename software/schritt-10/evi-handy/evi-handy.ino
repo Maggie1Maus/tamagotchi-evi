@@ -6,6 +6,10 @@
 //   linkes Drittel  = linke Taste  (Menü öffnen / weiter)
 //   Mitte           = mittlere Taste (Menü öffnen / OK)
 //   rechtes Drittel = rechte Taste (zurück / schließen)
+// Echte Retro-Gamer-Tasten über den MCP23017 (tasten.h, Belegung vom 23.11.2026):
+//   Steuerkreuz hoch/runter = Auswahl im Menü bewegen (Festhalten blättert)
+//   A = Menü öffnen / OK, B = zurück / schließen, START = Menü öffnen oder schließen
+//   L, R und RESET haben noch keine Aufgabe (L/R später für „Links oder rechts?“).
 // Noch nicht dabei (spätere Etappen): die drei Spiele, Name ändern, Hilfe,
 // Evis eigene Momente, Begrüßung und Tageslaune.
 //
@@ -14,6 +18,7 @@
 #include "board.h"
 #include "bildschirm.h"
 #include "touch.h"
+#include "tasten.h"
 #include "ton.h"
 #include "text.h"
 #include "zeit.h"
@@ -434,7 +439,7 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
       if (aktuellerWunsch(pet, jetzt, w)) { snprintf(aus, n, "Ein Wunsch!"); return; }
       if (ausgeschlafen(pet, jetzt)) { snprintf(aus, n, "Ausgeschlafen! Guten Morgen"); return; }
       if (muede(pet, jetzt)) { snprintf(aus, n, "%s", stundeVon(jetzt) < 12 ? "Gähn … guten Morgen" : "Gähn … Zeit für Gute Nacht?"); return; }
-      snprintf(aus, n, "Mitte öffnet das Menü");
+      snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
     }
   }
 }
@@ -519,7 +524,7 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
   char text[100];
   if (menueOffen) {
-    snprintf(text, sizeof(text), "Links weiter · Mitte OK · Rechts zurück");
+    snprintf(text, sizeof(text), "%s", tastenDa ? "▲▼ wählen · A OK · B zurück" : "Links weiter · Mitte OK · Rechts zurück");
     schreibe(bild, (BREITE - textBreite(text)) / 2, 216, text, 0);
     return;
   }
@@ -675,6 +680,19 @@ void taste(Taste k) {
   }
 }
 
+// Die echten Tasten des Retro Gamers
+void knopf(Knopf k) {
+  if (k == K_A) { taste(MITTE); return; }
+  if (k == K_B) { taste(RECHTS); return; }
+  const ms_t jetzt = jetztMs();
+  if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);
+  if (ritual.aktiv) { ritualBeenden(); return; }   // jede Taste überspringt Gute Nacht
+  if (k == K_START) { menueZeigen(!menueOffen); return; }
+  if (!menueOffen || menueAnzahl == 0) return;
+  if (k == K_UP) gewaehlt = (gewaehlt + menueAnzahl - 1) % menueAnzahl;
+  else if (k == K_DOWN) gewaehlt = (gewaehlt + 1) % menueAnzahl;
+}
+
 // ---------- Touch: einzelne Tipper ----------
 bool fingerUnten = false;
 uint32_t letzteMeldung = 0, fingerSeit = 0;
@@ -722,6 +740,17 @@ void uhrStellenBildschirm(ms_t vorschlag) {
       schritt = tasteBei(fingerX) == LINKS ? -1 : 1;
       naechsteWiederholung = millis() + 90;
     }
+    // Echte Tasten: hoch/runter ändert (Festhalten zählt schnell), A oder rechts = nächstes Feld,
+    // B oder links = Feld zurück
+    const int k = naechsteTaste();
+    if (k == K_UP) schritt = 1;
+    else if (k == K_DOWN) schritt = -1;
+    else if (k == K_A || k == K_R || k == K_START) {
+      feld++;
+      if (feld >= 5) break;
+    } else if ((k == K_B || k == K_L) && feld > 0) {
+      feld--;
+    }
     if (schritt) {
       werte[feld] += schritt;
       if (werte[feld] > maxs[feld]) werte[feld] = mins[feld];
@@ -750,7 +779,8 @@ void uhrStellenBildschirm(ms_t vorschlag) {
     schreibe(bild, 53 - 6, 206, "-", 0, 3);
     schreibe(bild, 160 - textBreite(feld == 4 ? "Fertig" : "Weiter", 2) / 2, 210, feld == 4 ? "Fertig" : "Weiter", 0, 2);
     schreibe(bild, 267 - 9, 206, "+", 0, 3);
-    schreibe(bild, (BREITE - textBreite("Festhalten zählt schnell")) / 2, 172, "Festhalten zählt schnell", 0);
+    const char* hinweis = tastenDa ? "▲▼ ändern · A weiter · B zurück" : "Festhalten zählt schnell";
+    schreibe(bild, (BREITE - textBreite(hinweis)) / 2, 172, hinweis, 0);
     zeigen();
   }
   const ms_t utc = ausOrtszeit(werte[2], werte[1], werte[0], werte[3], werte[4]);
@@ -758,6 +788,7 @@ void uhrStellenBildschirm(ms_t vorschlag) {
   uhrSetzen(utc);
   fingerUnten = true;   // den letzten Tipper nicht als Taste werten
   letzteMeldung = millis();
+  tastenVergessen();
 }
 
 // Uhrzeit beim Übersetzen, als Vorschlag beim ersten Stellen
@@ -793,6 +824,7 @@ void setup() {
   speicherStarten();
   bildschirmStarten();
   touchStarten();
+  tastenStarten();
   tonStarten();
   randomSeed(micros() ^ analogRead(BAT_ADC));
 
@@ -850,6 +882,15 @@ void loop() {
     else {
       bildschirmEin();
       taste(tasteBei(x));
+    }
+  }
+
+  const int k = naechsteTaste();
+  if (k >= 0) {
+    if (!bildschirmAn) bildschirmEin();   // der erste Druck weckt nur den Bildschirm
+    else {
+      bildschirmEin();
+      knopf((Knopf)k);
     }
   }
 

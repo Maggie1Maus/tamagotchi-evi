@@ -24,6 +24,25 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Gespeichert** wird bei jeder Pflege, bei Ereignissen und sonst alle 30 Minuten (Flash schonen). Die Uhr rechnet die Zeit nach, auch wenn das Board aus war.
 - Die Schrift ist die eingebaute 5×7-Pixelschrift (mit Umlauten). Symbole und Zeichnungen sind aus der App übernommen.
 
+## Echte Retro-Gamer-Tasten (23. November 2026)
+
+Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board (`tasten.h`). Belegung nach Wunsch der Nutzerin:
+
+| Taste | im Spiel | beim Uhr-Stellen |
+|---|---|---|
+| Steuerkreuz hoch / runter | Auswahl im Menü bewegen (Festhalten blättert) | Wert ändern (Festhalten zählt schnell) |
+| A | Menü öffnen / OK | nächstes Feld, nach der Minute fertig |
+| B | zurück / Menü schließen | Feld zurück |
+| START | Menü öffnen oder schließen | nächstes Feld |
+| Steuerkreuz links / rechts | noch keine Aufgabe (später für „Links oder rechts?“) | Feld zurück / weiter |
+| RESET | noch keine Aufgabe | – |
+
+- Der erste Druck bei dunklem Bildschirm macht ihn nur an, wie beim Tippen. Jede Taste überspringt „Gute Nacht“.
+- Die Hinweise unten zeigen „▲▼ wählen · A OK · B zurück“ und „A öffnet das Menü“, sobald der MCP23017 gefunden ist; sonst die alten Touch-Hinweise.
+- Touch über die drei Drittel funktioniert weiterhin. Ohne MCP23017 läuft alles wie vorher; das Programm sucht ihn alle 2 Sekunden.
+- Entprellt: Ein Druck zählt, wenn zwei Lesungen im Abstand von 8 ms gleich sind.
+- Geprüft (23. November 2026, Cloud): mit g++ und Ersatz-Headern ohne Fehler und Warnungen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
+
 ## Aufspielen
 
 1. In der Arduino IDE `software/schritt-10/evi-handy/evi-handy.ino` öffnen, Board **Raspberry Pi Pico 2**, hochladen.

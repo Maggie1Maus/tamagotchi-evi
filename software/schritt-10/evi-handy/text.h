@@ -1,5 +1,5 @@
 // Text mit der eingebauten 5x7-Schrift von Adafruit GFX (Codepage 437, daher mit Umlauten).
-// Texte im Programm sind UTF-8 und werden hier umgesetzt: ä ö ü Ä Ö Ü ß · … ♥ ♪ ✦
+// Texte im Programm sind UTF-8 und werden hier umgesetzt: ä ö ü Ä Ö Ü ß · … ♥ ♪ ✦ ▲ ▼
 #pragma once
 #include <Adafruit_GFX.h>
 
@@ -30,6 +30,8 @@ static int zeichenLesen(const char* s, uint8_t& z, bool& dreiPunkte) {
     else if (b == 0x99 && c == 0xA5) z = 0x03;                     // ♥
     else if (b == 0x99 && (c == 0xAA || c == 0xAB)) z = 0x0D;      // ♪
     else if (b == 0x9C && c == 0xA6) z = 0x04;                     // ✦
+    else if (b == 0x96 && c == 0xB2) z = 0x1E;                     // ▲
+    else if (b == 0x96 && c == 0xBC) z = 0x1F;                     // ▼
     else z = '?';
     return 3;
   }
