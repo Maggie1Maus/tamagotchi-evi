@@ -256,7 +256,7 @@ Verworfen wurde das **Sharp Memory LCD 2,7″ (Adafruit 4694)**. Es passt sehr g
 
 ### Einkaufsliste bei BerryBase (Stand 20. November 2026)
 
-**Bestellstatus 20. November 2026:** Laut Nutzerin sind die Artikel der BerryBase- und der Botland-Bestellung unten bestellt, außer der Pufferbatterie. Ob Multimeter und USB-C-Kabel dabei waren (nur „falls nicht vorhanden“), wurde nicht angegeben. Bestellbestätigungen wurden nicht eingesehen. Lieferung noch nicht bestätigt.
+**Bestellstatus 20. November 2026:** Laut Nutzerin sind die Artikel der BerryBase- und der Botland-Bestellung unten bestellt, außer der Pufferbatterie. Ob Multimeter und USB-C-Kabel dabei waren (nur „falls nicht vorhanden“), wurde nicht angegeben. Bestellbestätigungen wurden nicht eingesehen. **Botland-Lieferung am 23. November 2026 angekommen** (Foto der Nutzerin): Pololu S9V11F5 und das Dioden-Set. Die BerryBase-Lieferung mit dem Waveshare-Board ist noch nicht bestätigt.
 
 Am 20. November 2026 kritisch überarbeitet. Die erste Fassung enthielt zu viel Testzubehör und einen ungeeigneten Wandler.
 
@@ -279,7 +279,7 @@ Am 20. November 2026 kritisch überarbeitet. Die erste Fassung enthielt zu viel 
 | Anzahl | Artikel | Preis | Nötig? |
 | --- | --- | --- | --- |
 | 1 | [Pololu S9V11F5, 5 V Step-Up/Step-Down](https://botland.de/aufwarts-abwartswandler/8738-s9v11f5-aufwarts-abwartswandler-5-v-15-a-pololu-2836-5904422305796.html) | 8,90 € mit MwSt., Versand ab 4,69 € | Ja, für den Betrieb mit 4 × AAA. Am 20. November 2026 im Browser geprüft: „Verfügbar, wir versenden heute“, Zahlung mit Klarna und PayPal, 30 Tage Rückgaberecht. |
-| 1 | [Gleichrichterdioden-Set, 200 Stück, justPi](https://botland.de/gleichrichterdioden/23836-gleichrichterdioden-set-verschiedene-typen-200-stueck-justpi-5904422384258.html) | 7,90 € | Ja, für die Schottky-Diode der Batterieeinspeisung. Enthält laut Botland 1N5819 und 1N5822. Einzelne Schottky-Dioden führen weder BerryBase noch Botland. |
+| 1 | [Gleichrichterdioden-Set, 200 Stück, justPi](https://botland.de/gleichrichterdioden/23836-gleichrichterdioden-set-verschiedene-typen-200-stueck-justpi-5904422384258.html) | 7,90 € | Ja, für die Schottky-Diode der Batterieeinspeisung. Enthält laut Botland 1N5819 und 1N5822. Einzelne Schottky-Dioden führen weder BerryBase noch Botland. **Geliefert am 23. November 2026** in einzeln beschrifteten Tütchen. Auf dem Foto zu sehen: 1N5819 (Schottky, 1 A / 40 V, 20 Stück) und 1N5822 (Schottky, 3 A / 40 V, 10 Stück). Laut Nutzerin außerdem Tütchen mit 1 A / 1000 V und 3 A / 1000 V; das sind normale Gleichrichterdioden (vermutlich 1N4007 und 1N5408, Typnummern noch nicht abgelesen), für Evi nicht nötig. Vorschlag für die Batterieeinspeisung: **1N5819** (klein, 1 A reicht für das Board). Der helle Ring auf der Diode markiert die Kathode, sie kommt an VBus. |
 
 **Einspeisestelle für die Batterie:** Laut [Waveshare-Pinbelegung](https://www.waveshare.com/wiki/RP2350-Touch-LCD-2.8) führt der 12-polige Stecker **VBus (5 V)** und GND. Dort speist der Pololu-Wandler über die Schottky-Diode ein (Anode am Wandler, Kathode an VBus). Die USB-C-Buchse bleibt frei zum Programmieren; die Diode verhindert, dass USB-Strom in den Wandler zurückfließt.
 
@@ -393,7 +393,7 @@ Die Zerlegeansicht des Tamagotchi aus „Ideen und Infos.md“ dient zusätzlich
 - Bausatz: geprüft und für diesen Einstieg empfohlen.
 - Lötkolben: älteres Gerät vorhanden; neue Zhongdi ZD-99-Lötstation am 20. November 2026 angekommen.
 - Beschaffung: alle Funduino- und BerryBase-Artikel gemäß Abschnitt 8 laut Nutzerin bestellt. Keine Bestellung der Knipex-Zange; die günstige Funduino-Zange bleibt die Auswahl.
-- Lieferung: Funduino am 19. November 2026, BerryBase am 20. November 2026 angekommen (laut Nutzerin). Vollständigkeit und Zustand der Teile vor dem Aufbau anhand der Anleitung prüfen.
+- Lieferung: Funduino am 19. November 2026, BerryBase am 20. November 2026 angekommen (laut Nutzerin). Botland (Pololu-Wandler, Dioden-Set) am 23. November 2026 angekommen. Vollständigkeit und Zustand der Teile vor dem Aufbau anhand der Anleitung prüfen.
 - Montage begonnen (19. November 2026, laut Nutzerin, mit dem alten Lötkolben): Display, Nano, eine LED, einige Widerstände und ein Taster sind angelötet. Eine Textanzeige auf dem Display funktioniert. Welche Bauteile noch fehlen (z. B. Summer, LED-Ring, Sensor), ist nicht dokumentiert.
 - Am 20. November 2026 für Evi fertig gelötet: Widerstände, Fotowiderstand, drei LEDs, Taster, Lautsprecher (zusätzlich zu Display und Nano). Die übrigen Sensoren und der LED-Ring sind für Evi nicht nötig und noch offen.
 - Nächste Schritte: `software/schritt-05/cube-test` aufspielen und alle Bauteile prüfen, dann `software/schritt-05/evi-cube`.
