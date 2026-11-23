@@ -989,8 +989,8 @@ void loop() {
       dunkelSeit = jetzt;
     }
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
-  } else if (spiel.aktiv && bildschirmAn && m - letztesBild >= 40) {
-    zeichneAlles();                       // im Spiel öfter zeichnen, damit der Ball flüssig läuft
+  } else if (spiel.aktiv && bildschirmAn && m - letztesBild >= 12) {
+    zeichneAlles();                       // im Spiel etwa 80-mal pro Sekunde; gesendet wird nur, was sich bewegt
     letztesBild = millis();
   }
 }

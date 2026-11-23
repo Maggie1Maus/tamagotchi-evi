@@ -6,10 +6,21 @@ TwoWire Wire1;
 #include "SPI.h"
 SPIClass SPI1;
 void (*simNachBild)() = nullptr;
-int simZeilen = 0;
+unsigned long simGesendet = 0;
+int simDC = 1;
+uint8_t simDisplay[240][320];
+long simFalschePunkte = 0, simBilder = 0;
+void simDisplayVergleichen();
+void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleichen(); if (simNachBild) simNachBild(); }
 #include "EEPROM.h"
 EEPROMC EEPROM;
 #include "evi-handy.ino"
+// Steht auf dem nachgebildeten Display dasselbe wie im Bild des Programms?
+void simDisplayVergleichen() {
+  const uint8_t* b = bild.getBuffer();
+  for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
+    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+}
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
 void laufen(uint32_t ms) { for (uint32_t t = 0; t < ms; t += 10) { simMillis += 10; loop(); } }
@@ -49,6 +60,8 @@ int main() {
   moment.naechster = jetztMs() + 5000; moment.ruheBisTakt = 0; evi.reaktionBisTakt = 0;
   for (int i = 0; i < 300 && moment.art == M_KEINER; i++) { laufen(100); letzteBeruehrung = millis(); }
   PRUEFE(moment.art != M_KEINER, "kleiner Moment startet");
+  printf("Display: %ld Bilder verglichen, %ld falsche Punkte\n", simBilder, simFalschePunkte);
+  if (simFalschePunkte) { printf("FEHLER: Display weicht ab\n"); fehler++; }
   printf("%s: %d Fehler\n", fehler ? "NICHT OK" : "OK", fehler);
   return fehler;
 }

@@ -1,6 +1,6 @@
 // Bildschirm im Querformat 320 x 240, strikt schwarz-weiß.
 // Gezeichnet wird in ein 1-Bit-Bild im Speicher (Adafruit GFX, GFXcanvas1),
-// zeigen() schickt es als Ganzes an den Bildschirm.
+// zeigen() schickt die geänderten Stellen an den Bildschirm.
 #pragma once
 #include <SPI.h>
 #include <Adafruit_GFX.h>
@@ -92,29 +92,70 @@ void bildschirmStarten() {
   bild.fillScreen(0);
 }
 
-// Schickt das ganze Bild an den Bildschirm (etwa 30 ms).
-// umgekehrt = true zeigt Schwarz als Weiß und Weiß als Schwarz (Nacht).
-void zeigen(bool umgekehrt = false) {
-  const uint8_t spalten[] = {0, 0, (BREITE - 1) >> 8, (BREITE - 1) & 0xFF};
-  const uint8_t zeilen[]  = {0, 0, (HOEHE - 1) >> 8, (HOEHE - 1) & 0xFF};
+// Was zuletzt an den Bildschirm geschickt wurde. zeigen() vergleicht damit und sendet nur die
+// geänderten Stellen: Das ganze Bild braucht etwa 35 ms, ein kleiner Streifen (z. B. der Ball)
+// unter 1 ms. Darum läuft der Ball flüssig, und Menü und Momente reagieren schneller.
+static uint8_t gesendet[(BREITE / 8) * HOEHE];
+static bool gesendetGueltig = false, gesendetUmgekehrt = false;
+
+// Schickt einen Ausschnitt (x0..x1, y0..y1, jeweils einschließlich) aus dem Bild an den Bildschirm.
+static void bereichSenden(int x0, int y0, int x1, int y1, bool umgekehrt) {
+  const uint8_t spalten[] = {(uint8_t)(x0 >> 8), (uint8_t)(x0 & 0xFF), (uint8_t)(x1 >> 8), (uint8_t)(x1 & 0xFF)};
+  const uint8_t zeilen[]  = {(uint8_t)(y0 >> 8), (uint8_t)(y0 & 0xFF), (uint8_t)(y1 >> 8), (uint8_t)(y1 & 0xFF)};
   lcdBefehlMitDaten(0x2A, spalten, 4);
   lcdBefehlMitDaten(0x2B, zeilen, 4);
   lcdBefehl(0x2C);
 
   static uint8_t zeile[BREITE * 2];
   const uint8_t* quelle = bild.getBuffer();
-  const int bytesProZeile = (BREITE + 7) / 8;
+  const int bytesProZeile = (BREITE + 7) / 8, n = x1 - x0 + 1;
 
   digitalWrite(LCD_DC, HIGH);
   digitalWrite(LCD_CS, LOW);
-  for (int y = 0; y < HOEHE; y++) {
+  for (int y = y0; y <= y1; y++) {
     const uint8_t* q = quelle + y * bytesProZeile;
-    for (int x = 0; x < BREITE; x++) {
+    for (int i = 0; i < n; i++) {
+      const int x = x0 + i;
       const bool weiss = ((q[x >> 3] & (0x80 >> (x & 7))) != 0) != umgekehrt;
-      zeile[x * 2]     = weiss ? 0xFF : 0x00;
-      zeile[x * 2 + 1] = weiss ? 0xFF : 0x00;
+      zeile[i * 2]     = weiss ? 0xFF : 0x00;
+      zeile[i * 2 + 1] = weiss ? 0xFF : 0x00;
     }
-    SPI1.transfer(zeile, sizeof(zeile));
+    SPI1.transfer(zeile, n * 2);
   }
   digitalWrite(LCD_CS, HIGH);
+}
+
+// Schickt das Bild an den Bildschirm, aber nur, was sich seit dem letzten Mal geändert hat.
+// umgekehrt = true zeigt Schwarz als Weiß und Weiß als Schwarz (Nacht).
+void zeigen(bool umgekehrt = false) {
+  const uint8_t* neu = bild.getBuffer();
+  const int bpz = BREITE / 8;
+  if (!gesendetGueltig || umgekehrt != gesendetUmgekehrt) {
+    bereichSenden(0, 0, BREITE - 1, HOEHE - 1, umgekehrt);
+    memcpy(gesendet, neu, sizeof(gesendet));
+    gesendetGueltig = true;
+    gesendetUmgekehrt = umgekehrt;
+  } else {
+    for (int y = 0; y < HOEHE;) {
+      if (memcmp(neu + y * bpz, gesendet + y * bpz, bpz) == 0) { y++; continue; }
+      // Ein Block aus geänderten Zeilen; kurze Lücken (bis 4 Zeilen) gehören mit dazu.
+      int y1 = y, luecke = 0, bMin = bpz, bMax = -1;
+      for (int z = y; z < HOEHE; z++) {
+        const uint8_t* a = neu + z * bpz;
+        const uint8_t* b = gesendet + z * bpz;
+        if (memcmp(a, b, bpz) == 0) { if (++luecke > 4) break; continue; }
+        luecke = 0;
+        y1 = z;
+        for (int i = 0; i < bpz; i++) {
+          if (a[i] != b[i]) { if (i < bMin) bMin = i; if (i > bMax) bMax = i; }
+        }
+      }
+      bereichSenden(bMin * 8, y, bMax * 8 + 7, y1, umgekehrt);
+      for (int z = y; z <= y1; z++) memcpy(gesendet + z * bpz + bMin, neu + z * bpz + bMin, bMax - bMin + 1);
+      y = y1 + 1;
+    }
+  }
+#ifdef NACHBILDUNG
+  nachbildungBildFertig();   // nur in der PC-Nachbildung (tools/pc-nachbildung)
+#endif
 }

@@ -65,7 +65,11 @@ bool naechsteRunde(bool treffer) {
   } else {
     piep(TON(TON_DANEBEN));
   }
-  if (spiel.runde >= R::SPIEL_RUNDEN) { spielPlanen(SE_ENDE, 0, 900); return false; }
+  if (spiel.runde >= R::SPIEL_RUNDEN) {
+    spiel.beschaeftigt = true;           // nach der letzten Runde zählt nichts mehr
+    spielPlanen(SE_ENDE, 0, 900);
+    return false;
+  }
   return true;
 }
 
@@ -92,7 +96,7 @@ void ballBewegen() {
 }
 
 void ballFangen() {
-  if (spiel.pause > 0) return;
+  if (spiel.pause > 0 || spiel.beschaeftigt) return;
   ballBewegen();
   const float mitte = spiel.x + 7;
   const bool treffer = mitte >= FELD_VON && mitte <= FELD_BIS;

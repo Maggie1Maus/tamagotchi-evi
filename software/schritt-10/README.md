@@ -58,6 +58,14 @@ Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrec
 
 **Geprüft (23. November 2026, Cloud):** mit `tools/pc-nachbildung/pruefen.sh` ohne Fehler und Warnungen übersetzt; in der Nachbildung laufen alle drei Spiele bis zum Ende (Münzen, Meldung), alle neun Momente enden mit Evi zurück auf dem Teppich, Besuch schaltet den dunklen Bildschirm ein und der Bildschirm bleibt bis zum Ende an, Begrüßung beim Aufwecken, Name tippen, Hilfe blättern. Bildschirmbilder angesehen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
 
+## Flüssiger Ball: nur Geändertes senden (24. November 2026)
+
+Laut Nutzerin lief alles, nur der Ball beim Ballfangen ruckelte. Grund: `zeigen()` schickte jedes Mal das ganze Bild (320 × 240 Punkte, etwa 35 ms), der Ball sprang also in großen Sätzen. Jetzt merkt sich `bildschirm.h`, was schon auf dem Display steht, und schickt nur die geänderten Zeilenblöcke (Ausschnitt per Spalten-/Zeilenfenster des ST7789). Beim Ball sind das im Mittel etwa 600 Bytes statt 153.600 pro Bild. Im Spiel wird jetzt etwa alle 12 ms gezeichnet (vorher 40 ms). Davon profitieren auch Menü, Momente und alle anderen Bildschirme.
+
+Dabei behoben: Nach der letzten Ballrunde ließ sich der Ball bis zum Spielende noch einmal fangen („6 von 5 gefangen“).
+
+Geprüft in der PC-Nachbildung, jetzt mit nachgebildetem Display: In 3913 Bildern (Spiele, Momente, Name, Hilfe) stand auf dem Display genau das Bild des Programms, ohne falschen Punkt. **Am Board noch nicht ausprobiert.**
+
 ## Echte Retro-Gamer-Tasten (23. November 2026)
 
 Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board (`tasten.h`). Belegung nach Wunsch der Nutzerin:

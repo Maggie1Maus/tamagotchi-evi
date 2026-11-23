@@ -8,10 +8,21 @@ TwoWire Wire1;
 #include "SPI.h"
 SPIClass SPI1;
 void (*simNachBild)() = nullptr;
-int simZeilen = 0;
+unsigned long simGesendet = 0;
+int simDC = 1;
+uint8_t simDisplay[240][320];
+long simFalschePunkte = 0, simBilder = 0;
+void simDisplayVergleichen();
+void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleichen(); if (simNachBild) simNachBild(); }
 #include "EEPROM.h"
 EEPROMC EEPROM;
 #include "evi-handy.ino"
+// Steht auf dem nachgebildeten Display dasselbe wie im Bild des Programms?
+void simDisplayVergleichen() {
+  const uint8_t* b = bild.getBuffer();
+  for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
+    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+}
 
 static int fehler = 0;
 #define PRUEFE(b, text) do { if (!(b)) { printf("FEHLER: %s\n", text); fehler++; } } while (0)
@@ -61,6 +72,16 @@ int main() {
   vorbereiten(14, 0);
   spielStarten(SPIEL_BALL);
   laufen(900); foto("10-ball");
+  {
+    // Wie viel geht pro Bild an den Bildschirm, während der Ball läuft? (ganzes Bild: 153600 Bytes)
+    const unsigned long vorher = simGesendet; int bilder = 0;
+    simNachBild = [] {};
+    for (int i = 0; i < 50; i++) { simMillis += 13; loop(); }
+    bilder = 50;
+    printf("Ball: im Mittel %lu Bytes pro Bild (ganzes Bild 153600)\n", (simGesendet - vorher) / bilder);
+    PRUEFE((simGesendet - vorher) / bilder < 20000, "Ball sendet nur kleine Ausschnitte");
+    simNachBild = nullptr;
+  }
   int versuche = 0;
   while (spiel.aktiv && versuche < 50) {
     laufen(200);
@@ -69,6 +90,7 @@ int main() {
   laufen(1500);
   PRUEFE(!spiel.aktiv, "Ballspiel endet nicht");
   printf("Ball: %d Versuche, Münzen jetzt %u, Meldung: %s\n", versuche, pet.muenzen, meldung);
+  PRUEFE(strstr(meldung, "5 von 5") != nullptr, "höchstens 5 Treffer");
   zeichnenJetzt(); foto("12-ball-ende");
 
   // ---------- Links oder rechts ----------
@@ -177,6 +199,8 @@ int main() {
     try { hilfeBildschirm(); } catch (std::exception&) {}
     simNachBild = nullptr;
   }
+  printf("Display: %ld Bilder verglichen, %ld falsche Punkte\n", simBilder, simFalschePunkte);
+  if (simFalschePunkte) { printf("FEHLER: Display weicht ab\n"); fehler++; }
   printf("%s: %d Fehler\n", fehler ? "NICHT OK" : "OK", fehler);
   return fehler ? 1 : 0;
 }
