@@ -30,10 +30,24 @@ public static class ArtPrep {
     // 0 = outside (transparent), 1 = black, 2 = white inside
     var m = new int[ow,height];
     for (int y=0;y<height;y++) for(int x=0;x<ow;x++){ var c=scaled.GetPixel(x,y); m[x,y] = c.R+c.G+c.B < 3*140 ? 1 : 2; }
+    // The outside is found with the outline thickened by 1 pixel, so a tiny gap in the outline
+    // (one pixel wide) does not let the outside run into the figure. Then the white seam right
+    // next to the outline is added to the outside. The black and white pixels stay as they are.
+    var near = new bool[ow,height];
+    for (int y=0;y<height;y++) for(int x=0;x<ow;x++)
+      for (int yy=Math.Max(0,y-1); yy<=Math.Min(height-1,y+1); yy++) for (int xx=Math.Max(0,x-1); xx<=Math.Min(ow-1,x+1); xx++) if (m[xx,yy]==1) near[x,y]=true;
     var q = new Queue<int>();
-    for (int y=0;y<height;y++) for(int x=0;x<ow;x++) if((x==0||y==0||x==ow-1||y==height-1)&&m[x,y]==2){ m[x,y]=0; q.Enqueue(y*ow+x); }
+    for (int y=0;y<height;y++) for(int x=0;x<ow;x++) if((x==0||y==0||x==ow-1||y==height-1)&&m[x,y]==2&&!near[x,y]){ m[x,y]=0; q.Enqueue(y*ow+x); }
     while(q.Count>0){ int p=q.Dequeue(), x=p%ow, y=p/ow; int[] dx={1,-1,0,0}, dy={0,0,1,-1};
-      for(int k=0;k<4;k++){ int nx=x+dx[k], ny=y+dy[k]; if(nx>=0&&ny>=0&&nx<ow&&ny<height&&m[nx,ny]==2){ m[nx,ny]=0; q.Enqueue(ny*ow+nx);} } }
+      for(int k=0;k<4;k++){ int nx=x+dx[k], ny=y+dy[k]; if(nx>=0&&ny>=0&&nx<ow&&ny<height&&m[nx,ny]==2&&!near[nx,ny]){ m[nx,ny]=0; q.Enqueue(ny*ow+nx);} } }
+    var seam = new List<int>();
+    for (int y=0;y<height;y++) for(int x=0;x<ow;x++) {
+      if (m[x,y]!=2) continue;
+      bool edge = x==0||y==0||x==ow-1||y==height-1;
+      for (int yy=Math.Max(0,y-1); yy<=Math.Min(height-1,y+1); yy++) for (int xx=Math.Max(0,x-1); xx<=Math.Min(ow-1,x+1); xx++) if (m[xx,yy]==0) edge=true;
+      if (edge) seam.Add(y*ow+x);
+    }
+    foreach (int p in seam) m[p%ow, p/ow] = 0;
     var outBmp = new Bitmap(ow+2, height+2, PixelFormat.Format32bppArgb);
     for (int y=0;y<height+2;y++) for(int x=0;x<ow+2;x++) outBmp.SetPixel(x,y,Color.Transparent);
     for (int y=0;y<height;y++) for(int x=0;x<ow;x++) outBmp.SetPixel(x+1,y+1, m[x,y]==0 ? Color.Transparent : m[x,y]==1 ? Color.Black : Color.White);

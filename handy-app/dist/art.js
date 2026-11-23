@@ -31,7 +31,15 @@ export const ART = {
     muede: ['img/adult-muede.png', 309, 254],
     krank: ['img/adult-krank.png', 302, 248],
     schmutzig: ['img/adult-schmutzig.png', 326, 255],
-    schlafend: ['img/adult-schlafend.png', 331, 192]
+    schlafend: ['img/adult-schlafend.png', 331, 192],
+    laufen: ['img/adult-laufen.png', 326, 303],
+    fenster: ['img/adult-fenster.png', 276, 308],
+    denken: ['img/adult-denken.png', 322, 285],
+    singen: ['img/adult-singen.png', 323, 257],
+    gaehnen: ['img/adult-gaehnen.png', 317, 248],
+    drehen: ['img/adult-drehen.png', 312, 302],
+    huepfen: ['img/adult-huepfen.png', 310, 292],
+    staunen: ['img/adult-staunen.png', 296, 303]
   },
   senior: {
     base: ['img/senior-base.png', 297, 266],

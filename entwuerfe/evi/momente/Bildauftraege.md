@@ -2,6 +2,8 @@
 
 Stand: 23. November 2026
 
+**Erledigt (23. November 2026):** Alle 8 Zeichnungen sind da und seit Version 0.10.1 im Spiel eingebaut (`handy-app/dist/img/adult-<name>.png`). Bei „Drehen“ hat der Umriss am rechten Ohransatz eine winzige Lücke (1 Pixel). Deshalb erkennt das Werkzeug seitdem „außen“ mit 1 Pixel abgedichtetem Umriss. Die Zeichnung selbst wurde nicht verändert.
+
 Seit Version 0.10 tut die erwachsene Evi ab und zu etwas von selbst: Sie läuft herum, schaut aus dem Fenster, denkt an etwas, summt, gähnt, dreht sich im Kreis, begrüßt dich und bekommt Besuch von einem Schmetterling. Die Nutzerin wünscht sich dafür **eigene Zeichnungen**. Bis eine Zeichnung da ist, zeigt das Spiel die vorhandenen Emotionsbilder. Erst einmal nur für die **erwachsene Evi**.
 
 ## So kommen die Zeichnungen ins Spiel
