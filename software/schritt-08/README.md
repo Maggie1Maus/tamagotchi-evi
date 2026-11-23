@@ -15,7 +15,9 @@ Der Lautsprecher, der dem Board beiliegt, wird in den kleinen zweipoligen Lautsp
    `https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json`
    Dann *Werkzeuge → Board → Boardverwalter*, nach **pico** suchen und „Raspberry Pi Pico/RP2040/RP2350“ installieren.
 2. **Bibliothek:** „Adafruit GFX Library“ (ist auf dem Haupt-PC schon da). Sonst über *Werkzeuge → Bibliotheken verwalten* installieren und „Alle installieren“ wählen.
-3. **Board auswählen:** *Werkzeuge → Board → Raspberry Pi Pico/RP2040/RP2350 → Raspberry Pi Pico 2*.
+3. **Board auswählen:** *Werkzeuge → Board → Raspberry Pi Pico/RP2040/RP2350 → Raspberry Pi Pico 2*. Wichtig ist die **2**: Mit „Raspberry Pi Pico“ meldet die IDE nur 2 MB Speicher, und das Board nimmt das Programm nicht an.
+
+Beim ersten Start nach der Installation kann die IDE eine Weile nur das Arduino-Logo zeigen. Abwarten oder neu starten.
 
 ## Aufspielen
 
@@ -23,6 +25,8 @@ Der Lautsprecher, der dem Board beiliegt, wird in den kleinen zweipoligen Lautsp
 2. **Beim ersten Mal** muss das Board in den Lademodus: die kleine Taste **BOOT** gedrückt halten, das USB-Kabel einstecken und die Taste loslassen. Am PC erscheint ein Laufwerk (z. B. „RP2350“).
 3. *Werkzeuge → Port:* **UF2 Board** auswählen.
 4. Mit dem **Pfeil** hochladen. Danach startet das Programm von selbst.
+
+Steht bei „Port“ kein „UF2 Board“: *Sketch → Kompilierte Binärdatei exportieren* und die `.uf2`-Datei aus dem Unterordner `build` auf das Laufwerk des Boards ziehen.
 
 Ab dem zweiten Mal reicht meist der Pfeil, der Port heißt dann „COM…“. Klappt es nicht, wieder mit BOOT starten.
 
