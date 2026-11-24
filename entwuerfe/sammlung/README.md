@@ -13,3 +13,20 @@ Motive:
 - Blatt: a single small gently curved deciduous leaf with a short stem and a few visible veins.
 - Feder: a single small soft bird feather, diagonal with a simple central shaft and a few fine notches.
 - Zapfen: a single small pine cone, upright oval silhouette with simple overlapping scales.
+
+## Erweiterung vom 24. November 2026
+
+Sechs neue Motive sind als PNG und im Board-Header vorhanden:
+
+| ID | Datei | Name im Spiel |
+|---|---|---|
+| 4 | micky.png | Micky-Knopf |
+| 5 | muschel.png | Arielles Muschel |
+| 6 | drache.png | Kleiner Gartendrache |
+| 7 | triforce.png | Triforce-Anhänger |
+| 8 | fossil.png | Spiralfossil (Animal Crossing) |
+| 9 | junimo.png | Junimo-Figur (Stardew Valley) |
+
+Die vier bisherigen Bilddateien und Fund-IDs 0–3 bleiben unverändert. Die neuen Motive sind ebenfalls höchstens 60 × 60 Pixel groß. Innen deckend weiß, außen transparent; keine Graustufen. Vorbereitete PNGs und erzeugter Header sind die im Spiel verwendeten Bilder. Die vollständigen Bildaufträge stehen in `bildauftraege.json`; verwendet wurde die eingebaute Bildgenerierung.
+
+Die Erzeugung des gewünschten Spyro- und Stitch-Bilds wurde vom Bildgenerator ohne konkreten Grund abgelehnt. Auf Wunsch der Nutzerin wurde anschließend eine eigene kleine Drachenfigur gestaltet, als eigenständiger Gartendrache mit runden Hörnern, Blattflügeln und Kleeblatt-Schwanzspitze. Das ist keine Spyro-Zeichnung. Stitch bleibt offen und wird nicht durch ein anderes Motiv ersetzt. Aktuell sind daher **zehn Arten** im Spiel verfügbar; mit Stitch wären es die gewünschten elf.
