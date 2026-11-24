@@ -180,15 +180,18 @@ def jahreszeit_fenster(x0, x1):
     return lin, deckt | lin
 
 # Himmel zwischen Ästen und Rahmen, den die Suche nicht erreicht (ganz von Linien umschlossen): von Hand
-# gewählte Punkte (Reihe, Spalte in der Scheibe) und die unterste Reihe, bis zu der dort Himmel ist.
-HIMMEL_EXTRA = {2: ([(29, 60), (38, 55), (55, 58)], 61), 3: ([(29, 60), (38, 53), (50, 57)], 56)}
+# gewählte Punkte (Reihe, Spalte in der Scheibe) und die Reihen, zwischen denen dort Himmel ist.
+# Frühling und Sommer: unter der Krone links und rechts vom Stamm bis zu den Hügeln (ab der Unterkante der Krone).
+HIMMEL_EXTRA = {0: ([(58, 40), (58, 56)], 54, 63), 1: ([(58, 40), (58, 56)], 55, 63),
+                2: ([(29, 60), (38, 55), (55, 58)], 0, 61), 3: ([(29, 60), (38, 53), (50, 57)], 0, 56)}
 
 JAHRESZEITEN = []
 for i, (x0, x1) in enumerate(FENSTER_X):
     lin, mas = jahreszeit_fenster(x0, x1)
     if i in HIMMEL_EXTRA:
-        punkte, bis = HIMMEL_EXTRA[i]
+        punkte, von, bis = HIMMEL_EXTRA[i]
         frei = mas & ~lin
+        frei[:von, :] = False
         frei[bis + 1:, :] = False
         mas = mas & ~fuellen(frei, punkte)
     JAHRESZEITEN.append((lin, mas))
