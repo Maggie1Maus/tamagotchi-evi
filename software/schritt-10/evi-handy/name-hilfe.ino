@@ -192,6 +192,10 @@ const HilfeAbsatz HILFE[] = {
                  "ersten Begrüßung, und je nach Laune tut sie manches öfter."},
   {"Himmel", "Im Fenster geht die Sonne auf und unter wie in Deutschland. Erst wird es dämmrig, dann dunkel mit Mond "
              "und Sternen."},
+  {"Jahreszeiten und Wetter", "Der Baum vor dem Fenster zeigt die Jahreszeit: Frühling ab 1. Februar, Sommer ab 1. Juni, "
+                              "Herbst ab 21. September, Winter ab 1. November. Das Wetter wechselt alle 3 Stunden: Sonne, "
+                              "Sonne und Wolken, Regen oder bewölkt, im Winter auch Schnee. Vom 18. November bis 5. Januar "
+                              "steht ein Weihnachtsbaum im Zimmer, Sterne hängen am Fenster und Kerzen stehen auf dem Sideboard."},
   {"Aufwecken", "Nachts kannst du Evi aufwecken, zum Beispiel wenn sie Hunger hat. Solange du Tasten drückst, bleibt sie "
                 "wach. Nach 5 Minuten ohne Tastendruck schläft sie wieder ein, im selben Licht wie vorher."},
   {"Mittagsschlaf", "Das Baby schläft von 12 bis 13 Uhr. Dann bitte nicht stören."},

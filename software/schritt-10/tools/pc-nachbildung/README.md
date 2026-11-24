@@ -12,6 +12,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh
 - `ablauf.cpp`: Bildschirm geht aus, Besuch schaltet ihn ein, Begrüßung beim Aufwecken, kleiner Moment.
 - `tasten.cpp`: Tastenlogik (`tasten.h`) mit einem nachgebildeten MCP23017 (`ersatz/Wire.h`, mit Merken von Änderungen in INTF/INTCAP): kurzes Antippen, Festhalten mit Wiederholung, Flackern beim Loslassen, zwei Tasten zugleich.
 - `bewegung.cpp`: Lagesensor (nachgebildeter QMI8658 in `ersatz/Wire.h`, `simLage`): Gassi gehen, schütteln, kippen, aufs Gesicht legen, „Wie war dein Tag?“, Kekse fangen, Schnick, Schnack, Schnuck.
+- `umgebung.cpp`: Jahreszeiten, Weihnachtszeit und Wetter; fotografiert das Zimmer in allen Kombinationen.
 - Das Display ist mit nachgebildet (`ersatz/SPI.h`: Spalten, Zeilen, Schreiben). Nach jedem Bild wird verglichen, ob auf dem Display genau das Bild des Programms steht; so wird geprüft, dass `zeigen()` alles Geänderte schickt.
 
 Ersetzt nicht den Test am Board: Ton, Touch, Tasten und Geschwindigkeit gibt es nur dort.

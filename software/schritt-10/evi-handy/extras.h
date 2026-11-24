@@ -105,6 +105,12 @@ ms_t dunkelSeit = 0;
 const uint8_t BALL_ZEILEN[14][2] = {{4, 9}, {4, 9}, {2, 11}, {2, 11}, {0, 13}, {0, 13}, {0, 13},
                                     {0, 13}, {0, 13}, {0, 13}, {2, 11}, {2, 11}, {4, 9}, {4, 9}};
 
+// ---------- Zimmer (umgebung.ino), seit 24.11.2026 ----------
+enum Jahreszeit : uint8_t { JZ_FRUEHLING, JZ_SOMMER, JZ_HERBST, JZ_WINTER };
+enum Wetter : uint8_t { WT_SONNE, WT_SONNE_WOLKEN, WT_REGEN, WT_BEWOELKT, WT_SCHNEE };
+// Scheibe des Fensters (wie im Zimmer der App; das Kreuz liegt bei x 61–64 und y 81–84)
+const int GLAS_X = 33, GLAS_Y = 49, GLAS_B = 62, GLAS_H = 69;
+
 // ---------- Bewegung (bewegung.ino, Lagesensor in lage.h), seit 24.11.2026 ----------
 // Der Ball, der beim Kippen über den Teppich rollt (Mitte x, Geschwindigkeit in Punkten pro Takt)
 struct { bool sichtbar = false; float x = 0, v = 0; int gerade = 0; } rollBall;

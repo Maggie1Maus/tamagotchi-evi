@@ -87,6 +87,16 @@ Laut Nutzerin fühlte sich das Steuerkreuz schwerfällig an. Mechanisch wird die
 
 Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 10-ms-Tipper während 40 ms Zeichnen wird erkannt (die alte Abfrage verpasste ihn), Halten zählt einmal, Steuerkreuz wiederholt, Flackern zählt nicht doppelt, zwei schnelle Tipper zählen zweimal. **Am Board ausprobiert (24. November 2026, laut Nutzerin): Die Tasten reagieren jetzt schnell und funktionieren „richtig gut“; die Gummimatte muss nicht eingeschnitten werden.**
 
+## Neues Zimmer, Jahreszeiten, Wetter und Weihnachtsdeko (24. November 2026)
+
+Wunsch der Nutzerin: die beschlossene Gestaltung „Gemütlich & schlicht“ aus `entwuerfe/umgebung/` einbauen, nur auf dem Board.
+- **Bilder:** `tools/make-umgebung.py` erzeugt `evi-handy/umgebung.h` aus den Entwürfen. Nur ausgeschnitten, verkleinert (Möbel 1 : 5,25, Napf 1 : 10,5, Pflanze 1 : 7, Weihnachtsbaum auf 119 Punkte Höhe) und in Schwarz/Weiß umgerechnet. Von Claude gezeichnet, weil es kein Bild dafür gibt: Dielenboden (nach dem Muster „Boden“), Sterne am Fensterrahmen, Kerzentablett. Fenster, Teppich und Tapete kommen aus dem bisherigen Zimmer.
+- **Zimmer:** Sideboard links (statt der Kommode), Tisch rechts mit der Topfpflanze darauf, Wandregal oben rechts, Napf mit Pfote vorn rechts, Dielenboden. Evi, Teppich und Fenster stehen wie vorher.
+- **Jahreszeiten** (Baum und Hügel vor dem Fenster, aus `fenster-jahreszeiten-referenz.png`): Frühling ab 1. Februar, Sommer ab 1. Juni, Herbst ab 21. September, Winter ab 1. November (deutsches Datum). Die vier Scheiben der Vorlage liegen einzeln auf den Scheiben des Spielfensters; dessen Kreuz liegt davor. Nachts werden die Umrisse zum Himmel hin hell gezeichnet, sonst verschwänden die Äste im schwarzen Himmel.
+- **Wetter**, ohne Internet: Sonne, Sonne mit Wolken, Regen (eine Regenwolke, schräge Striche fallen), bewölkt (zwei Wolken), Schnee (Wolke, Schneesterne fallen) — **Schnee nur im Winter**. Es wechselt alle 3 Stunden, zufällig je nach Jahreszeit, aber für jeden Tag fest (Streuwert aus Datum und Uhrzeit, nach einem Neustart gleich). Gewichte (Sonne, Sonne+Wolken, Regen, bewölkt, Schnee): Frühling 3/3/3/2/0, Sommer 6/3/2/1/0, Herbst 2/3/4/4/0, Winter 2/2/2/3/4 (`WETTER_GEWICHT` in `umgebung.ino`). Zu sehen am Tag und in der Dämmerung; nachts bleibt der Himmel mit Mond und Sternen wie bisher. „Aus dem Fenster schauen“ sagt jetzt, was draußen ist („Schaut dem Regen zu“, „Oh, es schneit!“ …). Liegender Schnee ist nicht eigens dargestellt; der Winterbaum hat Schnee auf den Ästen wie im Entwurf.
+- **Weihnachten vom 18. November bis einschließlich 5. Januar:** Der Weihnachtsbaum steht statt Wandregal und Pflanze auf dem Tisch (der Tisch bleibt), Sterne hängen am Fensterrahmen, ein Kerzentablett steht auf dem Sideboard. Für Sterne und Kerzen gilt derselbe Zeitraum wie für den Baum. Ab 6. Januar sind Regal und Pflanze zurück.
+- **Geprüft in der PC-Nachbildung** (`tools/pc-nachbildung/umgebung.cpp`): alle Datumsgrenzen; ein Jahr Wetter (kein Schnee außerhalb des Winters, Wechsel nur alle 3 Stunden); Bilder aller 17 Kombinationen am Tag, jede Jahreszeit nachts, Dämmerung, Weihnachten Tag und Nacht angesehen. **Am Board noch nicht ausprobiert.**
+
 ## Evi spürt Bewegung, „Wie war dein Tag?“, zwei neue Spiele (24. November 2026)
 
 Wunsch der Nutzerin: Bewegungen spüren (Gassi gehen, schütteln, kippen, aufs Gesicht legen), „Wie war dein Tag?“ und neue Spiele, aber nicht Verstecken oder Ball bringen. **Nur auf dem Board**, die Handy-App bleibt unverändert (Wunsch der Nutzerin).
@@ -148,6 +158,7 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
   `powershell -ExecutionPolicy Bypass -File software\schritt-10\tools\make-assets.ps1`
 - `tools/preview-assets.ps1`: zeigt den Inhalt von `assets.h` als PNG.
 - `tools/bildschirmfoto.ps1`: holt über USB ein Bildschirmfoto vom laufenden Board (Zeichen `S` über die serielle Schnittstelle). Seriellen Monitor der IDE vorher schließen.
+- `tools/make-umgebung.py`: erzeugt `evi-handy/umgebung.h` (Zimmer, Jahreszeiten, Wetter, Weihnachten) aus `entwuerfe/umgebung/`. Braucht Python mit Pillow und numpy (Cloud).
 - `tools/make-momente.mjs`: erzeugt `evi-handy/momente.h` (Evis Zeichnungen der Momente, Symbole der Gedankenwolke, Noten). Läuft in der Cloud mit Node und Playwright; auf dem Haupt-PC nicht nötig.
 - `tools/pc-nachbildung/`: Prüfung am PC ohne Arduino IDE (siehe dortige README).
 
@@ -156,6 +167,7 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 - `evi-handy.ino`: Bildschirm, Menü, Tasten-Drittel, Ereignisse, Gute-Nacht-Ablauf, Uhr stellen.
 - `spiele.ino`, `momente.ino`, `name-hilfe.ino`, `extras.h`, `momente.h`: Etappen 2 bis 4 (siehe oben). `tasten.h`: echte Tasten über den MCP23017.
 - `lage.h`, `bewegung.ino`: Lagesensor und was Evi bei Bewegung tut, „Wie war dein Tag?“ (seit 24.11.2026).
+- `umgebung.ino`, `umgebung.h`: neues Zimmer, Jahreszeiten, Wetter und Weihnachtsdeko (seit 24.11.2026; `tools/make-umgebung.py`).
 - `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js`.
 - `uhr.h`: Uhr PCF85063 (I²C 0x51). `speicher.h`: Spielstand mit Prüfsumme. `text.h`: Schrift mit Umlauten. `ton.h`: Töne der App.
 - `board.h`, `touch.h`, `bildschirm.h`: aus Schritt 8/9.

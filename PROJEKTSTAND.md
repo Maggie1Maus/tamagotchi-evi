@@ -2,6 +2,15 @@
 
 Stand: 24. November 2026
 
+## Waveshare: neues Zimmer, Jahreszeiten, Wetter, Weihnachtsdeko (24. November 2026)
+
+Wunsch der Nutzerin: Jahreszeiten wie in den Fensterentwürfen (Frühling ab 1. Februar, Sommer ab 1. Juni, Herbst ab 21. September, Winter ab 1. November), Weihnachtsdeko nach der Zeitangabe im Repo, die neuen Möbel; dazu Wetter zufällig je nach Jahreszeit, **Schnee nur im Winter**. Nur Waveshare. Einzelheiten in `software/schritt-10/README.md`.
+- Möbel aus `entwuerfe/umgebung/` (Sideboard, Tisch mit Pflanze, Wandregal, Napf) und Dielenboden; Werkzeug `tools/make-umgebung.py` → `umgebung.h`.
+- Wetter wechselt alle 3 Stunden, fest für jeden Tag; zu sehen am Tag und in der Dämmerung, nachts wie bisher Mond und Sterne.
+- Weihnachten 18. November bis 5. Januar: Baum auf dem Tisch statt Regal und Pflanze, Sterne am Fenster, Kerzentablett auf dem Sideboard (derselbe Zeitraum für alles; die Nutzerin hatte ihn für Sterne und Kerzen noch nicht festgelegt).
+- Fenstersterne und Kerzentablett hat Claude klein selbst gezeichnet (kein Entwurfsbild vorhanden). Wenn die Nutzerin Bilder dafür möchte, lassen sie sich ersetzen.
+- Geprüft in der PC-Nachbildung (`umgebung.cpp`), Bilder angesehen. **Am Board noch nicht ausprobiert.**
+
 ## Waveshare: Evi spürt Bewegung, „Wie war dein Tag?“, zwei neue Spiele (24. November 2026)
 
 **Beschluss der Nutzerin:** Die Handy-App wird **nicht mehr mitgeändert**, nur noch das Waveshare (außer sie fragt ausdrücklich; steht auch in `CLAUDE.md`).

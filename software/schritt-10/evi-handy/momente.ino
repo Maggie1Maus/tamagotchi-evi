@@ -148,7 +148,7 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
       break;
     }
     case M_FENSTER:
-      akt(A_MELDUNG, 12000, 0, "Schaut aus dem Fenster");
+      akt(A_MELDUNG, 12000, 0, fensterText(jetztMs()));   // je nach Wetter (umgebung.ino)
       akt(A_GEHEN, -66, 0, nullptr);
       akt(A_FLIP, 0, 0, nullptr);
       akt(A_BILD, MB_FENSTER, 0, nullptr);
@@ -722,11 +722,12 @@ void kreisFuellen(float cx, float cy, float r, uint16_t farbe) {
   }
 }
 
-// Gehört der Punkt zum Himmel im Fenster? (am Tag weiß, nachts schwarz; ohne Mond, Hügel, Rahmen)
+// Gehört der Punkt zum Nachthimmel im Fenster? (in der Scheibe, nicht am Kreuz, gerade schwarz:
+// also nicht Mond, Baum oder Hügel). Seit 24.11.2026 wird das Fenster selbst gezeichnet (umgebung.ino).
 bool himmelPunkt(int x, int y) {
-  if (x < 0 || x >= BREITE || y < 0 || y >= 224) return false;
-  const int i = y * 40 + x / 8, b = 7 - (x % 8);
-  return !((ZIMMER_TAG[i] >> b) & 1) && ((ZIMMER_NACHT[i] >> b) & 1);
+  if (x < GLAS_X || x >= GLAS_X + GLAS_B || y < GLAS_Y || y >= GLAS_Y + GLAS_H) return false;
+  if ((x >= 61 && x < 65) || (y >= 81 && y < 85)) return false;
+  return !((bild.getBuffer()[y * 40 + x / 8] >> (7 - x % 8)) & 1);
 }
 
 // Was im Fenster passiert (vor dem Abdunkeln bei Licht aus): Vogel und Sternschnuppe.

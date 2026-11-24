@@ -32,6 +32,7 @@
 #include "speicher.h"
 #include "assets.h"
 #include "momente.h"
+#include "umgebung.h"
 #include "extras.h"
 
 // ---------- Einstellungen ----------
@@ -626,13 +627,12 @@ void zeichneAlles() {
   const ms_t jetzt = jetztMs();
   const Phase ph = phaseBei(pet, jetzt);
   const Stimmung s = beschreiben(pet, jetzt);
-  // Zimmer: direkt in den Bildspeicher (dort 1 = weiß, im Zimmer 1 = schwarz)
-  const uint8_t* zimmer = himmel == HIMMEL_TAG ? ZIMMER_TAG : himmel == HIMMEL_DAEMMERUNG ? ZIMMER_DAEMMERUNG : ZIMMER_NACHT;
+  // Zimmer „Gemütlich & schlicht“ mit Jahreszeit, Wetter und Weihnachtsdeko (umgebung.ino)
   uint8_t* puffer = bild.getBuffer();
   if (spiel.aktiv) {
     spielHintergrund();                            // Spiele nutzen den ganzen Bildschirm
   } else {
-    for (int i = 0; i < 40 * 224; i++) puffer[i] = ~zimmer[i];
+    zimmerZeichnen(jetzt);
     momentZeichnenHinten();                        // Vogel und Sternschnuppe im Fenster
   }
   memset(puffer + 40 * 224, 0xFF, 40 * (HOEHE - 224));

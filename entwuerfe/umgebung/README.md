@@ -39,4 +39,4 @@ Der Baum ist ein separater PNG-Entwurf mit transparentem Hintergrund. Er verwend
 
 ## Status
 
-Originale Bildvorschläge aus der gemeinsamen Gestaltung. Die PNG-Dateien werden unverändert aufbewahrt. **Noch keine Integration in Handy-App oder Waveshare-Software und keine Änderung der laufenden Spielversion.** Für die spätere Integration müssen Konzeptübersichten in einzelne Grafiken aufbereitet und die Datumsregel umgesetzt werden.
+Originale Bildvorschläge aus der gemeinsamen Gestaltung. Die PNG-Dateien werden unverändert aufbewahrt. **Seit 24. November 2026 auf dem Waveshare eingebaut** (nicht in der Handy-App): Möbel, Jahreszeiten, Wetter und Weihnachtsdeko, aufbereitet mit `software/schritt-10/tools/make-umgebung.py`; Einzelheiten in `software/schritt-10/README.md`. Sterne am Fenster und Kerzentablett gelten im selben Zeitraum wie der Baum.
