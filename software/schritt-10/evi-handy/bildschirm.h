@@ -14,9 +14,6 @@ const int HOEHE  = 240;
 // erst rechts davon. Das Zimmer darf darunter weiterlaufen, es ist nur Hintergrund.
 const int RAND_LINKS = 8;
 
-// Steht das Bild auf dem Kopf? Dann hier 1 statt 0 eintragen.
-#define BILD_DREHEN 0
-
 GFXcanvas1 bild(BREITE, HOEHE);   // 1 = weiß, 0 = schwarz
 
 static void lcdBefehl(uint8_t b) {

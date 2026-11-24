@@ -1,5 +1,6 @@
 #pragma once
 #include "Arduino.h"
+#include "board.h"
 // Ersatz für Wire mit einem nachgebildeten MCP23017 an Adresse 0x20 und einem Lagesensor an 0x6B (Register, Pull-ups,
 // Merken von Änderungen in INTF/INTCAP), dazu auf Wunsch dem Touch-Chip CST328 an 0x1A (simCst().an = true).
 // Alle anderen Adressen antworten nicht.
@@ -44,8 +45,8 @@ struct QmiNachbildung {
 };
 inline QmiNachbildung& simQmi() { static QmiNachbildung q; return q; }
 inline void simLage(float x, float y, float z) { simQmi().x = x; simQmi().y = y; simQmi().z = z; }
-// Nachgebildeter Touch-Chip CST328 an 0x1A: simFinger(true, x, y) legt einen Finger im Querformat auf, wie ihn
-// touchLesen() in touch.h wieder ausrechnet (hochkant: rx = 239 - y, ry = x). 0xD005 = Anzahl, ab 0xD000 der Punkt.
+// Nachgebildeter Touch-Chip CST328 an 0x1A. simFinger(true, x, y) tippt im aktuell sichtbaren Querformat.
+// Die Register melden die Position relativ zur Platine. 0xD005 = Anzahl, ab 0xD000 der Punkt.
 struct CstNachbildung {
   bool an = false, unten = false; int x = 0, y = 0;
   uint8_t lesen(uint16_t r) {
@@ -58,7 +59,11 @@ struct CstNachbildung {
   }
 };
 inline CstNachbildung& simCst() { static CstNachbildung c; return c; }
-inline void simFinger(bool unten, int x = 0, int y = 0) { simCst().unten = unten; simCst().x = x; simCst().y = y; }
+inline void simFinger(bool unten, int x = 0, int y = 0) {
+  simCst().unten = unten;
+  simCst().x = BILD_DREHEN ? 319 - x : x;
+  simCst().y = BILD_DREHEN ? 239 - y : y;
+}
 struct TwoWire {
   uint16_t cstReg = 0;
   int ziel = 0, geschrieben = 0, leseN = 0, leseI = 0; uint8_t zeiger = 0, puffer[32];

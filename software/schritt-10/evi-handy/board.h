@@ -3,6 +3,9 @@
 // Dateien DEV_Config.h und bsp_*.h). Auf dem Board fest verdrahtet.
 #pragma once
 
+// Im Retro Gamer sitzt die USB-C-Buchse links. Bild und Touch gemeinsam drehen.
+const bool BILD_DREHEN = true;
+
 // Bildschirm ST7789T3, 240 x 320 Pixel, an SPI1
 const int LCD_SCK  = 10;
 const int LCD_MOSI = 11;
