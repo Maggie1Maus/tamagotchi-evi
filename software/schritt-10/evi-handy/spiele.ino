@@ -51,6 +51,7 @@ void rateFrage() {
 }
 
 void spielStarten(int art) {
+  launenSpielBeginnt();              // Spielwunsch der Tageslaune erfüllt (launen.ino)
   menueZeigen(false);
   momentStoppen(true);
   spielPlanLeeren();
@@ -276,6 +277,7 @@ void spielEnde(bool abgebrochen) {
   spiel.leuchtet = -1;
   spiel.meins = spiel.evis = -1;
   geher.flip = false;
+  launenNachSpiel();                 // Spielwunsch der Tageslaune: Sie bedankt sich (launen.ino)
   if (abgebrochen) { zeigeMeldung("Spiel abgebrochen"); return; }
   const ms_t jetzt = jetztMs();
   // Die neuen Spiele erfüllen keinen Wunsch (die Wünsche bleiben wie in der App)

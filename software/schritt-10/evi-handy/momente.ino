@@ -97,12 +97,9 @@ MomentArt momentWaehlen(Stimmung s, bool istMuede, int laune, Gedanke& gedanke) 
   if (s == S_SCHMUTZIG) { gedanke = GD_PUTZEN; return M_DENKEN; }
   if (s != S_GLUECKLICH) return M_KEINER;
   if (istMuede) return M_GAEHNEN;
-  // Kuschelwunsch (seit 24.11.2026, kuscheln.ino): an verschmusten Tagen jeder dritte kleine Moment, sonst selten.
-  // Nur mit Tasten (sonst ist Touch noch die Notlösung für die Tasten) und nicht, während ein Wunsch in der Blase
-  // steht (die Blase läge über dem Herz in der Gedankenwolke).
-  Wunsch w;
-  if (tastenDa && moment.letzter != M_KUSCHELN && !aktuellerWunsch(pet, jetztMs(), w) &&
-      random(0, laune == LAUNE_VERSCHMUST ? 3 : 12) == 0) return M_KUSCHELN;
+  // Launenwunsch (seit 24.11.2026, launen.ino): jeder dritte kleine Moment ist der Wunsch der heutigen Laune.
+  // Nur mit Tasten, wenn jemand da ist, und nicht, während ein Wunsch in der Blase steht.
+  if (moment.letzter != M_KUSCHELN && launenWunschMoeglich(jetztMs()) && random(0, 3) == 0) return M_KUSCHELN;
   const LauneInfo& l = LAUNEN[laune];
   int summe = 0;
   for (int k = 0; k < 6; k++) if (k != moment.letzter) summe += l.art[k];
@@ -296,19 +293,12 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
       akt(A_BILD, MB_KEINS, 0, nullptr);
       break;
     case M_KUSCHELN:
-      // Evi möchte gekuschelt werden. Wer sie antippt, solange sie wartet, macht ihr eine besondere
-      // Freude (kuscheln.ino). Sonst sagt sie nur „Später vielleicht!“ – ohne Folgen.
-      akt(A_SAGEN, 3000, 0, "Kuschelst du mit mir?");
-      akt(A_MELDUNG, 16000, 0, "Möchte kuscheln · tipp sie an ♥");
-      akt(A_BILD, MB_STAUNEN, 0, nullptr);
-      akt(A_WARTEN, 26, 0, nullptr);
-      akt(A_BILD, MB_DENKEN, 0, nullptr);
-      akt(A_DENKEN, GD_HERZ, 0, nullptr);
-      akt(A_WARTEN, 85, 0, nullptr);
-      akt(A_DENKEN, GD_KEINER, 0, nullptr);
-      akt(A_BILD, MB_KEINS, 0, nullptr);
-      akt(A_SAGEN, 2400, 0, "Später vielleicht! ♥");
-      akt(A_WARTEN, 20, 0, nullptr);
+      // Launenwunsch (launen.ino): Evi wünscht sich, was zu ihrer Tageslaune passt, und wartet auf dich.
+      launenWunschPlanen(jetztMs());
+      break;
+    case M_ENTTAEUSCHT:
+      // Der Wunsch wurde nicht erfüllt (launen.ino)
+      enttaeuschtPlanen();
       break;
     default:
       moment.art = M_KEINER;
@@ -600,6 +590,8 @@ int aktSchritt(int nummer) {
     case A_BALL_WEG:
       rollBall.sichtbar = false;
       return 0;
+    case A_WUNSCH_WARTEN:
+      return launenWunschOffen() ? 1 : 0;
   }
   return 0;
 }
@@ -637,6 +629,7 @@ void begruessen(ms_t seit) {
   const ms_t jetzt = jetztMs();
   if (!momenteFuer(phaseBei(pet, jetzt)) || ruhend(beschreiben(pet, jetzt)) || geweckt(pet, jetzt) || spiel.aktiv || ritual.aktiv) return;
   if (moment.letzterGruss != 0 && millis() - moment.letzterGruss < 5000) return;   // Einschalten und Aufwachen kommen oft zusammen
+  if (launenBeleidigt()) { sage("Hmpf.", &SYM_W_HERZ, 2400); return; }          // beleidigt: kein fröhliches Hallo
   moment.letzterGruss = millis();
   const int laune = launeHeute(jetzt);
   bool gross;
@@ -693,6 +686,7 @@ void momentTakt(ms_t jetzt) {
     return;
   }
   if (!bildschirmAn || jetzt < moment.naechster) return;     // kleine Momente nur, wenn jemand zuschaut
+  if (launenBeleidigt()) return;                             // beleidigt: Sie schmollt und tut nichts von selbst
   moment.naechster = jetzt + naechsterAbstand();
   if (tagVonSelbstFragen(jetzt)) return;                     // abends einmal: „Wie war dein Tag?“
   Gedanke gedanke = GD_KEINER;
@@ -789,5 +783,6 @@ void momentZeichnenVorne() {
 const Bild* momentBild(Phase ph) {
   if (!momenteFuer(ph) || moment.bild == MB_KEINS) return nullptr;
   if (moment.bild == MB_GLUECKLICH) return ART[ph][1];
+  if (moment.bild == MB_TRAURIG) return ART[ph][3] ? ART[ph][3] : ART[ph][0];
   return MOMENT_BILD[ph][moment.bild];
 }

@@ -5,9 +5,9 @@
 //  - Wach: Evi strahlt (ihr glückliches Bild), wiegt sich sanft hin und her, Herzen steigen auf, und sie sagt
 //    etwas Liebes. Die Stimmung steigt um 5, an verschmusten Tagen um 8 (Regeln in pet.h: kuscheln),
 //    höchstens einmal pro Minute; öfter Antippen zeigt nur Herzen. Finger auf Evi lassen = weiter kuscheln.
-//  - Tageslaune „verschmust“: Evi möchte öfter von selbst kuscheln (Moment „Kuschelwunsch“: „Kuschelst du mit
+//  - Tageslaune „verschmust“: Evi möchte öfter von selbst kuscheln (Launenwunsch, launen.ino: „Kuschelst du mit
 //    mir?“, Herz in der Gedankenwolke). Wer sie dann antippt, macht ihr eine besondere Freude: +10 und ein Ton.
-//    An anderen Tagen kommt der Kuschelwunsch selten.
+//    Bleibt der Wunsch unerfüllt, hat das Folgen (launen.ino). Beleidigt wirkt Kuscheln nicht.
 //  - Schläft sie, kuschelt sie sich nur im Schlaf an (ein Herz, sie wacht nicht auf, keine Wirkung).
 //  - Das Ei wackelt ein wenig. Nach dem Tod passiert nichts.
 //  - Bei Besuch, Gassi, dem rollenden Ball und beim Trösten gibt es nur Herzen; das läuft weiter.
@@ -80,7 +80,10 @@ void kuschelnBeginnen() {
     return;
   }
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);   // wie jede Berührung in der App
-  const bool wunsch = moment.art == M_KUSCHELN;
+  // Beleidigt (launen.ino): Kuscheln wirkt nicht, drei Streichler versöhnen sie.
+  if (launenBeleidigt() && !ruhend(s)) { launenBeleidigtAngetippt(); return; }
+  // Kuschel- oder Fensterwunsch der Tageslaune: Antippen erfüllt ihn (launen.ino)
+  const bool wunsch = launenWunschDurchTippen() && launenWunschErfuellen(launen.art, false);
   const bool besonders = moment.art == M_FALTER || moment.art == M_VOGEL || moment.art == M_STERN || moment.art == M_GASSI ||
                          moment.art == M_ROLLEN || moment.art == M_TROESTEN;
   const int laune = launeHeute(jetzt);
@@ -113,8 +116,7 @@ void kuschelnBeginnen() {
   snprintf(text, sizeof(text), "%s wird gekuschelt ♥", pet.name);
   zeigeMeldung(text, dauer);
   if (wunsch) {
-    piep(TON(TON_MUENZE));
-    sage("Juhu! Ich hab dich lieb! ♥", &SYM_W_HERZ, 3500);
+    launenFreuen();
   } else if (!laeuftSchon) {
     sage(kuschelText(s, laune), &SYM_W_HERZ, 2600);
   }

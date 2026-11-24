@@ -85,7 +85,7 @@ struct {
 char meldung[100] = "";
 uint32_t meldungBis = 0;
 
-struct { char text[32]; const Bild* symbol; uint32_t bis; } sagen = {"", nullptr, 0};
+struct { char text[48]; const Bild* symbol; uint32_t bis; } sagen = {"", nullptr, 0};
 ms_t gezeigterWunsch = -1;     // -1 = noch nichts angesehen
 
 // Gute Nacht (Abendritual): Texte nacheinander, jede Taste überspringt.
@@ -338,6 +338,8 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   const bool gruss = jubelt && (evi.reaktion == R_GRUSS || evi.reaktion == R_JUBEL);
   if (gruss && momenteFuer(ph)) b = MOMENT_BILD[ph][MB_HUEPFEN];
   else if (!jubelt) b = momentBild(ph);
+  // Beleidigt (launen.ino): ihr trauriges Bild, solange es ihr sonst gut geht
+  if (!b && !jubelt && launenBeleidigt() && gezeigt == S_GLUECKLICH) b = ART[ph][3];
   if (!b) b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
   // Wo: auf dem Teppich, im Moment oder Spiel verschoben, gespiegelt oder angehoben
   if (!spiel.aktiv) {
@@ -408,8 +410,8 @@ void zeichneBlase(ms_t jetzt) {
   const bool wunsch = !ritual.aktiv && aktuellerWunsch(pet, jetzt, w);
   if (!redet && !wunsch) return;
   const Bild* sym;
-  char text[40];
-  if (redet) { sym = sagen.symbol; strncpy(text, sagen.text, sizeof(text)); }
+  char text[48];
+  if (redet) { sym = sagen.symbol; strncpy(text, sagen.text, sizeof(text) - 1); text[sizeof(text) - 1] = 0; }
   else wunschText(w, jetzt, sym, text, sizeof(text));
   // Wie .wish-bubble: oben 27 + 12 %, links 58 %, höchstens 40 % breit
   // Die Blase bleibt über ihrem Kopf, aber im Bild: links 58 % + x/3,2, zwischen 4 % und 58 %
@@ -514,6 +516,7 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
       Wunsch w;
       if (geweckt(pet, jetzt)) { snprintf(aus, n, "Gähn … wach für %d Min.", (int)max((ms_t)1, (pet.wachBis - jetzt + MINUTE - 1) / MINUTE)); return; }
       if (gassiZeile(jetzt, aus, n)) return;
+      if (launenBeleidigt()) { snprintf(aus, n, "%s", beleidigtZeile()); return; }
       if (aktuellerWunsch(pet, jetzt, w)) { snprintf(aus, n, "Ein Wunsch!"); return; }
       if (ausgeschlafen(pet, jetzt)) { snprintf(aus, n, "Ausgeschlafen! Guten Morgen"); return; }
       if (muede(pet, jetzt)) { snprintf(aus, n, "%s", stundeVon(jetzt) < 12 ? "Gähn … guten Morgen" : "Gähn … Zeit für Gute Nacht?"); return; }
@@ -569,6 +572,8 @@ void menueBauen() {
           punkt(E_AUFWECKEN, &SYM_M_SONNE, "Aufwecken");
           punkt(E_LICHT, &SYM_M_LICHT, pet.lichtAus ? "Licht an" : "Licht aus");
         } else if (s == WACH) {
+          // Nachts geweckt: Licht aus schickt sie sofort wieder schlafen (seit 24.11.2026)
+          if (geweckt(pet, jetzt)) punkt(E_LICHT, &SYM_M_LICHT, "Licht aus");
           if (gesperrt(pet, RITUAL, jetzt) == OK) punkt(E_RITUAL, &SYM_M_MOND, "Gute Nacht");
           if (tagImMenue(jetzt)) punkt(E_TAG, &SYM_M_HERZ, "Wie war dein Tag?");
           if (gesperrt(pet, MEDIZIN, jetzt) == OK) punkt(E_MEDIZIN, &SYM_M_MEDIZIN, "Medizin");
@@ -689,6 +694,7 @@ void zeichneAlles() {
     bewegungZeichnenVorne();                       // der Ball, der beim Kippen rollt (vor Evi)
     momentZeichnenVorne();                         // Gedankenwolke, Noten, Schmetterling
     if (s == S_SCHLAEFT && !ritual.aktiv) zeichneZ();
+    launenZeichnen(jetzt);                         // beleidigt: kleine Regenwolke über dem Kopf
     zeichneBlase(jetzt);
   }
   if (ritual.aktiv) zeichneGeschichte();
@@ -746,6 +752,7 @@ void aktionAusfuehren(Eintrag e) {
     weiterrechnen(probe, jetzt);
     const Grund g = gesperrt(probe, SPIELEN, jetzt);
     if (g != OK && g != G_VOLL) { grundText(g, SPIELEN, text, sizeof(text)); zeigeMeldung(text); return; }
+    if (!launenSpielErlaubt()) return;            // beleidigt: kein Spiel (launen.ino)
     if (e == E_SPIELEN) menueZeigen(true, true);
     else spielStarten(e == E_BALL ? SPIEL_BALL : e == E_RATEN ? SPIEL_RATEN : e == E_MELODIE ? SPIEL_MELODIE :
                       e == E_KEKSE ? SPIEL_KEKSE : SPIEL_SCHNICK);
@@ -780,6 +787,7 @@ void aktionAusfuehren(Eintrag e) {
     zeigeMeldung(text);
   }
   if (r.wunsch) { sage("Danke!", &SYM_W_HERZ, 3000); piep(TON(TON_MUENZE)); }
+  if (r.geaendert && (a == FUETTERN || a == NASCHEN)) launenGegessen();   // Essenswunsch, Versöhnen (launen.ino)
   if (r.geaendert) speichern(jetzt);
 }
 
@@ -1060,7 +1068,8 @@ void loop() {
   // Nur wenn die echten Tasten nicht gefunden werden, gelten als Notlösung die drei Drittel wie früher.
   int x, y;
   if (tipper(x, y)) {
-    lageBeimBedienen();          // wer tippt, hält das Gerät mit dem Bildschirm nach oben
+    lageBeimBedienen();
+    launen.letzteBedienung = millis();   // jemand ist da (Launenwünsche)          // wer tippt, hält das Gerät mit dem Bildschirm nach oben
     fingerHatGeweckt = !bildschirmAn;
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
@@ -1075,6 +1084,7 @@ void loop() {
   const int k = naechsteTaste();
   if (k >= 0) {
     lageBeimBedienen();
+    launen.letzteBedienung = millis();
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Druck weckt nur den Bildschirm
     else {
       bildschirmEin();
@@ -1089,6 +1099,7 @@ void loop() {
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
     ritualWeiter();
+    launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
     if (sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }

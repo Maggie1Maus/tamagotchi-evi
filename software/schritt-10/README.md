@@ -7,6 +7,30 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Launenwünsche mit Folgen, Licht aus nach dem Aufwecken (25. November 2026)
+
+Wunsch der Nutzerin: Wünsche und Launen sollen **Folgen** haben, und zu jedem Anlass soll es **fünf verschiedene Sätze** geben, die zufällig kommen. Neue Datei `launen.ino`; Anschlüsse in `kuscheln.ino`, `momente.ino`, `spiele.ino`, `evi-handy.ino`, Zustand in `extras.h`, Zahlen in `pet.h`.
+
+| Tageslaune | Wunsch (Gedankenwolke) | Erfüllen |
+|---|---|---|
+| verspielt | „Spielst du mit mir?“ u. a. (Ball) | im Menü ein Spiel starten; sie bedankt sich nach dem Spiel |
+| verschmust | „Kuschelst du mit mir?“ u. a. (Herz) | Evi antippen |
+| verfressen | „Ich will einen Keks!“ u. a. (Keks) | Naschen oder Füttern |
+| verträumt | „Schaust du mit mir raus?“ u. a. | sie geht ans Fenster; Evi antippen |
+
+- Jeder dritte kleine Moment ist der Wunsch der heutigen Laune (vorher nur der Kuschelwunsch). **Nur, wenn in den letzten 10 Minuten jemand eine Taste gedrückt oder getippt hat** – liegt Evi unbeachtet herum, wünscht sie sich nichts und wird nicht beleidigt. Mit Ton.
+- Sie wartet **45 Sekunden**. Unten steht, was zu tun ist („Möchte spielen · Menü: Spielen“).
+- **Erfüllt:** +10 Stimmung, Münzton, einer von fünf Sätzen („Genau das wollte ich! ♥“ …).
+- **Nicht erfüllt:** −5 Stimmung, trauriges Bild, einer von fünf Sätzen („Hmpf … dann eben nicht.“ …).
+- **Zwei verpasste Wünsche hintereinander: 15 Minuten beleidigt.** Trauriges Bild, kleine Regenwolke über dem Kopf, unten „Ist beleidigt · Keks oder dreimal streicheln“. Spiele lehnt sie ab („Spiel doch alleine!“ …), Kuscheln wirkt nicht („Lass mich!“ …), keine kleinen Momente, statt fröhlicher Begrüßung nur „Hmpf.“. **Versöhnen:** Naschen oder Füttern, oder dreimal antippen. Danach („Na gut … ♥“ …) ist alles wie vorher; nach 15 Minuten verzeiht sie auch von selbst.
+- Schläft sie ein, wird krank, oder spielst du gerade, bist im Garten oder am Sideboard, endet ein offener Wunsch ohne Folgen.
+- Alles nur im Arbeitsspeicher, der Spielstand bleibt unverändert. Zahlen: `WUNSCH_WARTEN`, `JEMAND_DA` (oben in `launen.ino`), `WUNSCH_VERPASST_LAUNE`, `BELEIDIGT_DAUER` (`pet.h`). Die Sätze stehen oben in `launen.ino`.
+- Ein eigenes Bild „beleidigt“ (Bildauftrag mit verschränkten Vorderpfoten) gibt es noch nicht; bis dahin das traurige Bild.
+
+**Licht aus nach dem Aufwecken** (Wunsch der Nutzerin): Ist Evi nachts geweckt, steht im Menü „Licht aus“. Damit schläft sie sofort wieder ein (mit Lichtbonus, einmal pro Nacht), statt die 5 Minuten abzuwarten. Ohne Bedienung schläft sie wie bisher nach 5 Minuten von selbst wieder ein.
+
+**Geprüft:** echte Übersetzung für Pico 2 (arduino-pico, `arduino-cli` aus der Arduino IDE) ohne neue Warnungen. `tools/pc-nachbildung/kuscheln.cpp` an das neue Verhalten angepasst (verpasst, beleidigt, kein Spiel, versöhnen), konnte auf dem Haupt-PC aber nicht laufen (kein g++). **Am Board noch nicht ausprobiert.**
+
 ## Kuscheln, kleine Uhrzeit, trüber Regenhimmel, kürzeres Menü (24. November 2026)
 
 Wünsche der Nutzerin, nur auf dem Board:

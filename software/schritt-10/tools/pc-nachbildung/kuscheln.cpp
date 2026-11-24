@@ -156,18 +156,22 @@ int main() {
   vorbereiten(verschmust + 3 * STUNDE);   // 15 Uhr: kein Mittagessen in der Blase
   pet.satt = pet.laune = pet.sauber = 70;
   { Wunsch w; if (aktuellerWunsch(pet, jetztMs(), w)) pet.wunschErfuellt = w.beginn; }   // kein Wunsch gerade
+  // Seit 24.11.2026 (launen.ino): jede Laune hat ihren Wunsch, jeder dritte kleine Moment, nur wenn jemand da ist
+  launen = {};
+  int wuenscheNiemand = 0;
+  for (int i = 0; i < 300; i++) {
+    Gedanke g = GD_KEINER; moment.letzter = M_GEHEN;
+    if (momentWaehlen(S_GLUECKLICH, false, LAUNE_VERSCHMUST, g) == M_KUSCHELN) wuenscheNiemand++;
+  }
+  PRUEFE(wuenscheNiemand == 0, "ohne Bedienung in den letzten 10 Minuten keine Launenwünsche");
+  launen.letzteBedienung = millis() | 1;
   int wuensche = 0;
   for (int i = 0; i < 300; i++) {
     Gedanke g = GD_KEINER; moment.letzter = M_GEHEN;
     if (momentWaehlen(S_GLUECKLICH, false, LAUNE_VERSCHMUST, g) == M_KUSCHELN) wuensche++;
   }
-  int wuenscheSonst = 0;
-  for (int i = 0; i < 300; i++) {
-    Gedanke g = GD_KEINER; moment.letzter = M_GEHEN;
-    if (momentWaehlen(S_GLUECKLICH, false, 0, g) == M_KUSCHELN) wuenscheSonst++;
-  }
-  printf("   Kuschelwunsch unter 300 kleinen Momenten: verschmust %d, verspielt %d\n", wuensche, wuenscheSonst);
-  PRUEFE(wuensche > 70 && wuensche < 130 && wuenscheSonst > 5 && wuenscheSonst < 50, "verschmust wünscht sie sich viel öfter Kuscheln");
+  printf("   Launenwunsch unter 300 kleinen Momenten: %d\n", wuensche);
+  PRUEFE(wuensche > 70 && wuensche < 130, "etwa jeder dritte kleine Moment ist ein Launenwunsch");
   {
     Tier merken = pet; pet.wunschErfuellt = 0;
     Wunsch w; int mitWunsch = 0;
@@ -192,13 +196,33 @@ int main() {
   printf("   sagt: %s\n", sagen.text);
   laufen(300); foto("k-wunsch-erfuellt");
   laufen(5000);
-  // Unbeantwortet: Sie sagt „Später vielleicht!“, keine Folgen
+  // Unbeantwortet (launen.ino): -5 Stimmung, enttäuscht; beim zweiten Mal hintereinander beleidigt
+  PRUEFE(!launenWunschOffen() && launen.verpasst == 0, "erfüllter Wunsch ist nicht mehr offen");
   vorher = pet.laune;
   momentStarten(M_KUSCHELN, GD_KEINER);
-  bool spaeter = false;
-  for (int i = 0; i < 2200 && moment.art != M_KEINER; i++) { laufen(10); if (strstr(sagen.text, "Später")) spaeter = true; }
-  PRUEFE(moment.art == M_KEINER && spaeter && geher.x == 0, "ohne Antippen: „Später vielleicht!“, dann vorbei");
-  PRUEFE(pet.laune > vorher - 1, "ohne Antippen keine Strafe");
+  for (int i = 0; i < 6000 && launenWunschOffen(); i++) laufen(10);
+  PRUEFE(!launenWunschOffen() && launen.verpasst == 1 && !launenBeleidigt(), "nach 45 s ohne Antippen: Wunsch verpasst");
+  PRUEFE(pet.laune < vorher - 4 && pet.laune > vorher - 6, "verpasster Wunsch: Stimmung -5");
+  printf("   enttäuscht: %s\n", sagen.text);
+  laufen(300); foto("k-wunsch-verpasst");
+  for (int i = 0; i < 2000 && moment.art != M_KEINER; i++) laufen(10);
+  PRUEFE(geher.x == 0, "danach zurück auf dem Teppich");
+  momentStarten(M_KUSCHELN, GD_KEINER);
+  for (int i = 0; i < 6000 && launenWunschOffen(); i++) laufen(10);
+  PRUEFE(launenBeleidigt() && launen.verpasst == 0, "zweiter verpasster Wunsch: beleidigt");
+  printf("   beleidigt: %s\n", sagen.text);
+  for (int i = 0; i < 2000 && moment.art != M_KEINER; i++) laufen(10);
+  laufen(4000); foto("k-beleidigt");
+  aktionAusfuehren(E_BALL);
+  PRUEFE(!spiel.aktiv, "beleidigt: kein Spiel");
+  vorher = pet.laune;
+  tippen(eviMitteX(), eviMitteY()); laufen(900);
+  PRUEFE(launenBeleidigt() && pet.laune < vorher + 1, "beleidigt: Kuscheln wirkt nicht");
+  tippen(eviMitteX(), eviMitteY()); laufen(900);
+  tippen(eviMitteX(), eviMitteY()); laufen(300);
+  PRUEFE(!launenBeleidigt(), "dreimal streicheln versöhnt sie");
+  printf("   versöhnt: %s\n", sagen.text);
+  laufen(5000);
 
   // ---------- ein Moment wird unterbrochen: Evi bleibt stehen, danach geht sie zurück ----------
   vorbereiten(verspielt);

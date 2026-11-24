@@ -38,6 +38,10 @@ const int GASSI_MUENZEN_MAX = 10;
 // wenn sie selbst kuscheln wollte +10. Wirkt höchstens einmal pro Minute, öfter gibt es nur Herzen.
 const double KUSCHEL_LAUNE = 5, KUSCHEL_LAUNE_VERSCHMUST = 8, KUSCHEL_LAUNE_WUNSCH = 10;
 const ms_t KUSCHEL_PAUSE = MINUTE;
+// Launenwünsche (24.11.2026, nur auf dem Board, launen.ino): erfüllt +10 Stimmung (KUSCHEL_LAUNE_WUNSCH),
+// nicht erfüllt -5. Zwei verpasste Wünsche hintereinander: Evi ist 15 Minuten beleidigt.
+const double WUNSCH_VERPASST_LAUNE = -5;
+const ms_t BELEIDIGT_DAUER = 15 * MINUTE;
 }
 
 enum Phase : uint8_t { EI, BABY, TEEN, ERWACHSEN, OMA, TOT };
@@ -238,7 +242,8 @@ static inline Grund gesperrt(const Tier& p, Aktion a, ms_t jetzt) {
   if (a == NEUES_EI) return G_LEBT;
   if (ph == EI) return G_EI;
   const Schlaf s = schlafArt(p, jetzt);
-  if (a == LICHT) return s == NACHTS ? OK : G_TAG;
+  // Nachts geweckt: Licht aus schickt sie sofort wieder schlafen (Wunsch der Nutzerin vom 24.11.2026)
+  if (a == LICHT) return s == NACHTS || geweckt(p, jetzt) ? OK : G_TAG;
   if (a == AUFWECKEN) return s == NACHTS ? OK : G_WACH;
   if (s == NACHTS) return G_SCHLAEFT;
   if (s == MITTAGSSCHLAF) return G_MITTAG;
@@ -295,6 +300,8 @@ static inline Ergebnis pflegen(Tier& p, Aktion a, ms_t jetzt) {
     return true;
   };
   if (a == LICHT) {
+    // Geweckt: Licht aus, und sie schläft gleich wieder ein, ohne die 5 Minuten abzuwarten.
+    if (geweckt(p, jetzt)) { p.wachBis = jetzt; e.bonus = lichtAusmachen(); return e; }
     if (p.lichtAus) { p.lichtAus = false; return e; }
     e.bonus = lichtAusmachen();
     return e;
@@ -389,6 +396,14 @@ static inline Ergebnis kuscheln(Tier& p, double laune, ms_t jetzt) {
   p.pflege++;
   if (geweckt(p, jetzt) && p.wachBis < jetzt + R::WACH_BLEIBEN) p.wachBis = jetzt + R::WACH_BLEIBEN;
   return e;
+}
+
+// Stimmung ändern, ohne dass es als Pflege zählt (Launenwünsche, nur auf dem Board). Nur, wenn sie wach ist.
+static inline bool launeAendern(Tier& p, double um, ms_t jetzt) {
+  weiterrechnen(p, jetzt);
+  if (!wach(p, jetzt)) return false;
+  p.laune = begrenzt(p.laune + um);
+  return true;
 }
 
 // Phase und das Wichtigste: tot, Ei, schläft, krank, Bauchweh, hungrig, schmutzig, traurig, glücklich

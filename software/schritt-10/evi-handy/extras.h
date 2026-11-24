@@ -50,18 +50,21 @@ const uint32_t RUHE_TAKTE = 120;   // QUIET_TICKS: etwa 15 s ohne neuen Moment n
 // Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Gassi (mittraben),
 // Rollen (gekippt: der Ball rollt), Nickerchen (wieder umgedreht), Trösten (Antwort auf „Wie war dein Tag?“)
 // Seit 24.11.2026 dazu: Kuschelwunsch (Evi möchte gekuschelt werden, kuscheln.ino)
+// Seit 24.11.2026 ist M_KUSCHELN der Launenwunsch aller vier Tageslaunen (launen.ino), M_ENTTAEUSCHT die Folge,
+// wenn ein Wunsch nicht erfüllt wurde.
 enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM,
-                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_KEINER = 255 };
-// Bilder der Momente: Nummer in MOMENT_BILD (momente.h)
+                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_ENTTAEUSCHT, M_KEINER = 255 };
+// Bilder der Momente: Nummer in MOMENT_BILD (momente.h); ab 100 Evis Emotionsbilder (ART)
 enum MomentBild : int8_t { MB_KEINS = -1, MB_LAUFEN, MB_FENSTER, MB_DENKEN, MB_SINGEN, MB_GAEHNEN, MB_DREHEN, MB_HUEPFEN, MB_STAUNEN,
-                           MB_GLUECKLICH = 100 };
+                           MB_GLUECKLICH = 100, MB_TRAURIG = 101 };
 // Gedanken: Nummer in GEDANKE_BILD (momente.h)
 enum Gedanke : int8_t { GD_KEINER = -1, GD_HERZ, GD_KEKS, GD_BALL, GD_NOTE, GD_FUTTER, GD_PUTZEN, GD_SONNE, GD_MOND };
 // Einzelne Schritte eines Moments (ein Moment ist eine Liste davon)
 enum AktArt : uint8_t { A_MELDUNG, A_SAGEN, A_TON, A_WARTEN, A_GEHEN, A_HEIM, A_HUEPFEN, A_BILD, A_FLIP, A_DENKEN, A_SUMMEN, A_DREHEN,
                         A_FALTER_REIN, A_FALTER_KREISEN, A_FALTER_LANDEN, A_FALTER_SITZEN, A_FALTER_WEG,
                         A_VOGEL_REIN, A_VOGEL_SINGEN, A_VOGEL_WEG, A_STERN,
-                        A_GASSI, A_ROLLEN, A_BALL_WEG };
+                        A_GASSI, A_ROLLEN, A_BALL_WEG,
+                        A_WUNSCH_WARTEN };   // wartet, solange der Launenwunsch offen ist (launen.ino)
 struct Akt { AktArt art; int16_t a, b; const char* text; };
 
 struct MomentZustand {
@@ -119,6 +122,22 @@ struct {
   uint8_t naechstes = 0, herzZahl = 0;
   uint32_t letztesHerz = 0;
 } kuschel;
+
+// ---------- Launenwünsche und Beleidigtsein (launen.ino), seit 24.11.2026 ----------
+// Jede Tageslaune hat ihren Wunsch (gleiche Nummer wie die Laune): verspielt will spielen, verschmust kuscheln,
+// verfressen etwas Leckeres, verträumt mit dir aus dem Fenster schauen.
+enum LaunenWunsch : uint8_t { LW_SPIELEN, LW_KUSCHELN, LW_ESSEN, LW_FENSTER, LW_KEINER = 255 };
+struct {
+  LaunenWunsch art = LW_KEINER;   // offener Wunsch
+  uint32_t bis = 0;               // millis(): so lange wartet sie
+  uint8_t verpasst = 0;           // nicht erfüllte Wünsche hintereinander
+  bool beleidigt = false;
+  uint32_t beleidigtBis = 0;      // millis()
+  uint8_t streichler = 0;         // zum Versöhnen (3 nötig)
+  uint32_t letzterStreichler = 0;
+  uint32_t letzteBedienung = 0;   // millis() der letzten Taste oder des letzten Tippers
+  bool dankeNachSpiel = false;    // Spielwunsch: nach dem Spiel bedankt sie sich
+} launen;
 
 // Der Ball (Ballfangen und Kippen): 14 × 14 Punkte mit einem kleinen Glanzloch
 const uint8_t BALL_ZEILEN[14][2] = {{4, 9}, {4, 9}, {2, 11}, {2, 11}, {0, 13}, {0, 13}, {0, 13},

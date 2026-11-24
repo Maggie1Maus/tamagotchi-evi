@@ -1,6 +1,14 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
-Stand: 24. November 2026
+Stand: 25. November 2026
+
+## Waveshare: Launenwünsche mit Folgen, Licht aus nach dem Aufwecken (25. November 2026)
+
+- Wunsch der Nutzerin: Launen und Wünsche sollen Folgen haben, und zu jedem Anlass soll es fünf zufällige Sätze geben. Jede Tageslaune hat jetzt ihren Wunsch (verspielt: spielen, verschmust: kuscheln, verfressen: Keks, verträumt: zusammen aus dem Fenster schauen). Sie wartet 45 s. Erfüllt: +10. Verpasst: −5 und traurig. Zwei verpasste hintereinander: 15 Minuten beleidigt (keine Spiele, Kuscheln wirkt nicht, kleine Regenwolke). Versöhnen mit Keks/Essen oder dreimal streicheln. Wünsche kommen nur, wenn in den letzten 10 Minuten jemand bedient hat. Neue Datei `software/schritt-10/evi-handy/launen.ino`, Einzelheiten in `software/schritt-10/README.md`. Handy-App unverändert.
+- Nachts geweckt: „Licht aus“ im Menü schickt Evi sofort wieder schlafen. Ohne Bedienung schläft sie wie bisher nach 5 Minuten wieder ein.
+- Bildauftrag „beleidigt“ (sitzt, Vorderpfoten verschränkt, Nase hoch, Ohren seitlich) im Chat an die Nutzerin gegeben. Noch keine Zeichnung, bis dahin das traurige Bild.
+- Für Pico 2 ohne neue Warnungen übersetzt. Die PC-Nachbildung ist angepasst, konnte auf dem Haupt-PC aber nicht laufen. **Am Board noch nicht ausprobiert.**
+- Später, als Teil 2 besprochen: eine feste Persönlichkeit pro Evi (z. B. wasserscheu, Langschläferin, Naschkatze, Sportlerin) mit Vorlieben und Abneigungen, die Folgen haben.
 
 ## Evi läuft mit Batterien (24. November 2026)
 
