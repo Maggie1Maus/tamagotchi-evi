@@ -87,6 +87,10 @@ Laut Nutzerin fühlte sich das Steuerkreuz schwerfällig an. Mechanisch wird die
 
 Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 10-ms-Tipper während 40 ms Zeichnen wird erkannt (die alte Abfrage verpasste ihn), Halten zählt einmal, Steuerkreuz wiederholt, Flackern zählt nicht doppelt, zwei schnelle Tipper zählen zweimal. **Am Board ausprobiert (24. November 2026, laut Nutzerin): Die Tasten reagieren jetzt schnell und funktionieren „richtig gut“; die Gummimatte muss nicht eingeschnitten werden.**
 
+## Schütteln entfernt (24. November 2026)
+
+Wunsch der Nutzerin nach dem Aufspielen („funktioniert“): Das Wackeln stört. Evi reagiert nicht mehr auf Schütteln oder Wackeln: kein Schwindel-Moment, keine Sätze („Hui! Alles dreht sich!“, „Hmpf …“, „Bitte nicht schütteln“), das Ei wackelt dabei nicht mehr. Entfernt: `geschuettelt()`, `M_SCHWINDEL`, `A_WACKELN`, die Hilfe dazu. `lage.h` erkennt Schütteln nur noch intern, damit es nicht als Gehen zählt. Gassi gehen, Kippen und Aufs-Gesicht-Legen bleiben. In der Nachbildung geprüft: Wackeln und Schütteln lösen nichts aus.
+
 ## Sterne und Kerzen nach den Bildern der Nutzerin (24. November 2026)
 
 Die Nutzerin hat `entwuerfe/umgebung/fenster-sterne.png` und `kerzentablett.png` hochgeladen (durchsichtiger Hintergrund). Sie ersetzen Claudes Platzhalter, aufbereitet wie der Weihnachtsbaum (nur verkleinert und schwarz-weiß, `make-umgebung.py`): Sternengirlande über dem Fenster, die hängenden Sterne außen neben dem Rahmen; Kerzentablett auf dem Sideboard, die Kerzen stehen vor dem unteren Teil des Fensters. Größe nach Wunsch der Nutzerin etwas kleiner als zuerst: beide 1 : 19 (Girlande 102 × 33, Tablett 57 × 41 Punkte; vorher 1 : 16 und 1 : 15). In der Nachbildung am Tag und in der Nacht angesehen, am Board noch nicht.

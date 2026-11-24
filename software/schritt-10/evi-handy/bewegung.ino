@@ -2,7 +2,6 @@
 // Der Lagesensor und die Erkennung stehen in lage.h; hier steht, was Evi dann tut:
 //  - Gassi gehen: Trägst du Evi beim Gehen mit, zählt sie die Schritte und trabt mit. Ab 100 Schritten
 //    freut sie sich nach dem Spaziergang (Regeln: gassiBeenden in pet.h).
-//  - Schütteln: Ihr wird schwindelig. Schläft sie, brummt sie nur; das Ei wackelt.
 //  - Kippen: Ein Ball rollt zur tieferen Seite, und Evi rennt hinterher.
 //  - Aufs Gesicht legen: Der Bildschirm geht aus (nachts macht das auch das Licht aus).
 //    Umgedreht geht er wieder an, und Evi gähnt oder begrüßt dich.
@@ -121,27 +120,6 @@ void gassiZuEnde(ms_t jetzt, uint32_t schritte) {
   else bewegung.gassiOffen = true;   // erzählt sie, sobald der Bildschirm wieder an ist
 }
 
-void geschuettelt(ms_t jetzt) {
-  if (!bildschirmAn || spiel.aktiv || ritual.aktiv || menueOffen) return;
-  const Phase ph = phaseBei(pet, jetzt);
-  const Stimmung s = beschreiben(pet, jetzt);
-  char text[80];
-  if (ph == TOT) return;
-  if (ph == EI) { evi.wackelnBis = evi.takt + 24; zeigeMeldung("Das Ei wackelt …"); return; }
-  if (s == S_SCHLAEFT) { snprintf(text, sizeof(text), "Hmpf … %s schläft.", pet.name); zeigeMeldung(text, 3000); return; }
-  if (s == S_KRANK || s == S_BAUCH) { zeigeMeldung("Mir geht es nicht gut … bitte nicht schütteln.", 3500); return; }
-  if (!momenteFuer(ph) || besuchDa() || moment.art == M_SCHWINDEL) return;
-  // Dreimal in zwei Minuten ist genug
-  const uint32_t m = millis();
-  bewegung.schuettelnZeit[0] = bewegung.schuettelnZeit[1];
-  bewegung.schuettelnZeit[1] = bewegung.schuettelnZeit[2];
-  bewegung.schuettelnZeit[2] = m;
-  const bool oft = bewegung.schuettelnZeit[0] != 0 && m - bewegung.schuettelnZeit[0] < 2 * 60000UL;
-  bewegung.schwindelText = oft ? "Bitte nicht mehr schütteln!" : "Mir ist ganz schwindelig …";
-  momentStoppen(true);
-  momentStarten(M_SCHWINDEL, GD_KEINER);
-}
-
 void gekippt(ms_t jetzt, int seite) {
   if (!bildschirmAn || spiel.aktiv || ritual.aktiv || menueOffen) return;
   const Phase ph = phaseBei(pet, jetzt);
@@ -183,7 +161,6 @@ void bewegungTakt() {
   const ms_t jetzt = jetztMs();
   if (e & LE_SCHRITTE) { gassiSchritte(jetzt, lage.neu); lage.neu = 0; }
   if (e & LE_GASSI_ENDE) gassiZuEnde(jetzt, lage.gassiEnde);
-  if (e & LE_SCHUETTELN) geschuettelt(jetzt);
   if (e & LE_KIPPEN) gekippt(jetzt, lage.kippSeite);
   if (e & LE_GESICHT_UNTEN) aufsGesicht(jetzt);
   if (e & LE_GESICHT_OBEN) wiederUmgedreht(jetzt, lage.untenDauer);

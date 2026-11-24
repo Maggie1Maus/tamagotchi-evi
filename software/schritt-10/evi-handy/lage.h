@@ -1,5 +1,5 @@
 // Lagesensor QMI8658 auf dem Board (I2C 0x6B oder 0x6A, an Wire1 wie Touch, Uhr und Tasten).
-// Wunsch der Nutzerin vom 24.11.2026: Evi spürt Bewegung – Gassi gehen (Schritte), schütteln,
+// Wunsch der Nutzerin vom 24.11.2026: Evi spürt Bewegung – Gassi gehen (Schritte),
 // kippen und aufs Gesicht legen. Hier stehen der Sensor und die Erkennung; was Evi dann tut,
 // steht in bewegung.ino.
 //
@@ -11,7 +11,7 @@
 // drückt oder tippt, schaut auf den Bildschirm, hält das Gerät also mit dem Bildschirm nach oben und
 // der Oberkante oben. Nach drei solchen Momenten (Gerät dabei ruhig) kennt Evi n; u kennt sie, sobald
 // das Gerät dabei schräg gehalten wird (nicht flach auf dem Tisch). Kippen und Aufs-Gesicht-Legen
-// wirken erst danach. Schritte und Schütteln brauchen keine Achsen.
+// wirken erst danach. Schritte brauchen keine Achsen.
 #pragma once
 #include <Wire.h>
 #include <math.h>
@@ -29,7 +29,8 @@ const uint32_t SCHRITT_MIN_MS = 330, SCHRITT_MAX_MS = 1100;
 const int SCHRITT_BESTAETIGT = 10;
 // Ein Spaziergang endet nach 60 s ohne Schritt. Evi trabt mit, solange vor höchstens 2,5 s ein Schritt kam.
 const uint32_t GASSI_ENDE_MS = 60000, GASSI_ZEIGEN_MS = 2500;
-// Schütteln: mindestens 5 Stöße mit dyn über 0,7 g innerhalb von 1,5 s, je mindestens 90 ms auseinander
+// Schütteln (seit 24.11.2026 ohne Reaktion von Evi, Wunsch der Nutzerin; nur noch erkannt, damit es nicht
+// als Gehen zählt): mindestens 5 Stöße mit dyn über 0,7 g innerhalb von 1,5 s, je mindestens 90 ms auseinander
 // (ein Aufsetzen auf den Tisch gibt nur einen oder zwei); danach 3 s Pause.
 const float SCHUETTELN_G = 0.7f, SCHUETTELN_LOS = 0.4f;
 const int SCHUETTELN_STOESSE = 5;
@@ -47,7 +48,7 @@ const uint32_t ABTAST_MS = 20;   // 50 Messungen pro Sekunde
 }
 
 // Was die Erkennung meldet (mehrere zugleich möglich, als Bits)
-enum LageEreignis : uint8_t { LE_SCHRITTE = 1, LE_GASSI_ENDE = 2, LE_SCHUETTELN = 4, LE_KIPPEN = 8, LE_GESICHT_UNTEN = 16, LE_GESICHT_OBEN = 32 };
+enum LageEreignis : uint8_t { LE_SCHRITTE = 1, LE_GASSI_ENDE = 2, LE_KIPPEN = 8, LE_GESICHT_UNTEN = 16, LE_GESICHT_OBEN = 32 };
 
 struct Lage {
   bool da = false;               // Sensor gefunden?
@@ -272,7 +273,6 @@ void lageVerarbeiten(float rx, float ry, float rz, uint32_t t) {
     lage.letztesSchuetteln = t;
     lage.stossAnzahl = 0;
     lage.serie = 0;
-    lage.ereignisse |= LE_SCHUETTELN;
   }
   // Aufs Gesicht und wieder umgedreht
   float fz;

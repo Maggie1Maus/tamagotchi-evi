@@ -13,8 +13,8 @@
 // Etappe 2: die drei Spiele (spiele.ino). Etappe 3: Name ändern und Hilfe (name-hilfe.ino).
 // Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, ab Baby bis Oma).
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
-// Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): Gassi gehen, schütteln, kippen, aufs Gesicht
-// legen; dazu „Wie war dein Tag?“ und die Spiele Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board).
+// Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): Gassi gehen, kippen, aufs Gesicht
+// legen (Schütteln seit 24.11.2026 wieder entfernt); dazu „Wie war dein Tag?“ und die Spiele Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board).
 //
 // Board in der Arduino IDE: „Raspberry Pi Pico 2“. Bibliothek: „Adafruit GFX Library“.
 
@@ -1012,7 +1012,7 @@ void loop() {
     bildschirmEin();
   }
 
-  bewegungTakt();                 // Lagesensor: Gassi, schütteln, kippen, aufs Gesicht
+  bewegungTakt();                 // Lagesensor: Gassi, kippen, aufs Gesicht
 
   int x, y;
   if (tipper(x, y)) {

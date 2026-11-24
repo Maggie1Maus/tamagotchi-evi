@@ -47,10 +47,10 @@ SpielZustand spiel;
 // ---------- Evis Momente (moments.js, SCRIPTS in app.js) ----------
 const ms_t GRUSS_NACH = 3 * MINUTE, LANGE_WEG = 4 * STUNDE;   // Begrüßung: nach 3 Minuten weg, „endlich“ nach 4 Stunden
 const uint32_t RUHE_TAKTE = 120;   // QUIET_TICKS: etwa 15 s ohne neuen Moment nach Begrüßung und Pflege
-// Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Gassi (mittraben), Schwindel (geschüttelt),
+// Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Gassi (mittraben),
 // Rollen (gekippt: der Ball rollt), Nickerchen (wieder umgedreht), Trösten (Antwort auf „Wie war dein Tag?“)
 enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM,
-                           M_GASSI, M_SCHWINDEL, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KEINER = 255 };
+                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KEINER = 255 };
 // Bilder der Momente: Nummer in MOMENT_BILD (momente.h)
 enum MomentBild : int8_t { MB_KEINS = -1, MB_LAUFEN, MB_FENSTER, MB_DENKEN, MB_SINGEN, MB_GAEHNEN, MB_DREHEN, MB_HUEPFEN, MB_STAUNEN,
                            MB_GLUECKLICH = 100 };
@@ -60,7 +60,7 @@ enum Gedanke : int8_t { GD_KEINER = -1, GD_HERZ, GD_KEKS, GD_BALL, GD_NOTE, GD_F
 enum AktArt : uint8_t { A_MELDUNG, A_SAGEN, A_TON, A_WARTEN, A_GEHEN, A_HEIM, A_HUEPFEN, A_BILD, A_FLIP, A_DENKEN, A_SUMMEN, A_DREHEN,
                         A_FALTER_REIN, A_FALTER_KREISEN, A_FALTER_LANDEN, A_FALTER_SITZEN, A_FALTER_WEG,
                         A_VOGEL_REIN, A_VOGEL_SINGEN, A_VOGEL_WEG, A_STERN,
-                        A_GASSI, A_WACKELN, A_ROLLEN, A_BALL_WEG };
+                        A_GASSI, A_ROLLEN, A_BALL_WEG };
 struct Akt { AktArt art; int16_t a, b; const char* text; };
 
 struct MomentZustand {
@@ -116,8 +116,6 @@ const int GLAS_X = 33, GLAS_Y = 49, GLAS_B = 62, GLAS_H = 69;
 struct { bool sichtbar = false; float x = 0, v = 0; int gerade = 0; } rollBall;
 struct {
   bool ausDurchLage = false;     // Bildschirm ging aus, weil das Gerät aufs Gesicht gelegt wurde
-  uint32_t schuettelnZeit[3] = {0, 0, 0};   // die letzten drei Male Schütteln (millis), für „Bitte nicht mehr!“
-  const char* schwindelText = "";
   bool gassiOffen = false;       // Ein Spaziergang endete bei dunklem Bildschirm: beim Einschalten erzählen
   char gassiText[64] = "";
   uint32_t schritteHeute = 0;    // nur im Arbeitsspeicher

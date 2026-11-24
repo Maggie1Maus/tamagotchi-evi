@@ -258,16 +258,6 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
       // Du gehst mit Evi spazieren: Sie trabt auf dem Teppich mit, solange Schritte kommen.
       akt(A_GASSI, 0, 0, nullptr);
       break;
-    case M_SCHWINDEL:
-      akt(A_MELDUNG, 4000, 0, "Hui! Alles dreht sich!");
-      akt(A_BILD, MB_DREHEN, 0, nullptr);
-      akt(A_WACKELN, 16, 0, nullptr);
-      akt(A_BILD, MB_STAUNEN, 0, nullptr);
-      akt(A_SAGEN, 3000, 0, bewegung.schwindelText);
-      akt(A_WARTEN, 25, 0, nullptr);
-      akt(A_BILD, MB_KEINS, 0, nullptr);
-      akt(A_HEIM, 0, 0, nullptr);
-      break;
     case M_ROLLEN:
       // Gekippt: Der Ball rollt zur tieferen Seite, Evi rennt hinterher. Liegt das Gerät wieder gerade,
       // holt sie ihn sich.
@@ -545,13 +535,6 @@ int aktSchritt(int nummer) {
       moment.bild = MB_KEINS;
       geher.lift = 0;
       return 0;
-    case A_WACKELN:
-      // geschüttelt: hin und her
-      if (moment.zaehler >= a.a) { geher.x = 0; geher.flip = false; return 0; }
-      geher.x = (moment.zaehler % 4 == 1) ? -4 : (moment.zaehler % 4 == 3) ? 4 : 0;
-      if (moment.zaehler % 3 == 0) geher.flip = !geher.flip;
-      moment.zaehler++;
-      return 1;
     case A_ROLLEN: {
       // Der Ball rollt mit der Neigung (Punkte pro Takt), prallt sanft von den Wänden ab.
       // Evi läuft ihm nach, höchstens 3 Punkte pro Takt. Fertig, wenn das Gerät 3 s gerade liegt

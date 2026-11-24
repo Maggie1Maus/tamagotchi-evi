@@ -2,6 +2,10 @@
 
 Stand: 24. November 2026
 
+## Waveshare: Schütteln entfernt (24. November 2026)
+
+Laut Nutzerin aufgespielt und funktioniert. Auf ihren Wunsch reagiert Evi nicht mehr auf Wackeln/Schütteln (kein Schwindel, keine Sätze dazu). Gassi gehen, Kippen, Aufs-Gesicht-Legen, „Wie war dein Tag?“ und die neuen Spiele bleiben.
+
 ## Waveshare: nach dem ersten Test am Board (24. November 2026)
 
 Rückmeldung der Nutzerin nach dem Aufspielen: Bewegung viel zu empfindlich (Schritte beim Stillhalten und Kippen, Schwindel beim Ablegen, Wackeln ohne Reaktion); Weihnachtsdeko zu klein; Baum nicht auf den Tisch.

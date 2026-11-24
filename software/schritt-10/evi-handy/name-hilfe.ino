@@ -177,7 +177,7 @@ const HilfeAbsatz HILFE[] = {
   {"Evi spürt Bewegung", "Gassi gehen: Nimm Evi beim Spazierengehen mit. Sie zählt die Schritte und trabt mit, wenn "
                          "du hinschaust. Ab 100 Schritten freut sie sich nach dem Spaziergang (+10 Stimmung, mehr bei "
                          "langen Wegen, 1 Münze je 500 Schritte), wird aber etwas hungrig und hat schmutzige Pfoten. "
-                         "Schütteln: Evi wird schwindelig. Kippen: Ein Ball rollt zur tieferen Seite, und Evi rennt "
+                         "Kippen: Ein Ball rollt zur tieferen Seite, und Evi rennt "
                          "hinterher. Aufs Gesicht legen: Der Bildschirm geht aus, nachts auch das Licht für Evi. "
                          "Umgedreht geht er wieder an. Kippen und Hinlegen kennt Evi, sobald du ein paarmal Tasten "
                          "gedrückt hast, während du das Gerät schräg in der Hand hältst."},
