@@ -2,10 +2,6 @@
 
 Stand: 24. November 2026
 
-## Waveshare gedreht für die USB-C-Öffnung (24. November 2026)
-
-- Die Platine wurde um 180° gedreht, damit die USB-C-Buchse zur vorhandenen Öffnung passt. `BILD_DREHEN` in `software/schritt-10/evi-handy/board.h` stellt jetzt Bild und Touch gemeinsam um. Den sichtbaren Bildrand nach dem Aufspielen am Gehäuse prüfen.
-
 ## Kompaktes Zimmer und allgemeine Raumtiefe eingebaut (24. November 2026)
 
 - Nutzerin bevorzugt den gemütlicheren ersten Zimmerentwurf und hat die Umsetzung mit „Ok dann leg los“ beauftragt. Der kompakte Raum ist jetzt die Zimmeransicht (`entwuerfe/zimmer/kompakt/`); Proportionen und Möbelgrößen des ersten Entwurfs erhalten. Weihnachtsfassung passend zum selben Zimmer, Baum auf dem Boden statt rechter Tisch/Pflanze/Regal, Fenstersterne und Kerzentablett im bestehenden Zeitraum 18.11.–5.1.

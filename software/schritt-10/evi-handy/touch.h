@@ -98,10 +98,6 @@ bool touchLesen(int& x, int& y) {
   // hochkant (240 x 320) -> quer (320 x 240), wie Waveshares „rotation 1“
   x = ry;
   y = 239 - rx;
-  if (BILD_DREHEN) {
-    x = 319 - x;
-    y = 239 - y;
-  }
   if (TOUCH_SPIEGELN_X) x = 319 - x;
   if (TOUCH_SPIEGELN_Y) y = 239 - y;
   x = constrain(x, 0, 319);
