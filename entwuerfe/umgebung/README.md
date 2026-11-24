@@ -37,6 +37,21 @@ Der Baum ist ein separater PNG-Entwurf mit transparentem Hintergrund. Er verwend
 - Der Sichtbarkeitszeitraum dieser zusätzlichen Dekoration ist noch nicht ausdrücklich festgelegt; die bestehende Datumsregel gilt bisher für den Weihnachtsbaum.
 - Auswahl und Gestaltung sind festgehalten; die Dekoration ist noch nicht in das Spiel integriert.
 
+## Freigestellte Weihnachtsdekoration
+
+Die ausgewählten Dekorationen liegen als separate PNGs mit transparentem Hintergrund vor:
+
+| Datei | Größe | Inhalt |
+| --- | --- | --- |
+| [`fenster-sterne.png`](fenster-sterne.png) | 2172 × 724 Pixel | Sternengirlande mit hängenden Sternen, ohne Fensterrahmen und ohne Landschaft. Als Dekoration über dem vorhandenen Fenster vorgesehen. |
+| [`kerzentablett.png`](kerzentablett.png) | 1536 × 1024 Pixel | Drei unterschiedlich hohe Kerzen mit Flammen, Tannenzweig und Beeren auf einem Tablett; ohne Sideboard. |
+
+![Freigestellte Fenstersterne](fenster-sterne.png)
+
+![Freigestelltes Kerzentablett](kerzentablett.png)
+
+Freistellungen aus den ausgewählten Bildvorschlägen, mit der integrierten Bildbearbeitung erstellt. Transparenter Außenbereich und weiße Innenflächen der Dekoration bleiben erhalten. Die ursprünglichen Auflösungen sind hier unverändert aufbewahrt; die spätere Anpassung an das kleine Display erfolgt bei der Einbindung. Diese Dateien sind hochgeladen und ersetzen die bisher im Waveshare gezeichneten Platzhalter noch nicht automatisch.
+
 ## Status
 
 Originale Bildvorschläge aus der gemeinsamen Gestaltung. Die PNG-Dateien werden unverändert aufbewahrt. **Seit 24. November 2026 auf dem Waveshare eingebaut** (nicht in der Handy-App): Möbel, Jahreszeiten, Wetter und Weihnachtsdeko, aufbereitet mit `software/schritt-10/tools/make-umgebung.py`; Einzelheiten in `software/schritt-10/README.md`. Sterne am Fenster und Kerzentablett gelten im selben Zeitraum wie der Baum.
