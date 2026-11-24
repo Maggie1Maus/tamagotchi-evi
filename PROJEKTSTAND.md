@@ -2,6 +2,12 @@
 
 Stand: 24. November 2026
 
+## Evi läuft mit Batterien (24. November 2026)
+
+- Die Nutzerin hat bestätigt, dass Evi mit vier AAA im originalen Batteriefach startet und läuft. Am Ausgang des Pololu S9V11F5 wurden rund 5 V gemessen. Die Versorgung geht über die 1N5819-Diode an den zwölfpoligen Stecker des Waveshare. [Verdrahtung im Hardware-Aufbau](Tamagotchi_Hardware_Cube.md#batteriebetrieb-im-retro-gamer-24-november-2026)
+- **Vor dem Anschluss an den PC eine AAA herausnehmen** und warten, bis die `PWR`-LED ausgeht. Für den Wechsel zurück zum Batteriebetrieb zuerst USB-C abziehen und dann die AAA wieder einsetzen.
+- Als Nächstes die Module und Kabel im Gehäuse befestigen, den Lautsprecher platzieren und die Passform der Rückschale prüfen.
+
 ## Kompaktes Zimmer und allgemeine Raumtiefe eingebaut (24. November 2026)
 
 - Nutzerin bevorzugt den gemütlicheren ersten Zimmerentwurf und hat die Umsetzung mit „Ok dann leg los“ beauftragt. Der kompakte Raum ist jetzt die Zimmeransicht (`entwuerfe/zimmer/kompakt/`); Proportionen und Möbelgrößen des ersten Entwurfs erhalten. Weihnachtsfassung passend zum selben Zimmer, Baum auf dem Boden statt rechter Tisch/Pflanze/Regal, Fenstersterne und Kerzentablett im bestehenden Zeitraum 18.11.–5.1.
@@ -122,7 +128,7 @@ Stattdessen von Claude vorgeschlagen, alles ohne Internet, mit Uhr, Bewegungssen
 
 ## Waveshare: Bildschirm bleibt an, RESET schaltet ihn (24. November 2026)
 
-Wunsch der Nutzerin: Der Bildschirm des Boards geht nicht mehr nach 1 Minute aus. **RESET** (hatte keine Aufgabe) schaltet ihn aus und mit jedem Druck wieder an; Ereignisse und Besuch schalten ihn ebenfalls ein. Ein laufendes Spiel wird beim Ausschalten abgebrochen. **Am Board bestätigt (laut Nutzerin): RESET funktioniert, der Ball läuft flüssig, Momente gesehen (Spaziergang mit Hüpfen, Blick aus dem Fenster).** **Offen:** Mit dauernd leuchtendem Bildschirm halten 4 × AAA deutlich kürzer; Verbrauch messen, wenn der Pololu-Wandler angeschlossen ist. Einstellbar über `DUNKEL_NACH_MS` in `software/schritt-10/evi-handy/evi-handy.ino`.
+Wunsch der Nutzerin: Der Bildschirm des Boards geht nicht mehr nach 1 Minute aus. **RESET** (hatte keine Aufgabe) schaltet ihn aus und mit jedem Druck wieder an; Ereignisse und Besuch schalten ihn ebenfalls ein. Ein laufendes Spiel wird beim Ausschalten abgebrochen. **Am Board bestätigt (laut Nutzerin): RESET funktioniert, der Ball läuft flüssig, Momente gesehen (Spaziergang mit Hüpfen, Blick aus dem Fenster).** Stromverbrauch und Laufzeit mit vier AAA bei dauerhaft leuchtendem Bildschirm noch messen. Einstellbar über `DUNKEL_NACH_MS` in `software/schritt-10/evi-handy/evi-handy.ino`.
 
 ## Version 0.12: Evis Momente in jeder Lebensphase (24. November 2026, gebaut, noch nicht veröffentlicht)
 
