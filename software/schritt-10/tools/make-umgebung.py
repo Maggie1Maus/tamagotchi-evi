@@ -95,7 +95,9 @@ deckend = wb[:, :, 3] > 128
 dunkel = (wb[:, :, :3].mean(2) < 128) & deckend
 ys, xs = np.nonzero(deckend)
 box = (slice(ys.min(), ys.max() + 1), slice(xs.min(), xs.max() + 1))
-f_baum = (ys.max() - ys.min() + 1) / 119.0                      # 119 Punkte hoch: vom Tisch bis unter die Leiste oben
+# Seit dem Test am Board (24.11.2026): Der Baum steht zu Weihnachten auf dem Boden statt auf dem Tisch
+# (der Tisch ist dann weg) und ist größer: 150 Punkte hoch, vom Boden bis unter die Leiste oben.
+f_baum = (ys.max() - ys.min() + 1) / 150.0
 WBAUM_L = verkleinern(dunkel[box], f_baum, 0.35)
 WBAUM = (WBAUM_L, ~aussen(WBAUM_L))
 
@@ -210,6 +212,8 @@ for i, (x0, x1) in enumerate(FENSTER_X):
     WETTER.append(figur(k))
 
 # ---------- Von Claude gezeichnet (kein Entwurf vorhanden) ----------
+# Am Board waren Sterne und Kerzen viel zu klein: doppelt so groß (jeder Punkt wird 2 × 2).
+doppelt = lambda f: (np.kron(f[0], np.ones((2, 2), bool)), np.kron(f[1], np.ones((2, 2), bool)))
 STERN = figur(aus_text([
     "...X...",
     "..X.X..",
@@ -218,6 +222,7 @@ STERN = figur(aus_text([
     ".X...X.",
     "X..X..X",
     "XXX.XXX"]))
+STERN = doppelt(STERN)
 KERZEN = figur(aus_text([
     "...X..........................",
     "..X.X.........................",
@@ -235,6 +240,7 @@ KERZEN = figur(aus_text([
     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.",
     "X..........................XX.",
     ".XXXXXXXXXXXXXXXXXXXXXXXXXXX..."]))
+KERZEN = doppelt(KERZEN)
 
 # ---------- Grundzimmer ----------
 z = np.zeros((H, B), bool)
@@ -271,14 +277,14 @@ TISCH_X, TISCH_UNTEN = 244, 181
 TISCH_OBEN = TISCH_UNTEN - TISCH[0].shape[0] + 11    # auf der Tischplatte
 NAPF_X, NAPF_UNTEN = 262, 199
 einsetzen(z, SIDEBOARD, SIDEBOARD_X, SIDEBOARD_UNTEN - SIDEBOARD[0].shape[0])
-einsetzen(z, TISCH, TISCH_X, TISCH_UNTEN - TISCH[0].shape[0])
 einsetzen(z, NAPF, NAPF_X, NAPF_UNTEN - NAPF[0].shape[0])
 mitte_tisch = TISCH_X + TISCH[0].shape[1] // 2
 lagen = {
+    'TISCH': (TISCH, TISCH_X, TISCH_UNTEN - TISCH[0].shape[0]),
     'REGAL': (REGAL, 275 - REGAL[0].shape[1] // 2, 30),
     'PFLANZE': (PFLANZE, mitte_tisch - PFLANZE[0].shape[1] // 2, TISCH_OBEN - PFLANZE[0].shape[0]),
-    'WEIHNACHTSBAUM': (WBAUM, mitte_tisch - WBAUM[0].shape[1] // 2, TISCH_OBEN - WBAUM[0].shape[0]),
-    'KERZEN': (KERZEN, 26, SIDEBOARD_UNTEN - SIDEBOARD[0].shape[0] + 7 - KERZEN[0].shape[0]),
+    'WEIHNACHTSBAUM': (WBAUM, 273 - WBAUM[0].shape[1] // 2, 179 - WBAUM[0].shape[0]),
+    'KERZEN': (KERZEN, 22, SIDEBOARD_UNTEN - SIDEBOARD[0].shape[0] + 7 - KERZEN[0].shape[0]),
 }
 
 # ---------- Ausgabe ----------
@@ -302,7 +308,7 @@ def bild_aus(name, fig, ox=0, oy=0):
     feld_aus(name + '_LINIEN', bytes_von(lin)); feld_aus(name + '_MASKE', bytes_von(mas & ~lin | lin))
     zeilen.append('static const Bild %s = {%d, %d, %d, %d, %s_LINIEN, %s_MASKE};' % (name, lin.shape[1], lin.shape[0], ox, oy, name, name))
 
-zeilen.append('// Grundzimmer ohne Regal, Pflanze und Scheibe (die zeichnet fensterZeichnen in umgebung.ino), 320 × 224')
+zeilen.append('// Grundzimmer ohne Tisch, Regal, Pflanze und Scheibe (die zeichnet fensterZeichnen in umgebung.ino), 320 × 224')
 feld_aus('ZIMMER_GRUND', bytes_von(z))
 for name, (fig, x, y) in lagen.items():
     zeilen.append('// %s: oben links bei %d/%d' % (name, x, y))
@@ -317,7 +323,7 @@ open(os.path.join(SKETCH, 'umgebung.h'), 'w', encoding='utf-8').write('\n'.join(
 
 # Vorschau: Grundzimmer mit allem
 v = z.copy()
-for name in ('REGAL', 'PFLANZE', 'KERZEN'):
+for name in ('TISCH', 'REGAL', 'PFLANZE', 'KERZEN'):
     fig, x, y = lagen[name]; einsetzen(v, fig, x, y)
 gl = v[GLAS[1]:GLAS[1] + GLAS[3], GLAS[0]:GLAS[0] + GLAS[2]]; gl[:] = False
 einsetzen(v, JAHRESZEITEN[0], GLAS[0], GLAS[1])

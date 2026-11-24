@@ -915,7 +915,7 @@ ms_t uebersetzungsZeit() {
 }
 
 // ---------- Bildschirmfoto über USB (für die Prüfung am PC) ----------
-// Sendet nach dem Zeichen 'S' die Zeile "BILD 320 240" und 9600 Bytes (1 = weiß).
+// Sendet nach dem Zeichen 'S' die Zeile "BILD 320 240" und 9600 Bytes (1 = weiß). Nach 'L' eine Zeile zum Lagesensor.
 void seriellPruefen() {
   while (Serial.available()) {
     const int c = Serial.read();
@@ -923,6 +923,15 @@ void seriellPruefen() {
       Serial.println("BILD 320 240");
       Serial.write(bild.getBuffer(), 40 * 240);
       Serial.flush();
+    }
+    if (c == 'L') {
+      // Lagesensor prüfen (Seriellen Monitor öffnen, „L“ senden): was er misst und was Evi gelernt hat
+      char z[200];
+      snprintf(z, sizeof(z), "LAGE da=%d adresse=0x%02X bytes=%s 1g=%.3f | x=%.2f y=%.2f z=%.2f g | Bildschirm-Achse=%d(%d) Oberkante=%d(%d) | "
+               "Unruhe=%.2f Neigung=%.2f Serie=%d Schritte=%lu",
+               lage.da, lage.adresse, lage.grossEndian ? "gross" : "klein", lage.eins, lage.x, lage.y, lage.z,
+               lage.nAchse, lage.nVz, lage.uAchse, lage.uVz, lage.unruhe, lageKippen(), lage.serie, (unsigned long)lage.gassiSchritte);
+      Serial.println(z);
     }
   }
 }

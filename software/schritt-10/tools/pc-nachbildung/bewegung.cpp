@@ -88,7 +88,7 @@ int main() {
     const float w = 1 + 0.35f * sinf(t / 1000.0f * 2 * 3.14159f * 1.8f);
     x = 0; y = 0.71f * w; z = 0.71f * w;
   };
-  laufen(4000, gehen);
+  laufen(7000, gehen);
   PRUEFE(lage.gassi, "Gehen erkannt");
   PRUEFE(moment.art == M_GASSI, "Evi trabt mit");
   laufen(2000, gehen);
@@ -98,8 +98,8 @@ int main() {
   PRUEFE(strstr(zeile, "Gassi gehen") != nullptr, "Zeile zeigt die Schritte");
   zeichneAlles(); foto("gassi");
   laufen(240000, gehen);   // 4 Minuten Spaziergang
-  printf("   Schritte bisher: %lu (erwartet etwa %d)\n", (unsigned long)lage.gassiSchritte, (int)(245 * 1.8));
-  PRUEFE(lage.gassiSchritte > 400 && lage.gassiSchritte < 450, "Schritte richtig gezählt");
+  printf("   Schritte bisher: %lu (erwartet etwa %d)\n", (unsigned long)lage.gassiSchritte, (int)(249 * 1.8));
+  PRUEFE(lage.gassiSchritte > 420 && lage.gassiSchritte < 460, "Schritte richtig gezählt");
   laufen(5000, inDerHand);
   PRUEFE(moment.art != M_GASSI, "nach dem Gehen trabt sie nicht mehr");
   laufen(60000, inDerHand);
@@ -114,6 +114,53 @@ int main() {
   // Ruhig liegend (kleines Zittern) zählt nichts
   laufen(60000, [](uint32_t t, float& x, float& y, float& z) { x = 0.01f * sinf(t * 0.37f); y = 0.71f; z = 0.71f + 0.02f * sinf(t * 0.11f); });
   PRUEFE(!lage.gassi, "Zittern ist kein Gehen");
+
+  // ---------- Was am Board zu viel auslöste (24.11.2026) ----------
+  // In der Hand stillhalten: die Hand zittert und bewegt sich etwas (zufällig bis ±0,12 g, kleine Ruckler)
+  vorbereiten(12, 10);
+  srand(7);
+  auto hand = [](uint32_t t, float& x, float& y, float& z) {
+    auto z1 = []() { return (rand() % 2001 - 1000) / 1000.0f; };
+    const float ruck = (t % 1700 < 60) ? 0.25f : 0;
+    x = 0.06f * z1() + 0.05f * sinf(t * 0.004f); y = 0.71f + 0.08f * z1() + ruck; z = 0.71f + 0.08f * z1() - ruck;
+  };
+  const uint32_t schritteVorher = bewegung.schritteHeute;
+  laufen(120000, hand);
+  PRUEFE(!lage.gassi && bewegung.schritteHeute == schritteVorher, "in der Hand stillgehalten: keine Schritte");
+  PRUEFE(moment.art != M_SCHWINDEL, "in der Hand stillgehalten: kein Schwindel");
+  // Nach links und rechts kippen, immer wieder (je 1,5 s)
+  laufen(60000, [](uint32_t t, float& x, float& y, float& z) {
+    const float w = 0.6f * sinf(t / 1500.0f * 3.14159f);
+    x = sinf(w) * 0.71f; y = 0.71f; z = cosf(w) * 0.71f; });
+  PRUEFE(!lage.gassi && bewegung.schritteHeute == schritteVorher, "hin und her gekippt: keine Schritte");
+  laufen(3000, inDerHand);
+  momentStoppen(true);
+  // Auf den Tisch legen: hinunter bewegen, kurz aufsetzen (Stoß mit Nachschwingen), dann still flach
+  auto ablegen = [](uint32_t t, float& x, float& y, float& z) {
+    if (t < 800) { const float a = t / 800.0f; x = 0; y = 0.71f * (1 - a); z = 0.71f + 0.29f * a; z += 0.3f * sinf(a * 3.14159f); return; }
+    const float s = (t - 800) / 1000.0f;
+    x = 0; y = 0; z = 1 + 2.5f * expf(-s / 0.02f) * sinf(s * 2 * 3.14159f * 40);
+  };
+  for (int i = 0; i < 5; i++) { laufen(4000, ablegen); laufen(2000, inDerHand); }
+  PRUEFE(moment.art != M_SCHWINDEL, "fünfmal auf den Tisch gelegt: kein Schwindel");
+  PRUEFE(!lage.gassi && bewegung.schritteHeute == schritteVorher, "auf den Tisch gelegt: keine Schritte");
+  // Wackeln (deutlich, etwa 3-mal pro Sekunde hin und her, ±1 g): Evi wird schwindelig
+  laufen(2000, inDerHand);
+  laufen(2000, [](uint32_t t, float& x, float& y, float& z) { x = 1.0f * sinf(t / 1000.0f * 2 * 3.14159f * 3); y = 0.71f; z = 0.71f; });
+  PRUEFE(moment.art == M_SCHWINDEL, "gewackelt: Evi ist schwindelig");
+  laufen(10000, inDerHand);
+  momentStoppen(true);
+  // Sensor misst im doppelten Maßstab (anders eingestellt als erwartet): nach kurzer Ruhe stimmt es wieder
+  laufen(8000, [](uint32_t, float& x, float& y, float& z) { x = 0; y = 1.42f; z = 1.42f; });
+  printf("   gelernter Maßstab: 1 g = %.2f\n", lage.eins);
+  PRUEFE(fabsf(lage.eins - 2) < 0.1f, "anderer Maßstab: beim Stillhalten gelernt");
+  laufen(120000, [&hand](uint32_t t, float& x, float& y, float& z) { hand(t, x, y, z); x *= 2; y *= 2; z *= 2; });
+  PRUEFE(!lage.gassi, "anderer Maßstab: Stillhalten gibt keine Schritte");
+  laufen(30000, [](uint32_t t, float& x, float& y, float& z) {
+    const float w = 1 + 0.35f * sinf(t / 1000.0f * 2 * 3.14159f * 1.8f); x = 0; y = 1.42f * w; z = 1.42f * w; });
+  PRUEFE(lage.gassi, "anderer Maßstab: Gehen wird erkannt");
+  laufen(70000, [](uint32_t, float& x, float& y, float& z) { x = 0; y = 1.42f; z = 1.42f; });
+  laufen(3000, inDerHand);
 
   // ---------- Schütteln ----------
   vorbereiten(12, 30);
@@ -135,7 +182,7 @@ int main() {
   laufen(3000, inDerHand);
   // rechte Kante tiefer (etwa 30°): die Kraft bekommt einen Anteil nach links (-x)
   auto rechtsTief = [](uint32_t, float& x, float& y, float& z) { x = -0.5f; y = 0.61f; z = 0.61f; };
-  laufen(600, rechtsTief);
+  laufen(1500, rechtsTief);
   PRUEFE(moment.art == M_ROLLEN, "gekippt: der Ball rollt");
   laufen(1000, rechtsTief);
   zeichneAlles(); foto("rollen");
@@ -231,8 +278,8 @@ int main() {
   int runden = 0;
   for (int i = 0; i < 6000 && spiel.aktiv; i++) {
     const float ziel = spiel.kx - BODEN_X - spiel.eviGenau;
-    const float neigung = ziel > 6 ? 0.45f : ziel < -6 ? -0.45f : 0;
-    laufen(10, [neigung](uint32_t, float& x, float& y, float& z) { x = -neigung; y = 0.62f; z = 0.62f; });
+    const float neigung = ziel > 6 ? 0.8f : ziel < -6 ? -0.8f : 0;
+    laufen(10, [neigung](uint32_t, float& x, float& y, float& z) { x = -neigung; y = 0.42f; z = 0.42f; });
     runden = spiel.runde;
   }
   printf("   Meldung: %s\n", meldung);

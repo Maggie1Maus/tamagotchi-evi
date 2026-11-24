@@ -2,6 +2,14 @@
 
 Stand: 24. November 2026
 
+## Waveshare: nach dem ersten Test am Board (24. November 2026)
+
+Rückmeldung der Nutzerin nach dem Aufspielen: Bewegung viel zu empfindlich (Schritte beim Stillhalten und Kippen, Schwindel beim Ablegen, Wackeln ohne Reaktion); Weihnachtsdeko zu klein; Baum nicht auf den Tisch.
+- Bewegungserkennung neu und strenger, Maßstab des Sensors wird selbst gelernt; `L` im Seriellen Monitor zeigt die Sensorwerte. Einzelheiten in `software/schritt-10/README.md`.
+- Weihnachten: Baum groß auf dem Boden, Tisch dann weg; Sterne und Kerzen doppelt so groß.
+- **Offen:** Die Nutzerin meint, Zeichnungen für Kerzen und Sterne gegeben zu haben; im Repository sind keine. Sie soll sie nach `entwuerfe/umgebung/` hochladen, dann werden sie wie die anderen Entwürfe eingebaut (`tools/make-umgebung.py`).
+- Am Board erneut ausprobieren: Gassi gehen, Stillhalten, Kippen, Wackeln, Ablegen.
+
 ## Waveshare: neues Zimmer, Jahreszeiten, Wetter, Weihnachtsdeko (24. November 2026)
 
 Wunsch der Nutzerin: Jahreszeiten wie in den Fensterentwürfen (Frühling ab 1. Februar, Sommer ab 1. Juni, Herbst ab 21. September, Winter ab 1. November), Weihnachtsdeko nach der Zeitangabe im Repo, die neuen Möbel; dazu Wetter zufällig je nach Jahreszeit, **Schnee nur im Winter**. Nur Waveshare. Einzelheiten in `software/schritt-10/README.md`.

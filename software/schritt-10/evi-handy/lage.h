@@ -17,21 +17,26 @@
 #include <math.h>
 
 // ---------- Erkennung (Zahlen) ----------
+// Seit 24.11.2026 (am Board zu empfindlich: beim Stillhalten zählte Evi Schritte, beim Ablegen wurde ihr
+// schwindelig, beim Wackeln passierte nichts) gemessen an der Bewegung allein, ohne die Schwerkraft:
+// „dyn“ = Messung minus langsam geglättete Messung (das ist die Schwerkraft), in g.
 namespace L {
-// Ein Schritt: Die geglättete Kraft steigt um 0,12 g über ihren Mittelwert, nachdem sie unter -0,05 g war.
-// Schritte zählen nur im Takt: 6 hintereinander, jeder 0,25 bis 1,5 s nach dem vorigen.
-const float SCHRITT_HOCH = 0.12f, SCHRITT_TIEF = -0.05f;
-const uint32_t SCHRITT_MIN_MS = 250, SCHRITT_MAX_MS = 1500;
-const int SCHRITT_BESTAETIGT = 6;
+// Ein Schritt: Der Anteil von dyn in Richtung der Schwerkraft steigt über 0,18 g, nachdem er unter -0,08 g war.
+// Schritte zählen nur im gleichmäßigen Takt: 10 hintereinander, je 0,33 bis 1,1 s Abstand, jeder Abstand
+// höchstens 35 % anders als der vorige. Dreht sich das Gerät dabei (mehr als etwa 20°), fängt es neu an.
+const float SCHRITT_HOCH = 0.18f, SCHRITT_TIEF = -0.08f, SCHRITT_GLEICH = 0.35f, SCHRITT_DREHEN = 0.35f;
+const uint32_t SCHRITT_MIN_MS = 330, SCHRITT_MAX_MS = 1100;
+const int SCHRITT_BESTAETIGT = 10;
 // Ein Spaziergang endet nach 60 s ohne Schritt. Evi trabt mit, solange vor höchstens 2,5 s ein Schritt kam.
 const uint32_t GASSI_ENDE_MS = 60000, GASSI_ZEIGEN_MS = 2500;
-// Schütteln: mindestens 4 Stöße über 1,8 g innerhalb von 1,2 s; danach 3 s Pause.
-const float SCHUETTELN_G = 1.8f;
-const int SCHUETTELN_STOESSE = 4;
-const uint32_t SCHUETTELN_FENSTER_MS = 1200, SCHUETTELN_PAUSE_MS = 3000;
-// Kippen zur Seite: etwa 20° für 0,3 s; erneut, nachdem das Gerät 1 s gerade war (unter 9°).
-const float KIPPEN_START = 0.35f, KIPPEN_GERADE = 0.15f;
-const uint32_t KIPPEN_START_MS = 300, KIPPEN_GERADE_MS = 1000;
+// Schütteln: mindestens 5 Stöße mit dyn über 0,7 g innerhalb von 1,5 s, je mindestens 90 ms auseinander
+// (ein Aufsetzen auf den Tisch gibt nur einen oder zwei); danach 3 s Pause.
+const float SCHUETTELN_G = 0.7f, SCHUETTELN_LOS = 0.4f;
+const int SCHUETTELN_STOESSE = 5;
+const uint32_t SCHUETTELN_FENSTER_MS = 1500, SCHUETTELN_ABSTAND_MS = 90, SCHUETTELN_PAUSE_MS = 3000;
+// Kippen zur Seite: etwa 27° für 0,5 s, während das Gerät sonst ruhig ist; erneut, nachdem es 1 s gerade war (unter 9°).
+const float KIPPEN_START = 0.45f, KIPPEN_GERADE = 0.15f, KIPPEN_RUHIG = 0.25f;
+const uint32_t KIPPEN_START_MS = 500, KIPPEN_GERADE_MS = 1000;
 // Aufs Gesicht: 1,5 s mit dem Bildschirm nach unten; wieder umgedreht nach 0,4 s.
 const float GESICHT_UNTEN = -0.8f, GESICHT_OBEN = -0.5f;
 const uint32_t GESICHT_UNTEN_MS = 1500, GESICHT_OBEN_MS = 400;
@@ -49,13 +54,22 @@ struct Lage {
   uint8_t adresse = 0;
   bool grossEndian = false;      // Reihenfolge der Bytes (beim Start erkannt)
   uint32_t letzteMessung = 0;
-  float x = 0, y = 0, z = 1;     // letzte Messung in g
+  float x = 0, y = 0, z = 1;     // letzte Messung in g (nach dem Maßstab)
+  // Maßstab: Liegt das Gerät still, misst der Sensor genau 1 g. Falls er anders eingestellt ist als erwartet,
+  // wird das beim Stillliegen gelernt (eins = so viel zeigt er für 1 g).
+  float eins = 1;
+  float ruheMittel = 1, ruheStreuung = 1;
+  int ruhig = 0;
   // Erkennung
   bool glattDa = false;
-  float glatt[3] = {0, 0, 1};    // langsam geglättet (für Lage und Kippen)
-  float schnell = 1, langsam = 1;
+  float glatt[3] = {0, 0, 1};    // geglättet (für Lage und Kippen)
+  float schwer[3] = {0, 0, 1};   // langsam geglättet: die Schwerkraft
+  float senkrecht = 0;           // Bewegung in Richtung der Schwerkraft (geglättet)
+  float unruhe = 0;              // wie stark sich das Gerät gerade bewegt (geglättet)
+  float richtungVorher[3] = {0, 0, 1};
+  uint32_t richtungZeit = 0;
   bool scharf = false;
-  uint32_t letzterSchritt = 0;
+  uint32_t letzterSchritt = 0, letzterAbstand = 0;
   bool schrittDa = false;
   int serie = 0;
   bool gassi = false;
@@ -74,7 +88,7 @@ struct Lage {
   bool unten = false;
   bool untenSeitDa = false, obenSeitDa = false;
   uint32_t untenSeit = 0, obenSeit = 0, untenUm = 0, untenDauer = 0;
-  // Gelernte Achsen: Index 0–2 (x, y, z) und Vorzeichen; 0 = noch unbekannt
+  // Gelernte Achsen: Index 0–2 (x, y, z) und Vorzeichen; -1 = noch unbekannt
   float mittel[3] = {0, 0, 0};
   int proben = 0;
   int8_t nAchse = -1, nVz = 0, uAchse = -1, uVz = 0;
@@ -136,6 +150,14 @@ bool lageStarten() {
     delay(18);
   }
   lage.grossEndian = fehlerGross < fehlerKlein;
+  // Maßstab vorläufig aus dem Start (liegt das Gerät dabei ruhig, stimmt er gleich)
+  uint8_t r[6];
+  if (qmiRoh(r)) {
+    float x, y, z;
+    rohInG(r, lage.grossEndian, x, y, z);
+    const float g = sqrtf(x * x + y * y + z * z);
+    if (g > 0.2f && g < 5) lage.eins = g;
+  }
   return true;
 }
 
@@ -170,7 +192,13 @@ static void lageSchritt(uint32_t t) {
   const bool erster = !lage.schrittDa;
   lage.letzterSchritt = t;
   lage.schrittDa = true;
-  lage.serie = (!erster && abstand <= L::SCHRITT_MAX_MS) ? lage.serie + 1 : 1;
+  if (erster || abstand > L::SCHRITT_MAX_MS) { lage.serie = 1; lage.letzterAbstand = 0; return; }
+  if (abstand < L::SCHRITT_MIN_MS) return;                       // zu schnell für einen Schritt: nicht zählen
+  // gleichmäßiger Takt? (der erste Abstand gilt immer)
+  const bool gleich = lage.letzterAbstand == 0 ||
+                      fabsf((float)abstand - (float)lage.letzterAbstand) <= L::SCHRITT_GLEICH * lage.letzterAbstand;
+  lage.letzterAbstand = abstand;
+  lage.serie = gleich ? lage.serie + 1 : 1;
   if (lage.geschuettelt && t - lage.letztesSchuetteln < 2000) { lage.serie = 0; return; }   // Schütteln ist kein Gehen
   if (lage.serie < L::SCHRITT_BESTAETIGT) return;
   const uint32_t dazu = lage.serie == L::SCHRITT_BESTAETIGT ? L::SCHRITT_BESTAETIGT : 1;
@@ -181,27 +209,58 @@ static void lageSchritt(uint32_t t) {
   lage.ereignisse |= LE_SCHRITTE;
 }
 
-// Eine Messung verarbeiten (auch von der Nachbildung am PC aufgerufen)
-void lageVerarbeiten(float mx, float my, float mz, uint32_t t) {
+// Eine Messung verarbeiten, roh in g laut Einstellung des Sensors (auch von der Nachbildung am PC aufgerufen)
+void lageVerarbeiten(float rx, float ry, float rz, uint32_t t) {
+  // Maßstab: Ist die Stärke 1 s lang fast gleich (das Gerät liegt still), ist das 1 g.
+  const float roh = sqrtf(rx * rx + ry * ry + rz * rz);
+  lage.ruheMittel += (roh - lage.ruheMittel) * 0.1f;
+  lage.ruheStreuung += ((roh - lage.ruheMittel) * (roh - lage.ruheMittel) - lage.ruheStreuung) * 0.1f;
+  lage.ruhig = lage.ruheStreuung < 0.0004f * lage.ruheMittel * lage.ruheMittel ? lage.ruhig + 1 : 0;
+  if (lage.ruhig >= 50 && lage.ruheMittel > 0.2f && lage.ruheMittel < 5) lage.eins += (lage.ruheMittel - lage.eins) * 0.05f;
+  const float mx = rx / lage.eins, my = ry / lage.eins, mz = rz / lage.eins;
   lage.x = mx; lage.y = my; lage.z = mz;
   const float v[3] = {mx, my, mz};
-  const float g = lageLaenge(v);
-  if (!lage.glattDa) { for (int i = 0; i < 3; i++) lage.glatt[i] = v[i]; lage.glattDa = true; }
-  else for (int i = 0; i < 3; i++) lage.glatt[i] += (v[i] - lage.glatt[i]) * 0.15f;
+  if (!lage.glattDa) {
+    for (int i = 0; i < 3; i++) { lage.glatt[i] = lage.schwer[i] = lage.richtungVorher[i] = v[i]; }
+    lage.glattDa = true;
+    lage.richtungZeit = t;
+  } else {
+    for (int i = 0; i < 3; i++) {
+      lage.glatt[i] += (v[i] - lage.glatt[i]) * 0.15f;
+      lage.schwer[i] += (v[i] - lage.schwer[i]) * 0.04f;
+    }
+  }
+  // Bewegung ohne Schwerkraft
+  const float d[3] = {v[0] - lage.schwer[0], v[1] - lage.schwer[1], v[2] - lage.schwer[2]};
+  const float dyn = lageLaenge(d);
+  const float gs = lageLaenge(lage.schwer);
+  const float senk = gs > 0.3f ? (d[0] * lage.schwer[0] + d[1] * lage.schwer[1] + d[2] * lage.schwer[2]) / gs : 0;
+  lage.senkrecht += (senk - lage.senkrecht) * 0.35f;
+  lage.unruhe += (dyn - lage.unruhe) * 0.1f;
+  // Dreht sich das Gerät (mehr als etwa 20° in einer Sekunde)? Dann ist das kein Gehen.
+  if (t - lage.richtungZeit >= 1000) {
+    const float a = lageLaenge(lage.glatt), b = lageLaenge(lage.richtungVorher);
+    if (a > 0.3f && b > 0.3f) {
+      float diff = 0;
+      for (int i = 0; i < 3; i++) { const float e = lage.glatt[i] / a - lage.richtungVorher[i] / b; diff += e * e; }
+      if (sqrtf(diff) > L::SCHRITT_DREHEN) lage.serie = 0;
+    }
+    for (int i = 0; i < 3; i++) lage.richtungVorher[i] = lage.glatt[i];
+    lage.richtungZeit = t;
+  }
   // Schritte
-  lage.schnell += (g - lage.schnell) * 0.3f;
-  lage.langsam += (g - lage.langsam) * 0.05f;
-  const float d = lage.schnell - lage.langsam;
-  if (d < L::SCHRITT_TIEF) lage.scharf = true;
-  if (lage.scharf && d > L::SCHRITT_HOCH && (!lage.schrittDa || t - lage.letzterSchritt >= L::SCHRITT_MIN_MS)) {
+  if (lage.senkrecht < L::SCHRITT_TIEF) lage.scharf = true;
+  if (lage.scharf && lage.senkrecht > L::SCHRITT_HOCH && dyn < 1.5f) {
     lage.scharf = false;
     lageSchritt(t);
   }
-  // Schütteln
-  if (!lage.ueber && g > L::SCHUETTELN_G) {
+  // Schütteln: Stöße der Bewegung (ohne Schwerkraft), mit Abstand zueinander
+  if (!lage.ueber && dyn > L::SCHUETTELN_G) {
     lage.ueber = true;
-    if (lage.stossAnzahl < 8) lage.stoesse[lage.stossAnzahl++] = t;
-  } else if (lage.ueber && g < L::SCHUETTELN_G - 0.4f) {
+    if (lage.stossAnzahl == 0 || t - lage.stoesse[lage.stossAnzahl - 1] >= L::SCHUETTELN_ABSTAND_MS) {
+      if (lage.stossAnzahl < 8) lage.stoesse[lage.stossAnzahl++] = t;
+    }
+  } else if (lage.ueber && dyn < L::SCHUETTELN_LOS) {
     lage.ueber = false;
   }
   int k = 0;
@@ -235,10 +294,10 @@ void lageVerarbeiten(float mx, float my, float mz, uint32_t t) {
       }
     } else lage.obenSeitDa = false;
   }
-  // Kippen zur Seite
+  // Kippen zur Seite (nur, wenn das Gerät dabei sonst ruhig ist)
   const float seite = lageKippen();
   if (lage.kippBereit) {
-    if (fabsf(seite) > L::KIPPEN_START && !lage.unten && !lageGehtGerade(t)) {
+    if (fabsf(seite) > L::KIPPEN_START && lage.unruhe < L::KIPPEN_RUHIG && !lage.unten && !lageGehtGerade(t)) {
       if (!lage.kippSeitDa) { lage.kippSeitDa = true; lage.kippSeit = t; }
       if (t - lage.kippSeit >= L::KIPPEN_START_MS) {
         lage.kippBereit = false;

@@ -144,22 +144,24 @@ void fensterZeichnen(ms_t jetzt) {
   bild.fillRect(31, 81, 65, 4, 0);
 }
 
-// Sterne am Fensterrahmen (Weihnachten): eine Kette oben über den Rahmen und je einer an der Seite
+// Sterne am Fensterrahmen (Weihnachten): eine Kette oben über den Rahmen und je einer an der Seite.
+// Seit dem Test am Board doppelt so groß (14 × 14).
 void fensterSterneZeichnen() {
-  static const int KETTE[5] = {22, 42, 61, 80, 99};
+  static const int KETTE[5] = {19, 38, 57, 76, 95};
   for (int i = 0; i < 4; i++) {          // Schnur hängt etwas durch
-    const int x0 = KETTE[i] + 3, x1 = KETTE[i + 1] + 3;
-    bild.drawLine(x0, 40, (x0 + x1) / 2, 43, 0);
-    bild.drawLine((x0 + x1) / 2, 43, x1, 40, 0);
+    const int x0 = KETTE[i] + 7, x1 = KETTE[i + 1] + 7;
+    bild.drawLine(x0, 38, (x0 + x1) / 2, 41, 0);
+    bild.drawLine((x0 + x1) / 2, 41, x1, 38, 0);
   }
-  for (int x : KETTE) zeichneBild(FENSTERSTERN, x, 37);
-  bild.drawFastVLine(22, 44, 20, 0);
-  zeichneBild(FENSTERSTERN, 19, 63);
-  bild.drawFastVLine(105, 44, 30, 0);
-  zeichneBild(FENSTERSTERN, 102, 73);
+  for (int x : KETTE) zeichneBild(FENSTERSTERN, x, 32);
+  bild.drawFastVLine(18, 46, 16, 0);
+  zeichneBild(FENSTERSTERN, 11, 62);
+  bild.drawFastVLine(110, 46, 26, 0);
+  zeichneBild(FENSTERSTERN, 103, 72);
 }
 
-// Das ganze Zimmer: Grund, Möbel je nach Zeit, Fenster
+// Das ganze Zimmer: Grund, Möbel je nach Zeit, Fenster.
+// Zu Weihnachten steht der Baum auf dem Boden; Tisch, Regal und Pflanze sind dann weg.
 void zimmerZeichnen(ms_t jetzt) {
   uint8_t* puffer = bild.getBuffer();
   for (int i = 0; i < 40 * 224; i++) puffer[i] = ~ZIMMER_GRUND[i];
@@ -169,6 +171,7 @@ void zimmerZeichnen(ms_t jetzt) {
     zeichneAnStelle(KERZEN);
     fensterSterneZeichnen();
   } else {
+    zeichneAnStelle(TISCH);
     zeichneAnStelle(REGAL);
     zeichneAnStelle(PFLANZE);
   }
