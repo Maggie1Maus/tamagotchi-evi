@@ -4,7 +4,7 @@ Stand: 24. November 2026
 
 ## Waveshare: Bildschirm bleibt an, RESET schaltet ihn (24. November 2026)
 
-Wunsch der Nutzerin: Der Bildschirm des Boards geht nicht mehr nach 1 Minute aus. **RESET** (hatte keine Aufgabe) schaltet ihn aus und mit jedem Druck wieder an; Ereignisse und Besuch schalten ihn ebenfalls ein. Ein laufendes Spiel wird beim Ausschalten abgebrochen. In der Nachbildung geprüft, am Board noch nicht. **Offen:** Mit dauernd leuchtendem Bildschirm halten 4 × AAA deutlich kürzer; Verbrauch messen, wenn der Pololu-Wandler angeschlossen ist. Einstellbar über `DUNKEL_NACH_MS` in `software/schritt-10/evi-handy/evi-handy.ino`.
+Wunsch der Nutzerin: Der Bildschirm des Boards geht nicht mehr nach 1 Minute aus. **RESET** (hatte keine Aufgabe) schaltet ihn aus und mit jedem Druck wieder an; Ereignisse und Besuch schalten ihn ebenfalls ein. Ein laufendes Spiel wird beim Ausschalten abgebrochen. **Am Board bestätigt (laut Nutzerin): RESET funktioniert, der Ball läuft flüssig, Momente gesehen (Spaziergang mit Hüpfen, Blick aus dem Fenster).** **Offen:** Mit dauernd leuchtendem Bildschirm halten 4 × AAA deutlich kürzer; Verbrauch messen, wenn der Pololu-Wandler angeschlossen ist. Einstellbar über `DUNKEL_NACH_MS` in `software/schritt-10/evi-handy/evi-handy.ino`.
 
 ## Version 0.12: Evis Momente in jeder Lebensphase (24. November 2026, gebaut, noch nicht veröffentlicht)
 
