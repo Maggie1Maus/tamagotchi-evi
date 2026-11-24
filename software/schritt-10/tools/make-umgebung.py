@@ -224,11 +224,11 @@ for i, (x0, x1) in enumerate(FENSTER_X):
     WETTER.append(figur(k))
 
 # ---------- Weihnachtsdeko der Nutzerin (hochgeladen am 24.11.2026, ersetzt Claudes Platzhalter) ----------
-# Sternengirlande über dem Fenster: 1 : 16 (122 × 39 Punkte), die hängenden Sterne außen neben dem Rahmen
-FENSTERSTERNE = freigestellt('fenster-sterne.png', 16.0)
-# Kerzentablett auf dem Sideboard: 1 : 15 (72 × 52 Punkte), fast so breit wie das Sideboard; die Kerzen
-# stehen vor dem unteren Teil des Fensters
-KERZEN = freigestellt('kerzentablett.png', 15.0)
+# Auf Wunsch der Nutzerin etwas kleiner als zuerst (1 : 16 und 1 : 15 waren zu groß):
+# Sternengirlande über dem Fenster: 1 : 19, die hängenden Sterne außen neben dem Rahmen
+FENSTERSTERNE = freigestellt('fenster-sterne.png', 19.0)
+# Kerzentablett auf dem Sideboard: 1 : 19
+KERZEN = freigestellt('kerzentablett.png', 19.0)
 
 # ---------- Grundzimmer ----------
 z = np.zeros((H, B), bool)
@@ -273,7 +273,7 @@ lagen = {
     'PFLANZE': (PFLANZE, mitte_tisch - PFLANZE[0].shape[1] // 2, TISCH_OBEN - PFLANZE[0].shape[0]),
     'WEIHNACHTSBAUM': (WBAUM, 273 - WBAUM[0].shape[1] // 2, 179 - WBAUM[0].shape[0]),
     'KERZEN': (KERZEN, 53 - KERZEN[0].shape[1] // 2, SIDEBOARD_UNTEN - SIDEBOARD[0].shape[0] + 8 - KERZEN[0].shape[0]),
-    'FENSTERSTERNE': (FENSTERSTERNE, 4, 28),
+    'FENSTERSTERNE': (FENSTERSTERNE, 11, 30),
 }
 
 # ---------- Ausgabe ----------

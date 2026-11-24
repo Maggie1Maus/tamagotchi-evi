@@ -89,7 +89,7 @@ Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 
 
 ## Sterne und Kerzen nach den Bildern der Nutzerin (24. November 2026)
 
-Die Nutzerin hat `entwuerfe/umgebung/fenster-sterne.png` und `kerzentablett.png` hochgeladen (durchsichtiger Hintergrund). Sie ersetzen Claudes Platzhalter, aufbereitet wie der Weihnachtsbaum (nur verkleinert und schwarz-weiß, `make-umgebung.py`): Sternengirlande 1 : 16 (122 × 39 Punkte) über dem Fenster, die hängenden Sterne außen neben dem Rahmen; Kerzentablett 1 : 15 (72 × 52 Punkte) auf dem Sideboard, die Kerzen stehen vor dem unteren Teil des Fensters. In der Nachbildung am Tag und in der Nacht angesehen, am Board noch nicht.
+Die Nutzerin hat `entwuerfe/umgebung/fenster-sterne.png` und `kerzentablett.png` hochgeladen (durchsichtiger Hintergrund). Sie ersetzen Claudes Platzhalter, aufbereitet wie der Weihnachtsbaum (nur verkleinert und schwarz-weiß, `make-umgebung.py`): Sternengirlande über dem Fenster, die hängenden Sterne außen neben dem Rahmen; Kerzentablett auf dem Sideboard, die Kerzen stehen vor dem unteren Teil des Fensters. Größe nach Wunsch der Nutzerin etwas kleiner als zuerst: beide 1 : 19 (Girlande 102 × 33, Tablett 57 × 41 Punkte; vorher 1 : 16 und 1 : 15). In der Nachbildung am Tag und in der Nacht angesehen, am Board noch nicht.
 
 ## Nach dem ersten Test am Board: Bewegung ruhiger, Weihnachten größer (24. November 2026)
 
