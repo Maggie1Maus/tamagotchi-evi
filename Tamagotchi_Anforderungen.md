@@ -1,6 +1,6 @@
 # Tamagotchi-Projekt – Anforderungen und offene Entscheidungen
 
-Stand: 17. November 2026  
+Stand: 24. November 2026  
 Das Waveshare RP2350-Touch-LCD-2.8 ist der Favorit für die Erprobung. Beim Retro Gamer stehen die Maße und Anschlüsse hinter dem Originaldisplay zur Prüfung an. Cube, Lötzubehör, Lötzinn und Zhongdi ZD-99 sind laut Nutzerin bestellt. Die Funduino-Lieferung ist am 19. November 2026 angekommen, Lötzinn und Zhongdi ZD-99 am 20. November 2026; der Aufbau steht noch aus.
 
 ## 1. Ziel und Rahmen
@@ -163,5 +163,56 @@ Diese Punkte wurden vorgeschlagen, aber noch nicht einzeln bestätigt:
 - Mindestens drei physische Knöpfe, die endgültige Displaygröße, Batterielaufzeit und Uhrzeit beim Batteriewechsel sind auf der späteren Hardware zu prüfen.
 - Die kritische Prüfung hat die Eignung des Cube für diesen begrenzten Einstieg bestätigt; praktische Funktionstests stehen noch aus.
 - Die genannten Teile für das spätere Gerät sind bisher Kandidaten, keine bestätigte Einkaufsliste.
+
+## 13. Gestaltung von Evis Zuhause – beschlossen am 24. November 2026
+
+### Verbindliche Gestaltungslinie: „Gemütlich & schlicht“
+
+- Die Bildvorschläge der Variante A („Gemütlich & schlicht“) geben grundsätzlich die gestalterische Richtung für das Zuhause und künftige Einrichtungsgegenstände vor.
+- Möbel und Umgebung passen zu Evis Schwarz-Weiß-Pixelstil: klare abgestufte Konturen, überwiegend weiße Flächen und sparsame Punkte oder Schraffuren für Struktur.
+- Gemütliche, einfache Formen und zurückhaltende Details verwenden; die Elemente müssen auch auf dem kleinen Display gut erkennbar bleiben.
+- Tisch, separate Topfpflanze, Napf, Wandregal, Sideboard und Boden als einzelne, kombinierbare Elemente gestalten.
+- Variante A zeigt einen schlichten Holztisch, eine Blattpflanze im Topf, einen Napf mit Pfotenmotiv, ein Bücherregal mit kleiner Pflanze, ein Holzsideboard und einen Dielenboden. Diese Vorschläge dienen als gestalterische Referenz.
+
+### Fenster und Jahreszeiten
+
+- Vor dem Fenster steht draußen ein kleiner Laubbaum, an dem sich die Jahreszeit ablesen lässt.
+- Die bereits gezeigten vier Jahreszeitenentwürfe sind gestalterisch bestätigt.
+- Frühling: Blüten und frische, noch lockere Belaubung.
+- Sommer: eine volle, dichte Laubkrone.
+- Herbst: weniger Laub, sichtbare Äste, fallende Blätter und Laub am Boden.
+- Winter: kahle Äste und optional liegender Schnee als Teil der Umgebung.
+- Alle Jahreszeiten müssen auch ohne Farbe voneinander unterscheidbar sein.
+
+### Wetter unabhängig von der Jahreszeit
+
+- Fünf Wetterzustände vorsehen: Sonne, Sonne mit Wolken, Regen, nur Wolken (bewölkt) und Schneefall.
+- Jede der vier Jahreszeiten muss mit jedem der fünf Wetterzustände kombinierbar sein: insgesamt 20 Kombinationen.
+- Beispielsweise sind Winter mit Sonne und Winter mit Regen ausdrücklich möglich. Auch Schneefall ist grundsätzlich mit jeder Jahreszeit kombinierbar.
+- Das Wetter darf die jahreszeitliche Darstellung des Baums nicht automatisch ersetzen: Ein blühender Baum bleibt bei Regen oder Schneefall ein Frühlingsbaum.
+- Liegender Schnee und gerade fallender Schnee sind getrennte Darstellungen. Winter bedeutet nicht automatisch Schneefall; Schneefall bedeutet nicht automatisch eine vollständig schneebedeckte Umgebung.
+- Regen durch erkennbare Regenstriche und Schneefall durch klar unterscheidbare fallende Flocken darstellen, jeweils draußen im Fensterblick.
+- Jahreszeitliche Landschaft und Wetter als unabhängig kombinierbare Grafikelemente planen; dafür sind keine 20 vollständig getrennten Hintergrundbilder erforderlich.
+- Die Wetterdarstellung soll ohne Internet funktionieren. Reale Wetterdaten wurden bereits verworfen; die genaue Auswahl und Häufigkeit des simulierten Wetters bleiben offen.
+- Die bestehende Nachtdarstellung mit Mond, Sternen und Sternschnuppen bleibt unverändert. Die neuen Wettervorschläge beziehen sich auf die Tagesansicht.
+
+Die Entwürfe und diese Ergänzung sind Gestaltungsvorgaben. Eine Integration der neuen Grafiken oder Wetterfunktionen in das Spiel ist damit noch nicht erfolgt.
+
+### Weihnachtsbaum – saisonale Einrichtung
+
+- Ein Weihnachtsbaum im Stil „Gemütlich & schlicht“ ersetzt jährlich ab dem 18. November das Wandregal und die Topfpflanze.
+- Am 6. Januar verschwinden der Weihnachtsbaum und seine saisonale Darstellung wieder; Regal und Pflanze kehren zurück. Sichtbarer Zeitraum: 18. November bis einschließlich 5. Januar, jeweils nach deutscher Ortszeit.
+- Nur Regal und Pflanze werden ersetzt; eine Änderung des Tischs wurde nicht beschlossen.
+- Schwarz-Weiß-Pixelgrafik mit Stern, wenigen Kugeln und einer schlichten Girlande. Entwurf: `entwuerfe/umgebung/weihnachtsbaum.png`.
+- Die Datumsregel ist geplant; in diesem Schritt werden nur Entwürfe und Planung hochgeladen.
+
+### Weitere Weihnachtsdekoration – Auswahl vom 24. November 2026
+
+- **Fenster mit Sternen** ist ausgewählt: kleine hängende Sterne und eine schlichte Sternengirlande am äußeren Fensterrahmen. Der Blick auf Jahreszeitenbaum und Wetter bleibt frei.
+- **Kerzentablett auf dem Sideboard** ist ausgewählt: drei unterschiedlich hohe Kerzen auf einem kleinen Tablett, ergänzt durch einen kurzen Tannenzweig und wenige Beeren.
+- Beide Elemente folgen der Gestaltungslinie „Gemütlich & schlicht“ und sind mit dem Weihnachtsbaum kombinierbar.
+- Fenster mit Tannengrün und Adventskranz wurden nicht ausgewählt. Flackernde Flammen waren nur ein Vorschlag und sind noch nicht beschlossen.
+- Der Sichtbarkeitszeitraum dieser zusätzlichen Dekoration ist noch nicht ausdrücklich festgelegt; die bestehende Datumsregel gilt bisher für den Weihnachtsbaum.
+- Auswahl und Gestaltung sind festgehalten; die Dekoration ist noch nicht in das Spiel integriert.
 
 Diese Liste hält Wünsche und Entscheidungen fest. Sie ist noch kein Schaltplan, keine Bauteilempfehlung und keine detaillierte Software-Spezifikation.
