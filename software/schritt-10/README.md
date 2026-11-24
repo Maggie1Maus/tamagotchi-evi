@@ -22,10 +22,10 @@ Wunsch der Nutzerin: Wünsche und Launen sollen **Folgen** haben, und zu jedem A
 - Sie wartet **45 Sekunden**. Unten steht, was zu tun ist („Möchte spielen · Menü: Spielen“).
 - **Erfüllt:** +10 Stimmung, Münzton, einer von fünf Sätzen („Genau das wollte ich! ♥“ …).
 - **Nicht erfüllt:** −5 Stimmung, trauriges Bild, einer von fünf Sätzen („Hmpf … dann eben nicht.“ …).
-- **Zwei verpasste Wünsche hintereinander: 15 Minuten beleidigt.** Trauriges Bild, kleine Regenwolke über dem Kopf, unten „Ist beleidigt · Keks oder dreimal streicheln“. Spiele lehnt sie ab („Spiel doch alleine!“ …), Kuscheln wirkt nicht („Lass mich!“ …), keine kleinen Momente, statt fröhlicher Begrüßung nur „Hmpf.“. **Versöhnen:** Naschen oder Füttern, oder dreimal antippen. Danach („Na gut … ♥“ …) ist alles wie vorher; nach 15 Minuten verzeiht sie auch von selbst.
+- **Zwei verpasste Wünsche hintereinander: 15 Minuten beleidigt.** Evi zeigt von Anfang an ihre Schmollpose mit verschränkten Vorderpfoten. Über ihr steht eine kleine Regenwolke, unten „Ist beleidigt · Keks oder dreimal streicheln“. Spiele lehnt sie ab („Spiel doch alleine!“ …), Kuscheln wirkt nicht („Lass mich!“ …), keine kleinen Momente, statt fröhlicher Begrüßung nur „Hmpf.“. **Versöhnen:** Naschen oder Füttern, oder dreimal antippen. Danach („Na gut … ♥“ …) ist alles wie vorher; nach 15 Minuten verzeiht sie auch von selbst.
 - Schläft sie ein, wird krank, oder spielst du gerade, bist im Garten oder am Sideboard, endet ein offener Wunsch ohne Folgen.
 - Alles nur im Arbeitsspeicher, der Spielstand bleibt unverändert. Zahlen: `WUNSCH_WARTEN`, `JEMAND_DA` (oben in `launen.ino`), `WUNSCH_VERPASST_LAUNE`, `BELEIDIGT_DAUER` (`pet.h`). Die Sätze stehen oben in `launen.ino`.
-- Ein eigenes Bild „beleidigt“ (Bildauftrag mit verschränkten Vorderpfoten) gibt es noch nicht; bis dahin das traurige Bild.
+- Die vier Vorlagen für Baby, Teenager, Erwachsene und Oma liegen unter `entwuerfe/evi/emotionen/`. `tools/make-assets.ps1` schneidet die Beschriftung ab und erzeugt die Bilder mit transparentem Rand im jeweiligen Maßstab für das Display.
 
 **Licht aus nach dem Aufwecken** (Wunsch der Nutzerin): Ist Evi nachts geweckt, steht im Menü „Licht aus“. Damit schläft sie sofort wieder ein (mit Lichtbonus, einmal pro Nacht), statt die 5 Minuten abzuwarten. Ohne Bedienung schläft sie wie bisher nach 5 Minuten von selbst wieder ein.
 
@@ -224,7 +224,7 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 
 ## Werkzeuge
 
-- `tools/make-assets.ps1`: erzeugt `evi-handy/assets.h` (Zimmer, Symbole, Zeichnungen) aus der Handy-App. Braucht Microsoft Edge, kein Python, kein Node. Nach Änderungen an der App oder neuen Zeichnungen einfach erneut ausführen:
+- `tools/make-assets.ps1` erzeugt `evi-handy/assets.h` aus der Handy-App und den vier Beleidigt-Zeichnungen unter `entwuerfe/evi/emotionen/`. Braucht Microsoft Edge. Nach Änderungen an den Quellen erneut ausführen.
   `powershell -ExecutionPolicy Bypass -File software\schritt-10\tools\make-assets.ps1`
 - `tools/preview-assets.ps1`: zeigt den Inhalt von `assets.h` als PNG.
 - `tools/bildschirmfoto.ps1`: holt über USB ein Bildschirmfoto vom laufenden Board (Zeichen `S` über die serielle Schnittstelle). Seriellen Monitor der IDE vorher schließen.

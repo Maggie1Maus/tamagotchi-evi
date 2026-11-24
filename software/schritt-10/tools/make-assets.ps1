@@ -5,8 +5,8 @@
 #    in Originalgroesse 320 x 224 abfotografiert, einmal mit hellem, gepunktetem und
 #    schwarzem Fenster (Tag, Daemmerung, Nacht).
 #  - Symbole: die Icons der App (Napf, Herz, Glanz, Muenze, Menue) und die Reaktionszeichen.
-#  - Evis Zeichnungen: handy-app/dist/img/*.png im Massstab der App (ART_SCALE in app.js),
-#    nur verkleinert und in Schwarz/Weiss umgerechnet. Nichts wird neu gezeichnet.
+#  - Evis Zeichnungen: handy-app/dist/img/*.png im Massstab der App (ART_SCALE in app.js).
+#    Die Beleidigt-Posen kommen direkt aus entwuerfe/evi/emotionen.
 #    Zu jedem Bild gibt es eine Maske (innen weiss, aussen durchsichtig).
 #
 # Aufruf aus dem Projektordner:
@@ -62,7 +62,7 @@ function Add-Array([string]$cname, $bytes) {
 }
 
 $lines.Add('// Erzeugt von software/schritt-10/tools/make-assets.ps1 - nicht von Hand aendern.')
-$lines.Add('// Alles aus der Handy-App (handy-app/dist): Zimmer, Symbole, Evis Zeichnungen.')
+$lines.Add('// Zimmer, Symbole und Zeichnungen aus handy-app/dist. Beleidigt-Posen aus entwuerfe/evi/emotionen.')
 $lines.Add('// 1 Bit pro Punkt, Zeile fuer Zeile, linkes Pixel im hoechsten Bit. 1 = schwarz.')
 $lines.Add('#pragma once')
 $lines.Add('#include <stdint.h>')
@@ -215,6 +215,25 @@ foreach ($stage in 'egg', 'baby', 'teen', 'adult', 'senior') {
   $lines.Add("  {$($row -join ', ')},  // $stage")
 }
 $lines.Add('};')
+
+# ---------- Beleidigt ----------
+$lines.Add('')
+$lines.Add('// Beleidigt: Vorlagen aus entwuerfe/evi/emotionen, in der Reihenfolge von Phase.')
+$prep = Join-Path $root 'handy-app\tools\prepare-art.ps1'
+$emotionen = Join-Path $root 'entwuerfe\evi\emotionen'
+$phasenOrdner = [ordered]@{ baby = 'baby'; teen = 'teenager'; adult = 'erwachsen'; senior = 'oma' }
+$beleidigt = @('nullptr')  # Ei
+foreach ($stage in $phasenOrdner.Keys) {
+  $phase = $phasenOrdner[$stage]
+  $datei = "evi-$phase-beleidigt.png"
+  $vorlage = Join-Path (Join-Path $emotionen $phase) $datei
+  $png = Join-Path $work $datei
+  & $prep -In $vorlage -Out $png -Scale 0.31 | Out-Null
+  $cname = "ART_$($stageNames[$stage])_BELEIDIGT"
+  Convert-Art $png $scale[$stage] 0 $cname
+  $beleidigt += "&$cname"
+}
+$lines.Add("static const Bild* const ART_BELEIDIGT[5] = {$($beleidigt -join ', ')};")
 
 $out = [IO.Path]::GetFullPath((Join-Path $outDir 'assets.h'))
 [IO.File]::WriteAllText($out, ($lines -join "`n") + "`n", (New-Object Text.UTF8Encoding($false)))

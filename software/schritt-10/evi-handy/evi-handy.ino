@@ -338,8 +338,9 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   const bool gruss = jubelt && (evi.reaktion == R_GRUSS || evi.reaktion == R_JUBEL);
   if (gruss && momenteFuer(ph)) b = MOMENT_BILD[ph][MB_HUEPFEN];
   else if (!jubelt) b = momentBild(ph);
-  // Beleidigt (launen.ino): ihr trauriges Bild, solange es ihr sonst gut geht
-  if (!b && !jubelt && launenBeleidigt() && gezeigt == S_GLUECKLICH) b = ART[ph][3];
+  // Die Schmollpose gilt für die Stimmung. Schlaf und Pflegebedarf haben Vorrang.
+  if (!b && !jubelt && !ritual.aktiv && launenBeleidigt() && (s == S_GLUECKLICH || s == S_TRAURIG))
+    b = ART_BELEIDIGT[ph];
   if (!b) b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
   // Wo: auf dem Teppich, im Moment oder Spiel verschoben, gespiegelt oder angehoben
   if (!spiel.aktiv) {
@@ -511,7 +512,9 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
     case S_BAUCH: snprintf(aus, n, "Bauchweh … zu viel genascht"); return;
     case S_HUNGRIG: snprintf(aus, n, "Mein Bauch knurrt"); return;
     case S_SCHMUTZIG: snprintf(aus, n, "Zeit für ein Bad"); return;
-    case S_TRAURIG: snprintf(aus, n, "Spielst du mit mir?"); return;
+    case S_TRAURIG:
+      snprintf(aus, n, "%s", launenBeleidigt() ? beleidigtZeile() : "Spielst du mit mir?");
+      return;
     default: {
       Wunsch w;
       if (geweckt(pet, jetzt)) { snprintf(aus, n, "Gähn … wach für %d Min.", (int)max((ms_t)1, (pet.wachBis - jetzt + MINUTE - 1) / MINUTE)); return; }

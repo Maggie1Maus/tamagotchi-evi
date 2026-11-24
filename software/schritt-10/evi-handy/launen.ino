@@ -7,7 +7,7 @@
 //  - verträumt:  will mit dir rausschauen → sie geht ans Fenster, Evi antippen
 // Sie wartet WUNSCH_WARTEN lang. Erfüllt: +10 Stimmung, Freude, Münzton.
 // Nicht erfüllt: -5 Stimmung, sie ist enttäuscht. Zwei verpasste Wünsche hintereinander: Sie ist 15 Minuten
-// beleidigt (trauriges Bild, kleine Regenwolke über dem Kopf, keine Spiele, Kuscheln wirkt nicht, keine
+// beleidigt (Schmollpose, kleine Regenwolke über dem Kopf, keine Spiele, Kuscheln wirkt nicht, keine
 // kleinen Momente). Versöhnen: etwas zu essen geben oder sie dreimal streicheln. Danach ist alles wieder gut.
 // Wünsche kommen nur, wenn in den letzten 10 Minuten jemand eine Taste gedrückt oder getippt hat.
 // Alles steht nur im Arbeitsspeicher; der Spielstand bleibt unverändert.
@@ -87,11 +87,11 @@ void launenWunschPlanen(ms_t jetzt) {
   akt(A_HEIM, 0, 0, nullptr);
 }
 
-// Nach dem verpassten Wunsch: traurig schauen, etwas sagen, zurück zum Teppich (aus momentStarten)
+// Nach einem verpassten Wunsch: traurig schauen oder schmollen, etwas sagen, zurück zum Teppich.
 const char* enttaeuschtText = "";
 void enttaeuschtPlanen() {
   akt(A_DENKEN, GD_KEINER, 0, nullptr);
-  akt(A_BILD, MB_TRAURIG, 0, nullptr);
+  akt(A_BILD, launenBeleidigt() ? MB_KEINS : MB_TRAURIG, 0, nullptr);
   akt(A_SAGEN, 3500, 0, enttaeuschtText);
   akt(A_WARTEN, 30, 0, nullptr);
   akt(A_BILD, MB_KEINS, 0, nullptr);

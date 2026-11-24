@@ -205,14 +205,19 @@ int main() {
   PRUEFE(pet.laune < vorher - 4 && pet.laune > vorher - 6, "verpasster Wunsch: Stimmung -5");
   printf("   enttäuscht: %s\n", sagen.text);
   laufen(300); foto("k-wunsch-verpasst");
+  const Phase wunschPhase = phaseBei(pet, jetztMs());
+  PRUEFE(figurLage.bild == ART[wunschPhase][3], "erster verpasster Wunsch: trauriges Bild");
   for (int i = 0; i < 2000 && moment.art != M_KEINER; i++) laufen(10);
   PRUEFE(geher.x == 0, "danach zurück auf dem Teppich");
   momentStarten(M_KUSCHELN, GD_KEINER);
   for (int i = 0; i < 6000 && launenWunschOffen(); i++) laufen(10);
   PRUEFE(launenBeleidigt() && launen.verpasst == 0, "zweiter verpasster Wunsch: beleidigt");
+  laufen(300);
+  PRUEFE(moment.art == M_ENTTAEUSCHT && figurLage.bild == ART_BELEIDIGT[wunschPhase], "Schmollpose sofort beim zweiten verpassten Wunsch");
   printf("   beleidigt: %s\n", sagen.text);
   for (int i = 0; i < 2000 && moment.art != M_KEINER; i++) laufen(10);
   laufen(4000); foto("k-beleidigt");
+  PRUEFE(figurLage.bild == ART_BELEIDIGT[wunschPhase], "Schmollpose auch nach der Reaktion");
   aktionAusfuehren(E_BALL);
   PRUEFE(!spiel.aktiv, "beleidigt: kein Spiel");
   vorher = pet.laune;
@@ -221,6 +226,7 @@ int main() {
   tippen(eviMitteX(), eviMitteY()); laufen(900);
   tippen(eviMitteX(), eviMitteY()); laufen(300);
   PRUEFE(!launenBeleidigt(), "dreimal streicheln versöhnt sie");
+  PRUEFE(figurLage.bild != ART_BELEIDIGT[wunschPhase], "nach der Versöhnung wieder ein normales Bild");
   printf("   versöhnt: %s\n", sagen.text);
   laufen(5000);
 
