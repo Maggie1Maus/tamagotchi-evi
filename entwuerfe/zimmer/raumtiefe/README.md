@@ -1,8 +1,8 @@
 # Zimmerentwurf mit Raumtiefe
 
-24. November 2026. Vorschlag im Stil des bestätigten Gartens, noch nicht für die Firmware ausgewählt oder eingebaut.
+24. November 2026. Entwurf im Stil des bestätigten Gartens. Die Nutzerin hat inzwischen die kompakte erste Fassung als bevorzugte Richtung gewählt; noch nicht in die Firmware eingebaut.
 
-`erste_fassung.png` ist die erste Zimmeridee. `mehr_raumtiefe.png` ist die empfohlene Weiterentwicklung mit größerer freier Bodenfläche, kürzerer Rückwand und klarerem Weg zwischen hinten und vorne. Beide erhalten die vertrauten Möbel: Fenster/Sideboard links, Tisch/Pflanze und Wandregal rechts, Teppich vorne mittig, Napf vorne rechts. Kerzentablett auf dem Sideboard. Keine Evi neu gezeichnet; sie wird bei einer Umsetzung als vorhandene Figur ergänzt. Die PNGs mit `-320` zeigen die Lesbarkeit in Szenengröße.
+**`erste_fassung.png` ist die bevorzugte Grundlage:** Die Nutzerin findet sie deutlich gemütlicher und kompakter. `mehr_raumtiefe.png` gefällt ihr grundsätzlich ebenfalls, wirkt aber überdimensional und zu groß. Die Raumtiefe soll innerhalb des kompakten ersten Zimmers durch Skalierung und Verdeckung entstehen, nicht durch eine größere Bodenfläche. Beide erhalten die vertrauten Möbel: Fenster/Sideboard links, Tisch/Pflanze und Wandregal rechts, Teppich vorne mittig, Napf vorne rechts. Kerzentablett auf dem Sideboard. Keine Evi neu gezeichnet; sie wird bei einer Umsetzung als vorhandene Figur ergänzt. Die PNGs mit `-320` zeigen die Lesbarkeit in Szenengröße.
 
 Die Entwürfe sind mit der Bildgenerierung aus dem Gartenstil und dem bisherigen Zimmer abgeleitet, dann nur in Schwarz-Weiß und Bildschirmgröße umgerechnet. Vollständige Bildaufträge in `bildauftraege.json`.
 

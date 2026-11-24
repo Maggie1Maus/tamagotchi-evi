@@ -7,7 +7,7 @@ Evi soll grundsätzlich im ganzen Tamagotchi nach vorne und hinten gehen können
 
 ## Neuer Zimmerentwurf
 
-Zwei aufeinander aufbauende Entwürfe unter `entwuerfe/zimmer/raumtiefe/`. Empfohlen ist `mehr_raumtiefe.png`: dieselbe feine, natürliche schwarz-weiße Linienführung wie im Garten, vertraute Möbel und mehr freie Bodenfläche mit räumlicher Perspektive. Sideboard mit Kerzen und Fenster links hinten; Tisch mit Topfpflanze und Wandregal rechts hinten; Teppich und Napf vorne. Keine zusätzliche Möblierung und keine neue Evi-Zeichnung. Noch nicht von der Nutzerin ausgewählt oder in die Firmware eingebaut.
+Zwei aufeinander aufbauende Entwürfe unter `entwuerfe/zimmer/raumtiefe/`. Die Nutzerin mag beide Entwürfe, bevorzugt aber `erste_fassung.png`: gemütlicher, kompakter und passend zu Evis kleinem Zuhause. `mehr_raumtiefe.png` wirkt ihr überdimensional und zu groß und ist nicht die Grundlage der weiteren Gestaltung. Den ersten Entwurf mit seinen Möbelgrößen und Proportionen erhalten. Tiefe auf der bestehenden Bodenfläche durch Wege, Skalierung und Verdeckung erzeugen; das Zimmer dafür nicht aufweiten. Sideboard mit Kerzen und Fenster links hinten; Tisch mit Topfpflanze und Wandregal rechts hinten; Teppich und Napf vorne. Keine zusätzliche Möblierung und keine neue Evi-Zeichnung. Die kompakte erste Fassung ist als gestalterische Grundlage ausgewählt, aber noch nicht in die Firmware eingebaut.
 
 ## Vorschlag für die allgemeine Tiefenbewegung
 
@@ -19,7 +19,7 @@ Zwei aufeinander aufbauende Entwürfe unter `entwuerfe/zimmer/raumtiefe/`. Empfo
 - Zimmerbeispiel: Evi läuft zum hinteren Fenster/Sideboard kleiner, kehrt über eine sichtbare freie Bodenfläche zum vorderen Teppich größer zurück. Seitliche Laufwege führen um feste Möbel herum. Kein Durchlaufen von Tischplatten oder Sideboard.
 - Die Steuerung bleibt wie gewünscht über Befehle und Evis selbstständige Bewegungen. Laufziele und Zwischenpunkte genügen; die Nutzerin muss keine Figur direkt steuern.
 
-## Umsetzungsschritte nach Auswahl des Zimmerstils
+## Vorgesehene Umsetzung mit dem ausgewählten kompakten Zimmer
 
 1. Die gewählte Gesamtszene in Raumgrund, Möbel und Vorderkanten, Fensterhimmel/-ausblick und optionale Dekoration aufteilen. Den Gesamteindruck dabei wie beim Garten zusammenhängend erhalten.
 2. Einen gemeinsamen Zeichen- und Bewegungsmechanismus mit Tiefenposition, Skalierung, Bodenankern und korrekter Zeichenreihenfolge für Garten und Zimmer einführen. Erst dann Laufziele der bestehenden Momente, Sideboard und Suche darauf umstellen.
