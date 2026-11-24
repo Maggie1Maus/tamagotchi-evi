@@ -2,6 +2,18 @@
 
 Stand: 24. November 2026
 
+## Ideen: Evi alltagsnah und interaktiver, ohne Internet (24. November 2026, Ideensammlung)
+
+**Echtes Wetter: von der Nutzerin verworfen.** Der RP2350 auf dem Waveshare hat kein WLAN, das Board kann also kein Wetter abfragen. Nur in der Handy-App wäre es möglich (Wetterdienst, z. B. Open-Meteo); das wollte sie nicht ohne die echte Evi. Ein Wettersensor misst nur Tasche oder Zimmer und erkennt keinen Regen oder Schnee.
+
+Stattdessen von Claude vorgeschlagen, alles ohne Internet, mit Uhr, Bewegungssensor (IMU) und Touch des Waveshare. **Noch nichts beschlossen:**
+- **Kalender:** Adventskalender vom 1. bis 24. Dezember (ein Türchen am Tag, kleine Überraschung oder Deko fürs Zimmer), Feiertage (Weihnachtsbaum, Feuerwerk im Fenster an Silvester, Ostereier suchen, Kürbis an Halloween), Jahreszeiten am Baum vor dem Fenster (bunte Blätter, kahl, Blüten), Wochenende (länger schlafen), Geburtstag der Nutzerin.
+- **Bewegung:** Gassi gehen (Schritte zählen, wenn Evi mit spazieren geht; auf dem Handy nur bei offener App), schütteln (Evi wird schwindelig), kippen (Ball rollt, Evi rennt hinterher), Gerät aufs Gesicht legen (Evi schläft ein).
+- **Touch (nur Waveshare):** streicheln (schon geplant), kitzeln, Evi folgt dem Finger.
+- **Gemeinsame Rituale:** „Wie war dein Tag?“ am Abend (gut, so lala, schlecht; Evi freut sich mit oder tröstet), Zähneputzen zusammen mit 2-Minuten-Uhr, „Während du weg warst …“, Evi merkt sich, wann die Nutzerin meist vorbeischaut, und wartet dann am Fenster.
+- **Spiele:** Verstecken, Ball bringen (aus der Sammlung vom 23. November).
+- Claudes Empfehlung: zuerst Adventskalender (ab 1. Dezember), dann Gassi gehen und Hinlegen zum Schlafen, dann „Wie war dein Tag?“.
+
 ## Waveshare: Bildschirm bleibt an, RESET schaltet ihn (24. November 2026)
 
 Wunsch der Nutzerin: Der Bildschirm des Boards geht nicht mehr nach 1 Minute aus. **RESET** (hatte keine Aufgabe) schaltet ihn aus und mit jedem Druck wieder an; Ereignisse und Besuch schalten ihn ebenfalls ein. Ein laufendes Spiel wird beim Ausschalten abgebrochen. **Am Board bestätigt (laut Nutzerin): RESET funktioniert, der Ball läuft flüssig, Momente gesehen (Spaziergang mit Hüpfen, Blick aus dem Fenster).** **Offen:** Mit dauernd leuchtendem Bildschirm halten 4 × AAA deutlich kürzer; Verbrauch messen, wenn der Pololu-Wandler angeschlossen ist. Einstellbar über `DUNKEL_NACH_MS` in `software/schritt-10/evi-handy/evi-handy.ino`.
@@ -55,7 +67,7 @@ Die Nutzerin hat Evi meist offen auf dem Handy und fände es süß, wenn Evi sie
 - **Eigener Kopf:** Tageslaune (verspielt, verschmust, verfressen, verträumt), später vererbbar; Lieblingsspiel und Lieblingskeks; Tagebuch mit einem Satz pro Abend als Grundlage fürs Familienalbum.
 - **Besondere Tage:** Adventskalender vom 1. bis 24. Dezember, Schnee im Fenster, Weihnachten, Silvester, Entwicklungstag feiern.
 - **Hilfreiche neue Zeichnungen (nur auf Wunsch):** Evi von hinten am Fenster, Evi springt, Evi trägt etwas im Maul, Evi malt.
-- **Noch offen aus der Sammlung:** Schatzkiste (vorerst nicht), Bilder malen für die Wand, Verstecken (von Claude als nächstes größeres Spiel vorgeschlagen), Ball bringen, „Während du weg warst …“, Schütteln, Lieblingsspiel und Lieblingsessen, Tagebuch, Wetter und Schnee im Fenster, Adventskalender ab 1. Dezember, Feiertage. Erledigt in 0.11: Tageslaune, Vogel, Sternschnuppe.
+- **Noch offen aus der Sammlung:** Schatzkiste (vorerst nicht), Bilder malen für die Wand, Verstecken (von Claude als nächstes größeres Spiel vorgeschlagen), Ball bringen, „Während du weg warst …“, Schütteln, Lieblingsspiel und Lieblingsessen, Tagebuch, Adventskalender ab 1. Dezember, Feiertage. Erledigt in 0.11: Tageslaune, Vogel, Sternschnuppe. Verworfen am 24. November 2026: echtes Wetter im Fenster (kein WLAN auf dem Waveshare).
 
 ## Ideen: Partner, Nachwuchs und neue Tamagotchis (21. November 2026, nur Brainstorming)
 
