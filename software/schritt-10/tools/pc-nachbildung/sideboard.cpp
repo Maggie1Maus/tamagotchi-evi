@@ -63,8 +63,8 @@ int main() {
   PRUEFE(fundAufnehmen(FUND_BLATT, FUND_GASSI, 20261123, 1), "weiterer Fund kann aufgenommen werden");
   sideboard.auswahl = 0; zeichneAlles(); foto("sideboard-fund");
   knopf(K_R); PRUEFE(sideboard.auswahl == 1, "rechts blättert vor");
-  taste(RECHTS); PRUEFE(sideboard.auswahl == 0, "Touch rechts blättert und läuft am Ende um");
-  taste(LINKS); PRUEFE(sideboard.auswahl == 1, "Touch links blättert zurück");
+  taste(RECHTS); PRUEFE(sideboard.auswahl == 0, "Touch-Notlösung (ohne Tasten): rechts blättert und läuft am Ende um");
+  taste(LINKS); PRUEFE(sideboard.auswahl == 1, "Touch-Notlösung (ohne Tasten): links blättert zurück");
   knopf(K_B); PRUEFE(sideboard.phase == SB_HEIM, "B schließt die Sammlung");
   warten(1200); PRUEFE(sideboard.phase == SB_ZU && geher.x == 0, "Evi kehrt ins Zimmer zurück");
   zeichneAlles(); foto("sideboard-zurueck");

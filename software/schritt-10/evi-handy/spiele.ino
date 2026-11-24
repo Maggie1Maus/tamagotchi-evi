@@ -9,7 +9,8 @@
 //   Kekse fangen:       ◀ ▶ (festhalten läuft weiter) oder das Gerät kippen; B oder START beendet
 //   Schnick, Schnack, Schnuck: ◀ Schere, A (oder ▲▼) Stein, ▶ Papier; B oder START bricht ab
 // Die letzten beiden gibt es seit 24.11.2026 nur auf dem Board (Wunsch der Nutzerin: neue Spiele).
-// Touch wie die drei Tasten der App: linkes Drittel, Mitte, rechtes Drittel.
+// Touch nur noch als Notlösung, wenn die Tasten fehlen: linkes Drittel, Mitte, rechtes Drittel (seit 24.11.2026
+// ist Touch sonst zum Kuscheln da und im Spiel ohne Wirkung).
 
 const float BALL_VON = 40, BALL_BIS = 266;     // TRACK: linke Kante des 14 Punkte breiten Balls
 const float FELD_VON = 146, FELD_BIS = 174;    // ZONE: das gepunktete Fangfeld

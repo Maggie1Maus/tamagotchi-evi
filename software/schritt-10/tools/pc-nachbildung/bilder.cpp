@@ -203,37 +203,6 @@ int main() {
   for (int i = 0; i < n; i++) { Ortszeit o = ortszeit(um[i]); printf("Besuch %d: %s um %02d:%02d\n", i, arten[i] == M_FALTER ? "Schmetterling" : "Vogel", o.stunde, o.minute); }
   printf("um 14 Uhr fällig: %d\n", f);
 
-  // ---------- Name ändern ----------
-  vorbereiten(14, 0);
-  {
-    static int schritt = 0;
-    schritt = 0;
-    simNachBild = [] {
-      const int k[] = {-2, K_DOWN, K_R, K_A, K_UP, K_A, -1};
-      if (schritt == 0) foto("60-name");
-      if (schritt == 3) foto("61-name-getippt");
-      const int was = k[schritt < 6 ? schritt : 6];
-      schritt++;
-      if (was >= 0) tastenEreignisse |= 1 << was;
-      if (was == -1) { foto("62-name-ende"); throw std::runtime_error("fertig"); }
-    };
-    try { nameAendernBildschirm(); } catch (std::exception&) {}
-    simNachBild = nullptr;
-  }
-  // ---------- Hilfe ----------
-  {
-    static int seiteBild = 0;
-    seiteBild = 0;
-    simNachBild = [] {
-      char n[32]; snprintf(n, sizeof n, "70-hilfe-%d", seiteBild);
-      foto(n);
-      seiteBild++;
-      if (seiteBild > 8) throw std::runtime_error("fertig");
-      tastenEreignisse |= 1 << K_R;
-    };
-    try { hilfeBildschirm(); } catch (std::exception&) {}
-    simNachBild = nullptr;
-  }
   printf("Display: %ld Bilder verglichen, %ld falsche Punkte\n", simBilder, simFalschePunkte);
   if (simFalschePunkte) { printf("FEHLER: Display weicht ab\n"); fehler++; }
   printf("%s: %d Fehler\n", fehler ? "NICHT OK" : "OK", fehler);

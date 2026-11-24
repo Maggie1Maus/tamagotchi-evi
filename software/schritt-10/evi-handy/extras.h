@@ -49,8 +49,9 @@ const ms_t GRUSS_NACH = 3 * MINUTE, LANGE_WEG = 4 * STUNDE;   // Begrüßung: na
 const uint32_t RUHE_TAKTE = 120;   // QUIET_TICKS: etwa 15 s ohne neuen Moment nach Begrüßung und Pflege
 // Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Gassi (mittraben),
 // Rollen (gekippt: der Ball rollt), Nickerchen (wieder umgedreht), Trösten (Antwort auf „Wie war dein Tag?“)
+// Seit 24.11.2026 dazu: Kuschelwunsch (Evi möchte gekuschelt werden, kuscheln.ino)
 enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM,
-                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KEINER = 255 };
+                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_KEINER = 255 };
 // Bilder der Momente: Nummer in MOMENT_BILD (momente.h)
 enum MomentBild : int8_t { MB_KEINS = -1, MB_LAUFEN, MB_FENSTER, MB_DENKEN, MB_SINGEN, MB_GAEHNEN, MB_DREHEN, MB_HUEPFEN, MB_STAUNEN,
                            MB_GLUECKLICH = 100 };
@@ -96,10 +97,28 @@ struct Besucher { bool sichtbar = false; float x = 0, y = 0, px = 0, py = 0; int
 Besucher falter, vogel, stern;
 // Ein Gang durchs Zimmer (walkTo in app.js); es läuft immer nur einer
 struct { int ziel = 0, schritte = 0; bool laeuft = false; MomentBild vorher = MB_KEINS; } gang;
+// Tageslaune (momente.ino: LAUNEN): 0 verspielt, 1 verschmust, 2 verfressen, 3 verträumt
+const int LAUNE_VERSCHMUST = 1;
 // Wo Evis Bild zuletzt gezeichnet wurde (für den Schmetterling auf ihrem Kopf)
 int eviOben = 100, eviHoehe = 80;
+// Wo Evi (oder das Ei) zuletzt gezeichnet wurde: links und Breite, zum Antippen (kuscheln.ino)
+int eviLinks = 130, eviBreite = 80;
 // Seit wann der Bildschirm dunkel ist (für die Begrüßung)
 ms_t dunkelSeit = 0;
+
+// ---------- Kuscheln (kuscheln.ino), seit 24.11.2026 ----------
+// Evi antippen oder über sie streichen. seit/bis: millis(), solange Herzen aufsteigen.
+struct {
+  uint32_t seit = 0, bis = 0;
+  bool klein = false;          // nur Herzen, Evi bleibt, wie sie ist (Schlaf, Ei, Besuch, Gassi)
+  bool gross = false;          // erfüllter Kuschelwunsch: mehr Herzen
+  bool heim = false;           // danach zum Teppich zurückgehen (ein Moment wurde unterbrochen)
+  ms_t letzteWirkung = 0;      // wann die Stimmung zuletzt stieg (höchstens einmal pro Minute)
+  uint32_t herzStart[8] = {0}; // aufsteigende Herzen: Start (millis(), 0 = keins) und Versatz zu Evis Mitte
+  int8_t herzX[8] = {0};
+  uint8_t naechstes = 0, herzZahl = 0;
+  uint32_t letztesHerz = 0;
+} kuschel;
 
 // Der Ball (Ballfangen und Kippen): 14 × 14 Punkte mit einem kleinen Glanzloch
 const uint8_t BALL_ZEILEN[14][2] = {{4, 9}, {4, 9}, {2, 11}, {2, 11}, {0, 13}, {0, 13}, {0, 13},

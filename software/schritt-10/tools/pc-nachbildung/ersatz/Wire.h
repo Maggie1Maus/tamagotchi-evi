@@ -1,7 +1,8 @@
 #pragma once
 #include "Arduino.h"
 // Ersatz für Wire mit einem nachgebildeten MCP23017 an Adresse 0x20 und einem Lagesensor an 0x6B (Register, Pull-ups,
-// Merken von Änderungen in INTF/INTCAP). Alle anderen Adressen antworten nicht.
+// Merken von Änderungen in INTF/INTCAP), dazu auf Wunsch dem Touch-Chip CST328 an 0x1A (simCst().an = true).
+// Alle anderen Adressen antworten nicht.
 // simTaste(k, gedrueckt) legt den Anschluss von Knopf k auf Minus bzw. lässt ihn los
 // (k wie in tasten.h: 0–6 = A0–A6, 7 = B0).
 struct McpNachbildung {
@@ -43,15 +44,35 @@ struct QmiNachbildung {
 };
 inline QmiNachbildung& simQmi() { static QmiNachbildung q; return q; }
 inline void simLage(float x, float y, float z) { simQmi().x = x; simQmi().y = y; simQmi().z = z; }
+// Nachgebildeter Touch-Chip CST328 an 0x1A: simFinger(true, x, y) legt einen Finger im Querformat auf, wie ihn
+// touchLesen() in touch.h wieder ausrechnet (hochkant: rx = 239 - y, ry = x). 0xD005 = Anzahl, ab 0xD000 der Punkt.
+struct CstNachbildung {
+  bool an = false, unten = false; int x = 0, y = 0;
+  uint8_t lesen(uint16_t r) {
+    const int rx = 239 - y, ry = x;
+    if (r == 0xD005) return unten ? 1 : 0;
+    if (r == 0xD001) return (uint8_t)(rx >> 4);
+    if (r == 0xD002) return (uint8_t)(ry >> 4);
+    if (r == 0xD003) return (uint8_t)(((rx & 0x0F) << 4) | (ry & 0x0F));
+    return 0;
+  }
+};
+inline CstNachbildung& simCst() { static CstNachbildung c; return c; }
+inline void simFinger(bool unten, int x = 0, int y = 0) { simCst().unten = unten; simCst().x = x; simCst().y = y; }
 struct TwoWire {
+  uint16_t cstReg = 0;
   int ziel = 0, geschrieben = 0, leseN = 0, leseI = 0; uint8_t zeiger = 0, puffer[32];
   bool setSDA(int){return true;} bool setSCL(int){return true;} void setClock(unsigned long){} void begin(){}
   void beginTransmission(int a){ ziel = a; geschrieben = 0; }
   size_t write(uint8_t b){ if (ziel == 0x20) { if (geschrieben++ == 0) zeiger = b; else simMcp().schreiben(zeiger++, b); }
     else if (ziel == 0x6B) { if (geschrieben++ == 0) zeiger = b; }
+    else if (ziel == 0x1A) { if (geschrieben == 0) cstReg = b << 8; else if (geschrieben == 1) cstReg |= b; geschrieben++; }
     return 1; }
-  uint8_t endTransmission(bool = true){ return (ziel == 0x20 || ziel == 0x6B) ? 0 : 2; }
-  size_t requestFrom(int a, int n, int){ if (a != 0x20 && a != 0x6B) return 0; leseN = n; leseI = 0;
+  uint8_t endTransmission(bool = true){ return (ziel == 0x20 || ziel == 0x6B || (ziel == 0x1A && simCst().an)) ? 0 : 2; }
+  size_t requestFrom(int a, int n, int){
+    if (a == 0x1A && simCst().an) { leseN = n; leseI = 0; for (int i = 0; i < n && i < 32; i++) puffer[i] = simCst().lesen(cstReg + i); return n; }
+    if (a != 0x20 && a != 0x6B) return 0;
+    leseN = n; leseI = 0;
     for (int i = 0; i < n && i < 32; i++) puffer[i] = a == 0x20 ? simMcp().lesen(zeiger++) : simQmi().lesen(zeiger++);
     return n; }
   int available(){ return leseN - leseI; } int read(){ return leseI < leseN ? puffer[leseI++] : 0; }

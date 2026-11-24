@@ -7,6 +7,29 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Kuscheln, kleine Uhrzeit, trüber Regenhimmel, kürzeres Menü (24. November 2026)
+
+Wünsche der Nutzerin, nur auf dem Board:
+- **Menü:** „Uhr stellen“, „Hilfe“ und „Name ändern“ sind raus (`name-hilfe.ino` gelöscht, spart etwa 20 KB Arbeitsspeicher). Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft (ohne Pufferbatterie nach dem Ausstecken); dieser Bildschirm geht mit Tasten und mit Touch.
+- **Uhrzeit** klein oben an der Wand zwischen Fenster und Evi (`zeichneUhrzeit`, `UHRZEIT_X/Y` in `evi-handy.ino`), mit weißem Feld dahinter, damit sie auch bei Licht aus lesbar bleibt. Dort ist in jeder Jahreszeit und an Weihnachten Platz. Nicht im Spiel und nicht in der Sammlung.
+- **Regen:** Am Tag ist der Himmel bei Regen trüb, gepunktet wie in der Dämmerung. Die schwarze Regenwolke und der fallende Regen bleiben; die Regenstriche haben vor dem gepunkteten Himmel links und rechts einen hellen Rand, sonst sähe man sie kaum (`fensterZeichnen` in `umgebung.ino`). Nachts bleibt alles wie vorher.
+- **Touch ist keine Taste mehr.** Evi antippen = **kuscheln**, mit dem Finger über sie streichen = weiter kuscheln (`kuscheln.ino`). Daneben tippen tut nichts. Nur wenn der MCP23017 mit den Tasten nicht gefunden wird (Kabel lose), gelten als **Notlösung** die drei Drittel wie früher, damit Evi bedienbar bleibt. Der erste Tipper auf den dunklen Bildschirm macht ihn nur an.
+
+| Evi ist … | Antippen |
+|---|---|
+| wach (auch krank, hungrig, traurig) | Sie strahlt (glückliches Bild), wiegt sich, Herzen steigen auf, sie sagt etwas Liebes („Hihi! ♥“, „Hab dich lieb! ♥“; hungrig „Schön! Aber ich hab Hunger …“). Unten: „Evi wird gekuschelt ♥“. **+5 Stimmung**, an verschmusten Tagen **+8**, höchstens einmal pro Minute (Regel `kuscheln` in `pet.h`). |
+| mitten in einem kleinen Moment (Spaziergang, Fenster …) | Der Moment hört auf, Evi bleibt beim Kuscheln stehen, wo sie ist, und geht danach zum Teppich zurück. |
+| bei Besuch, Gassi, rollendem Ball, beim Trösten | Nur Herzen (und die Stimmung), das Ereignis läuft weiter. |
+| schlafend | „Evi kuschelt sich im Schlaf an dich.“, ein Herz; sie wacht nicht auf, keine Wirkung. |
+| Ei | Das Ei wackelt: „Das Ei ist ganz warm.“ |
+| gestorben, Menü offen, im Spiel, bei Gute Nacht, Sammlung | nichts |
+
+**Tageslaune „verschmust“ hat jetzt eine Bedeutung:** Kuscheln bringt mehr (+8 statt +5), und Evi möchte oft von selbst gekuschelt werden (**Kuschelwunsch**, jeder dritte kleine Moment; an anderen Tagen etwa jeder zwölfte): Sie fragt „Kuschelst du mit mir?“, dann steht ein Herz in ihrer Gedankenwolke, unten „Möchte kuscheln · tipp sie an ♥“. Wer sie in diesen etwa 13 Sekunden antippt, erfüllt den Wunsch: **+10 Stimmung**, Münzton, „Juhu! Ich hab dich lieb! ♥“, mehr Herzen. Sonst sagt sie „Später vielleicht! ♥“ – ohne Folgen. Nicht, solange ein anderer Wunsch in der Blase steht. Unten steht an verschmusten Tagen „Heute bin ich verschmust · tipp mich an!“, sonst im Wechsel mit „A öffnet das Menü“ auch „Tipp mich an zum Kuscheln ♥“.
+
+**Prüfen am Board:** Seriellen Monitor öffnen (115200 Baud) und `T` senden: Das Board meldet den Touch-Chip, wo der letzte Tipper war und wo Evi gerade steht. Liegt der Tipper deutlich neben Evi, obwohl man sie getroffen hat, stimmt die Touch-Richtung nicht (`TOUCH_SPIEGELN_X/Y` in `touch.h`). Bisher war nur die waagerechte Richtung durch die drei Drittel bestätigt.
+
+**Geprüft in der PC-Nachbildung** (`tools/pc-nachbildung/kuscheln.cpp`, mit nachgebildetem Touch-Chip CST328): Menü ohne die drei Punkte; Tippen neben Evi tut nichts; ohne Tasten öffnet die Mitte das Menü (Notlösung); Antippen kuschelt (+5, Satz, Herzen), zweites Antippen in derselben Minute ohne Wirkung, nach einer Minute wieder; 4 s Streicheln hält das Kuscheln an; verschmust +8; Kuschelwunsch (unter 300 Momenten verschmust 107-mal, verspielt 20-mal), erfüllt +10, unbeantwortet ohne Folgen; am Fenster unterbrochen und zurückgegangen; Schmetterling läuft weiter; Schlaf, Ei, Grab, Menü offen, Spiel; Wecken des dunklen Bildschirms kuschelt nicht; Uhrzeit und Regenhimmel. Alle anderen Prüfungen weiterhin ohne Fehler, ohne Warnungen übersetzt. **Die echte Übersetzung für Pico 2 war in dieser Sitzung nicht möglich** (Arduino-Werkzeuge ließen sich nicht laden); in der Arduino IDE übersetzen und am Board ausprobieren.
+
 ## Etappe 1
 
 ### Ergänzung vom 24. November: Baby deckend, Regen und Schnee bewegt
@@ -19,7 +42,7 @@ Regen und Schnee werden etwa alle 40 ms gezeichnet, unabhängig vom 120-ms-Takt 
 - **Evi** mit allen Zeichnungen: Ei, Baby, Teenager, Erwachsen, Oma, je mit glücklich, hungrig, traurig, müde, krank, schmutzig, schlafend, im Maßstab der App, auf dem Teppich (Fußpunkt 167/180). Atmen (2 Pixel), Ei wackelt, Schatten. Nach dem Tod das Grab aus der App.
 - **Balken oben** (Napf, Herz, Glanz mit Prozent; schwarz hinterlegt ab 30 oder weniger), **Zeile unten** (Name, Phase, Münzen und Evis Satz), **Menü rechts** mit Symbolen, **Wunschblase**, **zZz-Kasten**, **Reaktionszeichen** (♥ ♪ ✦ +) und die Hüpf-, Kau- und Wackelbewegung.
 - **Spielregeln** vollständig aus `pet.js` übernommen (`pet.h`): Lebenslauf, Abnahme je Phase, Schlaf 23–7 Uhr, Licht aus, Gute Nacht mit Geschichte, Aufwecken, Mittagsschlaf, Mahlzeiten, Naschen mit Bauchweh, Wünsche, Medizin, Krankheit, Tod, neues Ei, Münzen.
-- **Menü** wie in der App: Füttern (oder Frühstück, Mittagessen, Abendessen), Naschen, Spielen, Saubermachen, Medizin, Gute Nacht, Aufwecken, Licht aus/an, Neues Ei, Ton an/aus. Neu für das Board: **Uhr stellen**.
+- **Menü** wie in der App: Füttern (oder Frühstück, Mittagessen, Abendessen), Naschen, Spielen, Saubermachen, Medizin, Gute Nacht, Aufwecken, Licht aus/an, Neues Ei, Ton an/aus. Neu für das Board: **Uhr stellen** (seit 24.11.2026 wieder aus dem Menü genommen, wie Name ändern und Hilfe).
 - **Töne** aus der App (Schlüpfen, Entwicklung, Achtung, Wunsch, Münze …).
 - Das **allererste Ei** schlüpft wie in der App nach 1 Minute, jedes neue Ei nach 30 Minuten.
 
@@ -44,7 +67,7 @@ Vorschau aus der Nachbildung am PC (Schrift dort nur Ersatz): [vorschau-etappe-2
 
 Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrechen gibt keine Münzen („Spiel abgebrochen“). Im Spiel wird alle 40 ms neu gezeichnet, damit der Ball flüssig läuft; der Ball läuft nach echter Zeit.
 
-**Etappe 3: Name ändern und Hilfe** (`name-hilfe.ino`), statt der Dialoge der App eigene Bildschirme:
+**Etappe 3: Name ändern und Hilfe** (`name-hilfe.ino`), statt der Dialoge der App eigene Bildschirme. **Seit 24.11.2026 auf Wunsch der Nutzerin entfernt** (braucht sie nicht); so war es gebaut:
 - **Name ändern:** Buchstabentafel A–Z, Ä Ö Ü ß, Umschalten (Aa), Bindestrich, Leerzeichen, Löschen, Zurück, OK. Steuerkreuz wählt, A tippt, START speichert, B bricht ab; oder auf die Tafel tippen. Nach dem ersten Buchstaben geht es klein weiter, nach Leerzeichen und Bindestrich wieder groß. Höchstens 20 Bytes (Platz im Spielstand).
 - **Hilfe:** die Texte der App, angepasst an den Retro Gamer (Tasten, Uhr, Spielstand; ohne Handy-Hinweise), 7 Seiten. ◀▶ oder ▲▼ blättern, B oder START schließt; Touch: links zurück, Mitte schließen, rechts weiter.
 
@@ -159,7 +182,7 @@ Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board 
 
 - Der erste Druck bei dunklem Bildschirm macht ihn nur an, wie beim Tippen. Jede Taste überspringt „Gute Nacht“.
 - Die Hinweise unten zeigen „▲▼ wählen · A OK · B zurück“ und „A öffnet das Menü“, sobald der MCP23017 gefunden ist; sonst die alten Touch-Hinweise.
-- Touch über die drei Drittel funktioniert weiterhin. Ohne MCP23017 läuft alles wie vorher; das Programm sucht ihn alle 2 Sekunden.
+- Touch über die drei Drittel funktioniert seit 24.11.2026 nur noch als Notlösung, wenn der MCP23017 fehlt; sonst ist Touch zum Kuscheln da (siehe oben). Das Programm sucht ihn alle 2 Sekunden.
 - Entprellt: Ein Druck zählt, wenn zwei Lesungen im Abstand von 8 ms gleich sind.
 - Geprüft (23. November 2026, Cloud): mit g++ und Ersatz-Headern ohne Fehler und Warnungen. **Noch nicht in der Arduino IDE übersetzt und noch nicht auf dem Board.**
 
@@ -188,7 +211,8 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 ## Dateien
 
 - `evi-handy.ino`: Bildschirm, Menü, Tasten-Drittel, Ereignisse, Gute-Nacht-Ablauf, Uhr stellen.
-- `spiele.ino`, `momente.ino`, `name-hilfe.ino`, `extras.h`, `momente.h`: Etappen 2 bis 4 (siehe oben). `tasten.h`: echte Tasten über den MCP23017.
+- `spiele.ino`, `momente.ino`, `extras.h`, `momente.h`: Etappen 2 und 4 (siehe oben). `tasten.h`: echte Tasten über den MCP23017.
+- `kuscheln.ino`: Evi antippen oder streicheln, Kuschelwunsch (seit 24.11.2026).
 - `lage.h`, `bewegung.ino`: Lagesensor und was Evi bei Bewegung tut, „Wie war dein Tag?“ (seit 24.11.2026).
 - `umgebung.ino`, `umgebung.h`: neues Zimmer, Jahreszeiten, Wetter und Weihnachtsdeko (seit 24.11.2026; `tools/make-umgebung.py`).
 - `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js`.

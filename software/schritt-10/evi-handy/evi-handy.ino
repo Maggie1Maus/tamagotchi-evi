@@ -2,15 +2,14 @@
 //
 // Alles an denselben Stellen wie in der Handy-App (handy-app/dist), nur ohne den Rahmen:
 // Zimmer, Balken oben, Zeile unten, Menü rechts, Evi auf dem Teppich, Wunschblase.
-// Bedienung: Der Bildschirm ist in drei Drittel geteilt, wie die drei Tasten der App.
-//   linkes Drittel  = linke Taste  (Menü öffnen / weiter)
-//   Mitte           = mittlere Taste (Menü öffnen / OK)
-//   rechtes Drittel = rechte Taste (zurück / schließen)
+// Bedienung über die Tasten des Retro Gamers. Touch ist seit 24.11.2026 zum Kuscheln da: Evi antippen oder
+// streicheln (kuscheln.ino). Nur wenn die Tasten fehlen, ist der Bildschirm als Notlösung wie früher in drei
+// Drittel geteilt (links = weiter, Mitte = Menü öffnen / OK, rechts = zurück / schließen).
 // Echte Retro-Gamer-Tasten über den MCP23017 (tasten.h, Belegung vom 23.11.2026):
 //   Steuerkreuz hoch/runter = Auswahl im Menü bewegen (Festhalten blättert)
 //   A = Menü öffnen / OK, B = zurück / schließen, START = Menü öffnen oder schließen
 //   L und R werden in den Spielen gebraucht, RESET schaltet den Bildschirm aus und an.
-// Etappe 2: die drei Spiele (spiele.ino). Etappe 3: Name ändern und Hilfe (name-hilfe.ino).
+// Etappe 2: die drei Spiele (spiele.ino). Etappe 3 (Name ändern und Hilfe) seit 24.11.2026 wieder entfernt.
 // Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, ab Baby bis Oma).
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
 // Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): Gassi gehen, kippen, aufs Gesicht
@@ -54,18 +53,17 @@ const int ZEILE_Y = 201;                     // Textzeile unten
 Tier pet;
 Himmel himmel = HIMMEL_TAG;
 ms_t letztesSpeichern = 0;
-bool uhrSollGestelltWerden = false;   // Menü „Uhr stellen“
-bool nameSollGeaendertWerden = false, hilfeSollGezeigtWerden = false;
 uint32_t letzterTakt = 0, letzteRunde = 0, letzteBeruehrung = 0, letztesBild = 0;
 bool bildschirmAn = true;
 
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
-                         E_NAME, E_TON, E_HILFE, E_UHR, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
+                         E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
                          E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD };
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
-                          R_GRUSS, R_JUBEL };   // Begrüßung: 2 bzw. 4 Hüpfer
+                          R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
+                          R_KUSCHELN };         // gekuschelt: wiegt sich, Herzen (kuscheln.ino)
 struct {
   uint32_t takt = 0;
   bool atem = false;
@@ -301,11 +299,15 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
     dy = ((seit / 240) % 2) ? 2 : 0;
   } else if (reagiert && evi.reaktion == R_PUTZEN && seit < 1350) {    // wiggle .45s x3
     const int k = (seit / 150) % 3; dx = k == 1 ? -1 : k == 2 ? 1 : 0;
+  } else if (evi.reaktion == R_KUSCHELN && t < evi.reaktionBisTakt) {  // gekuschelt: sanft hin und her wiegen
+    static const int8_t WIEGEN[8] = {0, -1, -2, -1, 0, 1, 2, 1};
+    dx = WIEGEN[(seit / 120) % 8];
   }
 
   if (ph == TOT) {
     ellipseFuellen(BODEN_X, BODEN_Y - 1, 34, 4, 0);
     zeichneBild(ART_GRAB, BODEN_X + ART_GRAB.ox, BODEN_Y + ART_GRAB.oy);
+    eviLinks = BODEN_X + ART_GRAB.ox; eviBreite = ART_GRAB.w; eviOben = BODEN_Y + ART_GRAB.oy; eviHoehe = ART_GRAB.h;
     return;
   }
   const bool schluepft = t < evi.schluepfenBis;
@@ -317,6 +319,7 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
     const Bild& ei = w > 0 ? ART_EI_RECHTS : w < 0 ? ART_EI_LINKS : *ART[EI][0];
     ellipseFuellen(BODEN_X, BODEN_Y - 1, (int)(ART[EI][0]->w * 0.32f + 0.5f), 4, 0);
     zeichneBild(ei, BODEN_X + ei.ox + dx, BODEN_Y + ei.oy + dy);
+    eviLinks = BODEN_X + ei.ox; eviBreite = ei.w; eviOben = BODEN_Y + ei.oy; eviHoehe = ei.h;
     return;
   }
   const bool jubelt = t < evi.reaktionBisTakt && evi.reaktion != R_MEDIZIN && evi.reaktion != R_KEINE;
@@ -335,6 +338,8 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   const int oben = BODEN_Y + b->oy - (evi.atem ? 2 : 0);
   eviOben = oben;
   eviHoehe = b->h;
+  eviLinks = geher.flip ? BODEN_X - b->ox - b->w + wx : BODEN_X + b->ox + wx;
+  eviBreite = b->w;
   if (geher.flip) zeichneBildGespiegelt(*b, BODEN_X - b->ox - b->w + wx + dx, oben - geher.lift + dy);
   else zeichneBild(*b, BODEN_X + b->ox + wx + dx, oben - geher.lift + dy);
 }
@@ -348,9 +353,21 @@ void zeichneZ() {
   schreibe(bild, 222 - textBreite(z, 2) / 2, 66, z, 0, 2, true);
 }
 
+// Die Uhrzeit, klein oben an der Wand zwischen Fenster und Evi (Wunsch der Nutzerin vom 24.11.2026).
+// Dort ist in jeder Jahreszeit und auch zu Weihnachten Platz. Ein weißes Feld dahinter hält sie lesbar,
+// auch bei Licht aus.
+const int UHRZEIT_X = 124, UHRZEIT_Y = 31;
+void zeichneUhrzeit(ms_t jetzt) {
+  const Ortszeit o = ortszeit(jetzt);
+  char z[8];
+  snprintf(z, sizeof(z), "%02d:%02d", o.stunde, o.minute);
+  bild.fillRect(UHRZEIT_X - 2, UHRZEIT_Y - 2, textBreite(z) + 3, 11, 1);
+  schreibe(bild, UHRZEIT_X, UHRZEIT_Y, z, 0);
+}
+
 void zeichneReaktion() {
   const uint32_t seit = millis() - evi.reaktionSeit;
-  if (evi.reaktion == R_KEINE || seit >= 2400) return;
+  if (evi.reaktion == R_KEINE || evi.reaktion == R_KUSCHELN || seit >= 2400) return;   // Kuscheln: eigene Herzen
   // spark 1.5s steps(4): von 6 Pixel unten nach 16 Pixel oben, danach oben stehen
   const int stufe = seit >= 1500 ? 4 : (int)(seit / 375);
   const int dy = 6 - stufe * 22 / 4;
@@ -492,7 +509,9 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
       const int wechsel = (int)((jetzt / 10000) % 3);
       if (momenteFuer(phaseBei(pet, jetzt)) && wechsel == 1) { launeZeile(jetzt, aus, n); return; }
       if (wechsel == 2 && schritteZeile(jetzt, aus, n)) return;
-      snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
+      // Mit Tasten ist Touch zum Kuscheln da: im Wechsel daran erinnern
+      if (tastenDa && (jetzt / 30000) % 2) snprintf(aus, n, "Tipp mich an zum Kuscheln ♥");
+      else snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
     }
   }
 }
@@ -531,7 +550,6 @@ void menueBauen() {
     const Phase ph = phaseBei(pet, jetzt);
     if (ph == TOT) {
       punkt(E_NEUES_EI, &SYM_M_EI, "Neues Ei");
-      punkt(E_HILFE, &SYM_M_HILFE, "Hilfe");
     } else {
       if (ph != EI) {
         const Schlaf s = schlafArt(pet, jetzt);
@@ -549,12 +567,11 @@ void menueBauen() {
           punkt(E_PUTZEN, &SYM_M_PUTZEN, "Saubermachen");
         }
       }
-      punkt(E_NAME, &SYM_M_STIFT, "Name ändern");
       punkt(E_TON, &SYM_M_TON, tonAn ? "Ton aus" : "Ton an");
-      punkt(E_HILFE, &SYM_M_HILFE, "Hilfe");
     }
+    // Uhr stellen, Name ändern und Hilfe sind seit 24.11.2026 nicht mehr im Menü (Wunsch der Nutzerin).
+    // Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft.
     punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
-    punkt(E_UHR, &SYM_M_SONNE, "Uhr stellen");
   }
   gewaehlt = 0;
 }
@@ -648,8 +665,10 @@ void zeichneAlles() {
       for (int i = 0; i < 40; i++) puffer[y * 40 + i] &= m;
     }
   }
+  if (!spiel.aktiv) zeichneUhrzeit(jetzt);         // nach dem Abdunkeln: bleibt hell
   zeichneEvi(jetzt, s, ph);
   zeichneReaktion();
+  if (!spiel.aktiv) kuschelHerzenZeichnen();     // aufsteigende Herzen beim Kuscheln (kuscheln.ino)
   if (spiel.aktiv) {
     spielZeichnen();                               // Ball, Pfeile oder Felder liegen vor Evi
   } else {
@@ -697,9 +716,6 @@ void ritualWeiter() {
 void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
-  if (e == E_NAME) { nameSollGeaendertWerden = true; return; }
-  if (e == E_HILFE) { hilfeSollGezeigtWerden = true; return; }
-  if (e == E_UHR) { uhrSollGestelltWerden = true; return; }
   if (e == E_SIDEBOARD) { sideboardOeffnen(); return; }
   if (e == E_TAG) { tagFragen(); return; }
   if (e == E_TAG_GUT || e == E_TAG_LALA || e == E_TAG_SCHLECHT) { tagAntwort(e == E_TAG_GUT ? 0 : e == E_TAG_LALA ? 1 : 2); return; }
@@ -822,15 +838,18 @@ void knopf(Knopf k) {
 // ---------- Touch: einzelne Tipper ----------
 bool fingerUnten = false;
 uint32_t letzteMeldung = 0, fingerSeit = 0;
-int fingerX = 0;
+int fingerX = 0, fingerY = 0;
+int letzterTippX = -1, letzterTippY = -1;   // für die Prüfung über USB („T“)
+bool fingerHatGeweckt = false;               // dieser Finger hat nur den Bildschirm geweckt: nicht streicheln
 
 bool tipper(int& x, int& y) {
   int tx, ty;
   bool neu = false;
   while (touchLesen(tx, ty)) {
-    if (!fingerUnten) { neu = true; x = tx; y = ty; fingerSeit = millis(); }
+    if (!fingerUnten) { neu = true; x = tx; y = ty; fingerSeit = millis(); letzterTippX = tx; letzterTippY = ty; }
     fingerUnten = true;
     fingerX = tx;
+    fingerY = ty;
     letzteMeldung = millis();
   }
   if (fingerUnten && millis() - letzteMeldung > 150) fingerUnten = false;
@@ -929,7 +948,8 @@ ms_t uebersetzungsZeit() {
 }
 
 // ---------- Bildschirmfoto über USB (für die Prüfung am PC) ----------
-// Sendet nach dem Zeichen 'S' die Zeile "BILD 320 240" und 9600 Bytes (1 = weiß). Nach 'L' eine Zeile zum Lagesensor.
+// Sendet nach dem Zeichen 'S' die Zeile "BILD 320 240" und 9600 Bytes (1 = weiß). Nach 'L' eine Zeile zum Lagesensor,
+// nach 'T' eine Zeile zum letzten Tipper.
 void seriellPruefen() {
   while (Serial.available()) {
     const int c = Serial.read();
@@ -945,6 +965,13 @@ void seriellPruefen() {
                "Unruhe=%.2f Neigung=%.2f Serie=%d Schritte=%lu",
                lage.da, lage.adresse, lage.grossEndian ? "gross" : "klein", lage.eins, lage.x, lage.y, lage.z,
                lage.nAchse, lage.nVz, lage.uAchse, lage.uVz, lage.unruhe, lageKippen(), lage.serie, (unsigned long)lage.gassiSchritte);
+      Serial.println(z);
+    }
+    if (c == 'T') {
+      // Touch prüfen: wo der letzte Tipper war und wo Evi gerade steht
+      char z[120];
+      snprintf(z, sizeof(z), "TOUCH chip=%s tipp=%d,%d evi=%d..%d,%d..%d", touchName(), letzterTippX, letzterTippY,
+               eviLinks, eviLinks + eviBreite - 1, eviOben, BODEN_Y);
       Serial.println(z);
     }
   }
@@ -1007,36 +1034,23 @@ void setup() {
 void loop() {
   tonWeiter();
   seriellPruefen();
-  if (uhrSollGestelltWerden) {
-    uhrSollGestelltWerden = false;
-    uhrStellenBildschirm(jetztMs());
-    runde();
-    bildschirmEin();
-  }
-  if (nameSollGeaendertWerden) {
-    nameSollGeaendertWerden = false;
-    nameAendernBildschirm();
-    runde();
-    bildschirmEin();
-  }
-  if (hilfeSollGezeigtWerden) {
-    hilfeSollGezeigtWerden = false;
-    hilfeBildschirm();
-    runde();
-    bildschirmEin();
-  }
-
   bewegungTakt();                 // Lagesensor: Gassi, kippen, aufs Gesicht
   sideboardTakt(jetztMs());
 
+  // Touch: Seit 24.11.2026 (Wunsch der Nutzerin) keine Tasten mehr, sondern Evi antippen oder streicheln = kuscheln.
+  // Nur wenn die echten Tasten nicht gefunden werden, gelten als Notlösung die drei Drittel wie früher.
   int x, y;
   if (tipper(x, y)) {
     lageBeimBedienen();          // wer tippt, hält das Gerät mit dem Bildschirm nach oben
+    fingerHatGeweckt = !bildschirmAn;
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
       bildschirmEin();
-      taste(tasteBei(x));
+      if (tastenDa) beruehrt(x, y);
+      else taste(tasteBei(x));
     }
+  } else if (fingerUnten && bildschirmAn && tastenDa && !fingerHatGeweckt) {
+    streicheln(fingerX, fingerY);                           // Finger bleibt auf Evi: weiter kuscheln
   }
 
   const int k = naechsteTaste();
@@ -1057,6 +1071,7 @@ void loop() {
     eviTakt(jetzt);
     ritualWeiter();
     if (sideboard.phase == SB_ZU) momentTakt(jetzt);
+    kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
     // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)
     if (DUNKEL_NACH_MS > 0 && bildschirmAn && m - letzteBeruehrung > DUNKEL_NACH_MS && !ritual.aktiv && !spiel.aktiv &&

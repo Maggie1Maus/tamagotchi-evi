@@ -21,12 +21,11 @@ const ms_t MOMENT_MIN = 5 * MINUTE, MOMENT_MAX = 10 * MINUTE;
 struct LauneInfo { const char* text; const char* zeile; const Bild* symbol; uint8_t art[6]; uint8_t gedanke[5]; };
 const LauneInfo LAUNEN[4] = {
   {"Heute bin ich verspielt!", "Heute bin ich verspielt", &SYM_W_BALL, {2, 1, 1, 1, 1, 3}, {1, 3, 1, 1, 1}},
-  {"Heute bin ich verschmust!", "Heute bin ich verschmust", &SYM_W_HERZ, {1, 1, 2, 1, 1, 1}, {1, 1, 4, 1, 1}},
+  {"Heute bin ich verschmust!", "Heute bin ich verschmust · tipp mich an!", &SYM_W_HERZ, {1, 1, 2, 1, 1, 1}, {1, 1, 4, 1, 1}},
   {"Heute bin ich verfressen!", "Heute bin ich verfressen", &SYM_W_KEKS, {1, 1, 3, 1, 1, 1}, {3, 1, 1, 1, 3}},
   {"Heute bin ich verträumt!", "Heute bin ich verträumt", &SYM_W_NOTE, {1, 3, 2, 2, 1, 1}, {1, 1, 1, 2, 1}},
 };
 const Gedanke GEDANKEN_WAHL[5] = {GD_KEKS, GD_BALL, GD_HERZ, GD_NOTE, GD_FUTTER};
-const int LAUNE_VERSCHMUST = 1;
 
 const char* gedankenText(int g) {
   switch (g) {
@@ -98,6 +97,12 @@ MomentArt momentWaehlen(Stimmung s, bool istMuede, int laune, Gedanke& gedanke) 
   if (s == S_SCHMUTZIG) { gedanke = GD_PUTZEN; return M_DENKEN; }
   if (s != S_GLUECKLICH) return M_KEINER;
   if (istMuede) return M_GAEHNEN;
+  // Kuschelwunsch (seit 24.11.2026, kuscheln.ino): an verschmusten Tagen jeder dritte kleine Moment, sonst selten.
+  // Nur mit Tasten (sonst ist Touch noch die Notlösung für die Tasten) und nicht, während ein Wunsch in der Blase
+  // steht (die Blase läge über dem Herz in der Gedankenwolke).
+  Wunsch w;
+  if (tastenDa && moment.letzter != M_KUSCHELN && !aktuellerWunsch(pet, jetztMs(), w) &&
+      random(0, laune == LAUNE_VERSCHMUST ? 3 : 12) == 0) return M_KUSCHELN;
   const LauneInfo& l = LAUNEN[laune];
   int summe = 0;
   for (int k = 0; k < 6; k++) if (k != moment.letzter) summe += l.art[k];
@@ -289,6 +294,21 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
       akt(A_SAGEN, 3000, 0, "Hab dich lieb! ♥");
       akt(A_WARTEN, 25, 0, nullptr);
       akt(A_BILD, MB_KEINS, 0, nullptr);
+      break;
+    case M_KUSCHELN:
+      // Evi möchte gekuschelt werden. Wer sie antippt, solange sie wartet, macht ihr eine besondere
+      // Freude (kuscheln.ino). Sonst sagt sie nur „Später vielleicht!“ – ohne Folgen.
+      akt(A_SAGEN, 3000, 0, "Kuschelst du mit mir?");
+      akt(A_MELDUNG, 16000, 0, "Möchte kuscheln · tipp sie an ♥");
+      akt(A_BILD, MB_STAUNEN, 0, nullptr);
+      akt(A_WARTEN, 26, 0, nullptr);
+      akt(A_BILD, MB_DENKEN, 0, nullptr);
+      akt(A_DENKEN, GD_HERZ, 0, nullptr);
+      akt(A_WARTEN, 85, 0, nullptr);
+      akt(A_DENKEN, GD_KEINER, 0, nullptr);
+      akt(A_BILD, MB_KEINS, 0, nullptr);
+      akt(A_SAGEN, 2400, 0, "Später vielleicht! ♥");
+      akt(A_WARTEN, 20, 0, nullptr);
       break;
     default:
       moment.art = M_KEINER;

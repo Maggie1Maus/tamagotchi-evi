@@ -2,6 +2,17 @@
 
 Stand: 24. November 2026
 
+## Waveshare: Kuscheln, kleine Uhrzeit, trüber Regenhimmel, kürzeres Menü (24. November 2026)
+
+Wünsche der Nutzerin, nur auf dem Board (Einzelheiten in `software/schritt-10/README.md`):
+- **Menü:** „Uhr stellen“, „Hilfe“ und „Name ändern“ entfernt (`name-hilfe.ino` gelöscht). Die Uhr fragt weiterhin beim Einschalten, wenn sie nicht läuft.
+- **Uhrzeit** klein oben an der Wand zwischen Fenster und Evi, auch bei Licht aus lesbar.
+- **Regen:** Himmel am Tag trüb gepunktet wie in der Dämmerung; schwarze Regenwolke und fallender Regen bleiben (Regenstriche mit hellem Rand, damit man sie sieht).
+- **Touch = Kuscheln statt Tasten:** Evi antippen oder streicheln. Wach: glückliches Bild, wiegen, Herzen, ein lieber Satz, +5 Stimmung (verschmust +8), höchstens einmal pro Minute. Schlafend kuschelt sie sich nur an, das Ei wackelt. Bei Besuch und Gassi nur Herzen. Fehlen die Tasten (MCP23017 nicht gefunden), gelten als Notlösung die drei Drittel wie früher.
+- **Tageslaune „verschmust“** bedeutet jetzt etwas: mehr Wirkung beim Kuscheln, und Evi fragt oft von selbst „Kuschelst du mit mir?“ (Kuschelwunsch, erfüllt +10). Die anderen Launen (verspielt, verfressen, verträumt) beeinflussen weiter nur, welche Momente und Gedanken öfter kommen.
+- Prüfung: PC-Nachbildung mit neuem `kuscheln.cpp` (nachgebildeter Touch-Chip), alle Prüfungen ohne Fehler und Warnungen. **Echte Pico-2-Übersetzung diesmal nicht möglich** (Arduino-Werkzeuge in der Cloud nicht ladbar). Am Board ausprobieren; trifft das Antippen Evi nicht, im Seriellen Monitor `T` senden (zeigt Tipper und Evis Lage).
+- Offen, nur als Idee: den anderen Tageslaunen ähnlich eine Bedeutung geben (verspielt fragt nach einem Spiel, verfressen nach einem Keks, verträumt schaut öfter aus dem Fenster).
+
 ## Waveshare: deckendes Baby und bewegter Niederschlag (24. November 2026)
 
 - Rückmeldung der Nutzerin: Beim Laufen scheint der Dielenboden durch Evi. Die Baby-Laufzeichnung hatte einen durchsichtigen Bauch. Nur die Deckmaske in `momente.h` ist gefüllt, die schwarzen Linien und die Größe sind unverändert; auch beim gespiegelten Laufen nach rechts. Die Reparatur ist in `tools/make-momente.mjs` enthalten (`--repair-running-mask` funktioniert ohne Browser).
@@ -66,7 +77,7 @@ Aus der Ideensammlung gewählt: Bewegungen (Gassi gehen, schütteln, kippen, auf
 Stattdessen von Claude vorgeschlagen, alles ohne Internet, mit Uhr, Bewegungssensor (IMU) und Touch des Waveshare. **Weitere Ideen noch nicht beschlossen; Jahreszeiten und Weihnachtsbaum sind inzwischen wie oben beschrieben bestätigt:**
 - **Kalender:** Adventskalender vom 1. bis 24. Dezember (ein Türchen am Tag, kleine Überraschung oder Deko fürs Zimmer), Feiertage (Weihnachtsbaum, Feuerwerk im Fenster an Silvester, Ostereier suchen, Kürbis an Halloween), Jahreszeiten am Baum vor dem Fenster (bunte Blätter, kahl, Blüten), Wochenende (länger schlafen), Geburtstag der Nutzerin.
 - **Bewegung:** Gassi gehen (Schritte zählen, wenn Evi mit spazieren geht; auf dem Handy nur bei offener App), schütteln (Evi wird schwindelig), kippen (Ball rollt, Evi rennt hinterher), Gerät aufs Gesicht legen (Evi schläft ein).
-- **Touch (nur Waveshare):** streicheln (schon geplant), kitzeln, Evi folgt dem Finger.
+- **Touch (nur Waveshare):** streicheln (seit 24.11.2026 als Kuscheln eingebaut), kitzeln, Evi folgt dem Finger.
 - **Gemeinsame Rituale:** „Wie war dein Tag?“ am Abend (gut, so lala, schlecht; Evi freut sich mit oder tröstet), Zähneputzen zusammen mit 2-Minuten-Uhr, „Während du weg warst …“, Evi merkt sich, wann die Nutzerin meist vorbeischaut, und wartet dann am Fenster.
 - **Spiele:** Verstecken, Ball bringen (aus der Sammlung vom 23. November).
 - Claudes Empfehlung: zuerst Adventskalender (ab 1. Dezember), dann Gassi gehen und Hinlegen zum Schlafen, dann „Wie war dein Tag?“.

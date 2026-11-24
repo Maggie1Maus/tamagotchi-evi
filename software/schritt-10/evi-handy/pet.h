@@ -34,6 +34,10 @@ const double NIEDRIG = 30;
 const uint32_t GASSI_MIN_SCHRITTE = 100, GASSI_SCHRITTE_JE_MUENZE = 500;
 const double GASSI_LAUNE = 10, GASSI_LAUNE_JE_1000 = 5, GASSI_LAUNE_MAX = 25, GASSI_SATT = -5, GASSI_SAUBER = -5;
 const int GASSI_MUENZEN_MAX = 10;
+// Kuscheln (24.11.2026, nur auf dem Board): Evi antippen oder streicheln. +5 Stimmung, an verschmusten Tagen +8,
+// wenn sie selbst kuscheln wollte +10. Wirkt höchstens einmal pro Minute, öfter gibt es nur Herzen.
+const double KUSCHEL_LAUNE = 5, KUSCHEL_LAUNE_VERSCHMUST = 8, KUSCHEL_LAUNE_WUNSCH = 10;
+const ms_t KUSCHEL_PAUSE = MINUTE;
 }
 
 enum Phase : uint8_t { EI, BABY, TEEN, ERWACHSEN, OMA, TOT };
@@ -372,6 +376,18 @@ static inline Ergebnis gassiBeenden(Tier& p, uint32_t schritte, ms_t jetzt) {
   e.muenzen = muenzen;
   p.muenzen += muenzen;
   p.pflege++;
+  return e;
+}
+
+// Evi wird gekuschelt (nur auf dem Board). Wirkt nur, wenn sie wach ist; die Pause (KUSCHEL_PAUSE) achtet kuscheln.ino.
+static inline Ergebnis kuscheln(Tier& p, double laune, ms_t jetzt) {
+  Ergebnis e;
+  weiterrechnen(p, jetzt);
+  if (!wach(p, jetzt)) { e.grund = G_SCHLAEFT; return e; }
+  e.geaendert = true;
+  p.laune = begrenzt(p.laune + laune);
+  p.pflege++;
+  if (geweckt(p, jetzt) && p.wachBis < jetzt + R::WACH_BLEIBEN) p.wachBis = jetzt + R::WACH_BLEIBEN;
   return e;
 }
 

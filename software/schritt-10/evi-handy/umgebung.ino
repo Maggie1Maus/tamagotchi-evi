@@ -69,12 +69,14 @@ void schneeflocke(int x, int y, const Bild& vorne, uint16_t farbe) {
 // Was durchs Fenster zu sehen ist: Himmel, Wetter, Baum und Hügel der Jahreszeit, das Fensterkreuz
 void fensterZeichnen(ms_t jetzt) {
   const Himmel h = himmelBei(jetzt);
-  // Himmel
+  const Wetter w = wetterBei(jetzt);
+  // Himmel. Bei Regen ist er auch am Tag trüb, gepunktet wie in der Dämmerung (Wunsch der Nutzerin
+  // vom 24.11.2026); die schwarze Regenwolke und der fallende Regen bleiben.
+  const bool trueb = h == HIMMEL_DAEMMERUNG || (h == HIMMEL_TAG && w == WT_REGEN);
   for (int y = GLAS_Y; y < GLAS_Y + GLAS_H; y++)
     for (int x = GLAS_X; x < GLAS_X + GLAS_B; x++)
-      bild.drawPixel(x, y, h == HIMMEL_TAG ? 1 : h == HIMMEL_NACHT ? 0 : ((x + y) & 1));
+      bild.drawPixel(x, y, h == HIMMEL_NACHT ? 0 : trueb ? ((x + y) & 1) : 1);
   const Bild& vorne = *FENSTER_JAHRESZEIT[jahreszeitBei(jetzt)];
-  const Wetter w = wetterBei(jetzt);
   if (h == HIMMEL_NACHT) {
     // Sterne wie bisher (night-stars in der App) und der Mond
     static const int8_t STERNE[9][4] = {{38, 28, 1, 3}, {37, 29, 3, 1}, {52, 36, 1, 1}, {44, 47, 1, 1}, {57, 29, 1, 1},
@@ -123,14 +125,16 @@ void fensterZeichnen(ms_t jetzt) {
     for (int i = 0; i < (w == WT_REGEN ? 10 : 11); i++) {
       const int bx = GLAS_X + 3 + (i * 37) % (GLAS_B - 6);
       if (w == WT_REGEN) {
-        // schräge Striche (5 Punkte lang, 2 breit), die unter der Wolke beginnen und nach links unten fallen
+        // schräge Striche (5 Punkte lang, 2 breit), die unter der Wolke beginnen und nach links unten fallen.
+        // Vor dem trüben (gepunkteten) Himmel haben sie links und rechts einen hellen Rand, sonst sähe man sie kaum.
         const int lauf = (int)((t / 25 + i * 23) % (GLAS_H - 16));
         for (int k = 0; k < 5; k++) {
-          for (int d = 0; d < 2; d++) {
+          for (int d = trueb ? -1 : 0; d < (trueb ? 3 : 2); d++) {
             int px = bx - lauf / 4 - k / 2 + d;
             if (px < GLAS_X) px += GLAS_B;
             const int py = GLAS_Y + 16 + lauf + k;
-            if (py < GLAS_Y + GLAS_H && px < GLAS_X + GLAS_B && !bildDeckt(vorne, px - GLAS_X, py - GLAS_Y)) bild.drawPixel(px, py, farbe);
+            const uint16_t f = d < 0 || d > 1 ? !farbe : farbe;
+            if (py < GLAS_Y + GLAS_H && px < GLAS_X + GLAS_B && !bildDeckt(vorne, px - GLAS_X, py - GLAS_Y)) bild.drawPixel(px, py, f);
           }
         }
       } else {
