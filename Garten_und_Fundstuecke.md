@@ -11,7 +11,9 @@ Stand: 24. November 2026
 - Die bestehende Sammlung im Sideboard bleibt der Aufbewahrungsort. Aktuell nichts auf die Kerzenfläche des Sideboards stellen.
 - Vorhandene Fundstückbilder (Stein, Blatt, Feder, Tannenzapfen) gefallen und bleiben.
 - Ziel: **insgesamt etwa zehn Fundstückarten**, mit zusätzlichen Gaming- und/oder Disney-Motiven. Die sechs Ergänzungen werden zunächst besprochen und ausgewählt; **erst danach neue Fundstückbilder erzeugen**.
-- Jahreszeiten müssen bei Garten und Gartenobjekten berücksichtigt werden. Weihnachtliche Wintergestaltung wird noch besprochen.
+- Jahreszeiten müssen bei Garten und Gartenobjekten berücksichtigt werden. **Das aktuelle Wetter muss auch im Garten dargestellt werden**, unabhängig vom Wettertyp: Sonne, Wolken, Regen und Schnee. Garten und Fensterausblick sollen zusammenpassen; Tag und Nacht ebenfalls berücksichtigen. Weihnachtliche Wintergestaltung wird noch besprochen.
+- Die Nutzerin hat **Micky-Knopf, Arielles Muschel-Anhänger und Stitch-Anhänger bestätigt**.
+- Die weiteren Motive sollen sich auf **konkrete Spiele** beziehen: Spyro, Zelda, Animal Crossing und Stardew Valley. Allgemeine Gaming-Motive wie Controller und Pixelherz gefallen nicht.
 - Benötigt werden später **eine Gesamtansicht des Gartens und jedes Gartenobjekt als einzeln verwendbare Zeichnung**, mit passenden saisonalen Varianten. Ein Gesamtbild ist eine Gestaltungsvorlage, kein Ersatz für die Einzelobjekte.
 - Möglicherweise zusätzliche Evi-Zeichnungen zum Suchen und Zeigen von Fundstücken; bestehende Zeichnungen nicht neu interpretieren.
 
@@ -58,24 +60,34 @@ Beispiele:
 
 Bei echten Spaziergängen kennt das Gerät ohne weitere Eingabe nicht das tatsächliche Wetter draußen. Das simulierte Spielwetter nicht als gemessenes reales Wetter ausgeben.
 
-### Zehn Fundstückarten – Vorschlagsliste
+### Fundstückarten – bestätigt und offen
 
-Die ersten vier sind vorhanden und bestätigt. Nummer 5–10 sind nur Vorschläge:
+Ziel bleiben ungefähr zehn Fundstückarten. Sieben sind bereits festgelegt:
 
-| Nr. | Gegenstand | Idee |
+| Nr. | Gegenstand | Stand |
 |---|---|---|
-| 1 | Glatter Stein | vorhanden |
-| 2 | Kleines Blatt | vorhanden |
-| 3 | Weiche Feder | vorhanden |
-| 4 | Tannenzapfen | vorhanden |
-| 5 | Kleiner Controller-Anhänger | Gaming, klare Silhouette |
-| 6 | Pixelherz-Anhänger | Gaming, gemütlicher Bezug |
-| 7 | Mini-Spielmodul | Retro-Gaming, kleines verlorenes Spielzeug |
-| 8 | Micky-Knopf | Disney, Knopf mit Micky-Silhouette |
-| 9 | Stitch-Anhänger | Disney, kleine erkennbare Figur |
-| 10 | Arielles Muschel-Anhänger | Disney, Muschel als kleines Schmuckstück |
+| 1 | Glatter Stein | Bild vorhanden und bestätigt |
+| 2 | Kleines Blatt | Bild vorhanden und bestätigt |
+| 3 | Weiche Feder | Bild vorhanden und bestätigt |
+| 4 | Tannenzapfen | Bild vorhanden und bestätigt |
+| 5 | Micky-Knopf | Motiv bestätigt, noch nicht gezeichnet |
+| 6 | Stitch-Anhänger | Motiv bestätigt, noch nicht gezeichnet |
+| 7 | Arielles Muschel-Anhänger | Motiv bestätigt, noch nicht gezeichnet |
 
-Fundstücke als kleine Gegenstände, Anhänger oder Knöpfe gestalten. Keine Farben zur Erkennung voraussetzen. Keine neuen Bilder erzeugt oder Motive ausgewählt.
+Weitere konkrete Spielmotive zur Besprechung, noch nicht ausgewählt:
+
+| Spiel | Vorschlag |
+|---|---|
+| Spyro | Kleiner Spyro-Anhänger; alternativ ein Drachenei |
+| Zelda | Triforce-Anhänger |
+| Animal Crossing | Fossil mit Spirale |
+| Stardew Valley | Kleine Junimo-Figur |
+
+Mit je einem Motiv aus allen vier Spielreihen wären es **elf** Fundstückarten. Für genau zehn müsste eines der vier Spielmotive zunächst entfallen. Elf als Umfang ist nur ein Vorschlag, keine getroffene Entscheidung.
+
+Controller, Pixelherz und das allgemeine Mini-Spielmodul werden als Vorschläge verworfen; die Richtung soll erkennbar zu einzelnen Spielen passen.
+
+Fundstücke als kleine Gegenstände, Anhänger oder Knöpfe gestalten. Keine Farben zur Erkennung voraussetzen. Die neuen Disney- und Spielmotive **erst nach abgeschlossener Besprechung zeichnen**; in dieser Runde keine neuen Bilder.
 
 ### Zusätzliche Evi-Posen – Vorschläge
 
@@ -87,4 +99,4 @@ Fundstück und Evi als getrennte Bildebenen vorsehen, sodass eine Zeigepose je L
 
 ## Umsetzung
 
-Diese Datei hält die besprochene Richtung fest. Garten, neue Suchabläufe, zusätzliche Herkunftsdaten und die sechs neuen Motive sind **noch nicht implementiert beziehungsweise gezeichnet**. Bestehender Spielcode und Spielstandformat bleiben in dieser Runde unverändert.
+Diese Datei hält die besprochene Richtung fest. Garten, neue Suchabläufe, zusätzliche Herkunftsdaten und die neuen Motive sind **noch nicht implementiert beziehungsweise gezeichnet**. Bestehender Spielcode und Spielstandformat bleiben in dieser Runde unverändert.
