@@ -2,6 +2,19 @@
 
 Stand: 24. November 2026
 
+## Waveshare: Evi spürt Bewegung, „Wie war dein Tag?“, zwei neue Spiele (24. November 2026)
+
+**Beschluss der Nutzerin:** Die Handy-App wird **nicht mehr mitgeändert**, nur noch das Waveshare (außer sie fragt ausdrücklich; steht auch in `CLAUDE.md`).
+
+Aus der Ideensammlung gewählt: Bewegungen (Gassi gehen, schütteln, kippen, aufs Gesicht legen), „Wie war dein Tag?“ und neue Spiele, die nicht Verstecken oder Ball bringen sind. Gemeinsame Rituale sonst vorerst nicht. Einzelheiten in `software/schritt-10/README.md`.
+- **Lagesensor** QMI8658 (`lage.h`); Evi lernt beim Tastendrücken, wie das Gerät gehalten wird.
+- **Gassi gehen:** Schritte zählen, Evi trabt mit; ab 100 Schritten +10 bis +25 Stimmung, 1 Münze je 500 Schritte, Sättigung und Sauberkeit je −5.
+- **Schütteln:** Evi wird schwindelig (ohne Folgen). **Kippen:** Ein Ball rollt, Evi rennt hinterher. **Aufs Gesicht:** Bildschirm aus, nachts Licht aus; umgedreht wieder an mit Nickerchen-Gähnen oder Begrüßung.
+- **„Wie war dein Tag?“** abends 18–23 Uhr einmal, Antworten Gut / So lala / Nicht so gut; bei „Nicht so gut“ tröstet Evi und singt.
+- **Spiele:** Kekse fangen (◀ ▶ oder kippen) und Schnick, Schnack, Schnuck.
+- **Touch durch die Plexiglasscheibe** funktioniert laut Nutzerin, mit etwas mehr Druck, auch für Menüauswahl.
+- Geprüft in der PC-Nachbildung (`bewegung.cpp`, alle Prüfungen bestanden, ohne Warnungen). **Am Board noch nicht ausprobiert:** Sensor, Empfindlichkeit (Schwellen in `lage.h`), Schritte in der Tasche.
+
 ## Ideen: Evi alltagsnah und interaktiver, ohne Internet (24. November 2026, Ideensammlung)
 
 **Echtes Wetter: von der Nutzerin verworfen.** Der RP2350 auf dem Waveshare hat kein WLAN, das Board kann also kein Wetter abfragen. Nur in der Handy-App wäre es möglich (Wetterdienst, z. B. Open-Meteo); das wollte sie nicht ohne die echte Evi. Ein Wettersensor misst nur Tasche oder Zimmer und erkennt keinen Regen oder Schnee.

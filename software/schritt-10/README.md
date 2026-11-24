@@ -87,6 +87,30 @@ Laut Nutzerin fühlte sich das Steuerkreuz schwerfällig an. Mechanisch wird die
 
 Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 10-ms-Tipper während 40 ms Zeichnen wird erkannt (die alte Abfrage verpasste ihn), Halten zählt einmal, Steuerkreuz wiederholt, Flackern zählt nicht doppelt, zwei schnelle Tipper zählen zweimal. **Am Board ausprobiert (24. November 2026, laut Nutzerin): Die Tasten reagieren jetzt schnell und funktionieren „richtig gut“; die Gummimatte muss nicht eingeschnitten werden.**
 
+## Evi spürt Bewegung, „Wie war dein Tag?“, zwei neue Spiele (24. November 2026)
+
+Wunsch der Nutzerin: Bewegungen spüren (Gassi gehen, schütteln, kippen, aufs Gesicht legen), „Wie war dein Tag?“ und neue Spiele, aber nicht Verstecken oder Ball bringen. **Nur auf dem Board**, die Handy-App bleibt unverändert (Wunsch der Nutzerin).
+
+**Lagesensor** (`lage.h`): der QMI8658 auf dem Board (I²C 0x6B oder 0x6A, an Wire1), nur Beschleunigung, ±4 g, 50 Messungen pro Sekunde. Die Reihenfolge der Bytes wird beim Start erkannt (in Ruhe misst er 1 g). Wie der Chip auf der Platine liegt, **lernt Evi beim Benutzen**: Bei jedem Tastendruck und Tipper wird das Gerät mit dem Bildschirm nach oben gehalten. Nach drei ruhigen Bedienungen kennt sie die Bildschirmrichtung, die Oberkante, sobald das Gerät dabei schräg gehalten wird. Kippen und Aufs-Gesicht-Legen wirken erst danach; Schritte und Schütteln sofort. Nach jedem Neustart lernt sie es neu (nur im Arbeitsspeicher).
+
+| Bewegung | Erkennung | Was Evi tut (`bewegung.ino`) |
+|---|---|---|
+| **Gassi gehen** | Schritte im Takt (6 hintereinander, je 0,25–1,5 s Abstand); Ende nach 60 s ohne Schritt | Bei hellem Bildschirm trabt sie mit (Bild „laufen“), unten „Gassi gehen … 123 Schritte“. Ab 100 Schritten nach dem Spaziergang: „Das war schön draußen!“, +10 Stimmung (+5 je volle 1000 Schritte, höchstens +25), 1 Münze je 500 Schritte (höchstens 10), Sättigung und Sauberkeit je −5 (Regel `gassiBeenden` in `pet.h`). Nur wenn sie wach und gesund ist. Endet der Spaziergang bei dunklem Bildschirm, erzählt sie es beim Einschalten. Unten steht im Wechsel „Heute … Schritte zusammen“. |
+| **Schütteln** | 4 Stöße über 1,8 g in 1,2 s | „Hui! Alles dreht sich!“, sie wackelt (Bild „drehen“), dann „Mir ist ganz schwindelig …“; beim dritten Mal in 2 Minuten „Bitte nicht mehr schütteln!“. Schlafend: „Hmpf … Evi schläft.“ Krank: „Mir geht es nicht gut …“. Das Ei wackelt. Keine Folgen für die Werte. |
+| **Kippen** | etwa 20° zur Seite für 0,3 s | „Huch! Der Ball rollt!“ Ein Ball rollt zur tieferen Seite, Evi rennt hinterher. Liegt das Gerät 3 s gerade, holt sie ihn („Hab ihn!“) und geht zurück. |
+| **Aufs Gesicht legen** | Bildschirm 1,5 s nach unten | Bildschirm aus (wie RESET); nachts schläft Evi und das Licht geht aus (mit Lichtbonus). Wieder umgedreht: Bildschirm an; ab 3 Minuten Begrüßung, ab 20 s „Gähn … das war ein schönes Nickerchen!“. Mit RESET ausgeschaltet bleibt er aus. |
+
+**„Wie war dein Tag?“** Zwischen 18 und 23 Uhr fragt Evi einmal von selbst (statt eines kleinen Moments, mit dem Wunsch-Ton); das Menü zeigt die Antworten Gut, So lala, Nicht so gut. Gut: Jubel „Juhu! Das freut mich!“. So lala: „Morgen wird es bestimmt schöner!“. Nicht so gut: Evi tröstet („Oh nein … Komm, ich kuschel mit dir.“), singt dir ein Lied und sagt „Hab dich lieb! ♥“. B schließt ohne Antwort („Erzählst du es mir später?“); bis zur Antwort steht die Frage im Menü. Keine Folgen für die Werte; gemerkt nur im Arbeitsspeicher.
+
+**Neue Spiele** (`spiele.ino`, je 5 Runden, 2 Münzen pro Erfolg wie die anderen; sie erfüllen keine Wünsche, die bleiben wie in der App):
+- **Kekse fangen:** Kekse fallen von oben, Evi fängt sie mit dem Mund. Laufen mit ◀ ▶ (festhalten läuft weiter, Touch: links/rechts) oder durch **Kippen**. Jeder Keks fällt 20 % schneller. B (Touch: Mitte) beendet.
+- **Schnick, Schnack, Schnuck:** ◀ Schere, A Stein, ▶ Papier (Touch: die drei Drittel). Evi hüpft dreimal („Schnick … Schnack … Schnuck!“) und zeigt ihre Wahl in einer Blase. Gleichstand zählt nicht, dann noch einmal.
+- Schere, Stein, Papier und die Wolken für „So lala“/„Nicht so gut“ sind mit Linien gezeichnet (`zeichneZeichen` in `bewegung.ino`), kein Bild aus der App.
+
+Hilfe um „Evi spürt Bewegung“ und „Wie war dein Tag?“ ergänzt, „Spielen“ nennt fünf Spiele.
+
+**Geprüft in der PC-Nachbildung** (`tools/pc-nachbildung/bewegung.cpp`, mit nachgebildetem Lagesensor): Achsen gelernt; 4 Minuten Gehen = 439 von etwa 441 Schritten, Evi trabt mit, danach Stimmung +8,7 (abzüglich Abnahme) und Meldung; Zittern zählt nicht; Schütteln wach und schlafend; Kippen nach rechts und links, Ball und Evi folgen, Rückkehr; Aufs-Gesicht mit Nickerchen, nachts Licht aus mit Bonus, mit RESET bleibt er aus; Frage am Abend, Schließen ohne Antwort, Antwort aus dem Menü, Trösten; Kekse fangen mit Kippen 5 von 5; Schnick, Schnack, Schnuck bis zum Ende. Ohne Warnungen übersetzt, Display ohne falschen Punkt. **Am Board noch nicht ausprobiert:** ob der Sensor antwortet und wie empfindlich die Schwellen in der Hand sind. Die Zahlen stehen oben in `lage.h` (Namensraum `L`).
+
 ## Echte Retro-Gamer-Tasten (23. November 2026)
 
 Seit Schritt 11 hängen die Tasten des Retro Gamers über den MCP23017 am Board (`tasten.h`). Belegung nach Wunsch der Nutzerin:
@@ -131,6 +155,7 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 
 - `evi-handy.ino`: Bildschirm, Menü, Tasten-Drittel, Ereignisse, Gute-Nacht-Ablauf, Uhr stellen.
 - `spiele.ino`, `momente.ino`, `name-hilfe.ino`, `extras.h`, `momente.h`: Etappen 2 bis 4 (siehe oben). `tasten.h`: echte Tasten über den MCP23017.
+- `lage.h`, `bewegung.ino`: Lagesensor und was Evi bei Bewegung tut, „Wie war dein Tag?“ (seit 24.11.2026).
 - `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js`.
 - `uhr.h`: Uhr PCF85063 (I²C 0x51). `speicher.h`: Spielstand mit Prüfsumme. `text.h`: Schrift mit Umlauten. `ton.h`: Töne der App.
 - `board.h`, `touch.h`, `bildschirm.h`: aus Schritt 8/9.

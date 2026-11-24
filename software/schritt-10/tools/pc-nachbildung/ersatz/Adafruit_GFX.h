@@ -15,6 +15,10 @@ struct Adafruit_GFX {
   void drawRoundRect(int16_t x,int16_t y,int16_t w,int16_t h,int16_t r,uint16_t c){drawFastHLine(x+r,y,w-2*r,c);drawFastHLine(x+r,y+h-1,w-2*r,c);drawFastVLine(x,y+r,h-2*r,c);drawFastVLine(x+w-1,y+r,h-2*r,c);
     for(int k=0;k<r;k++){int d=(int)(r-sqrtf((float)r*r-(float)(r-k)*(r-k)));drawPixel(x+d,y+k,c);drawPixel(x+w-1-d,y+k,c);drawPixel(x+d,y+h-1-k,c);drawPixel(x+w-1-d,y+h-1-k,c);}}
   void fillRoundRect(int16_t x,int16_t y,int16_t w,int16_t h,int16_t r,uint16_t c){for(int j=0;j<h;j++){int k=j<r?r-j:(j>=h-r?j-(h-r-1):0);int d=k?(int)(r-sqrtf((float)r*r-(float)k*k)):0;drawFastHLine(x+d,y+j,w-2*d,c);}}
+  // fillCircle wie in Adafruit GFX (fillCircleHelper mit Mittelpunktverfahren)
+  void fillCircle(int16_t x0,int16_t y0,int16_t r,uint16_t c){drawFastVLine(x0,y0-r,2*r+1,c);int16_t f=1-r,ddx=1,ddy=-2*r,x=0,y=r,px=x,py=y;
+    while(x<y){if(f>=0){y--;ddy+=2;f+=ddy;}x++;ddx+=2;f+=ddx;if(x<(y+1)){drawFastVLine(x0+x,y0-y,2*y+1,c);drawFastVLine(x0-x,y0-y,2*y+1,c);}
+      if(y!=py){drawFastVLine(x0+py,y0-px,2*px+1,c);drawFastVLine(x0-py,y0-px,2*px+1,c);py=y;}px=x;}}
   void drawLine(int16_t x0,int16_t y0,int16_t x1,int16_t y1,uint16_t c){int dx=abs(x1-x0),sx=x0<x1?1:-1,dy=-abs(y1-y0),sy=y0<y1?1:-1,e=dx+dy;for(;;){drawPixel(x0,y0,c);if(x0==x1&&y0==y1)break;int e2=2*e;if(e2>=dy){e+=dy;x0+=sx;}if(e2<=dx){e+=dx;y0+=sy;}}}
   void fillTriangle(int16_t x0,int16_t y0,int16_t x1,int16_t y1,int16_t x2,int16_t y2,uint16_t c){int miny=std::min({y0,y1,y2}),maxy=std::max({y0,y1,y2}),minx=std::min({x0,x1,x2}),maxx=std::max({x0,x1,x2});
     auto s=[](float ax,float ay,float bx,float by,float px,float py){return (bx-ax)*(py-ay)-(by-ay)*(px-ax);};

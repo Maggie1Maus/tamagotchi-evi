@@ -14,6 +14,7 @@ Alles Wichtige muss deshalb **im Repository** stehen, nicht nur im lokalen Gedä
 ## Feste Regeln
 - **Evis Zeichnungen 1:1 verwenden.** Nur zuschneiden, verkleinern, außen transparent machen (`handy-app/tools/build-art.ps1`). Nie neu zeichnen oder „interpretieren“ – ein nachgebautes Baby wurde am 18.11.2026 deutlich abgelehnt. Für neue Varianten die Nutzerin um Zeichnungen bitten.
 - Seit Version 0.8 nutzen alle Altersstufen (auch Erwachsen) ihre Zeichnungen. Die prozedurale Pixel-Evi in `evi-sprite.js` ist nur noch Rückfall.
+- **Die Handy-App nicht mehr mitändern** (Wunsch der Nutzerin vom 24.11.2026). Neues wird nur noch auf dem Waveshare (`software/schritt-10/`) gebaut. Die App nur anfassen, wenn die Nutzerin ausdrücklich danach fragt.
 - Darstellung strikt **schwarz-weiß**, keine Farben, kein Graustufenfilter.
 - Kommunikation auf Deutsch, einfach erklärt.
 

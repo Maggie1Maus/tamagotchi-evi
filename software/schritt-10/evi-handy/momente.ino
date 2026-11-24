@@ -14,7 +14,6 @@
 
 const int SCHRITT_WEITE = 2;                  // STEP: Punkte pro Takt beim Gehen
 const ms_t MOMENT_MIN = 5 * MINUTE, MOMENT_MAX = 10 * MINUTE;
-const ms_t GRUSS_NACH = 3 * MINUTE, LANGE_WEG = 4 * STUNDE;
 
 // ---------- Tageslaune (MOMENTS.tempers) ----------
 // Gewichte der kleinen Momente: gehen, fenster, denken, summen, gähnen, drehen
@@ -120,7 +119,7 @@ MomentArt momentWaehlen(Stimmung s, bool istMuede, int laune, Gedanke& gedanke) 
 }
 
 bool momentErlaubt() {
-  return !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
+  return !(lage.gassi && millis() - lage.letzterGezaehlt < L::GASSI_ZEIGEN_MS) && !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
          evi.takt >= evi.reaktionBisTakt && evi.takt >= moment.ruheBisTakt;
 }
 
@@ -254,6 +253,53 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
     case M_HEIM:
       akt(A_HEIM, 0, 0, nullptr);
       break;
+    // Seit 24.11.2026: Bewegung (bewegung.ino)
+    case M_GASSI:
+      // Du gehst mit Evi spazieren: Sie trabt auf dem Teppich mit, solange Schritte kommen.
+      akt(A_GASSI, 0, 0, nullptr);
+      break;
+    case M_SCHWINDEL:
+      akt(A_MELDUNG, 4000, 0, "Hui! Alles dreht sich!");
+      akt(A_BILD, MB_DREHEN, 0, nullptr);
+      akt(A_WACKELN, 16, 0, nullptr);
+      akt(A_BILD, MB_STAUNEN, 0, nullptr);
+      akt(A_SAGEN, 3000, 0, bewegung.schwindelText);
+      akt(A_WARTEN, 25, 0, nullptr);
+      akt(A_BILD, MB_KEINS, 0, nullptr);
+      akt(A_HEIM, 0, 0, nullptr);
+      break;
+    case M_ROLLEN:
+      // Gekippt: Der Ball rollt zur tieferen Seite, Evi rennt hinterher. Liegt das Gerät wieder gerade,
+      // holt sie ihn sich.
+      akt(A_MELDUNG, 4000, 0, "Huch! Der Ball rollt!");
+      akt(A_ROLLEN, 0, 0, nullptr);
+      akt(A_HUEPFEN, 1, 8, nullptr);
+      akt(A_SAGEN, 2400, 0, "Hab ihn!");
+      akt(A_BALL_WEG, 0, 0, nullptr);
+      akt(A_WARTEN, 12, 0, nullptr);
+      akt(A_HEIM, 0, 0, nullptr);
+      break;
+    case M_NICKERCHEN:
+      akt(A_BILD, MB_GAEHNEN, 0, nullptr);
+      akt(A_SAGEN, 3500, 0, "Gähn … das war ein schönes Nickerchen!");
+      akt(A_WARTEN, 24, 0, nullptr);
+      akt(A_BILD, MB_KEINS, 0, nullptr);
+      break;
+    case M_TROESTEN:
+      // Antwort „Nicht so gut“ auf „Wie war dein Tag?“
+      akt(A_BILD, MB_GLUECKLICH, 0, nullptr);
+      akt(A_SAGEN, 4000, 0, "Oh nein … Komm, ich kuschel mit dir.");
+      akt(A_WARTEN, 34, 0, nullptr);
+      akt(A_MELDUNG, 6000, 0, "Ich sing dir ein Lied ♪");
+      akt(A_BILD, MB_SINGEN, 0, nullptr);
+      akt(A_SUMMEN, 1, 0, nullptr);
+      akt(A_WARTEN, 45, 0, nullptr);
+      akt(A_SUMMEN, 0, 0, nullptr);
+      akt(A_BILD, MB_GLUECKLICH, 0, nullptr);
+      akt(A_SAGEN, 3000, 0, "Hab dich lieb! ♥");
+      akt(A_WARTEN, 25, 0, nullptr);
+      akt(A_BILD, MB_KEINS, 0, nullptr);
+      break;
     default:
       moment.art = M_KEINER;
       break;
@@ -268,6 +314,7 @@ void momentAufraeumen() {
   moment.summt = false;
   moment.bild = MB_KEINS;
   falter.sichtbar = vogel.sichtbar = stern.sichtbar = false;
+  rollBall.sichtbar = false;
   gang.laeuft = false;
   geher.lift = 0;
 }
@@ -487,6 +534,62 @@ int aktSchritt(int nummer) {
       }
       stern.sichtbar = false;
       return 0;
+    case A_GASSI:
+      // Traben auf der Stelle: Bild „laufen“, kleine Schritte auf und ab
+      if (lage.gassi && millis() - lage.letzterGezaehlt < L::GASSI_ZEIGEN_MS) {
+        moment.bild = MB_LAUFEN;
+        geher.lift = (moment.zaehler / 2) % 2 ? 2 : 0;
+        moment.zaehler++;
+        return 1;
+      }
+      moment.bild = MB_KEINS;
+      geher.lift = 0;
+      return 0;
+    case A_WACKELN:
+      // geschüttelt: hin und her
+      if (moment.zaehler >= a.a) { geher.x = 0; geher.flip = false; return 0; }
+      geher.x = (moment.zaehler % 4 == 1) ? -4 : (moment.zaehler % 4 == 3) ? 4 : 0;
+      if (moment.zaehler % 3 == 0) geher.flip = !geher.flip;
+      moment.zaehler++;
+      return 1;
+    case A_ROLLEN: {
+      // Der Ball rollt mit der Neigung (Punkte pro Takt), prallt sanft von den Wänden ab.
+      // Evi läuft ihm nach, höchstens 3 Punkte pro Takt. Fertig, wenn das Gerät 3 s gerade liegt
+      // (oder nach 40 s) und Evi beim Ball ist.
+      const float neigung = lageKippen();
+      rollBall.sichtbar = true;
+      rollBall.v += neigung * 1.2f;
+      rollBall.v *= 0.94f;
+      if (rollBall.v > 9) rollBall.v = 9;
+      if (rollBall.v < -9) rollBall.v = -9;
+      rollBall.x += rollBall.v;
+      if (rollBall.x < 20) { rollBall.x = 20; rollBall.v = -rollBall.v * 0.4f; }
+      if (rollBall.x > 300) { rollBall.x = 300; rollBall.v = -rollBall.v * 0.4f; }
+      rollBall.gerade = fabsf(neigung) < L::KIPPEN_GERADE && fabsf(rollBall.v) < 0.5f ? rollBall.gerade + 1 : 0;
+      // Evi stellt sich neben den Ball (auf der Seite, von der sie kommt)
+      const float eviMitte = BODEN_X + geher.x;
+      int ziel = (int)lroundf(rollBall.x - BODEN_X + (eviMitte < rollBall.x ? -40 : 40));
+      if (ziel < -120) ziel = -120;
+      if (ziel > 110) ziel = 110;
+      const int rest = ziel - geher.x;
+      if (abs(rest) > 2) {
+        const int weite = abs(rest) < 3 ? abs(rest) : 3;
+        geher.x += rest > 0 ? weite : -weite;
+        geher.flip = rest > 0;
+        geher.lift = (moment.zaehler / 2) % 2 ? 2 : 0;
+        moment.bild = MB_LAUFEN;
+      } else {
+        geher.lift = 0;
+        geher.flip = rollBall.x > eviMitte;
+        moment.bild = MB_STAUNEN;
+      }
+      moment.zaehler++;
+      if ((rollBall.gerade >= 25 && abs(rest) <= 2) || moment.zaehler > 330) { geher.lift = 0; moment.bild = MB_KEINS; return 0; }
+      return 1;
+    }
+    case A_BALL_WEG:
+      rollBall.sichtbar = false;
+      return 0;
   }
   return 0;
 }
@@ -581,6 +684,7 @@ void momentTakt(ms_t jetzt) {
   }
   if (!bildschirmAn || jetzt < moment.naechster) return;     // kleine Momente nur, wenn jemand zuschaut
   moment.naechster = jetzt + naechsterAbstand();
+  if (tagVonSelbstFragen(jetzt)) return;                     // abends einmal: „Wie war dein Tag?“
   Gedanke gedanke = GD_KEINER;
   const MomentArt art = momentWaehlen(s, muede(pet, jetzt), launeHeute(jetzt), gedanke);
   if (art == M_KEINER) return;

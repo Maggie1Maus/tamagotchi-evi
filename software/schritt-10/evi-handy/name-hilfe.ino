@@ -165,11 +165,24 @@ const HilfeAbsatz HILFE[] = {
             "Bauchweh. Medizin hilft sofort."},
   {"Wünsche", "Ein paar Mal am Tag wünscht sich Evi etwas, zum Beispiel ein bestimmtes Spiel. Erfüllst du den Wunsch "
               "innerhalb einer Stunde, bekommst du 3 Münzen und Evi freut sich. Verpasst du ihn, ist das nicht schlimm."},
-  {"Spielen", "Im Menü gibt es drei Spiele mit je 5 Runden. Jeder Erfolg bringt 2 Münzen. "
+  {"Spielen", "Im Menü gibt es fünf Spiele mit je 5 Runden. Jeder Erfolg bringt 2 Münzen. "
               "Ballfangen: Drück A, wenn der Ball im gepunkteten Feld ist. "
               "Links oder rechts?: Rate mit ◀ oder ▶, wohin Evi springt. "
               "Melodie merken: Evi spielt Töne auf drei Feldern vor. Spiel sie mit ◀, A und ▶ nach; ein falscher Ton "
-              "beendet das Spiel. B beendet jedes Spiel vorzeitig."},
+              "beendet das Spiel. "
+              "Kekse fangen: Kekse fallen von oben. Lauf mit ◀ ▶ hin oder kipp das Gerät, dann fängt Evi sie mit dem Mund. "
+              "Schnick, Schnack: Schere (◀), Stein (A) oder Papier (▶). Schere schneidet Papier, Papier wickelt Stein "
+              "ein, Stein macht Schere stumpf. Bei Gleichstand gibt es eine neue Runde. "
+              "B beendet jedes Spiel vorzeitig."},
+  {"Evi spürt Bewegung", "Gassi gehen: Nimm Evi beim Spazierengehen mit. Sie zählt die Schritte und trabt mit, wenn "
+                         "du hinschaust. Ab 100 Schritten freut sie sich nach dem Spaziergang (+10 Stimmung, mehr bei "
+                         "langen Wegen, 1 Münze je 500 Schritte), wird aber etwas hungrig und hat schmutzige Pfoten. "
+                         "Schütteln: Evi wird schwindelig. Kippen: Ein Ball rollt zur tieferen Seite, und Evi rennt "
+                         "hinterher. Aufs Gesicht legen: Der Bildschirm geht aus, nachts auch das Licht für Evi. "
+                         "Umgedreht geht er wieder an. Kippen und Hinlegen kennt Evi, sobald du ein paarmal Tasten "
+                         "gedrückt hast, während du das Gerät schräg in der Hand hältst."},
+  {"Wie war dein Tag?", "Abends zwischen 18 und 23 Uhr fragt Evi einmal, wie dein Tag war. Antworte mit Gut, So lala "
+                        "oder Nicht so gut. Bis du antwortest, steht die Frage auch im Menü."},
   {"Evi tut auch selbst etwas", "Als Baby, Teenager, Erwachsene und Oma läuft sie ab und zu herum, schaut aus dem Fenster, summt, gähnt, dreht "
                                 "sich im Kreis oder denkt an etwas. Ein- bis zweimal am Tag kommt Besuch: ein "
                                 "Schmetterling oder ein Vogel, und wenn es draußen dunkel ist, eine Sternschnuppe. Dann "

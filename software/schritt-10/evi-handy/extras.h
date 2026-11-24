@@ -7,11 +7,13 @@
 #include "zeit.h"
 
 // ---------- Spiele (GAMES in app.js) ----------
-enum SpielArt : uint8_t { SPIEL_BALL, SPIEL_RATEN, SPIEL_MELODIE };
+// Seit 24.11.2026 dazu: Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board)
+enum SpielArt : uint8_t { SPIEL_BALL, SPIEL_RATEN, SPIEL_MELODIE, SPIEL_KEKSE, SPIEL_SCHNICK };
 // Tasten im Spiel wie in der App: links, Mitte, rechts; dazu „abbrechen“ (nur am Gerät)
 enum SpielTaste : uint8_t { ST_LINKS, ST_MITTE, ST_RECHTS, ST_ABBRUCH };
 // Was später passieren soll (statt setTimeout in der App)
-enum SpielEreignis : uint8_t { SE_NICHTS, SE_ENDE, SE_BALL_WEITER, SE_RATEN_ZURUECK, SE_TON, SE_DU_BIST_DRAN, SE_MELODIE_WEITER };
+enum SpielEreignis : uint8_t { SE_NICHTS, SE_ENDE, SE_BALL_WEITER, SE_RATEN_ZURUECK, SE_TON, SE_DU_BIST_DRAN, SE_MELODIE_WEITER,
+                               SE_KEKS_WEITER, SE_SCHNICK_WORT, SE_SCHNICK_ZEIGEN, SE_SCHNICK_WEITER };
 
 struct SpielPlan { SpielEreignis was; int8_t wert; uint32_t um; };
 
@@ -31,14 +33,24 @@ struct SpielZustand {
   int folgeLaenge = 0, schritt = 0;
   int leuchtet = -1;           // Feld 0–2, das gerade schwarz ist
   uint32_t leuchtetBis = 0;
+  // Kekse fangen: Keks (Mitte x, Mitte y, Fallgeschwindigkeit), Evi schaut nach rechts?
+  float kx = 0, ky = 0, kTempo = 0;
+  bool keksFaellt = false, eviRechts = false;
+  float eviGenau = 0;          // Evis Platz mit Kommastellen (Kippen bewegt sie sanft)
+  // Schnick, Schnack, Schnuck: 0 Schere, 1 Stein, 2 Papier; -1 = noch nicht gewählt
+  int8_t meins = -1, evis = -1;
   SpielPlan plan[12];
   int planAnzahl = 0;
 };
 SpielZustand spiel;
 
 // ---------- Evis Momente (moments.js, SCRIPTS in app.js) ----------
+const ms_t GRUSS_NACH = 3 * MINUTE, LANGE_WEG = 4 * STUNDE;   // Begrüßung: nach 3 Minuten weg, „endlich“ nach 4 Stunden
 const uint32_t RUHE_TAKTE = 120;   // QUIET_TICKS: etwa 15 s ohne neuen Moment nach Begrüßung und Pflege
-enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM, M_KEINER = 255 };
+// Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Gassi (mittraben), Schwindel (geschüttelt),
+// Rollen (gekippt: der Ball rollt), Nickerchen (wieder umgedreht), Trösten (Antwort auf „Wie war dein Tag?“)
+enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM,
+                           M_GASSI, M_SCHWINDEL, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KEINER = 255 };
 // Bilder der Momente: Nummer in MOMENT_BILD (momente.h)
 enum MomentBild : int8_t { MB_KEINS = -1, MB_LAUFEN, MB_FENSTER, MB_DENKEN, MB_SINGEN, MB_GAEHNEN, MB_DREHEN, MB_HUEPFEN, MB_STAUNEN,
                            MB_GLUECKLICH = 100 };
@@ -47,7 +59,8 @@ enum Gedanke : int8_t { GD_KEINER = -1, GD_HERZ, GD_KEKS, GD_BALL, GD_NOTE, GD_F
 // Einzelne Schritte eines Moments (ein Moment ist eine Liste davon)
 enum AktArt : uint8_t { A_MELDUNG, A_SAGEN, A_TON, A_WARTEN, A_GEHEN, A_HEIM, A_HUEPFEN, A_BILD, A_FLIP, A_DENKEN, A_SUMMEN, A_DREHEN,
                         A_FALTER_REIN, A_FALTER_KREISEN, A_FALTER_LANDEN, A_FALTER_SITZEN, A_FALTER_WEG,
-                        A_VOGEL_REIN, A_VOGEL_SINGEN, A_VOGEL_WEG, A_STERN };
+                        A_VOGEL_REIN, A_VOGEL_SINGEN, A_VOGEL_WEG, A_STERN,
+                        A_GASSI, A_WACKELN, A_ROLLEN, A_BALL_WEG };
 struct Akt { AktArt art; int16_t a, b; const char* text; };
 
 struct MomentZustand {
@@ -87,3 +100,21 @@ struct { int ziel = 0, schritte = 0; bool laeuft = false; MomentBild vorher = MB
 int eviOben = 100, eviHoehe = 80;
 // Seit wann der Bildschirm dunkel ist (für die Begrüßung)
 ms_t dunkelSeit = 0;
+
+// Der Ball (Ballfangen und Kippen): 14 × 14 Punkte mit einem kleinen Glanzloch
+const uint8_t BALL_ZEILEN[14][2] = {{4, 9}, {4, 9}, {2, 11}, {2, 11}, {0, 13}, {0, 13}, {0, 13},
+                                    {0, 13}, {0, 13}, {0, 13}, {2, 11}, {2, 11}, {4, 9}, {4, 9}};
+
+// ---------- Bewegung (bewegung.ino, Lagesensor in lage.h), seit 24.11.2026 ----------
+// Der Ball, der beim Kippen über den Teppich rollt (Mitte x, Geschwindigkeit in Punkten pro Takt)
+struct { bool sichtbar = false; float x = 0, v = 0; int gerade = 0; } rollBall;
+struct {
+  bool ausDurchLage = false;     // Bildschirm ging aus, weil das Gerät aufs Gesicht gelegt wurde
+  uint32_t schuettelnZeit[3] = {0, 0, 0};   // die letzten drei Male Schütteln (millis), für „Bitte nicht mehr!“
+  const char* schwindelText = "";
+  bool gassiOffen = false;       // Ein Spaziergang endete bei dunklem Bildschirm: beim Einschalten erzählen
+  char gassiText[64] = "";
+  uint32_t schritteHeute = 0;    // nur im Arbeitsspeicher
+  int32_t schritteTag = -1;
+  int32_t tagGefragt = -1, tagBeantwortet = -1;   // „Wie war dein Tag?“ (Tageskennung)
+} bewegung;

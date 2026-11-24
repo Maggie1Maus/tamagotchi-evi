@@ -13,6 +13,8 @@
 // Etappe 2: die drei Spiele (spiele.ino). Etappe 3: Name ändern und Hilfe (name-hilfe.ino).
 // Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, ab Baby bis Oma).
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
+// Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): Gassi gehen, schütteln, kippen, aufs Gesicht
+// legen; dazu „Wie war dein Tag?“ und die Spiele Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board).
 //
 // Board in der Arduino IDE: „Raspberry Pi Pico 2“. Bibliothek: „Adafruit GFX Library“.
 
@@ -20,6 +22,7 @@
 #include "bildschirm.h"
 #include "touch.h"
 #include "tasten.h"
+#include "lage.h"
 #include "ton.h"
 #include "text.h"
 #include "zeit.h"
@@ -56,7 +59,8 @@ bool bildschirmAn = true;
 
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
-                         E_NAME, E_TON, E_HILFE, E_UHR, E_BALL, E_RATEN, E_MELODIE };
+                         E_NAME, E_TON, E_HILFE, E_UHR, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
+                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT };
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL };   // Begrüßung: 2 bzw. 4 Hüpfer
@@ -477,27 +481,33 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
     default: {
       Wunsch w;
       if (geweckt(pet, jetzt)) { snprintf(aus, n, "Gähn … wach für %d Min.", (int)max((ms_t)1, (pet.wachBis - jetzt + MINUTE - 1) / MINUTE)); return; }
+      if (gassiZeile(jetzt, aus, n)) return;
       if (aktuellerWunsch(pet, jetzt, w)) { snprintf(aus, n, "Ein Wunsch!"); return; }
       if (ausgeschlafen(pet, jetzt)) { snprintf(aus, n, "Ausgeschlafen! Guten Morgen"); return; }
       if (muede(pet, jetzt)) { snprintf(aus, n, "%s", stundeVon(jetzt) < 12 ? "Gähn … guten Morgen" : "Gähn … Zeit für Gute Nacht?"); return; }
-      // Alle 10 Sekunden im Wechsel sagt Evi ihre Tageslaune (ab Baby).
-      if (momenteFuer(phaseBei(pet, jetzt)) && (jetzt / 10000) % 2) { launeZeile(jetzt, aus, n); return; }
+      // Alle 10 Sekunden im Wechsel: Tageslaune (ab Baby), Schritte von heute, Hinweis zum Menü
+      const int wechsel = (int)((jetzt / 10000) % 3);
+      if (momenteFuer(phaseBei(pet, jetzt)) && wechsel == 1) { launeZeile(jetzt, aus, n); return; }
+      if (wechsel == 2 && schritteZeile(jetzt, aus, n)) return;
       snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
     }
   }
 }
 
 // ---------- Menü ----------
-struct MenuePunkt { Eintrag e; const Bild* symbol; char text[24]; };
+// symbol = Bild aus der App; ohne Bild eine gezeichnete Figur (zeichen: 0 Schere, 3 Wolke, 4 Regenwolke)
+struct MenuePunkt { Eintrag e; const Bild* symbol; int8_t zeichen; char text[26]; };
 MenuePunkt menue[12];
 int menueAnzahl = 0, gewaehlt = 0;
-bool menueOffen = false, spieleAuswahl = false;
+bool menueOffen = false, spieleAuswahl = false, tagAuswahl = false;
 
-void punkt(Eintrag e, const Bild* s, const char* t) {
+void punkt(Eintrag e, const Bild* s, const char* t, int zeichen = -1) {
+  if (menueAnzahl >= 12) return;
   menue[menueAnzahl].e = e;
   menue[menueAnzahl].symbol = s;
-  strncpy(menue[menueAnzahl].text, t, 23);
-  menue[menueAnzahl].text[23] = 0;
+  menue[menueAnzahl].zeichen = (int8_t)zeichen;
+  strncpy(menue[menueAnzahl].text, t, 25);
+  menue[menueAnzahl].text[25] = 0;
   menueAnzahl++;
 }
 
@@ -508,6 +518,12 @@ void menueBauen() {
     punkt(E_BALL, &SYM_M_BALL, "Ballfangen");
     punkt(E_RATEN, &SYM_M_PFEILE, "Links oder rechts?");
     punkt(E_MELODIE, &SYM_M_NOTE, "Melodie merken");
+    punkt(E_KEKSE, &SYM_M_KEKS, "Kekse fangen");
+    punkt(E_SCHNICK, nullptr, "Schnick, Schnack", 0);
+  } else if (tagAuswahl) {
+    punkt(E_TAG_GUT, &SYM_M_SONNE, "Gut");
+    punkt(E_TAG_LALA, nullptr, "So lala", 3);
+    punkt(E_TAG_SCHLECHT, nullptr, "Nicht so gut", 4);
   } else {
     const Phase ph = phaseBei(pet, jetzt);
     if (ph == TOT) {
@@ -521,6 +537,7 @@ void menueBauen() {
           punkt(E_LICHT, &SYM_M_LICHT, pet.lichtAus ? "Licht an" : "Licht aus");
         } else if (s == WACH) {
           if (gesperrt(pet, RITUAL, jetzt) == OK) punkt(E_RITUAL, &SYM_M_MOND, "Gute Nacht");
+          if (tagImMenue(jetzt)) punkt(E_TAG, &SYM_M_HERZ, "Wie war dein Tag?");
           if (gesperrt(pet, MEDIZIN, jetzt) == OK) punkt(E_MEDIZIN, &SYM_M_MEDIZIN, "Medizin");
           const int m = mahlzeitFaellig(pet, jetzt);
           punkt(E_FUETTERN, &SYM_M_FUTTER, m >= 0 ? MAHLZEITEN[m] : "Füttern");
@@ -538,14 +555,15 @@ void menueBauen() {
   gewaehlt = 0;
 }
 
-void menueZeigen(bool offen, bool spiele = false) {
+void menueZeigen(bool offen, bool spiele = false, bool tag = false) {
   spieleAuswahl = spiele;
+  tagAuswahl = tag;
   if (offen) menueBauen();
   menueOffen = offen;
 }
 
 void zeichneMenue() {
-  const int w = 150, x = BREITE - 5 - w, unten = ZEILE_Y - 5, zeileH = 17;
+  const int w = 150, x = BREITE - 5 - w, unten = ZEILE_Y - 5, zeileH = menueAnzahl > 10 ? 15 : 17;
   const int h = 2 + 3 + menueAnzahl * zeileH + 3 + 2, y = unten - h;
   bild.fillRoundRect(x + 2, y + 2, w, h, 6, 0);   // Schatten 2px
   bild.fillRoundRect(x, y, w, h, 6, 1);
@@ -556,8 +574,12 @@ void zeichneMenue() {
     const bool sel = i == gewaehlt;
     if (sel) bild.fillRect(x + 5, iy, w - 10, zeileH, 0);
     const uint16_t f = sel ? 1 : 0;
-    const Bild& s = *menue[i].symbol;
-    zeichneSymbol(s, x + 10 + (14 - s.w) / 2, iy + (zeileH - s.h) / 2, f);
+    if (menue[i].symbol) {
+      const Bild& s = *menue[i].symbol;
+      zeichneSymbol(s, x + 10 + (14 - s.w) / 2, iy + (zeileH - s.h) / 2, f);
+    } else {
+      zeichneZeichen(menue[i].zeichen, x + 17, iy + zeileH / 2, 6, f, sel ? 0 : 1);
+    }
     schreibe(bild, x + 10 + 14 + 6, iy + 5, menue[i].text, f, 1, sel);
   }
 }
@@ -626,6 +648,7 @@ void zeichneAlles() {
   if (spiel.aktiv) {
     spielZeichnen();                               // Ball, Pfeile oder Felder liegen vor Evi
   } else {
+    bewegungZeichnenVorne();                       // der Ball, der beim Kippen rollt (vor Evi)
     momentZeichnenVorne();                         // Gedankenwolke, Noten, Schmetterling
     if (s == S_SCHLAEFT && !ritual.aktiv) zeichneZ();
     zeichneBlase(jetzt);
@@ -672,6 +695,8 @@ void aktionAusfuehren(Eintrag e) {
   if (e == E_NAME) { nameSollGeaendertWerden = true; return; }
   if (e == E_HILFE) { hilfeSollGezeigtWerden = true; return; }
   if (e == E_UHR) { uhrSollGestelltWerden = true; return; }
+  if (e == E_TAG) { tagFragen(); return; }
+  if (e == E_TAG_GUT || e == E_TAG_LALA || e == E_TAG_SCHLECHT) { tagAntwort(e == E_TAG_GUT ? 0 : e == E_TAG_LALA ? 1 : 2); return; }
   if (e == E_TON) {
     tonAn = !tonAn;
     piep(TON(TON_MUENZE));
@@ -679,13 +704,14 @@ void aktionAusfuehren(Eintrag e) {
     speichern(jetzt);
     return;
   }
-  if (e == E_SPIELEN || e == E_BALL || e == E_RATEN || e == E_MELODIE) {
+  if (e == E_SPIELEN || e == E_BALL || e == E_RATEN || e == E_MELODIE || e == E_KEKSE || e == E_SCHNICK) {
     Tier probe = pet;
     weiterrechnen(probe, jetzt);
     const Grund g = gesperrt(probe, SPIELEN, jetzt);
     if (g != OK && g != G_VOLL) { grundText(g, SPIELEN, text, sizeof(text)); zeigeMeldung(text); return; }
     if (e == E_SPIELEN) menueZeigen(true, true);
-    else spielStarten(e == E_BALL ? SPIEL_BALL : e == E_RATEN ? SPIEL_RATEN : SPIEL_MELODIE);
+    else spielStarten(e == E_BALL ? SPIEL_BALL : e == E_RATEN ? SPIEL_RATEN : e == E_MELODIE ? SPIEL_MELODIE :
+                      e == E_KEKSE ? SPIEL_KEKSE : SPIEL_SCHNICK);
     return;
   }
   // Was Evi gerade selbst tut: Jetzt kümmerst du dich um sie.
@@ -736,7 +762,9 @@ void taste(Taste k) {
     aktionAusfuehren(e);
   } else {
     if (menueOffen && spieleAuswahl) { menueZeigen(true); return; }
+    const bool tag = menueOffen && tagAuswahl;
     menueZeigen(false);
+    if (tag) tagAntwort(-1);       // „Wie war dein Tag?“ ohne Antwort geschlossen
   }
 }
 
@@ -766,7 +794,12 @@ void knopf(Knopf k) {
   const ms_t jetzt = jetztMs();
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);
   if (ritual.aktiv) { ritualBeenden(); return; }   // jede Taste überspringt Gute Nacht
-  if (k == K_START) { menueZeigen(!menueOffen); return; }
+  if (k == K_START) {
+    const bool tag = menueOffen && tagAuswahl;
+    menueZeigen(!menueOffen);
+    if (tag) { menueZeigen(false); tagAntwort(-1); }
+    return;
+  }
   if (!menueOffen || menueAnzahl == 0) return;
   if (k == K_UP) gewaehlt = (gewaehlt + menueAnzahl - 1) % menueAnzahl;
   else if (k == K_DOWN) gewaehlt = (gewaehlt + 1) % menueAnzahl;
@@ -904,6 +937,7 @@ void setup() {
   bildschirmStarten();
   touchStarten();
   tastenStarten();
+  lageStarten();                 // Lagesensor QMI8658 (Bewegung)
   tonStarten();
   randomSeed(micros() ^ analogRead(BAT_ADC));
 
@@ -969,8 +1003,11 @@ void loop() {
     bildschirmEin();
   }
 
+  bewegungTakt();                 // Lagesensor: Gassi, schütteln, kippen, aufs Gesicht
+
   int x, y;
   if (tipper(x, y)) {
+    lageBeimBedienen();          // wer tippt, hält das Gerät mit dem Bildschirm nach oben
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
       bildschirmEin();
@@ -980,6 +1017,7 @@ void loop() {
 
   const int k = naechsteTaste();
   if (k >= 0) {
+    lageBeimBedienen();
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Druck weckt nur den Bildschirm
     else {
       bildschirmEin();
