@@ -9,8 +9,8 @@
 #    obere Reihe = Sonne, Sonne mit Wolke, Regenwolke, Wolke. Das Fensterkreuz der Vorlage wird weggelassen und
 #    die vier Scheiben einzeln auf die Scheiben des Spielfensters gelegt (dessen Kreuz liegt davor).
 #  - weihnachtsbaum.png (durchsichtiger Hintergrund)
-# Von Claude gezeichnet, weil es dafür kein Bild gibt: Dielenboden (nach dem Muster „Boden“ im Entwurf),
-# Sterne am Fensterrahmen, Kerzentablett.
+#  - fenster-sterne.png, kerzentablett.png (durchsichtiger Hintergrund, seit 24.11.2026)
+# Von Claude gezeichnet, weil es dafür kein Bild gibt: Dielenboden (nach dem Muster „Boden“ im Entwurf).
 # Der Rest des Zimmers (Fenster, Teppich, Tapete) kommt aus dem bisherigen Zimmer in evi-handy/assets.h.
 #
 #   python3 software/schritt-10/tools/make-umgebung.py
@@ -88,6 +88,18 @@ PFLANZE = moebel((600, 160, 930, 510), 7.0)
 NAPF = moebel((1080, 160, 1430, 510), 10.5)
 REGAL = moebel((60, 630, 500, 930), 5.25)
 SIDEBOARD = moebel((540, 630, 1000, 930), 5.25)
+
+# ---------- Freigestellte Bilder der Nutzerin (durchsichtiger Hintergrund) ----------
+def freigestellt(name, f):
+    """Linien = dunkle deckende Punkte, Maske = deckende Punkte; verkleinert um f."""
+    bild = np.array(Image.open(os.path.join(U, name)).convert('RGBA'))
+    deck = bild[:, :, 3] > 128
+    dunk = (bild[:, :, :3].mean(2) < 128) & deck
+    ys, xs = np.nonzero(deck)
+    ausschnitt = (slice(ys.min(), ys.max() + 1), slice(xs.min(), xs.max() + 1))
+    lin = verkleinern(dunk[ausschnitt], f, 0.35)
+    mas = verkleinern(deck[ausschnitt], f, 0.5)
+    return lin, mas | lin
 
 # ---------- Weihnachtsbaum ----------
 wb = np.array(Image.open(os.path.join(U, 'weihnachtsbaum.png')).convert('RGBA'))
@@ -211,36 +223,12 @@ for i, (x0, x1) in enumerate(FENSTER_X):
     k = trimmen(k)
     WETTER.append(figur(k))
 
-# ---------- Von Claude gezeichnet (kein Entwurf vorhanden) ----------
-# Am Board waren Sterne und Kerzen viel zu klein: doppelt so groß (jeder Punkt wird 2 × 2).
-doppelt = lambda f: (np.kron(f[0], np.ones((2, 2), bool)), np.kron(f[1], np.ones((2, 2), bool)))
-STERN = figur(aus_text([
-    "...X...",
-    "..X.X..",
-    "XXX.XXX",
-    "X.....X",
-    ".X...X.",
-    "X..X..X",
-    "XXX.XXX"]))
-STERN = doppelt(STERN)
-KERZEN = figur(aus_text([
-    "...X..........................",
-    "..X.X.........................",
-    "..X.X......X..................",
-    "...X......X.X.................",
-    "..XXX.....X.X.......X.........",
-    "..X.X......X.......X.X........",
-    "..X.X.....XXX......X.X........",
-    "..X.X.....X.X.......X.........",
-    "..X.X.....X.X......XXX........",
-    "..X.X.....X.X......X.X...X.X..",
-    "..X.X.....X.X......X.X..XXXXX.",
-    "..X.X.....X.X......X.X.X.XXX.X",
-    "..X.X.....X.X......X.XX..XX...",
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX.",
-    "X..........................XX.",
-    ".XXXXXXXXXXXXXXXXXXXXXXXXXXX..."]))
-KERZEN = doppelt(KERZEN)
+# ---------- Weihnachtsdeko der Nutzerin (hochgeladen am 24.11.2026, ersetzt Claudes Platzhalter) ----------
+# Sternengirlande über dem Fenster: 1 : 16 (122 × 39 Punkte), die hängenden Sterne außen neben dem Rahmen
+FENSTERSTERNE = freigestellt('fenster-sterne.png', 16.0)
+# Kerzentablett auf dem Sideboard: 1 : 15 (72 × 52 Punkte), fast so breit wie das Sideboard; die Kerzen
+# stehen vor dem unteren Teil des Fensters
+KERZEN = freigestellt('kerzentablett.png', 15.0)
 
 # ---------- Grundzimmer ----------
 z = np.zeros((H, B), bool)
@@ -284,7 +272,8 @@ lagen = {
     'REGAL': (REGAL, 275 - REGAL[0].shape[1] // 2, 30),
     'PFLANZE': (PFLANZE, mitte_tisch - PFLANZE[0].shape[1] // 2, TISCH_OBEN - PFLANZE[0].shape[0]),
     'WEIHNACHTSBAUM': (WBAUM, 273 - WBAUM[0].shape[1] // 2, 179 - WBAUM[0].shape[0]),
-    'KERZEN': (KERZEN, 22, SIDEBOARD_UNTEN - SIDEBOARD[0].shape[0] + 7 - KERZEN[0].shape[0]),
+    'KERZEN': (KERZEN, 53 - KERZEN[0].shape[1] // 2, SIDEBOARD_UNTEN - SIDEBOARD[0].shape[0] + 8 - KERZEN[0].shape[0]),
+    'FENSTERSTERNE': (FENSTERSTERNE, 4, 28),
 }
 
 # ---------- Ausgabe ----------
@@ -317,7 +306,6 @@ for i, n in enumerate(['FRUEHLING', 'SOMMER', 'HERBST', 'WINTER']):
     bild_aus('FENSTER_' + n, JAHRESZEITEN[i], GLAS[0], GLAS[1])
 for i, n in enumerate(['SONNE', 'SONNE_WOLKE', 'REGENWOLKE', 'WOLKE']):
     bild_aus('WETTER_' + n, WETTER[i])
-bild_aus('FENSTERSTERN', STERN)
 zeilen.append('static const Bild* const FENSTER_JAHRESZEIT[4] = {&FENSTER_FRUEHLING, &FENSTER_SOMMER, &FENSTER_HERBST, &FENSTER_WINTER};')
 open(os.path.join(SKETCH, 'umgebung.h'), 'w', encoding='utf-8').write('\n'.join(zeilen) + '\n')
 

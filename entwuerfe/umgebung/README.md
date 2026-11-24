@@ -50,7 +50,7 @@ Die ausgewählten Dekorationen liegen als separate PNGs mit transparentem Hinter
 
 ![Freigestelltes Kerzentablett](kerzentablett.png)
 
-Freistellungen aus den ausgewählten Bildvorschlägen, mit der integrierten Bildbearbeitung erstellt. Transparenter Außenbereich und weiße Innenflächen der Dekoration bleiben erhalten. Die ursprünglichen Auflösungen sind hier unverändert aufbewahrt; die spätere Anpassung an das kleine Display erfolgt bei der Einbindung. Diese Dateien sind hochgeladen und ersetzen die bisher im Waveshare gezeichneten Platzhalter noch nicht automatisch.
+Freistellungen aus den ausgewählten Bildvorschlägen, mit der integrierten Bildbearbeitung erstellt. Transparenter Außenbereich und weiße Innenflächen der Dekoration bleiben erhalten. Die ursprünglichen Auflösungen sind hier unverändert aufbewahrt; die spätere Anpassung an das kleine Display erfolgt bei der Einbindung. Seit 24. November 2026 auf dem Waveshare eingebaut (statt der Platzhalter), mit `software/schritt-10/tools/make-umgebung.py`.
 
 ## Status
 

@@ -144,22 +144,6 @@ void fensterZeichnen(ms_t jetzt) {
   bild.fillRect(31, 81, 65, 4, 0);
 }
 
-// Sterne am Fensterrahmen (Weihnachten): eine Kette oben über den Rahmen und je einer an der Seite.
-// Seit dem Test am Board doppelt so groß (14 × 14).
-void fensterSterneZeichnen() {
-  static const int KETTE[5] = {19, 38, 57, 76, 95};
-  for (int i = 0; i < 4; i++) {          // Schnur hängt etwas durch
-    const int x0 = KETTE[i] + 7, x1 = KETTE[i + 1] + 7;
-    bild.drawLine(x0, 38, (x0 + x1) / 2, 41, 0);
-    bild.drawLine((x0 + x1) / 2, 41, x1, 38, 0);
-  }
-  for (int x : KETTE) zeichneBild(FENSTERSTERN, x, 32);
-  bild.drawFastVLine(18, 46, 16, 0);
-  zeichneBild(FENSTERSTERN, 11, 62);
-  bild.drawFastVLine(110, 46, 26, 0);
-  zeichneBild(FENSTERSTERN, 103, 72);
-}
-
 // Das ganze Zimmer: Grund, Möbel je nach Zeit, Fenster.
 // Zu Weihnachten steht der Baum auf dem Boden; Tisch, Regal und Pflanze sind dann weg.
 void zimmerZeichnen(ms_t jetzt) {
@@ -169,7 +153,7 @@ void zimmerZeichnen(ms_t jetzt) {
   if (weihnachtsZeit(jetzt)) {
     zeichneAnStelle(WEIHNACHTSBAUM);
     zeichneAnStelle(KERZEN);
-    fensterSterneZeichnen();
+    zeichneAnStelle(FENSTERSTERNE);   // Sternengirlande der Nutzerin über dem Fenster
   } else {
     zeichneAnStelle(TISCH);
     zeichneAnStelle(REGAL);

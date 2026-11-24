@@ -7,7 +7,7 @@ Stand: 24. November 2026
 Rückmeldung der Nutzerin nach dem Aufspielen: Bewegung viel zu empfindlich (Schritte beim Stillhalten und Kippen, Schwindel beim Ablegen, Wackeln ohne Reaktion); Weihnachtsdeko zu klein; Baum nicht auf den Tisch.
 - Bewegungserkennung neu und strenger, Maßstab des Sensors wird selbst gelernt; `L` im Seriellen Monitor zeigt die Sensorwerte. Einzelheiten in `software/schritt-10/README.md`.
 - Weihnachten: Baum groß auf dem Boden, Tisch dann weg; Sterne und Kerzen doppelt so groß.
-- **Bilder jetzt vorhanden:** Auf Wunsch der Nutzerin sind `entwuerfe/umgebung/fenster-sterne.png` und `entwuerfe/umgebung/kerzentablett.png` als separate PNGs mit transparentem Hintergrund hochgeladen (ohne Fenster bzw. Sideboard). Sie können jetzt wie die anderen Entwürfe über `tools/make-umgebung.py` eingebaut werden. Die Platzhalter wurden durch diesen Datei-Upload noch nicht ersetzt.
+- **Bilder eingebaut (24. November 2026):** `entwuerfe/umgebung/fenster-sterne.png` und `kerzentablett.png` ersetzen auf dem Waveshare Claudes Platzhalter (über `tools/make-umgebung.py`): Girlande über dem Fenster, Kerzentablett groß auf dem Sideboard. Am Board noch nicht angesehen.
 - Am Board erneut ausprobieren: Gassi gehen, Stillhalten, Kippen, Wackeln, Ablegen.
 
 ## Waveshare: neues Zimmer, Jahreszeiten, Wetter, Weihnachtsdeko (24. November 2026)
@@ -16,7 +16,7 @@ Wunsch der Nutzerin: Jahreszeiten wie in den Fensterentwürfen (Frühling ab 1. 
 - Möbel aus `entwuerfe/umgebung/` (Sideboard, Tisch mit Pflanze, Wandregal, Napf) und Dielenboden; Werkzeug `tools/make-umgebung.py` → `umgebung.h`.
 - Wetter wechselt alle 3 Stunden, fest für jeden Tag; zu sehen am Tag und in der Dämmerung, nachts wie bisher Mond und Sterne.
 - Weihnachten 18. November bis 5. Januar: Baum auf dem Tisch statt Regal und Pflanze, Sterne am Fenster, Kerzentablett auf dem Sideboard (derselbe Zeitraum für alles; die Nutzerin hatte ihn für Sterne und Kerzen noch nicht festgelegt).
-- Fenstersterne und Kerzentablett waren zunächst klein selbst gezeichnete Platzhalter. Die ausgewählten freigestellten Bilder liegen inzwischen unter `entwuerfe/umgebung/fenster-sterne.png` und `entwuerfe/umgebung/kerzentablett.png`; Einbindung steht noch aus.
+- Fenstersterne und Kerzentablett waren zunächst klein selbst gezeichnete Platzhalter; seit 24. November 2026 sind die Bilder der Nutzerin eingebaut.
 - Geprüft in der PC-Nachbildung (`umgebung.cpp`), Bilder angesehen. **Am Board noch nicht ausprobiert.**
 
 ## Waveshare: Evi spürt Bewegung, „Wie war dein Tag?“, zwei neue Spiele (24. November 2026)
