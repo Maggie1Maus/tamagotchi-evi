@@ -85,7 +85,7 @@ Laut Nutzerin fühlte sich das Steuerkreuz schwerfällig an. Mechanisch wird die
 - Der MCP23017 **merkt sich jede Änderung** (Interrupt bei Änderung, Register INTF/INTCAP), ohne dass der INT-Ausgang angeschlossen ist. Ein kurzes Antippen zwischen zwei Abfragen geht nicht mehr verloren. Grenze: Werden zwei verschiedene Tasten innerhalb weniger ms angetippt und beide vor der nächsten Abfrage losgelassen, zählt nur die erste.
 - Abfrage etwa alle 3 ms (vorher 8 ms). Festhalten wiederholt nur, solange die Taste wirklich gedrückt ist.
 
-Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 10-ms-Tipper während 40 ms Zeichnen wird erkannt (die alte Abfrage verpasste ihn), Halten zählt einmal, Steuerkreuz wiederholt, Flackern zählt nicht doppelt, zwei schnelle Tipper zählen zweimal. **Am Board noch nicht ausprobiert.**
+Geprüft mit einem nachgebildeten MCP23017 (`tools/pc-nachbildung/tasten.cpp`): 10-ms-Tipper während 40 ms Zeichnen wird erkannt (die alte Abfrage verpasste ihn), Halten zählt einmal, Steuerkreuz wiederholt, Flackern zählt nicht doppelt, zwei schnelle Tipper zählen zweimal. **Am Board ausprobiert (24. November 2026, laut Nutzerin): Die Tasten reagieren jetzt schnell und funktionieren „richtig gut“; die Gummimatte muss nicht eingeschnitten werden.**
 
 ## Echte Retro-Gamer-Tasten (23. November 2026)
 
