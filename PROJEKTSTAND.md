@@ -8,6 +8,7 @@ Stand: 24. November 2026
 - Die vier Jahreszeiten am Baum vor dem Fenster sind bestätigt. **Fünf Wetterzustände**: Sonne, Sonne mit Wolken, Regen, bewölkt und Schneefall. Jede Jahreszeit ist mit jedem Wetter kombinierbar (20 Kombinationen), auch Winter mit Sonne oder Regen. Liegender Schnee und Schneefall sind unabhängig.
 - Das Wetter wird simuliert, ohne Internet; echtes Wetter bleibt verworfen. Auswahl und Häufigkeit noch offen. Nacht mit Mond, Sternen und Sternschnuppen bleibt bestehen.
 - **Weihnachtsbaum:** ersetzt jährlich ab **18. November** Wandregal und Pflanze; am **6. Januar** werden Regal und Pflanze wieder angezeigt. Damit sichtbar bis einschließlich 5. Januar, nach deutscher Ortszeit. Tischänderung nicht beschlossen.
+- **Weitere Weihnachtsdeko ausgewählt:** Sterne am äußeren Fensterrahmen und ein Kerzentablett mit drei unterschiedlich hohen Kerzen, Tannenzweig und wenigen Beeren auf dem Sideboard. Der Ausblick bleibt frei. Zeitraum und Flackern noch offen; noch nicht eingebaut.
 - Originale PNG-Vorschauen und Hinweise: [`entwuerfe/umgebung/README.md`](entwuerfe/umgebung/README.md). Dies ist ein Upload der Entwürfe und Planung; die neuen Möbel, Wetterzustände und der saisonale Tausch sind noch nicht im Spiel eingebaut.
 
 ## Ideen: Evi alltagsnah und interaktiver, ohne Internet (24. November 2026, Ideensammlung)

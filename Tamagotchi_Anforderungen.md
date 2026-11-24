@@ -206,4 +206,13 @@ Die Entwürfe und diese Ergänzung sind Gestaltungsvorgaben. Eine Integration de
 - Schwarz-Weiß-Pixelgrafik mit Stern, wenigen Kugeln und einer schlichten Girlande. Entwurf: `entwuerfe/umgebung/weihnachtsbaum.png`.
 - Die Datumsregel ist geplant; in diesem Schritt werden nur Entwürfe und Planung hochgeladen.
 
+### Weitere Weihnachtsdekoration – Auswahl vom 24. November 2026
+
+- **Fenster mit Sternen** ist ausgewählt: kleine hängende Sterne und eine schlichte Sternengirlande am äußeren Fensterrahmen. Der Blick auf Jahreszeitenbaum und Wetter bleibt frei.
+- **Kerzentablett auf dem Sideboard** ist ausgewählt: drei unterschiedlich hohe Kerzen auf einem kleinen Tablett, ergänzt durch einen kurzen Tannenzweig und wenige Beeren.
+- Beide Elemente folgen der Gestaltungslinie „Gemütlich & schlicht“ und sind mit dem Weihnachtsbaum kombinierbar.
+- Fenster mit Tannengrün und Adventskranz wurden nicht ausgewählt. Flackernde Flammen waren nur ein Vorschlag und sind noch nicht beschlossen.
+- Der Sichtbarkeitszeitraum dieser zusätzlichen Dekoration ist noch nicht ausdrücklich festgelegt; die bestehende Datumsregel gilt bisher für den Weihnachtsbaum.
+- Auswahl und Gestaltung sind festgehalten; die Dekoration ist noch nicht in das Spiel integriert.
+
 Diese Liste hält Wünsche und Entscheidungen fest. Sie ist noch kein Schaltplan, keine Bauteilempfehlung und keine detaillierte Software-Spezifikation.
