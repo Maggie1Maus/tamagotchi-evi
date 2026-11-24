@@ -2,6 +2,10 @@
 
 Stand: 24. November 2026
 
+## Konzept: gemeinsamer Garten und zehn Fundstückarten (24. November 2026)
+
+Neue Entscheidungen und offene Gestaltungsvorschläge stehen in [Garten_und_Fundstuecke.md](Garten_und_Fundstuecke.md). Gemeinsamer eingezäunter Garten statt Park, auch vom Sofa aus; zusätzliche Funde bei echten Spaziergängen. Gegenstandsart und Fundtag verbindlich festhalten, mit passenden Erinnerungssätzen. Gesamtansicht plus einzelne Gartenobjekte und Jahreszeiten vorsehen. Vier bestehende Fundstücke gefallen; sechs Gaming-/Disney-Ergänzungen erst besprechen, danach zeichnen. Federkitzeln, Zapfenspielen und Sammelsets gestrichen; Generationen/Erbstücke vorerst zurückgestellt. **Nur Konzept festgehalten, keine neue Spielfunktion oder Zeichnung erstellt.**
+
 ## Waveshare: Kuscheln, kleine Uhrzeit, trüber Regenhimmel, kürzeres Menü (24. November 2026)
 
 Wünsche der Nutzerin, nur auf dem Board (Einzelheiten in `software/schritt-10/README.md`):
