@@ -55,7 +55,8 @@ bool launenBeleidigt() { return launen.beleidigt; }
 bool launenWunschMoeglich(ms_t jetzt) {
   Wunsch w;
   return tastenDa && !launen.beleidigt && !launenWunschOffen() && launen.letzteBedienung != 0 &&
-         millis() - launen.letzteBedienung < JEMAND_DA && !aktuellerWunsch(pet, jetzt, w);
+         millis() - launen.letzteBedienung < JEMAND_DA && !aktuellerWunsch(pet, jetzt, w) &&
+         !freundFrageOffen() && !freundDialogOffen();   // nicht, während sie dich etwas fragt (freunde.ino)
 }
 
 // Ein Tipper auf Evi erfüllt den Kuschel- und den Fensterwunsch
@@ -104,6 +105,7 @@ bool launenWunschErfuellen(LaunenWunsch passend, bool plus) {
   if (launen.art != passend) return false;
   launen.art = LW_KEINER;
   launen.verpasst = 0;
+  freundWunschErfuellt();            // Freundschaft wächst (freunde.ino)
   if (plus) {
     const ms_t jetzt = jetztMs();
     const Tier vorher = pet;
@@ -178,6 +180,7 @@ void launenVerpasst(ms_t jetzt) {
   if (++launen.verpasst >= 2) {
     launen.verpasst = 0;
     launen.beleidigt = true;
+    freundBeleidigt();               // Freundschaft leidet etwas (freunde.ino)
     launen.beleidigtBis = millis() + (uint32_t)R::BELEIDIGT_DAUER;
     launen.streichler = 0;
     enttaeuschtText = zufallsSatz(BELEIDIGT_WERDEN);

@@ -91,7 +91,7 @@ void kuschelnBeginnen() {
   if (wunsch || kuschel.letzteWirkung == 0 || jetzt - kuschel.letzteWirkung >= R::KUSCHEL_PAUSE) {
     const double plus = wunsch ? R::KUSCHEL_LAUNE_WUNSCH : laune == LAUNE_VERSCHMUST ? R::KUSCHEL_LAUNE_VERSCHMUST : R::KUSCHEL_LAUNE;
     const Tier vorher = pet;
-    if (kuscheln(pet, plus, jetzt).geaendert) kuschel.letzteWirkung = jetzt;
+    if (kuscheln(pet, plus, jetzt).geaendert) { kuschel.letzteWirkung = jetzt; freundGekuschelt(); }
     melde(vorher, jetzt);
   }
   if (besonders) { kuschelZeigen(true, false, 1500); return; }

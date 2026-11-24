@@ -287,6 +287,7 @@ void spielEnde(bool abgebrochen) {
   char text[100];
   if (r.wunsch) { sage("Danke!", &SYM_W_HERZ, 3000); piep(TON(TON_MUENZE)); }
   if (r.geaendert) {
+    freundGespielt();                 // Freundschaft wächst (freunde.ino)
     reagiere(R_SPIELEN);
     const char* geschafft = spiel.art == SPIEL_BALL ? "gefangen" : spiel.art == SPIEL_RATEN ? "richtig geraten" :
                             spiel.art == SPIEL_KEKSE ? "Kekse gefangen" : spiel.art == SPIEL_SCHNICK ? "gewonnen" : "Melodien geschafft";

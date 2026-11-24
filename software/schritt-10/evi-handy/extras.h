@@ -53,7 +53,9 @@ const uint32_t RUHE_TAKTE = 120;   // QUIET_TICKS: etwa 15 s ohne neuen Moment n
 // Seit 24.11.2026 ist M_KUSCHELN der Launenwunsch aller vier Tageslaunen (launen.ino), M_ENTTAEUSCHT die Folge,
 // wenn ein Wunsch nicht erfüllt wurde.
 enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM,
-                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_ENTTAEUSCHT, M_KEINER = 255 };
+                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_ENTTAEUSCHT,
+                           // Seit 25.11.2026 (freunde.ino): Geschenk, beste Freunde geworden/verloren, Geburtstag
+                           M_GESCHENK, M_BESTE, M_BESTE_WEG, M_GEBURTSTAG, M_KEINER = 255 };
 // Bilder der Momente: Nummer in MOMENT_BILD (momente.h); ab 100 Evis Emotionsbilder (ART)
 enum MomentBild : int8_t { MB_KEINS = -1, MB_LAUFEN, MB_FENSTER, MB_DENKEN, MB_SINGEN, MB_GAEHNEN, MB_DREHEN, MB_HUEPFEN, MB_STAUNEN,
                            MB_GLUECKLICH = 100, MB_TRAURIG = 101 };
@@ -64,7 +66,8 @@ enum AktArt : uint8_t { A_MELDUNG, A_SAGEN, A_TON, A_WARTEN, A_GEHEN, A_HEIM, A_
                         A_FALTER_REIN, A_FALTER_KREISEN, A_FALTER_LANDEN, A_FALTER_SITZEN, A_FALTER_WEG,
                         A_VOGEL_REIN, A_VOGEL_SINGEN, A_VOGEL_WEG, A_STERN,
                         A_GASSI, A_ROLLEN, A_BALL_WEG,
-                        A_WUNSCH_WARTEN };   // wartet, solange der Launenwunsch offen ist (launen.ino)
+                        A_WUNSCH_WARTEN,     // wartet, solange der Launenwunsch offen ist (launen.ino)
+                        A_HERZEN, A_GESCHENK, A_MELODIE };   // freunde.ino: viele Herzen, Münzen schenken, Melodie (a)
 struct Akt { AktArt art; int16_t a, b; const char* text; };
 
 struct MomentZustand {
@@ -138,6 +141,45 @@ struct {
   uint32_t letzteBedienung = 0;   // millis() der letzten Taste oder des letzten Tippers
   bool dankeNachSpiel = false;    // Spielwunsch: nach dem Spiel bedankt sie sich
 } launen;
+
+// ---------- Freundschaft, Fragen, Plaudern (freunde.ino), seit 25.11.2026 ----------
+// Dauerhaft gespeichert im Flash hinter dem Spielstand (speicher.h: FREUND_ADRESSE).
+// Geburtstag bleibt für immer; alles andere gehört zu einer Evi (evi = ihr Zeitpunkt „geboren“).
+const int FRAGEN_MAX = 32;
+struct FreundStand {
+  uint32_t kennung;
+  uint16_t version, groesse;
+  uint8_t gebTag, gebMonat;          // 0 = noch nicht gefragt
+  int16_t gebGefeiert;               // Jahr der letzten Geburtstagsfeier
+  ms_t evi;                          // zu welcher Evi der Rest gehört
+  float punkte;                      // Freundschaft 0–100 (verborgen)
+  uint8_t beste;                     // 1 = beste Freunde (der große Moment war schon)
+  uint8_t plauderHeute;
+  uint8_t antwort[FRAGEN_MAX];       // deine Antworten: 0 = noch nicht gefragt, sonst 1–4
+  uint32_t verraten;                 // Bit je Frage: Evi hat dir ihre Antwort erzählt
+  uint32_t abgefragt;                // Bit je Frage: „Weißt du noch?“ schon gestellt
+  int32_t plusTag;                   // Tag (tagKennung) für die Tagesgrenze
+  float plusHeute;
+  int32_t geschenkTag;
+  uint32_t slotsErledigt;            // Bit je Frage-Zeitpunkt am Tag fragenTag
+  int32_t fragenTag;
+  uint32_t pruefsumme;
+};
+FreundStand freund;
+
+// Was gerade läuft (nur Arbeitsspeicher)
+struct {
+  int8_t frage = -1;                 // offene Frage (Nummer in FRAGEN), -1 = keine
+  bool weisstDuNoch = false;         // die offene Frage ist ein „Weißt du noch?“
+  int8_t slot = -1;                  // Zeitpunkt des Tages, zu dem gefragt wurde
+  uint32_t bis = 0;                  // millis(): so lange bleibt sie stehen
+  bool gebDialog = false;            // Geburtstag einstellen
+  uint8_t gebTag = 1, gebMonat = 1, gebFeld = 0;
+  uint32_t gebNaechsterVersuch = 0;  // millis(), 0 = gleich
+  bool besteWegSagen = false;        // „Ich dachte, wir wären beste Freunde …“ steht noch aus
+  uint32_t niedrigMs = 0;            // so lange ist ein Balken schon niedrig (wach)
+  bool geaendert = false;            // speichern nötig
+} gespraech;
 
 // Der Ball (Ballfangen und Kippen): 14 × 14 Punkte mit einem kleinen Glanzloch
 const uint8_t BALL_ZEILEN[14][2] = {{4, 9}, {4, 9}, {2, 11}, {2, 11}, {0, 13}, {0, 13}, {0, 13},

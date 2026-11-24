@@ -36,7 +36,10 @@ struct Spielstand {
 };
 
 static_assert(sizeof(Fundstueck) == 12, "Fundformat muss stabil bleiben");
-static_assert(sizeof(Spielstand) + 16 <= 4096, "EEPROM-Bereich ist zu klein");
+// Seit 25.11.2026: Freundschaft, Antworten und Geburtstag (freunde.ino) liegen getrennt ab FREUND_ADRESSE,
+// damit der Spielstand selbst unverändert bleibt.
+const int FREUND_ADRESSE = 3584, EEPROM_GROESSE = 4096;
+static_assert(sizeof(Spielstand) + 16 <= FREUND_ADRESSE, "EEPROM-Bereich ist zu klein");
 
 static uint32_t pruefsumme(const uint8_t* d, size_t n) {
   uint32_t c = 0xFFFFFFFFu;
@@ -47,7 +50,7 @@ static uint32_t pruefsumme(const uint8_t* d, size_t n) {
   return ~c;
 }
 
-void speicherStarten() { EEPROM.begin(sizeof(Spielstand) + 16); }
+void speicherStarten() { EEPROM.begin(EEPROM_GROESSE); }
 
 bool spielstandLaden(Tier& tier, bool& ton) {
   sammlung = Sammlung();

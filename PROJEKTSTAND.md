@@ -2,6 +2,17 @@
 
 Stand: 25. November 2026
 
+## Beschlossen: Freundschaft, Fragen und Plaudern (Fragerunde vom 25. November 2026)
+
+Ergebnis einer Fragerunde mit der Nutzerin (nur Waveshare). Sie wünscht sich mehr als Pflege: Fortschritt (A), Gestalten (B), Sammeln (D), Gespräche (E). Grundgerüst ist eine **verborgene Freundschaft**, die nach und nach Dinge freischaltet. Die Texte schreibt Claude direkt; die Nutzerin will sie vorher **nicht** lesen (Überraschung).
+- **Fragen:** Evi fragt von selbst mit Piep zu wechselnden Uhrzeiten, als Baby etwa 4-mal am Tag, als Teenager 2-mal, als Erwachsene und Oma einmal. Jede Frage bleibt etwa 5 Minuten stehen. Jede Altersstufe hat eigene Fragen (Baby kindlich, Teenager pubertär, Oma mit Oma-Interessen). Beantwortet wird per Auswahl, kein Freitext. Nicht beantwortet kostet nichts.
+- **Plaudern** (Menü): Evi fragt nichts, sondern erzählt von sich, was sie mag, nicht mag und denkt, zufällig ausgewählt. Je höher die Freundschaft, desto persönlicher.
+- **Jede Evi ist anders:** Vorlieben und Meinungen werden beim Schlüpfen ausgewürfelt (aus dem Schlüpfzeitpunkt, braucht keinen Speicher). Jede Evi lernt die Nutzerin neu kennen. **Bleibt für immer:** Name „Maggie“ (nicht „Maggie1Maus“) und der Geburtstag. Der Geburtstag wird einmal am Gerät per Steuerkreuz abgefragt und nur auf dem Board gespeichert, nicht im öffentlichen Repository.
+- **Evi greift Antworten auf**, freut sich über Gemeinsamkeiten („Wir sind gleich!“), und das „Weißt du noch?“-Spiel fragt ab, was Evi erzählt hat.
+- **Freundschaft:** verborgen, 5 Stufen (schüchtern, bekannt, vertraut, Freunde, beste Freunde), jede mit spürbaren Zeichen (Begrüßung, Name, Geschenke, Geheimnisse, Träume). Beste Freunde spätestens als Erwachsene erreichbar. Sinkt durch Beleidigtsein, lange leere Balken und Krankheit. **„Beste Freunde“** ist ein großer, nicht zu verpassender Moment, kann verloren gehen („Ich dachte, wir wären beste Freunde …“) und muss dann neu verdient werden.
+- Je Anlass möglichst fünf zufällige Sätze. Später als eigene Vorhaben: Kunststücke, Zimmer gestalten, Album früherer Evis.
+- **Eingebaut am 25. November 2026** in `software/schritt-10/evi-handy/freunde.ino` (27 Fragen, Plaudern, 5 Stufen, Geschenke, „Weißt du noch?“, beste Freunde, Geburtstagsfeier mit Lied). Einzelheiten und Zahlen in `software/schritt-10/README.md`. Für Pico 2 ohne neue Warnungen übersetzt, **am Board noch nicht ausprobiert**. Die vorhandene Evi startet schüchtern (Freundschaft 0). Der Geburtstag steht absichtlich nicht im Repository.
+
 ## Waveshare: Launenwünsche mit Folgen, Licht aus nach dem Aufwecken (25. November 2026)
 
 - Wunsch der Nutzerin: Launen und Wünsche sollen Folgen haben, und zu jedem Anlass soll es fünf zufällige Sätze geben. Jede Tageslaune hat jetzt ihren Wunsch (verspielt: spielen, verschmust: kuscheln, verfressen: Keks, verträumt: zusammen aus dem Fenster schauen). Sie wartet 45 s. Erfüllt: +10. Verpasst: −5 und traurig. Zwei verpasste hintereinander: 15 Minuten beleidigt (keine Spiele, Kuscheln wirkt nicht, kleine Regenwolke). Versöhnen mit Keks/Essen oder dreimal streicheln. Wünsche kommen nur, wenn in den letzten 10 Minuten jemand bedient hat. Neue Datei `software/schritt-10/evi-handy/launen.ino`, Einzelheiten in `software/schritt-10/README.md`. Handy-App unverändert.

@@ -100,6 +100,8 @@ MomentArt momentWaehlen(Stimmung s, bool istMuede, int laune, Gedanke& gedanke) 
   // Launenwunsch (seit 24.11.2026, launen.ino): jeder dritte kleine Moment ist der Wunsch der heutigen Laune.
   // Nur mit Tasten, wenn jemand da ist, und nicht, während ein Wunsch in der Blase steht.
   if (moment.letzter != M_KUSCHELN && launenWunschMoeglich(jetztMs()) && random(0, 3) == 0) return M_KUSCHELN;
+  // Ab „Freunde“ einmal am Tag ein kleines Geschenk (freunde.ino)
+  if (tastenDa && freundGeschenkFaellig(jetztMs())) return M_GESCHENK;
   const LauneInfo& l = LAUNEN[laune];
   int summe = 0;
   for (int k = 0; k < 6; k++) if (k != moment.letzter) summe += l.art[k];
@@ -300,6 +302,11 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
       // Der Wunsch wurde nicht erfüllt (launen.ino)
       enttaeuschtPlanen();
       break;
+    // Seit 25.11.2026: Freundschaft (freunde.ino)
+    case M_GESCHENK: geschenkPlanen(); break;
+    case M_BESTE: bestePlanen(); break;
+    case M_BESTE_WEG: besteWegPlanen(); break;
+    case M_GEBURTSTAG: geburtstagPlanen(); break;
     default:
       moment.art = M_KEINER;
       break;
@@ -592,6 +599,9 @@ int aktSchritt(int nummer) {
       return 0;
     case A_WUNSCH_WARTEN:
       return launenWunschOffen() ? 1 : 0;
+    case A_HERZEN: kuschelZeigen(false, true, a.a); return 0;
+    case A_GESCHENK: freundGeschenkGeben(a.a); return 0;
+    case A_MELODIE: freundMelodie(a.a); return 0;
   }
   return 0;
 }
@@ -634,7 +644,8 @@ void begruessen(ms_t seit) {
   const int laune = launeHeute(jetzt);
   bool gross;
   const char* text = grussText(jetzt, seit, gross);
-  const bool jubel = gross || laune == LAUNE_VERSCHMUST;   // verschmust hüpft sie immer etwas mehr
+  bool jubel = gross || laune == LAUNE_VERSCHMUST;   // verschmust hüpft sie immer etwas mehr
+  text = freundGruss(text, jubel);                   // je nach Freundschaft schüchtern bis überglücklich (freunde.ino)
   momentStoppen(true);
   reagiere(jubel ? R_JUBEL : R_GRUSS, jubel ? 20 : 12);
   sage(text, &SYM_W_HERZ, 3500);

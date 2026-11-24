@@ -7,6 +7,24 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Freundschaft, Fragen und Plaudern (25. November 2026)
+
+Ergebnis der Fragerunde mit der Nutzerin. Neue Datei `freunde.ino`. Zustand in `extras.h` (`FreundStand freund`, `gespraech`), Anschlüsse in `evi-handy.ino`, `momente.ino`, `kuscheln.ino`, `launen.ino`, `spiele.ino`. Die Texte stehen alle oben in `freunde.ino`; die Nutzerin möchte sie **nicht vorher lesen**, sondern sich überraschen lassen.
+
+- **Fragen:** Zu festen, täglich wechselnden Zeiten fragt Evi etwas (Baby 4-mal ab 9/12/15/18 Uhr + bis zu 3 h, Teenager 2-mal ab 9/15 Uhr + bis zu 6 h, Erwachsen/Oma einmal zwischen 10 und 20 Uhr). Nur wenn der Bildschirm an ist, sie wach ist und gerade nichts anderes passiert. Mit Piep. Die Frage steht 5 Minuten in der Blase; unten „Eine Frage an dich · A antwortet“. **A oder START** zeigt die Antworten, B schließt sie wieder (die Frage bleibt stehen). Nach der Antwort verrät Evi ihre eigene, bei Gleichheit „Wir sind gleich!“. 27 Fragen: 8 Baby, 6 Teenager, 7 Erwachsen, 6 Oma (`FRAGEN`; die Nummern nie umsortieren, sie stehen im Spielstand).
+- **Plaudern** (Menü, wach, nicht als Ei): Evi erzählt ihre Antwort auf eine Frage ihrer Lebensphase, eine Meinung (`MEINUNGEN`, je zwei Fassungen, pro Evi ausgewürfelt, freigeschaltet je Freundschaftsstufe) oder erinnert sich an deine Antwort (ab Stufe 2). Am Geburtstag und am Tag davor oft davon.
+- **Jede Evi ist anders:** Ihre Antworten und Meinungen kommen aus `streuwert(geboren …)`, ohne Speicher. Deine Antworten, die Freundschaft und alles Übrige gehören zur jeweiligen Evi und beginnen beim nächsten Ei neu. **Für immer:** Name `NUTZER_NAME` = „Maggie“ und der Geburtstag.
+- **Geburtstag:** Einmal fragt Evi „Wann hast du Geburtstag, Maggie?“: Tag und Monat mit ▲▼ ändern, ◀▶ (L/R) wechselt das Feld, A speichert, B fragt in einer Stunde noch mal. Gespeichert nur auf dem Board, **nicht im Repository** (das Projekt ist öffentlich). Am Geburtstag ab 7 Uhr, sobald du da bist: Geburtstagslied, Hüpfen, Herzen, 10 Münzen.
+- **Freundschaft** (verborgen, 0–100): + Antwort 4, gleiche Antwort 2, „Weißt du noch?“ richtig 6, Plaudern 1 (3-mal am Tag), Pflege/Kuscheln 0,5, Spiel 1, erfüllter Launenwunsch 2, Geburtstag 5; höchstens **12 am Tag**. − beleidigt 4, krank 8, ein Balken unter 30 je volle Stunde (wach) 2.
+- **Stufen** ab 0 / 6 / 18 / 36 / 70: 1 schüchtern (knappe Begrüßung „Oh … hallo.“), 2 bekannt (erzählt, was sie nicht mag, erinnert sich an deine Antworten), 3 vertraut (hüpft dir bei der Begrüßung entgegen, kleine Geheimnisse), 4 Freunde (nennt dich Maggie, einmal am Tag ein kleines Geschenk mit 3 Münzen, „Weißt du noch?“ statt mancher Fragen), 5 beste Freunde (eigene Begrüßung, Träume beim Plaudern).
+- **Beste Freunde:** ab 70 Punkten, frühestens als Erwachsene, und **nur, wenn du in den letzten 2 Minuten bedient hast** (sonst wartet der Moment): kleine Fanfare, „Maggie … darf ich dir was sagen?“, Hüpfen, viele Herzen, „Wir sind jetzt beste Freunde! ♥“. Unter 62 Punkten ist es vorbei: Sie sagt traurig etwa „Ich dachte, wir wären beste Freunde …“ (wenn du wieder da bist), und der Moment muss neu verdient werden.
+- Mit täglich 12 Punkten: etwa 12 als Baby, 36 am Ende als Teenager, beste Freunde frühestens am 3. Tag als Erwachsene.
+- Speicher: `FreundStand` liegt im Flash ab `FREUND_ADRESSE` = 3584 (`speicher.h`), getrennt vom Spielstand, mit eigener Prüfsumme. Der Spielstand selbst ist unverändert. Eine vorhandene Evi beginnt beim ersten Start mit Freundschaft 0 (schüchtern).
+- Sprechblasen haben jetzt bis zu 4 Zeilen und wachsen nach oben.
+- Zu jedem Anlass fünf zufällige Sätze.
+
+**Geprüft:** echte Übersetzung für Pico 2 ohne neue Warnungen; alle Sätze passen rechnerisch in die Blase (15 Zeichen, 4 Zeilen). PC-Nachbildung nicht gelaufen (kein g++ auf dem Haupt-PC), es gibt noch keine eigene Prüfung für `freunde.ino`. **Am Board noch nicht ausprobiert.**
+
 ## Launenwünsche mit Folgen, Licht aus nach dem Aufwecken (25. November 2026)
 
 Wunsch der Nutzerin: Wünsche und Launen sollen **Folgen** haben, und zu jedem Anlass soll es **fünf verschiedene Sätze** geben, die zufällig kommen. Neue Datei `launen.ino`; Anschlüsse in `kuscheln.ino`, `momente.ino`, `spiele.ino`, `evi-handy.ino`, Zustand in `extras.h`, Zahlen in `pet.h`.

@@ -64,7 +64,8 @@ bool bildschirmAn = true;
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
-                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD, E_GARTEN };
+                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD, E_GARTEN,
+                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3 };   // seit 25.11.2026 (freunde.ino)
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
@@ -142,6 +143,7 @@ void grundText(Grund g, Aktion a, char* aus, size_t n) {
 // ---------- Speichern ----------
 void speichern(ms_t jetzt) {
   spielstandSpeichern(pet, tonAn);
+  freundSpeichern();                // Freundschaft, Antworten, Geburtstag (freunde.ino)
   letztesSpeichern = jetzt;
 }
 
@@ -205,6 +207,7 @@ void melde(const Tier& vorher, ms_t jetzt) {
     return;
   }
   if (!vorher.krank && pet.krank) {
+    freundKrank();                  // vernachlässigt: Die Freundschaft leidet deutlich (freunde.ino)
     piep(TON(TON_ACHTUNG));
     snprintf(text, sizeof(text), "%s ist krank geworden!", pet.name);
     zeigeMeldung(text, 5000);
@@ -234,6 +237,7 @@ void runde() {
   const Tier vorher = pet;
   weiterrechnen(pet, jetzt);
   melde(vorher, jetzt);
+  freundRunde(jetzt);               // lange niedrige Balken, speichern (freunde.ino)
   himmel = himmelBei(jetzt);
   // Neuer Wunsch: kurzer Ton und Bildschirm an
   Wunsch w;
@@ -419,11 +423,13 @@ void zeichneBlase(ms_t jetzt) {
   float prozent = 58 + geher.x / 3.2f;
   if (prozent < 4) prozent = 4;
   if (prozent > 58) prozent = 58;
-  const int x = 186 + (int)lroundf(BREITE * (prozent - 58) / 100), y = max(34, eviOben - 43), maxB = 128;
+  const int maxB = 128;
   const int maxZeichen = (maxB - 4 - 16 - sym->w - 5) / 6;
-  char zeilen[3][40];
+  // Seit 25.11.2026 bis zu 4 Zeilen (Fragen und Plaudern); die Blase wächst dann nach oben.
+  char zeilen[4][40];
   int n = 0;
-  umbrechen(text, maxZeichen, [&](const char* z) { if (n < 3) { strncpy(zeilen[n], z, 39); zeilen[n][39] = 0; n++; } });
+  umbrechen(text, maxZeichen, [&](const char* z) { if (n < 4) { strncpy(zeilen[n], z, 39); zeilen[n][39] = 0; n++; } });
+  const int x = 186 + (int)lroundf(BREITE * (prozent - 58) / 100), y = max(34, eviOben - 43 - max(0, n - 3) * 10);
   int breiteste = 0;
   for (int i = 0; i < n; i++) breiteste = max(breiteste, textBreite(zeilen[i]) + 1);
   const int innenH = max((int)sym->h, n * 10 - 2);
@@ -496,6 +502,8 @@ void zeichneStatus(Phase ph) {
 void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
   const char* name = pet.name;
   if (ritual.aktiv) { snprintf(aus, n, "Gute Nacht …"); return; }
+  if (freundFrageOffen()) { snprintf(aus, n, "%s", gespraech.weisstDuNoch ? "Weißt du noch? · A antwortet" : "Eine Frage an dich · A antwortet"); return; }
+  if (freundDialogOffen()) { snprintf(aus, n, "Dein Geburtstag · A speichert, B später"); return; }
   switch (s) {
     case S_TOT: snprintf(aus, n, pet.ursache == ALTER ? "%s ist friedlich eingeschlafen. Menü: neues Ei" : "%s ist gestorben. Menü: neues Ei", name); return;
     case S_EI: {
@@ -540,6 +548,7 @@ struct MenuePunkt { Eintrag e; const Bild* symbol; int8_t zeichen; char text[26]
 MenuePunkt menue[14];
 int menueAnzahl = 0, gewaehlt = 0;
 bool menueOffen = false, spieleAuswahl = false, tagAuswahl = false;
+bool frageAuswahl = false;   // Antworten auf Evis Frage (freunde.ino)
 
 void punkt(Eintrag e, const Bild* s, const char* t, int zeichen = -1) {
   if (menueAnzahl >= 14) return;
@@ -554,7 +563,9 @@ void punkt(Eintrag e, const Bild* s, const char* t, int zeichen = -1) {
 void menueBauen() {
   menueAnzahl = 0;
   const ms_t jetzt = jetztMs();
-  if (spieleAuswahl) {
+  if (frageAuswahl) {
+    for (int i = 0; i < freundAntwortenZahl(); i++) punkt((Eintrag)(E_ANTWORT0 + i), nullptr, freundAntwortText(i));
+  } else if (spieleAuswahl) {
     punkt(E_BALL, &SYM_M_BALL, "Ballfangen");
     punkt(E_RATEN, &SYM_M_PFEILE, "Links oder rechts?");
     punkt(E_MELODIE, &SYM_M_NOTE, "Melodie merken");
@@ -584,6 +595,7 @@ void menueBauen() {
           punkt(E_FUETTERN, &SYM_M_FUTTER, m >= 0 ? MAHLZEITEN[m] : "Füttern");
           punkt(E_NASCHEN, &SYM_M_KEKS, "Naschen");
           punkt(E_SPIELEN, &SYM_M_BALL, "Spielen");
+          if (momenteFuer(ph)) punkt(E_PLAUDERN, &SYM_M_HERZ, "Plaudern");   // Evi erzählt von sich (freunde.ino)
           punkt(E_PUTZEN, &SYM_M_PUTZEN, "Saubermachen");
         }
       }
@@ -597,9 +609,10 @@ void menueBauen() {
   gewaehlt = 0;
 }
 
-void menueZeigen(bool offen, bool spiele = false, bool tag = false) {
+void menueZeigen(bool offen, bool spiele = false, bool tag = false, bool frage = false) {
   spieleAuswahl = spiele;
   tagAuswahl = tag;
+  frageAuswahl = frage;
   if (offen) menueBauen();
   menueOffen = offen;
 }
@@ -704,6 +717,7 @@ void zeichneAlles() {
   if (!spiel.aktiv) zeichneStatus(ph);            // im Spiel tritt die Leiste zur Seite
   zeichneZeile(ph, s, jetzt);
   if (menueOffen) zeichneMenue();
+  if (!spiel.aktiv && garten.phase == GA_ZU) freundZeichnen();   // Geburtstag einstellen (freunde.ino)
   zeigen();
 }
 
@@ -740,6 +754,8 @@ void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
   if (e == E_GARTEN) { gartenOeffnen(); return; }
+  if (e == E_PLAUDERN) { freundPlaudern(); return; }
+  if (e >= E_ANTWORT0 && e <= E_ANTWORT3) { freundAntwort(e - E_ANTWORT0); return; }
   if (e == E_SIDEBOARD) { sideboardOeffnen(); return; }
   if (e == E_TAG) { tagFragen(); return; }
   if (e == E_TAG_GUT || e == E_TAG_LALA || e == E_TAG_SCHLECHT) { tagAntwort(e == E_TAG_GUT ? 0 : e == E_TAG_LALA ? 1 : 2); return; }
@@ -791,6 +807,7 @@ void aktionAusfuehren(Eintrag e) {
   }
   if (r.wunsch) { sage("Danke!", &SYM_W_HERZ, 3000); piep(TON(TON_MUENZE)); }
   if (r.geaendert && (a == FUETTERN || a == NASCHEN)) launenGegessen();   // Essenswunsch, Versöhnen (launen.ino)
+  if (r.geaendert && (a == FUETTERN || a == NASCHEN || a == PUTZEN || a == MEDIZIN)) freundGepflegt();
   if (r.geaendert) speichern(jetzt);
 }
 
@@ -812,6 +829,7 @@ void taste(Taste k) {
     aktionAusfuehren(e);
   } else {
     if (menueOffen && spieleAuswahl) { menueZeigen(true); return; }
+    if (menueOffen && frageAuswahl) { menueZeigen(false); freundFrageGeschlossen(); return; }
     const bool tag = menueOffen && tagAuswahl;
     menueZeigen(false);
     if (tag) tagAntwort(-1);       // „Wie war dein Tag?“ ohne Antwort geschlossen
@@ -835,6 +853,10 @@ void bildschirmAus() {
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
   if (k == K_RESET) { bildschirmAus(); return; }
+  if (freundKnopf(k)) return;                       // Geburtstag einstellen (freunde.ino)
+  // Offene Frage von Evi: A oder START zeigt die Antworten (freunde.ino)
+  if ((k == K_A || k == K_START) && !menueOffen && freundFrageOffen() && garten.phase == GA_ZU && sideboard.phase == SB_ZU &&
+      !spiel.aktiv) { freundFrageMenue(); return; }
   if (garten.phase != GA_ZU) { gartenKnopf(k); return; }
   if (sideboard.phase != SB_ZU) {
     if (k == K_B || k == K_A || k == K_START) sideboardSchliessen();
@@ -854,6 +876,7 @@ void knopf(Knopf k) {
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);
   if (ritual.aktiv) { ritualBeenden(); return; }   // jede Taste überspringt Gute Nacht
   if (k == K_START) {
+    if (menueOffen && frageAuswahl) { menueZeigen(false); freundFrageGeschlossen(); return; }
     const bool tag = menueOffen && tagAuswahl;
     menueZeigen(!menueOffen);
     if (tag) { menueZeigen(false); tagAntwort(-1); }
@@ -1052,6 +1075,7 @@ void setup() {
     pet = neuesTier(jetzt, ERSTES_EI);
   }
   himmel = himmelBei(jetzt);
+  freundLaden();                  // Freundschaft und Geburtstag, vor dem ersten Speichern (freunde.ino)
   speichern(jetzt);
   letzteRunde = millis();
   moment.naechster = jetzt + naechsterAbstand();
@@ -1071,8 +1095,8 @@ void loop() {
   // Nur wenn die echten Tasten nicht gefunden werden, gelten als Notlösung die drei Drittel wie früher.
   int x, y;
   if (tipper(x, y)) {
-    lageBeimBedienen();
-    launen.letzteBedienung = millis();   // jemand ist da (Launenwünsche)          // wer tippt, hält das Gerät mit dem Bildschirm nach oben
+    lageBeimBedienen();                  // wer tippt, hält das Gerät mit dem Bildschirm nach oben
+    launen.letzteBedienung = millis();   // jemand ist da (Launenwünsche, Freundschaft)
     fingerHatGeweckt = !bildschirmAn;
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
@@ -1103,6 +1127,7 @@ void loop() {
     eviTakt(jetzt);
     ritualWeiter();
     launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
+    if (sideboard.phase == SB_ZU && garten.phase == GA_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
     if (sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
