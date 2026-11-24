@@ -2,6 +2,10 @@
 
 Stand: 24. November 2026
 
+## Wunsch nach allgemeiner Raumtiefe und Zimmerentwurf (24. November 2026)
+
+Die Nutzerin wünscht für das ganze Tamagotchi Bewegungen nach vorne/hinten mit passender Größenänderung, etwa Evi beim Suchen im Blumenbeet und auch im Zimmer. Neuer Zimmer-Gesamtentwurf im Stil des bestätigten Gartens angefragt. Zwei Varianten unter `entwuerfe/zimmer/raumtiefe/`, empfohlen ist `mehr_raumtiefe.png` mit mehr freier Bodenfläche und Perspektive. Details und Vorschlag für weiche Skalierung, altersabhängige Grundgrößen, Bodenanker, Verdeckung durch Möbel/Beete und Laufwege in [Raumtiefe_und_Zimmer.md](Raumtiefe_und_Zimmer.md). **Nur Entwurf/Vorschlag; allgemeine Tiefenbewegung und neuer Zimmerhintergrund noch nicht umgesetzt oder ausgewählt.**
+
 ## Bestätigten Garten-Gesamtentwurf eingebaut (24. November 2026)
 
 - Nutzerin fand die erste Gartenfassung lieblos/zusammengewürfelt (Strichstärken, isolierte Sonne/Wolke). Den neuen natürlichen Gesamtentwurf bestätigte sie anschließend ausdrücklich mit „Jaaaaaaaa 100%. Das sieht gut aus“. Diese Gestaltung ist jetzt in der Waveshare-Firmware eingebaut.
