@@ -122,13 +122,14 @@ void kuschelnBeginnen() {
 
 // Ein Tipper auf den Bildschirm (nur wenn die Tasten da sind; sonst sind es die drei Drittel)
 void beruehrt(int x, int y) {
-  if (sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv) return;
+  if (garten.phase != GA_ZU) { gartenBeruehrt(x, y); return; }
+  if (garten.phase != GA_ZU || sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv) return;
   if (aufEvi(x, y)) kuschelnBeginnen();
 }
 
 // Der Finger bleibt auf dem Bildschirm: Streicht er über Evi, geht das Kuscheln weiter.
 void streicheln(int x, int y) {
-  if (sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv || !aufEvi(x, y)) return;
+  if (garten.phase != GA_ZU || sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv || !aufEvi(x, y)) return;
   if (!kuschelnLaeuft()) { kuschelnBeginnen(); return; }
   if (kuschel.klein) { kuschelZeigen(true, false, 900); return; }
   kuschelZeigen(false, false, 1200);

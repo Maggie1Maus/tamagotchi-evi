@@ -34,6 +34,8 @@
 #include "umgebung.h"
 #include "fundbilder.h"
 #include "extras.h"
+#include "garten.h"
+#include "gartenbilder.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 80;
@@ -59,7 +61,7 @@ bool bildschirmAn = true;
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
-                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD };
+                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD, E_GARTEN };
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
@@ -519,12 +521,12 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
 // ---------- Menü ----------
 // symbol = Bild aus der App; ohne Bild eine gezeichnete Figur (zeichen: 0 Schere, 3 Wolke, 4 Regenwolke)
 struct MenuePunkt { Eintrag e; const Bild* symbol; int8_t zeichen; char text[26]; };
-MenuePunkt menue[13];
+MenuePunkt menue[14];
 int menueAnzahl = 0, gewaehlt = 0;
 bool menueOffen = false, spieleAuswahl = false, tagAuswahl = false;
 
 void punkt(Eintrag e, const Bild* s, const char* t, int zeichen = -1) {
-  if (menueAnzahl >= 13) return;
+  if (menueAnzahl >= 14) return;
   menue[menueAnzahl].e = e;
   menue[menueAnzahl].symbol = s;
   menue[menueAnzahl].zeichen = (int8_t)zeichen;
@@ -572,6 +574,7 @@ void menueBauen() {
     // Uhr stellen, Name ändern und Hilfe sind seit 24.11.2026 nicht mehr im Menü (Wunsch der Nutzerin).
     // Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft.
     punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
+    if (gartenMoeglich(jetzt)) punkt(E_GARTEN, &SYM_M_SONNE, "In den Garten");
   }
   gewaehlt = 0;
 }
@@ -645,6 +648,7 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
 }
 
 void zeichneAlles() {
+  if (garten.phase != GA_ZU) { gartenZeichnen(); zeigen(); return; }
   if (sideboard.phase == SB_OFFEN) { sammlungZeichnen(); zeigen(); return; }
   const ms_t jetzt = jetztMs();
   const Phase ph = phaseBei(pet, jetzt);
@@ -716,6 +720,7 @@ void ritualWeiter() {
 void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
+  if (e == E_GARTEN) { gartenOeffnen(); return; }
   if (e == E_SIDEBOARD) { sideboardOeffnen(); return; }
   if (e == E_TAG) { tagFragen(); return; }
   if (e == E_TAG_GUT || e == E_TAG_LALA || e == E_TAG_SCHLECHT) { tagAntwort(e == E_TAG_GUT ? 0 : e == E_TAG_LALA ? 1 : 2); return; }
@@ -770,6 +775,7 @@ void aktionAusfuehren(Eintrag e) {
 
 // Die drei Tasten der App
 void taste(Taste k) {
+  if (garten.phase != GA_ZU) { gartenTaste(k); return; }
   if (sideboard.phase != SB_ZU) { sideboardTaste(k); return; }
   const ms_t jetzt = jetztMs();
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);   // touch() in app.js
@@ -794,6 +800,7 @@ void taste(Taste k) {
 // RESET schaltet den Bildschirm aus. Ein laufendes Spiel wird dabei abgebrochen, Gute Nacht und
 // Momente enden. Wieder an geht er mit jeder Taste, jedem Tipper und bei wichtigen Ereignissen.
 void bildschirmAus() {
+  if (garten.phase != GA_ZU) gartenSchliessen();
   if (sideboard.phase != SB_ZU) sideboardSofortZu();
   if (spiel.aktiv) spielEnde(true);
   if (ritual.aktiv) ritualBeenden();
@@ -807,6 +814,7 @@ void bildschirmAus() {
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
   if (k == K_RESET) { bildschirmAus(); return; }
+  if (garten.phase != GA_ZU) { gartenKnopf(k); return; }
   if (sideboard.phase != SB_ZU) {
     if (k == K_B || k == K_A || k == K_START) sideboardSchliessen();
     else if (k == K_UP || k == K_L) sideboardBlaettern(-1);
@@ -1036,6 +1044,7 @@ void loop() {
   seriellPruefen();
   bewegungTakt();                 // Lagesensor: Gassi, kippen, aufs Gesicht
   sideboardTakt(jetztMs());
+  gartenTakt(jetztMs());
 
   // Touch: Seit 24.11.2026 (Wunsch der Nutzerin) keine Tasten mehr, sondern Evi antippen oder streicheln = kuscheln.
   // Nur wenn die echten Tasten nicht gefunden werden, gelten als Notlösung die drei Drittel wie früher.
@@ -1070,7 +1079,7 @@ void loop() {
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
     ritualWeiter();
-    if (sideboard.phase == SB_ZU) momentTakt(jetzt);
+    if (sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
     // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)
@@ -1084,7 +1093,7 @@ void loop() {
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
   } else if (bildschirmAn && ((spiel.aktiv && m - letztesBild >= 12) ||
              (!spiel.aktiv && sideboard.phase != SB_OFFEN && m - letztesBild >= 40 &&
-              (sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
+              (garten.phase != GA_ZU || sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
     // Spiele etwa 80-mal, Regen und Schnee etwa 25-mal pro Sekunde zeichnen.
     // Spielregeln und Evis Momente behalten ihren bisherigen Takt; gesendet werden nur Änderungen.
     zeichneAlles();

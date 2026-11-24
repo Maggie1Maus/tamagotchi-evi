@@ -73,8 +73,8 @@ void sammlungZeichnen() {
   bild.drawFastHLine(20, 38, 280, 0);
   if (!sammlung.anzahl) {
     schreibe(bild, 42, 90, "Noch keine Fundstücke.", 0);
-    schreibe(bild, 42, 114, "Vielleicht bringt Evi beim", 0);
-    schreibe(bild, 42, 129, "Gassigehen etwas mit!", 0);
+    schreibe(bild, 42, 114, "Im Garten oder beim", 0);
+    schreibe(bild, 42, 129, "Gassigehen suchen wir!", 0);
   } else {
     if (sideboard.auswahl >= sammlung.anzahl) sideboard.auswahl = sammlung.anzahl - 1;
     const Fundstueck& f = sammlung.fund[sideboard.auswahl];
@@ -83,12 +83,12 @@ void sammlungZeichnen() {
     const char* name = FUND_NAME[f.art];
     schreibe(bild, (BREITE - textBreite(name, 2)) / 2, 123, name, 0, 2);
     char zeile[64];
-    snprintf(zeile, sizeof(zeile), "Gefunden beim Gassigehen");
+    snprintf(zeile, sizeof(zeile), "%s", f.ort == FUND_GARTEN ? GARTEN_STELLE[f.stelle] : "Beim echten Spaziergang");
     schreibe(bild, 35, 151, zeile, 0);
     snprintf(zeile, sizeof(zeile), "Am %02ld.%02ld.%04ld", (long)(f.tag % 100), (long)(f.tag / 100 % 100), (long)(f.tag / 10000));
     schreibe(bild, 35, 168, zeile, 0);
-    snprintf(zeile, sizeof(zeile), f.generation < pet.generation ? "Erbstück aus Generation %u" : "Fund von Generation %u", f.generation);
-    schreibe(bild, 35, 185, zeile, 0);
+    int erinnerungsY = 184;
+    umbrechen(fundErinnerung(f), 43, [&](const char* z) { if (erinnerungsY < 207) { schreibe(bild, 24, erinnerungsY, z, 0); erinnerungsY += 11; } });
     snprintf(zeile, sizeof(zeile), "%u / %u", sideboard.auswahl + 1, sammlung.anzahl);
     schreibe(bild, BREITE - 24 - textBreite(zeile), 21, zeile, 0);
   }

@@ -17,3 +17,5 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh
 - Das Display ist mit nachgebildet (`ersatz/SPI.h`: Spalten, Zeilen, Schreiben). Nach jedem Bild wird verglichen, ob auf dem Display genau das Bild des Programms steht; so wird geprüft, dass `zeigen()` alles Geänderte schickt.
 
 Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit gibt es nur dort.
+
+- `garten.cpp`: Gartenmenü, Suche mit Hilfe per A/Touch, alle zwölf Lebensphasen-Posen, getrennte Garten-/Gassi-Limits, volle Sammlung, Version-2-Migration, Version-3-Metadaten, Jahreszeiten- und Wetterbilder, Heimkehr/RESET/Schlafenszeit. Version 1 wird zusätzlich in `sideboard.cpp` geprüft.

@@ -1,0 +1,246 @@
+[
+  {
+    "key": "baby-schnuppern",
+    "phase": "baby",
+    "pose": "schnuppern",
+    "height": 70,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Baby. Pose: Sniffing the ground: standing on four paws, head lowered with nose close to the floor, curious eyes. Entire ears, tail and paws visible. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "baby-untersuchen",
+    "phase": "baby",
+    "pose": "untersuchen",
+    "height": 70,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Baby. Pose: Investigating a find: leaning forwards a little, looking down with curiosity, one front paw reaching toward the ground as if gently uncovering something. Do not draw an object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "baby-zeigen",
+    "phase": "baby",
+    "pose": "zeigen",
+    "height": 70,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Baby. Pose: Proudly presenting a small treasure: sitting and facing the viewer, both front paws held together in front of the lower chest as if supporting a small object, happy proud expression. Leave the small space between the paws empty for a separate collectible sprite. No actual object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "teen-schnuppern",
+    "phase": "teen",
+    "pose": "schnuppern",
+    "height": 82,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Teenager. Pose: Sniffing the ground: standing on four paws, head lowered with nose close to the floor, curious eyes. Entire ears, tail and paws visible. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "teen-untersuchen",
+    "phase": "teen",
+    "pose": "untersuchen",
+    "height": 82,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Teenager. Pose: Investigating a find: leaning forwards a little, looking down with curiosity, one front paw reaching toward the ground as if gently uncovering something. Do not draw an object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "teen-zeigen",
+    "phase": "teen",
+    "pose": "zeigen",
+    "height": 82,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Teenager. Pose: Proudly presenting a small treasure: sitting and facing the viewer, both front paws held together in front of the lower chest as if supporting a small object, happy proud expression. Leave the small space between the paws empty for a separate collectible sprite. No actual object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "adult-schnuppern",
+    "phase": "adult",
+    "pose": "schnuppern",
+    "height": 86,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Erwachsene. Pose: Sniffing the ground: standing on four paws, head lowered with nose close to the floor, curious eyes. Entire ears, tail and paws visible. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "adult-untersuchen",
+    "phase": "adult",
+    "pose": "untersuchen",
+    "height": 86,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Erwachsene. Pose: Investigating a find: leaning forwards a little, looking down with curiosity, one front paw reaching toward the ground as if gently uncovering something. Do not draw an object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "adult-zeigen",
+    "phase": "adult",
+    "pose": "zeigen",
+    "height": 86,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Erwachsene. Pose: Proudly presenting a small treasure: sitting and facing the viewer, both front paws held together in front of the lower chest as if supporting a small object, happy proud expression. Leave the small space between the paws empty for a separate collectible sprite. No actual object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "senior-schnuppern",
+    "phase": "senior",
+    "pose": "schnuppern",
+    "height": 82,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Oma. Pose: Sniffing the ground: standing on four paws, head lowered with nose close to the floor, curious eyes. Entire ears, tail and paws visible. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "senior-untersuchen",
+    "phase": "senior",
+    "pose": "untersuchen",
+    "height": 82,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Oma. Pose: Investigating a find: leaning forwards a little, looking down with curiosity, one front paw reaching toward the ground as if gently uncovering something. Do not draw an object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "senior-zeigen",
+    "phase": "senior",
+    "pose": "zeigen",
+    "height": 82,
+    "prompt": "Edit the provided character reference into ONE new pose for the original virtual pet Evi. The reference is the exact character and drawing style to preserve: same age, body and face proportions, huge ears, markings, fluffy neck ruff, tail shape, and (for the elderly reference) spectacles and hair tuft. Do not redesign the character, add accessories or change age. Only change its pose. Age: Oma. Pose: Proudly presenting a small treasure: sitting and facing the viewer, both front paws held together in front of the lower chest as if supporting a small object, happy proud expression. Leave the small space between the paws empty for a separate collectible sprite. No actual object. One complete isolated full-body sprite centered with margin. Exactly the reference's simple crisp black-and-white pixel drawing, black contours, sparse black square marks, solid opaque white inside all body parts. Outside the character genuinely transparent. No gray, color, gradients, shadows, background, text, label, scene, other character or extra object. Save as a new image; do not modify the reference.",
+    "kind": "evi"
+  },
+  {
+    "key": "baum-fruehling",
+    "group": "baum",
+    "season": "fruehling",
+    "width": 86,
+    "height": 114,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: a small friendly deciduous garden tree, spring with young leaves and a few tiny blossom clusters. Short gently curved trunk, rounded crown silhouette. All versions should be the same species and rounded proportions.",
+    "kind": "prop"
+  },
+  {
+    "key": "baum-sommer",
+    "group": "baum",
+    "season": "sommer",
+    "width": 86,
+    "height": 114,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: a small friendly deciduous garden tree, summer with a full leafy crown. Short gently curved trunk, rounded crown silhouette. All versions should be the same species and rounded proportions.",
+    "kind": "prop"
+  },
+  {
+    "key": "baum-herbst",
+    "group": "baum",
+    "season": "herbst",
+    "width": 86,
+    "height": 114,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: a small friendly deciduous garden tree, autumn with a thinner leafy crown, a few visible bare branches, and two or three leaves on the ground at its foot. Short gently curved trunk, rounded crown silhouette. All versions should be the same species and rounded proportions.",
+    "kind": "prop"
+  },
+  {
+    "key": "baum-winter",
+    "group": "baum",
+    "season": "winter",
+    "width": 86,
+    "height": 114,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: a small friendly deciduous garden tree, winter with bare branches and distinct little caps of white snow on the branches. Short gently curved trunk, rounded crown silhouette. All versions should be the same species and rounded proportions.",
+    "kind": "prop"
+  },
+  {
+    "key": "busch-fruehling",
+    "group": "busch",
+    "season": "fruehling",
+    "width": 66,
+    "height": 48,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small rounded garden shrub, spring with young leaves and a few tiny blossom clusters. Low compact rounded proportions, a few visible twig lines. No tree trunk.",
+    "kind": "prop"
+  },
+  {
+    "key": "busch-sommer",
+    "group": "busch",
+    "season": "sommer",
+    "width": 66,
+    "height": 48,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small rounded garden shrub, summer with a full leafy bush. Low compact rounded proportions, a few visible twig lines. No tree trunk.",
+    "kind": "prop"
+  },
+  {
+    "key": "busch-herbst",
+    "group": "busch",
+    "season": "herbst",
+    "width": 66,
+    "height": 48,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small rounded garden shrub, autumn with a thinner leafy bush, a few visible bare branches, and two or three leaves on the ground at its foot. Low compact rounded proportions, a few visible twig lines. No tree trunk.",
+    "kind": "prop"
+  },
+  {
+    "key": "busch-winter",
+    "group": "busch",
+    "season": "winter",
+    "width": 66,
+    "height": 48,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small rounded garden shrub, winter with bare branches and distinct little caps of white snow on the branches. Low compact rounded proportions, a few visible twig lines. No tree trunk.",
+    "kind": "prop"
+  },
+  {
+    "key": "beet-fruehling",
+    "group": "beet",
+    "season": "fruehling",
+    "width": 72,
+    "height": 38,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small garden flower bed surrounded by a low border of smooth stones. Season: fruehling. A few young sprouts and three simple spring flowers. Very low wide silhouette.",
+    "kind": "prop"
+  },
+  {
+    "key": "beet-sommer",
+    "group": "beet",
+    "season": "sommer",
+    "width": 72,
+    "height": 38,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small garden flower bed surrounded by a low border of smooth stones. Season: sommer. Several simple blooming daisies and leaves. Very low wide silhouette.",
+    "kind": "prop"
+  },
+  {
+    "key": "beet-herbst",
+    "group": "beet",
+    "season": "herbst",
+    "width": 72,
+    "height": 38,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small garden flower bed surrounded by a low border of smooth stones. Season: herbst. A couple of dry stems and a few fallen leaves. Very low wide silhouette.",
+    "kind": "prop"
+  },
+  {
+    "key": "beet-winter",
+    "group": "beet",
+    "season": "winter",
+    "width": 72,
+    "height": 38,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small garden flower bed surrounded by a low border of smooth stones. Season: winter. The stone bed under a gentle mound of snow, two short bare stalks visible. Very low wide silhouette.",
+    "kind": "prop"
+  },
+  {
+    "key": "zaun",
+    "group": "zaun",
+    "width": 300,
+    "height": 42,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one single long straight low wooden picket-fence segment, about seven times wider than tall. Evenly spaced rounded pickets joined by two horizontal rails. Front view. No gate, no vegetation, no decorations.",
+    "kind": "prop"
+  },
+  {
+    "key": "gartentuer",
+    "group": "gartentuer",
+    "width": 46,
+    "height": 52,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one little wooden garden gate with two side posts and a softly arched top. Rounded vertical wooden slats, two simple hinges and a tiny latch. Same charming low picket-fence style. No fence extending to either side and no decorations.",
+    "kind": "prop"
+  },
+  {
+    "key": "lichterkette",
+    "group": "lichterkette",
+    "width": 275,
+    "height": 25,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one long gently sagging string of little star-shaped garden lights, a single broad shallow arc, around eleven times wider than tall. Seven simple five-pointed star bulbs attached to one black cable. White-filled bulbs with black outline. No support poles, no scene, no glow outside the silhouettes.",
+    "kind": "prop"
+  },
+  {
+    "key": "kranz",
+    "group": "kranz",
+    "width": 27,
+    "height": 27,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small Christmas wreath for a garden gate, round evergreen ring with a simple bow at the bottom and three little berry groups. Clean bold white-filled silhouette with black needle details, centered circular hole.",
+    "kind": "prop"
+  },
+  {
+    "key": "schneemann",
+    "group": "schneemann",
+    "width": 40,
+    "height": 57,
+    "prompt": "One isolated game prop for a cozy fenced garden in a strictly black-and-white pixel-art virtual pet game. Simple warm and charming design, crisp black contours, opaque white interiors, transparent outside the object. Front/very slightly elevated view, the same viewpoint for all props. Sparse deliberate square pixel details, no gray, colors, gradients, cast shadow, text, labels, ground background, surrounding scene or other separate objects. Whole object centered and not clipped, generous margin. Designed to remain clear at small LCD sprite size. Subject: one small friendly snowman made from two snowballs, a little knitted cap and scarf, dot eyes, simple carrot nose, two twig arms. Cozy understated garden decoration, full body, no ground or snow around it.",
+    "kind": "prop"
+  }
+]

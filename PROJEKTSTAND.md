@@ -2,17 +2,26 @@
 
 Stand: 24. November 2026
 
+## Garten und Evi-Suchposen umgesetzt (24. November 2026)
+
+- Garten als eigene Ansicht im Waveshare-Menü: eingezäunt, Gartentür, Sternenlichterkette, Baum, Busch, Beet. Vier saisonale Varianten der Pflanzen; dasselbe Wetter und Tag/Nacht wie im Fenster, bewegter Regen/Schnee auch nachts. Kranz und Schneemann im bisherigen Weihnachtszeitraum 18.11.–5.1. Einzelbilder und gerenderte Gesamtansichten unter `entwuerfe/garten/`.
+- Zwölf neue Zeichnungen unter `entwuerfe/evi/garten/`: schnuppern, mit der Pfote untersuchen, Fund stolz zeigen, jeweils Baby/Teenager/Erwachsene/Oma. Nutzerin bat ausdrücklich um weitere Zeichnungen und Berücksichtigung der „Generationen“; umgesetzt für die bestehenden Lebensphasen. Alte Zeichnungen bleiben unverändert. Deckende Körper; Fund separat auf den Pfoten. Keine neue Verpaarungsmechanik.
+- Gemeinsame Suche: Stelle wählen, A schickt Evi los, beim Fragezeichen A oder Stelle antippen zum Helfen, Ergebnis bleibt bis A; B/START heim. Je Stelle ein Versuch am Tag, mindestens eine von drei ergiebig, weitere 20 % als Startwerte. Echte Spaziergänge bleiben zusätzlich und haben ihr eigenes tägliches Fundlimit.
+- Neue Funde mit Gegenstandsart, Datum, Quelle, Gartenstelle, damaliger Jahreszeit und Spielwetter. Erinnerungssatz im Sideboard aus gespeicherten Daten. Reales Spaziergangswetter bleibt unbekannt. Version-3-Spielstand übernimmt Version 1/2 verlustfrei, 3288 Bytes von 4096 EEPROM-Bytes.
+- Gesamte PC-Prüfung inklusive neuem `garten.cpp` erfolgreich; echte Pico-2-Übersetzung: 392880 Bytes Programm (9 %), 33288 Bytes globale Variablen (6 %, ohne Stack/Heap). Am echten Board noch testen.
+- Details und Startregeln in [Garten_und_Fundstuecke.md](Garten_und_Fundstuecke.md) und `software/schritt-10/README.md`. Generator `make-garten.py`, Bildaufträge unter `entwuerfe/garten/bildauftraege.json`. Handy-App unverändert. Stitch weiterhin offen.
+
 ## Fundstückbilder und Fundauswahl erweitert (24. November 2026)
 
 - Nutzerin hat elf Motive und die kleine Figur statt des Eis für Spyro freigegeben; Bilder zeichnen, hochladen und in den Code integrieren.
 - Neu erfolgreich gezeichnet und eingebaut: Micky-Knopf, Arielles Muschel, Triforce-Anhänger, Animal-Crossing-Spiralfossil, Junimo-Figur und ein eigenständiger kleiner Gartendrache. Bei Spyro und Stitch lehnte der Bildgenerator die Erzeugung ohne konkreten Grund ab. Nutzerin erlaubte danach einen ähnlichen Drachen-Nachbau; umgesetzt als eigener Gartendrache, nicht als Spyro. Stitch bleibt ohne Ersatz offen.
 - Aktuell zehn verfügbare Fundarten, darunter die vier bisherigen unveränderten Bilder. Alle zehn sind beim bestehenden Gassigehen erreichbar und im Sideboard mit Name und Datum sichtbar. Die alten Fund-IDs bleiben unverändert; das Spielstandformat muss nicht geändert werden.
 - Bilder in `entwuerfe/sammlung/`, vollständige Bildaufträge in `bildauftraege.json`. `make-sammlung.py` erzeugt `fundbilder.h`; die schwarzen Linien und weißen Innenflächen der neuen Figuren werden als getrennte 1-Bit-Flächen abgelegt.
-- Zusätzliche Prüfungen: jede Art zeichnen, speichern/laden und über die Fundauswahl erreichen; die alten vier Bilder bleiben bytegleich. Gartenansicht und neue Garten-Suchabläufe sind weiterhin Konzept.
+- Zusätzliche Prüfungen: jede Art zeichnen, speichern/laden und über die Fundauswahl erreichen; die alten vier Bilder bleiben bytegleich. Gartenansicht und neue Garten-Suchabläufe sind inzwischen umgesetzt (siehe oben).
 
 ## Konzept: gemeinsamer Garten und zehn Fundstückarten (24. November 2026)
 
-Neue Entscheidungen und offene Gestaltungsvorschläge stehen in [Garten_und_Fundstuecke.md](Garten_und_Fundstuecke.md). Gemeinsamer eingezäunter Garten statt Park, auch vom Sofa aus; zusätzliche Funde bei echten Spaziergängen. Gegenstandsart und Fundtag verbindlich festhalten, mit passenden Erinnerungssätzen. Gesamtansicht plus einzelne Gartenobjekte und Jahreszeiten vorsehen. Wetter muss im Garten sichtbar sein und zum Fensterausblick passen. Vier vorhandene Fundstücke sowie Micky-Knopf, Arielles Muschel und Stitch-Anhänger sind bestätigt. Allgemeine Gaming-Motive gestrichen; weitere Motive aus Spyro, Zelda, Animal Crossing und Stardew Valley besprechen, erst danach zeichnen. Mit allen vier Spielreihen wären es elf statt ungefähr zehn Fundstückarten; Umfang noch offen. Federkitzeln, Zapfenspielen und Sammelsets gestrichen; Generationen/Erbstücke vorerst zurückgestellt. **Nur Konzept festgehalten, keine neue Spielfunktion oder Zeichnung erstellt.**
+Neue Entscheidungen und offene Gestaltungsvorschläge stehen in [Garten_und_Fundstuecke.md](Garten_und_Fundstuecke.md). Gemeinsamer eingezäunter Garten statt Park, auch vom Sofa aus; zusätzliche Funde bei echten Spaziergängen. Gegenstandsart und Fundtag verbindlich festhalten, mit passenden Erinnerungssätzen. Gesamtansicht plus einzelne Gartenobjekte und Jahreszeiten vorsehen. Wetter muss im Garten sichtbar sein und zum Fensterausblick passen. Vier vorhandene Fundstücke sowie Micky-Knopf, Arielles Muschel und Stitch-Anhänger sind bestätigt. Allgemeine Gaming-Motive gestrichen; weitere Motive aus Spyro, Zelda, Animal Crossing und Stardew Valley besprechen, erst danach zeichnen. Mit allen vier Spielreihen wären es elf statt ungefähr zehn Fundstückarten; Umfang noch offen. Federkitzeln, Zapfenspielen und Sammelsets gestrichen; Generationen/Erbstücke vorerst zurückgestellt. **Historischer Konzeptstand; Garten und neue Evi-Zeichnungen sind inzwischen umgesetzt, siehe oben.**
 
 ## Waveshare: Kuscheln, kleine Uhrzeit, trüber Regenhimmel, kürzeres Menü (24. November 2026)
 

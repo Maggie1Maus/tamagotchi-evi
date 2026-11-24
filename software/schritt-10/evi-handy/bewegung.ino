@@ -85,7 +85,7 @@ void zeichneZeichen(int zeichen, int cx, int cy, int h, uint16_t vorne, uint16_t
 
 // ---------- Was Evi tut ----------
 bool eviKannReagieren(ms_t jetzt) {
-  if (sideboard.phase != SB_ZU) return false;
+  if (sideboard.phase != SB_ZU || garten.phase != GA_ZU) return false;
   return bildschirmAn && !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
          momenteFuer(phaseBei(pet, jetzt)) && !ruhend(beschreiben(pet, jetzt));
 }
@@ -119,7 +119,7 @@ void gassiZuEnde(ms_t jetzt, uint32_t schritte) {
   speichern(jetzt);
   snprintf(bewegung.gassiText, sizeof(bewegung.gassiText), "Spaziergang: %lu Schritte · +%d Münzen", (unsigned long)schritte, r.muenzen);
   if (fund >= 0) snprintf(bewegung.gassiText, sizeof(bewegung.gassiText), "Spaziergang: %lu Schritte · Fund: %s", (unsigned long)schritte, FUND_NAME[fund]);
-  if (bildschirmAn && !spiel.aktiv && !ritual.aktiv && sideboard.phase == SB_ZU) gassiErzaehlen();
+  if (bildschirmAn && !spiel.aktiv && !ritual.aktiv && sideboard.phase == SB_ZU && garten.phase == GA_ZU) gassiErzaehlen();
   else bewegung.gassiOffen = true;   // erzählt sie, sobald der Bildschirm wieder an ist
 }
 
@@ -167,7 +167,7 @@ void bewegungTakt() {
   if (e & LE_KIPPEN) gekippt(jetzt, lage.kippSeite);
   if (e & LE_GESICHT_UNTEN) aufsGesicht(jetzt);
   if (e & LE_GESICHT_OBEN) wiederUmgedreht(jetzt, lage.untenDauer);
-  if (bewegung.gassiOffen && bildschirmAn && !spiel.aktiv && !ritual.aktiv && !menueOffen && sideboard.phase == SB_ZU) {
+  if (bewegung.gassiOffen && bildschirmAn && !spiel.aktiv && !ritual.aktiv && !menueOffen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) {
     bewegung.gassiOffen = false;
     gassiErzaehlen();
   }
