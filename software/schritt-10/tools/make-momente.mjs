@@ -45,9 +45,12 @@ const lines = [
   ''
 ];
 function addArray(name, bytes) {
-  lines.push(`static const uint8_t ${name}[] = {`);
-  for (let i = 0; i < bytes.length; i += 20) lines.push('  ' + bytes.slice(i, i + 20).map(b => '0x' + b.toString(16).padStart(2, '0')).join(',') + ',');
-  lines.push('};');
+  lines.push(...arrayLines(name, bytes));
+}
+function arrayLines(name, bytes) {
+  const result = [`static const uint8_t ${name}[] = {`];
+  for (let i = 0; i < bytes.length; i += 20) result.push('  ' + bytes.slice(i, i + 20).map(b => '0x' + b.toString(16).padStart(2, '0')).join(',') + ',');
+  return [...result, '};'];
 }
 // Bits einer Fläche: Zeile für Zeile, links im höchsten Bit.
 function bits(w, h, test) {
@@ -60,6 +63,52 @@ function bits(w, h, test) {
   return bytes;
 }
 const lum = (d, i) => 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+
+// Das Baby-Laufbild hat eine winzige offene Kontur: Bei der Aufbereitung wurde dadurch
+// der Bauch durchsichtig. Nur seine Deckmaske reparieren; schwarze Linien bleiben unverändert.
+// Ein gepolsterter Rand und ein Pixel Abstand schließen die Lücke beim Suchen des Außenraums.
+// Danach den Abstand zurücknehmen, damit um Evi kein weißes Rechteck oder Saum entsteht.
+function laufMaskeFuellen(w, h, deckend) {
+  const breite = w + 6, hoehe = h + 6;
+  const original = new Uint8Array(breite * hoehe);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) original[(y + 3) * breite + x + 3] = deckend(x, y);
+  const rand = new Uint8Array(original.length);
+  for (let y = 1; y < hoehe - 1; y++) for (let x = 1; x < breite - 1; x++) {
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++)
+      if (original[(y + dy) * breite + x + dx]) rand[y * breite + x] = 1;
+  }
+  const aussen = new Uint8Array(original.length), queue = [0];
+  aussen[0] = 1;
+  for (let i = 0; i < queue.length; i++) {
+    const p = queue[i], x = p % breite, y = Math.floor(p / breite);
+    for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+      const nx = x + dx, ny = y + dy, n = ny * breite + nx;
+      if (nx >= 0 && nx < breite && ny >= 0 && ny < hoehe && !rand[n] && !aussen[n]) {
+        aussen[n] = 1; queue.push(n);
+      }
+    }
+  }
+  return (x, y) => {
+    const p = (y + 3) * breite + x + 3;
+    if (original[p]) return true;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (aussen[p + dy * breite + dx]) return false;
+    return true;
+  };
+}
+
+// Die vorhandene Board-Maske lässt sich auch ohne Browser reparieren. Alle anderen Bilder,
+// Maße und Linien bleiben dabei bytegleich: node .../make-momente.mjs --repair-running-mask
+if (process.argv.includes('--repair-running-mask')) {
+  const original = readFileSync(out, 'utf8');
+  const [, ws, hs] = original.match(/static const Bild ART_BABY_LAUFEN = \{(\d+), (\d+),/);
+  const w = Number(ws), h = Number(hs), zeile = Math.ceil(w / 8);
+  const pattern = /static const uint8_t ART_BABY_LAUFEN_M\[\] = \{([\s\S]*?)\};/;
+  const maske = Array.from(original.match(pattern)[1].matchAll(/0x([0-9a-f]+)/g), m => parseInt(m[1], 16));
+  const fuellung = laufMaskeFuellen(w, h, (x, y) => !!(maske[y * zeile + (x >> 3)] & (0x80 >> (x & 7))));
+  writeFileSync(out, original.replace(pattern, arrayLines('ART_BABY_LAUFEN_M', bits(w, h, fuellung)).join('\n')));
+  console.log('Deckmaske von Baby-Laufen gefüllt; übrige Bilder unverändert.');
+  process.exit(0);
+}
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ deviceScaleFactor: 1 });
@@ -88,7 +137,8 @@ for (const [phase, phaseC, SCALE] of PHASEN) {
   const at = (x, y) => (y * w + x) * 4;
   const cname = `ART_${phaseC}_${name.toUpperCase()}`;
   addArray(`${cname}_L`, bits(w, h, (x, y) => data[at(x, y) + 3] > 127 && lum(data, at(x, y)) < 140));
-  addArray(`${cname}_M`, bits(w, h, (x, y) => data[at(x, y) + 3] > 127));
+  const deckend = (x, y) => data[at(x, y) + 3] > 127;
+  addArray(`${cname}_M`, bits(w, h, phase === 'baby' && name === 'laufen' ? laufMaskeFuellen(w, h, deckend) : deckend));
   lines.push(`static const Bild ${cname} = {${w}, ${h}, ${-Math.round(w / 2)}, ${-h}, ${cname}_L, ${cname}_M};`);
   zeichnungen[phaseC].push(cname);
  }

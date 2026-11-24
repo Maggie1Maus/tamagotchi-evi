@@ -2,6 +2,20 @@
 
 Stand: 24. November 2026
 
+## Waveshare: deckendes Baby und bewegter Niederschlag (24. November 2026)
+
+- Rückmeldung der Nutzerin: Beim Laufen scheint der Dielenboden durch Evi. Die Baby-Laufzeichnung hatte einen durchsichtigen Bauch. Nur die Deckmaske in `momente.h` ist gefüllt, die schwarzen Linien und die Größe sind unverändert; auch beim gespiegelten Laufen nach rechts. Die Reparatur ist in `tools/make-momente.mjs` enthalten (`--repair-running-mask` funktioniert ohne Browser).
+- Wunsch der Nutzerin: Regen und Schnee sollen draußen sichtbar fallen. Die vorhandene Bewegung wird jetzt etwa alle 40 ms statt nur alle 120 ms gezeichnet; Schnee pendelt sanft seitlich. Niederschlag ist auch nachts sichtbar (helle Punkte auf dunklem Himmel). Er bleibt auf die Fensterscheiben begrenzt, hinter Baum, Hügeln und Fensterkreuz. Schnee weiterhin nur im Winter; Spielregeln behalten ihren Takt.
+- Prüfung: echte Übersetzung für Pico 2 mit arduino-pico 6.4.0; zusätzliche Prüfungen für Baby-Füllung in beiden Laufrichtungen, Wetterbewegung tags/nachts, Begrenzung aufs Fenster und Bildschirm aus. Am echten Board noch ausprobieren.
+
+## Sammlung im Sideboard (24. November 2026)
+
+- Die Nutzerin möchte Fundstücke von draußen und Erbstücke sammeln. Stil wie das Zimmer: **Gemütlich & schlicht**. Vier neue Fundstückbilder: glatter Stein, Blatt, Feder und Tannenzapfen (`entwuerfe/sammlung/`, verkleinert und schwarz-weiß in `fundbilder.h`, Werkzeug `make-sammlung.py`).
+- Im Menü **Sideboard öffnen**: Evi läuft zum Sideboard und steht kurz mit ihrer vorhandenen Rückansicht davor. Danach eine eigene Ansicht statt des Zimmers. Je ein Fundstück mit Bild, Name, Fundort, Datum und Generation. ◀/▶ oder ▲/▼ blättern; B/A/START schließen, Touch: links zurück, Mitte schließen, rechts weiter. Beim Schließen läuft Evi zurück. Schlafende Evi, Ei und Grab bleiben beim Betrachten ungestört. RESET schließt und schaltet aus.
+- Aktuell **keine Fundstücke oben auf dem Sideboard ausstellen**: Dort stehen die Kerzen. Die Sammlung wird im Sideboard aufbewahrt.
+- Auf Wunsch schon beim Gassigehen: ab 100 Schritten erster Fund sicher, danach 40 % je ausreichendem Spaziergang, höchstens ein Fund pro Tag (Startwerte). Maximal 256 Einträge; volle Sammlung überschreibt nichts. Funddatum und Generation bleiben erhalten. Beim nächsten Ei werden ältere Gegenstände als Erbstücke angezeigt.
+- Spielstand Version 2 speichert die Sammlung; vorhandene Version-1-Spielstände werden mit Name, Münzen, Bedürfnissen und Toneinstellung übernommen. Persönlichkeiten und Park-Funktionen bleiben für eine andere Sitzung offen.
+
 ## Waveshare: Schütteln entfernt (24. November 2026)
 
 Laut Nutzerin aufgespielt und funktioniert. Auf ihren Wunsch reagiert Evi nicht mehr auf Wackeln/Schütteln (kein Schwindel, keine Sätze dazu). Gassi gehen, Kippen, Aufs-Gesicht-Legen, „Wie war dein Tag?“ und die neuen Spiele bleiben.

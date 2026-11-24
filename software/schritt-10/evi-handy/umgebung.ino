@@ -6,8 +6,8 @@
 // Weihnachten vom 18. November bis einschließlich 5. Januar: Der Weihnachtsbaum steht statt Wandregal
 //   und Pflanze auf dem Tisch, Sterne hängen am Fensterrahmen, ein Kerzentablett steht auf dem Sideboard.
 // Wetter: wechselt alle 3 Stunden, zufällig je nach Jahreszeit, aber für jeden Tag und jede Uhrzeit fest
-//   (nach einem Neustart dasselbe). Schnee fällt nur im Winter. Zu sehen ist das Wetter am Tag und in der
-//   Dämmerung; nachts bleibt der Himmel mit Mond, Sternen und Sternschnuppen wie bisher.
+//   (nach einem Neustart dasselbe). Schnee fällt nur im Winter. Niederschlag bewegt sich auch nachts,
+//   dann mit hellen Punkten vor dem dunklen Himmel. Baum, Hügel und Fensterkreuz bleiben davor.
 
 
 // Wie oft welches Wetter je Jahreszeit (Sonne, Sonne mit Wolken, Regen, bewölkt, Schnee)
@@ -55,12 +55,12 @@ bool bildDeckt(const Bild& b, int x, int y) {
 void zeichneAnStelle(const Bild& b) { zeichneBild(b, b.ox, b.oy); }
 
 // Ein Schneestern (5 × 5) wie im Entwurf
-void schneeflocke(int x, int y, const Bild& vorne) {
+void schneeflocke(int x, int y, const Bild& vorne, uint16_t farbe) {
   static const int8_t P[9][2] = {{0, -2}, {0, -1}, {0, 0}, {0, 1}, {0, 2}, {-2, 0}, {-1, 0}, {1, 0}, {2, 0}};
   static const int8_t D[4][2] = {{-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
   auto punkt = [&](int px, int py) {
     if (px >= GLAS_X && px < GLAS_X + GLAS_B && py >= GLAS_Y && py < GLAS_Y + GLAS_H && !bildDeckt(vorne, px - GLAS_X, py - GLAS_Y))
-      bild.drawPixel(px, py, 0);
+      bild.drawPixel(px, py, farbe);
   };
   for (auto& p : P) punkt(x + p[0], y + p[1]);
   for (auto& d : D) punkt(x + d[0], y + d[1]);
@@ -117,8 +117,9 @@ void fensterZeichnen(ms_t jetzt) {
       }
   }
   // Regen und Schnee fallen vor dem Himmel (nicht über Baum und Hügel)
-  if (h != HIMMEL_NACHT && (w == WT_REGEN || w == WT_SCHNEE)) {
+  if (w == WT_REGEN || w == WT_SCHNEE) {
     const uint32_t t = millis();
+    const uint16_t farbe = h == HIMMEL_NACHT ? 1 : 0;
     for (int i = 0; i < (w == WT_REGEN ? 10 : 11); i++) {
       const int bx = GLAS_X + 3 + (i * 37) % (GLAS_B - 6);
       if (w == WT_REGEN) {
@@ -129,13 +130,13 @@ void fensterZeichnen(ms_t jetzt) {
             int px = bx - lauf / 4 - k / 2 + d;
             if (px < GLAS_X) px += GLAS_B;
             const int py = GLAS_Y + 16 + lauf + k;
-            if (py < GLAS_Y + GLAS_H && px < GLAS_X + GLAS_B && !bildDeckt(vorne, px - GLAS_X, py - GLAS_Y)) bild.drawPixel(px, py, 0);
+            if (py < GLAS_Y + GLAS_H && px < GLAS_X + GLAS_B && !bildDeckt(vorne, px - GLAS_X, py - GLAS_Y)) bild.drawPixel(px, py, farbe);
           }
         }
       } else {
         const int y = GLAS_Y + 16 + (int)((t / 90 + i * 29) % (GLAS_H - 16));
-        const int x = bx + (((t / 400) + i) % 4 < 2 ? 0 : 1);
-        schneeflocke(x, y, vorne);
+        const int x = bx + (int)lroundf(2 * sinf((t % 6000) * (6.2831853f / 3000) + i * 1.7f));
+        schneeflocke(x, y, vorne, farbe);
       }
     }
   }

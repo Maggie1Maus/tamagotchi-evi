@@ -33,6 +33,7 @@
 #include "assets.h"
 #include "momente.h"
 #include "umgebung.h"
+#include "fundbilder.h"
 #include "extras.h"
 
 // ---------- Einstellungen ----------
@@ -61,7 +62,7 @@ bool bildschirmAn = true;
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_NAME, E_TON, E_HILFE, E_UHR, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
-                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT };
+                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD };
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL };   // Begrüßung: 2 bzw. 4 Hüpfer
@@ -287,6 +288,7 @@ const Bild* eviBild(Stimmung s, bool jubelt, bool istMuede, bool allesGut, Phase
 }
 
 void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
+  if (sideboard.phase != SB_ZU && sideboard.phase != SB_OFFEN) { sideboardEviZeichnen(ph); return; }
   const uint32_t t = evi.takt;
   const uint32_t seit = millis() - evi.reaktionSeit;
   const bool reagiert = seit < 2400 && evi.reaktion != R_KEINE;
@@ -498,12 +500,12 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
 // ---------- Menü ----------
 // symbol = Bild aus der App; ohne Bild eine gezeichnete Figur (zeichen: 0 Schere, 3 Wolke, 4 Regenwolke)
 struct MenuePunkt { Eintrag e; const Bild* symbol; int8_t zeichen; char text[26]; };
-MenuePunkt menue[12];
+MenuePunkt menue[13];
 int menueAnzahl = 0, gewaehlt = 0;
 bool menueOffen = false, spieleAuswahl = false, tagAuswahl = false;
 
 void punkt(Eintrag e, const Bild* s, const char* t, int zeichen = -1) {
-  if (menueAnzahl >= 12) return;
+  if (menueAnzahl >= 13) return;
   menue[menueAnzahl].e = e;
   menue[menueAnzahl].symbol = s;
   menue[menueAnzahl].zeichen = (int8_t)zeichen;
@@ -551,6 +553,7 @@ void menueBauen() {
       punkt(E_TON, &SYM_M_TON, tonAn ? "Ton aus" : "Ton an");
       punkt(E_HILFE, &SYM_M_HILFE, "Hilfe");
     }
+    punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
     punkt(E_UHR, &SYM_M_SONNE, "Uhr stellen");
   }
   gewaehlt = 0;
@@ -565,13 +568,14 @@ void menueZeigen(bool offen, bool spiele = false, bool tag = false) {
 
 void zeichneMenue() {
   const int w = 150, x = BREITE - 5 - w, unten = ZEILE_Y - 5, zeileH = menueAnzahl > 10 ? 15 : 17;
-  const int h = 2 + 3 + menueAnzahl * zeileH + 3 + 2, y = unten - h;
+  const int sichtbar = min(menueAnzahl, 11), anfang = max(0, min(gewaehlt - 5, menueAnzahl - sichtbar));
+  const int h = 2 + 3 + sichtbar * zeileH + 3 + 2, y = unten - h;
   bild.fillRoundRect(x + 2, y + 2, w, h, 6, 0);   // Schatten 2px
   bild.fillRoundRect(x, y, w, h, 6, 1);
   bild.drawRoundRect(x, y, w, h, 6, 0);
   bild.drawRoundRect(x + 1, y + 1, w - 2, h - 2, 5, 0);
-  for (int i = 0; i < menueAnzahl; i++) {
-    const int iy = y + 5 + i * zeileH;
+  for (int i = anfang; i < anfang + sichtbar; i++) {
+    const int iy = y + 5 + (i - anfang) * zeileH;
     const bool sel = i == gewaehlt;
     if (sel) bild.fillRect(x + 5, iy, w - 10, zeileH, 0);
     const uint16_t f = sel ? 1 : 0;
@@ -624,6 +628,7 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
 }
 
 void zeichneAlles() {
+  if (sideboard.phase == SB_OFFEN) { sammlungZeichnen(); zeigen(); return; }
   const ms_t jetzt = jetztMs();
   const Phase ph = phaseBei(pet, jetzt);
   const Stimmung s = beschreiben(pet, jetzt);
@@ -695,6 +700,7 @@ void aktionAusfuehren(Eintrag e) {
   if (e == E_NAME) { nameSollGeaendertWerden = true; return; }
   if (e == E_HILFE) { hilfeSollGezeigtWerden = true; return; }
   if (e == E_UHR) { uhrSollGestelltWerden = true; return; }
+  if (e == E_SIDEBOARD) { sideboardOeffnen(); return; }
   if (e == E_TAG) { tagFragen(); return; }
   if (e == E_TAG_GUT || e == E_TAG_LALA || e == E_TAG_SCHLECHT) { tagAntwort(e == E_TAG_GUT ? 0 : e == E_TAG_LALA ? 1 : 2); return; }
   if (e == E_TON) {
@@ -748,6 +754,7 @@ void aktionAusfuehren(Eintrag e) {
 
 // Die drei Tasten der App
 void taste(Taste k) {
+  if (sideboard.phase != SB_ZU) { sideboardTaste(k); return; }
   const ms_t jetzt = jetztMs();
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);   // touch() in app.js
   if (ritual.aktiv) { ritualBeenden(); return; }
@@ -771,6 +778,7 @@ void taste(Taste k) {
 // RESET schaltet den Bildschirm aus. Ein laufendes Spiel wird dabei abgebrochen, Gute Nacht und
 // Momente enden. Wieder an geht er mit jeder Taste, jedem Tipper und bei wichtigen Ereignissen.
 void bildschirmAus() {
+  if (sideboard.phase != SB_ZU) sideboardSofortZu();
   if (spiel.aktiv) spielEnde(true);
   if (ritual.aktiv) ritualBeenden();
   momentStoppen(true);
@@ -783,6 +791,12 @@ void bildschirmAus() {
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
   if (k == K_RESET) { bildschirmAus(); return; }
+  if (sideboard.phase != SB_ZU) {
+    if (k == K_B || k == K_A || k == K_START) sideboardSchliessen();
+    else if (k == K_UP || k == K_L) sideboardBlaettern(-1);
+    else if (k == K_DOWN || k == K_R) sideboardBlaettern(1);
+    return;
+  }
   if (spiel.aktiv) {                               // im Spiel gehören die Tasten dem Spiel
     const ms_t jetzt = jetztMs();
     if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);
@@ -1013,6 +1027,7 @@ void loop() {
   }
 
   bewegungTakt();                 // Lagesensor: Gassi, kippen, aufs Gesicht
+  sideboardTakt(jetztMs());
 
   int x, y;
   if (tipper(x, y)) {
@@ -1041,7 +1056,7 @@ void loop() {
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
     ritualWeiter();
-    momentTakt(jetzt);
+    if (sideboard.phase == SB_ZU) momentTakt(jetzt);
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
     // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)
     if (DUNKEL_NACH_MS > 0 && bildschirmAn && m - letzteBeruehrung > DUNKEL_NACH_MS && !ritual.aktiv && !spiel.aktiv &&
@@ -1052,8 +1067,12 @@ void loop() {
       dunkelSeit = jetzt;
     }
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
-  } else if (spiel.aktiv && bildschirmAn && m - letztesBild >= 12) {
-    zeichneAlles();                       // im Spiel etwa 80-mal pro Sekunde; gesendet wird nur, was sich bewegt
+  } else if (bildschirmAn && ((spiel.aktiv && m - letztesBild >= 12) ||
+             (!spiel.aktiv && sideboard.phase != SB_OFFEN && m - letztesBild >= 40 &&
+              (sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
+    // Spiele etwa 80-mal, Regen und Schnee etwa 25-mal pro Sekunde zeichnen.
+    // Spielregeln und Evis Momente behalten ihren bisherigen Takt; gesendet werden nur Änderungen.
+    zeichneAlles();
     letztesBild = millis();
   }
 }

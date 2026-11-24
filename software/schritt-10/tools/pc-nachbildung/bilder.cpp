@@ -61,6 +61,17 @@ void vorbereiten(int stunde, int minute, ms_t seitGeburt = 4 * TAG) {
 
 int main() {
   bildschirmStarten();
+  // Durch den Körper des laufenden Babys darf der dunkle Boden nicht durchscheinen,
+  // weder nach links noch gespiegelt nach rechts. Außerhalb der Figur bleibt der Grund sichtbar.
+  auto hell = [](int x, int y) { return (bild.getBuffer()[y * 40 + x / 8] & (0x80 >> (x % 8))) != 0; };
+  for (bool spiegeln : {false, true}) {
+    bild.fillScreen(0);
+    if (spiegeln) zeichneBildGespiegelt(ART_BABY_LAUFEN, 10, 10);
+    else zeichneBild(ART_BABY_LAUFEN, 10, 10);
+    for (auto p : {std::pair<int, int>{55, 60}, {65, 65}, {50, 75}, {60, 70}, {73, 67}})
+      PRUEFE(hell(10 + (spiegeln ? ART_BABY_LAUFEN.w - 1 - p.first : p.first), 10 + p.second), "Baby-Bauch deckend weiß");
+    PRUEFE(!hell(10 + (spiegeln ? ART_BABY_LAUFEN.w - 1 : 0), 99), "außerhalb des Babys transparent");
+  }
   // ---------- Zimmer und Menü ----------
   vorbereiten(14, 0);
   PRUEFE(phaseBei(pet, jetztMs()) == ERWACHSEN, "Evi ist nicht erwachsen");

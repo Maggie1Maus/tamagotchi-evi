@@ -43,6 +43,46 @@ void zimmerFoto(const char* name, ms_t t, int extraMs = 0) {
   zeichneAlles();
   foto(name);
 }
+
+void niederschlagPruefen(Wetter wetter, int stunde) {
+  ms_t t = 0;
+  for (int tag = 0; tag < 365 && !t; tag++) {
+    const ms_t kandidat = um(2027, 1, 1, stunde) + (ms_t)tag * TAG;
+    if (jahreszeitBei(kandidat) == JZ_WINTER && wetterBei(kandidat) == wetter) t = kandidat;
+  }
+  PRUEFE(t != 0, "Tag für Niederschlag gefunden");
+  if (!t) return;
+  uint8_t vorher[40 * 240];
+  bild.fillScreen(1); fensterZeichnen(t);
+  memcpy(vorher, bild.getBuffer(), sizeof(vorher));
+  simMillis += 180;
+  fensterZeichnen(t);
+  int bewegt = 0, ausserhalb = 0;
+  const Bild& vorne = *FENSTER_JAHRESZEIT[jahreszeitBei(t)];
+  for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++) {
+    const int i = y * 40 + x / 8, bit = 0x80 >> (x % 8);
+    if (!((vorher[i] ^ bild.getBuffer()[i]) & bit)) continue;
+    bewegt++;
+    if (x < GLAS_X || x >= GLAS_X + GLAS_B || y < GLAS_Y || y >= GLAS_Y + GLAS_H ||
+        bildDeckt(vorne, x - GLAS_X, y - GLAS_Y) || (x >= 61 && x < 65) || (y >= 81 && y < 85)) ausserhalb++;
+  }
+  PRUEFE(bewegt > 0, "Regen/Schnee bewegt sich am Tag und in der Nacht");
+  PRUEFE(ausserhalb == 0, "Niederschlag bleibt hinter Baum, Hügeln und Fensterkreuz");
+  char name[50]; snprintf(name, sizeof(name), "animation-%s-%s", wetter == WT_REGEN ? "regen" : "schnee", stunde == 1 ? "nacht" : "tag");
+  zimmerFoto(name, t);
+
+  // Der echte Hauptablauf muss vor dem nächsten 120-ms-Spielschritt ein neues Wetterbild senden.
+  bildschirmAn = true; menueOffen = false; spiel.aktiv = false;
+  letzterTakt = letzteRunde = letztesBild = millis();
+  const long bilderVorher = simBilder;
+  simMillis += 45; loop();
+  PRUEFE(simBilder > bilderVorher, "Wetter wird zwischen den Spielschritten neu gezeichnet");
+  bildschirmAn = false;
+  const long bilderDunkel = simBilder;
+  simMillis += 45; loop();
+  PRUEFE(simBilder == bilderDunkel, "Wetter zeichnet bei ausgeschaltetem Bildschirm nicht weiter");
+  bildschirmAn = true;
+}
 int main() {
   bildschirmStarten(); bild.cp437(true);
   PRUEFE(jahreszeitBei(um(2027, 1, 31)) == JZ_WINTER, "31. Januar: Winter");
@@ -78,6 +118,7 @@ int main() {
   PRUEFE(anzahl[JZ_WINTER][WT_SCHNEE] > 100, "im Winter schneit es oft");
   PRUEFE(wechsel == 0, "Wetter wechselt nur alle 3 Stunden");
   PRUEFE(wetterBei(um(2026, 12, 3, 10, 5)) == wetterBei(um(2026, 12, 3, 11, 55)), "dasselbe Wetter im selben Abschnitt");
+  for (Wetter w : {WT_REGEN, WT_SCHNEE}) for (int stunde : {12, 1}) niederschlagPruefen(w, stunde);
   // Bilder: jede Jahreszeit mit jedem Wetter (am Tag), dazu Nacht und Dämmerung
   for (int j = 0; j < 4; j++) {
     const int monate[4] = {4, 7, 10, 2};   // Frühling, Sommer, Herbst, Winter (Februar: Frühling! darum unten anders)

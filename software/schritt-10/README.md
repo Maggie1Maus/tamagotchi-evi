@@ -9,6 +9,12 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 
 ## Etappe 1
 
+### Ergänzung vom 24. November: Baby deckend, Regen und Schnee bewegt
+
+Die weiße Deckmaske des laufenden Babys ist repariert: Bauch und Beine verdecken den Boden auch beim gespiegelten Laufen. Größe und schwarze Zeichnung bleiben gleich. Nur `ART_BABY_LAUFEN_M` ist geändert; das Werkzeug `tools/make-momente.mjs` berücksichtigt die Füllung auch beim Neuerzeugen. Ohne Browser: `node software/schritt-10/tools/make-momente.mjs --repair-running-mask`.
+
+Regen und Schnee werden etwa alle 40 ms gezeichnet, unabhängig vom 120-ms-Takt der Spielregeln. Schnee schwingt leicht seitlich. Nachts fallen helle Tropfen/Flocken vor dem dunklen Himmel. Baum, Hügel und Fensterkreuz verdecken den Niederschlag; bei ausgeschaltetem Bildschirm wird nichts gezeichnet. Schnee weiterhin nur im Winter. In der PC-Nachbildung und mit einer echten Pico-2-Übersetzung geprüft; am Board noch ausprobieren.
+
 - **Zimmer** wie in der App, pixelgenau: von Microsoft Edge aus `handy-app/dist/index.html` abfotografiert (320 × 224, also 1:1). Das Fenster zeigt Tag, Dämmerung oder Nacht mit Mond und Sternen nach der echten Sonne (`himmel.h` = `sky.js`).
 - **Evi** mit allen Zeichnungen: Ei, Baby, Teenager, Erwachsen, Oma, je mit glücklich, hungrig, traurig, müde, krank, schmutzig, schlafend, im Maßstab der App, auf dem Teppich (Fußpunkt 167/180). Atmen (2 Pixel), Ei wackelt, Schatten. Nach dem Tod das Grab aus der App.
 - **Balken oben** (Napf, Herz, Glanz mit Prozent; schwarz hinterlegt ab 30 oder weniger), **Zeile unten** (Name, Phase, Münzen und Evis Satz), **Menü rechts** mit Symbolen, **Wunschblase**, **zZz-Kasten**, **Reaktionszeichen** (♥ ♪ ✦ +) und die Hüpf-, Kau- und Wackelbewegung.
@@ -194,3 +200,16 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 - Für „Raspberry Pi Pico 2“ ohne Fehler und Warnungen übersetzt: 219 KB Programm, 19 KB Arbeitsspeicher.
 - `assets.h` als Vorschaubild angesehen: Zimmer in drei Himmeln, alle Zeichnungen, Grab.
 - **Auf dem Board (23. November 2026):** Bildschirmfoto über USB (COM8) zeigt Zimmer mit Nachthimmel, Ei mit Schatten auf dem Teppich, Balken (80/80/100 %) und die Zeile „Evi Ei 0 … Schlüpft in ca. 1 Min.“ an denselben Stellen wie in der App. Menü und Pflege noch nicht rückgemeldet.
+
+## Sammlung im Sideboard (24. November 2026)
+
+Über **Sideboard öffnen** im Menü: Evi läuft etwa eine Sekunde nach links, steht kurz von hinten vor dem Sideboard und öffnet eine eigene Sammlungsansicht. Das Zimmer verschwindet. Ein Fundstück pro Seite, mit Bild, Name, Fundort, Funddatum und ursprünglicher Generation. Ältere Funde heißen beim nächsten Ei „Erbstück“. Nichts wird auf das Sideboard gestellt; Kerzen bleiben dort.
+
+- Tasten: ◀/▶ (auch ▲/▼) blättern, B/A/START schließen. Touch: links zurückblättern, Mitte schließen, rechts weiterblättern. RESET schließt und schaltet aus.
+- Beim Schließen läuft Evi zum Teppich zurück. Wenn sie schläft, ein Ei oder gestorben ist, kann man die Sammlung direkt öffnen, ohne sie zu wecken oder ihre Phase zu ändern.
+- Bereits beim **Gassigehen** Fundstücke finden (Wunsch der Nutzerin): ab 100 Schritten erster Fund sicher, danach 40 % je Spaziergang, höchstens eines pro echtem Tag. Vorerst vier Arten: Stein, Blatt, Feder, Tannenzapfen. Die Werte stehen in `sammlung.h`.
+- 256 Einträge, kein automatisches Löschen. Spielstand Version 2 enthält die Sammlung; alte Spielstände werden mit Namen, Münzen, Bedürfnissen und Ton übernommen. Die Sammlung bleibt bei einem neuen Ei erhalten.
+- Neue Fundstückbilder mit Bildgenerierung erstellt, nur zugeschnitten, verkleinert und in Schwarz-Weiß umgerechnet (`tools/make-sammlung.py`). Evis vorhandene Zeichnungen werden wiederverwendet.
+- Persönlichkeit und Park-Funktionen bleiben offen.
+
+Prüfung: PC-Nachbildung einschließlich Sideboard-Weg, Rückansicht, Blättern, Zurückgehen, RESET, Schlaf, Fundgrenzen, Generationen und Übernahme eines alten Spielstands; echte Übersetzung für Pico 2. Am Board noch ausprobieren.

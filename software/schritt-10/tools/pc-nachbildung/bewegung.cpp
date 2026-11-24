@@ -84,14 +84,19 @@ int main() {
   // Schritte mit 1,8 pro Sekunde: die Kraft schwingt um 1 g (±0,35 g)
   const uint32_t munzenVorher = pet.muenzen;
   const double launeVorher = pet.laune, sattVorher = pet.satt;
-  auto gehen = [](uint32_t t, float& x, float& y, float& z) {
-    const float w = 1 + 0.35f * sinf(t / 1000.0f * 2 * 3.14159f * 1.8f);
+  // Beim Aufteilen des Spaziergangs die Schrittphase fortsetzen. Ein Neustart der Sinuskurve
+  // zwischen zwei laufen()-Aufrufen wäre ein unregelmäßiger Schritt und setzt die Erkennung zurück.
+  uint32_t gehenPhase = 0;
+  auto gehen = [&](uint32_t t, float& x, float& y, float& z) {
+    const float w = 1 + 0.35f * sinf((t + gehenPhase) / 1000.0f * 2 * 3.14159f * 1.8f);
     x = 0; y = 0.71f * w; z = 0.71f * w;
   };
   laufen(7000, gehen);
+  gehenPhase += 7000;
   PRUEFE(lage.gassi, "Gehen erkannt");
   PRUEFE(moment.art == M_GASSI, "Evi trabt mit");
   laufen(2000, gehen);
+  gehenPhase += 2000;
   char zeile[100];
   stimmungsText(beschreiben(pet, jetztMs()), jetztMs(), zeile, sizeof(zeile));
   printf("   Zeile: %s\n", zeile);
