@@ -2,6 +2,10 @@
 
 Stand: 24. November 2026
 
+## Neuer Garten-Gesamtentwurf zur stilistischen Abstimmung (24. November 2026)
+
+Die Nutzerin lehnt die bisherige Gartengestaltung als lieblos und zusammengewürfelt ab: unterschiedliche Strichstärken, isolierte Sonne/Wolke, fehlende natürliche Zusammengehörigkeit. Neuer zusammenhängender Sommerentwurf unter `entwuerfe/garten/neuentwurf/`, inklusive 320×174-Ansicht und Bildauftrag. Gemeinsame Perspektive, natürliche Pflanzränder, geschwungener Trittsteinweg, zurückhaltende runde Lichter und ruhiger Himmel ohne Wettersymbole. **Noch Gestaltungsentwurf, nicht in die Firmware eingebaut.** Als Nächstes den gewünschten Stil mit der Nutzerin weiter schärfen, dann zusammenpassende Einzelobjekte/Ebenen und saisonale Varianten ableiten und einbauen. Die bisherige Suchfunktion, Evis Zeichnungen und Spielstände bleiben erhalten.
+
 ## Garten und Evi-Suchposen umgesetzt (24. November 2026)
 
 - Garten als eigene Ansicht im Waveshare-Menü: eingezäunt, Gartentür, Sternenlichterkette, Baum, Busch, Beet. Vier saisonale Varianten der Pflanzen; dasselbe Wetter und Tag/Nacht wie im Fenster, bewegter Regen/Schnee auch nachts. Kranz und Schneemann im bisherigen Weihnachtszeitraum 18.11.–5.1. Einzelbilder und gerenderte Gesamtansichten unter `entwuerfe/garten/`.
