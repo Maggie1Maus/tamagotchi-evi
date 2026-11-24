@@ -231,9 +231,17 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 
 - Tasten: ◀/▶ (auch ▲/▼) blättern, B/A/START schließen. Touch: links zurückblättern, Mitte schließen, rechts weiterblättern. RESET schließt und schaltet aus.
 - Beim Schließen läuft Evi zum Teppich zurück. Wenn sie schläft, ein Ei oder gestorben ist, kann man die Sammlung direkt öffnen, ohne sie zu wecken oder ihre Phase zu ändern.
-- Bereits beim **Gassigehen** Fundstücke finden (Wunsch der Nutzerin): ab 100 Schritten erster Fund sicher, danach 40 % je Spaziergang, höchstens eines pro echtem Tag. Vorerst vier Arten: Stein, Blatt, Feder, Tannenzapfen. Die Werte stehen in `sammlung.h`.
+- Bereits beim **Gassigehen** Fundstücke finden (Wunsch der Nutzerin): ab 100 Schritten erster Fund sicher, danach 40 % je Spaziergang, höchstens eines pro echtem Tag. Inzwischen zehn verfügbare Arten, siehe den Abschnitt zu den neuen Fundstückbildern. Die Werte stehen in `sammlung.h`.
 - 256 Einträge, kein automatisches Löschen. Spielstand Version 2 enthält die Sammlung; alte Spielstände werden mit Namen, Münzen, Bedürfnissen und Ton übernommen. Die Sammlung bleibt bei einem neuen Ei erhalten.
 - Neue Fundstückbilder mit Bildgenerierung erstellt, nur zugeschnitten, verkleinert und in Schwarz-Weiß umgerechnet (`tools/make-sammlung.py`). Evis vorhandene Zeichnungen werden wiederverwendet.
 - Persönlichkeit und Park-Funktionen bleiben offen.
 
 Prüfung: PC-Nachbildung einschließlich Sideboard-Weg, Rückansicht, Blättern, Zurückgehen, RESET, Schlaf, Fundgrenzen, Generationen und Übernahme eines alten Spielstands; echte Übersetzung für Pico 2. Am Board noch ausprobieren.
+
+## Neue Fundstückbilder und Fundarten (24. November 2026)
+
+Der Fundkatalog ist von vier auf zehn verfügbare Arten erweitert. Neu: Micky-Knopf, Arielles Muschel, eigener kleiner Gartendrache, Triforce-Anhänger, Animal-Crossing-Spiralfossil und Junimo-Figur. Sie können bereits beim Gassigehen gefunden und im Sideboard angesehen werden. Alle Fundregeln bleiben gleich, Gegenstandsart und Tag werden weiterhin gespeichert. Die alten Fund-IDs 0–3 und das Spielstandformat bleiben unverändert.
+
+Bilder: `entwuerfe/sammlung/`; Erzeugung des Headers mit `python software/schritt-10/tools/make-sammlung.py`. Namen und Bilder werden beim Kompilieren auf dieselbe Anzahl geprüft. Die neuen Bilder sind außen transparent und innen deckend weiß. Im PC-Test wird jede Art angezeigt, gespeichert/geladen und durch ein Jahr Spaziergänge auf Erreichbarkeit geprüft.
+
+Gewünscht sind elf Motive. Stitch ist noch offen, da die Bildgenerierung abgelehnt wurde; es gibt dafür keinen Platzhalter in der zufälligen Fundauswahl. Der eigene Gartendrache entstand nach dem ebenfalls abgelehnten Spyro-Bild und der anschließenden Erlaubnis der Nutzerin, einen ähnlichen Drachen zu gestalten. Er ist ein eigener Entwurf und wird nicht als Spyro beschriftet.

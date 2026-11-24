@@ -62,7 +62,9 @@ Bei echten Spaziergängen kennt das Gerät ohne weitere Eingabe nicht das tatsä
 
 ### Fundstückarten – bestätigt und offen
 
-Ziel bleiben ungefähr zehn Fundstückarten. Sieben sind bereits festgelegt:
+Die Nutzerin hat elf Motive und für Spyro die kleine Figur gewählt. Sie hat die Zeichnungen, den Upload und die Integration freigegeben. Stand der Umsetzung: zehn verfügbare Arten, Stitch noch offen.
+
+Die folgenden sieben Motive waren festgelegt:
 
 | Nr. | Gegenstand | Stand |
 |---|---|---|
@@ -70,24 +72,24 @@ Ziel bleiben ungefähr zehn Fundstückarten. Sieben sind bereits festgelegt:
 | 2 | Kleines Blatt | Bild vorhanden und bestätigt |
 | 3 | Weiche Feder | Bild vorhanden und bestätigt |
 | 4 | Tannenzapfen | Bild vorhanden und bestätigt |
-| 5 | Micky-Knopf | Motiv bestätigt, noch nicht gezeichnet |
+| 5 | Micky-Knopf | Bild vorhanden und eingebaut |
 | 6 | Stitch-Anhänger | Motiv bestätigt, noch nicht gezeichnet |
-| 7 | Arielles Muschel-Anhänger | Motiv bestätigt, noch nicht gezeichnet |
+| 7 | Arielles Muschel-Anhänger | Bild vorhanden und eingebaut |
 
-Weitere konkrete Spielmotive zur Besprechung, noch nicht ausgewählt:
+Die vier Spielrichtungen sind bestätigt. Verwendete Motive beziehungsweise offener Bildstatus:
 
-| Spiel | Vorschlag |
+| Spiel | Motiv / Status |
 |---|---|
-| Spyro | Kleiner Spyro-Anhänger; alternativ ein Drachenei |
+| Spyro | Kleine Figur gewählt. Bildgenerierung abgelehnt; danach mit Erlaubnis der Nutzerin ein eigener Gartendrache gezeichnet und eingebaut, nicht als Spyro ausgegeben. |
 | Zelda | Triforce-Anhänger |
 | Animal Crossing | Fossil mit Spirale |
 | Stardew Valley | Kleine Junimo-Figur |
 
-Mit je einem Motiv aus allen vier Spielreihen wären es **elf** Fundstückarten. Für genau zehn müsste eines der vier Spielmotive zunächst entfallen. Elf als Umfang ist nur ein Vorschlag, keine getroffene Entscheidung.
+Elf Motive sind freigegeben. Der Bildgenerator lehnte auch Stitch ab; dieses Motiv bleibt ohne Ersatz offen. Die anderen neuen Bilder einschließlich des eigenen Gartendrachen sind eingebaut, sodass momentan zehn Arten gefunden werden können.
 
 Controller, Pixelherz und das allgemeine Mini-Spielmodul werden als Vorschläge verworfen; die Richtung soll erkennbar zu einzelnen Spielen passen.
 
-Fundstücke als kleine Gegenstände, Anhänger oder Knöpfe gestalten. Keine Farben zur Erkennung voraussetzen. Die neuen Disney- und Spielmotive **erst nach abgeschlossener Besprechung zeichnen**; in dieser Runde keine neuen Bilder.
+Fundstücke als kleine Gegenstände, Anhänger oder Knöpfe gestalten. Keine Farben zur Erkennung voraussetzen. Die Besprechung ist für diese Motive abgeschlossen; die Nutzerin hat die Zeichnungen und Codeintegration freigegeben. Erfolgreiche neue Bilder sind gezeichnet und hochgeladen. Stitch bleibt offen.
 
 ### Zusätzliche Evi-Posen – Vorschläge
 
@@ -99,4 +101,4 @@ Fundstück und Evi als getrennte Bildebenen vorsehen, sodass eine Zeigepose je L
 
 ## Umsetzung
 
-Diese Datei hält die besprochene Richtung fest. Garten, neue Suchabläufe, zusätzliche Herkunftsdaten und die neuen Motive sind **noch nicht implementiert beziehungsweise gezeichnet**. Bestehender Spielcode und Spielstandformat bleiben in dieser Runde unverändert.
+Die neuen verfügbaren Fundstückbilder und Arten sind in die bestehende Fundauswahl und das Sideboard integriert; alte Spielstände bleiben kompatibel. Gartenansicht, neue Garten-Suchabläufe und zusätzliche Wetter-/Herkunftsdaten sind weiterhin Konzept. Stitch ist noch nicht gezeichnet oder eingebaut.

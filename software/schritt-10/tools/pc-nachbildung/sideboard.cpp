@@ -96,6 +96,33 @@ int main() {
   pet.tot = true; aktionAusfuehren(E_NEUES_EI);
   PRUEFE(pet.generation == generation + 1 && sammlung.anzahl == 1 && sammlung.fund[0].generation == generation, "nächstes Ei behält Erbstücke und ihre Herkunft");
   sideboardOeffnen(); zeichneAlles(); foto("sideboard-erbstueck");
+  // Neue Arten erweitern den Katalog; die IDs alter Spielstände bleiben unverändert.
+  PRUEFE(FUND_STEIN == 0 && FUND_BLATT == 1 && FUND_FEDER == 2 && FUND_ZAPFEN == 3, "bestehende Fund-IDs bleiben gleich");
+  {
+    const Sammlung vorher = sammlung;
+    sammlung = Sammlung();
+    for (int art = 0; art < FUNDARTEN; art++) {
+      PRUEFE(FUND_NAME[art][0] && FUND_BILD[art] && FUND_BILD[art]->w <= 60 && FUND_BILD[art]->h <= 60,
+             "jede Fundart hat Namen und kleines Displaybild");
+      PRUEFE(fundAufnehmen((Fundart)art, FUND_GASSI, 20261124, pet.generation), "neue Fundart kann aufgenommen werden");
+      sideboard.auswahl = art;
+      zeichneAlles();
+      char name[40]; snprintf(name, sizeof(name), "fundart-%02d", art); foto(name);
+    }
+    spielstandSpeichern(pet, ton);
+    sammlung = Sammlung();
+    PRUEFE(spielstandLaden(geladen, ton) && sammlung.anzahl == FUNDARTEN, "alle Fundarten überstehen einen Neustart");
+    for (int art = 0; art < FUNDARTEN; art++)
+      PRUEFE(sammlung.fund[art].art == art && sammlung.fund[art].tag == 20261124, "Bildzuordnung und Fundtag bleiben erhalten");
+    sammlung = Sammlung();
+    bool gesehen[FUNDARTEN] = {};
+    for (int tag = 0; tag < 365; tag++) {
+      const int art = fundBeimGassi(1000, jetzt + (ms_t)tag * TAG, pet.generation);
+      if (art >= 0) gesehen[art] = true;
+    }
+    for (int art = 0; art < FUNDARTEN; art++) PRUEFE(gesehen[art], "jede neue Art ist beim Gassigehen erreichbar");
+    sammlung = vorher;
+  }
   for (int i = sammlung.anzahl; i < SAMMLUNG_MAX; i++) fundAufnehmen(FUND_STEIN, FUND_GASSI, 20261124, 1);
   const Fundstueck erster = sammlung.fund[0];
   PRUEFE(!fundAufnehmen(FUND_BLATT, FUND_GASSI, 20261124, 2) && !memcmp(&erster, &sammlung.fund[0], sizeof(erster)), "volle Sammlung überschreibt keine Erbstücke");

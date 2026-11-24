@@ -2,7 +2,9 @@
 #pragma once
 #include "pet.h"
 
-enum Fundart : uint8_t { FUND_STEIN, FUND_BLATT, FUND_FEDER, FUND_ZAPFEN, FUNDARTEN };
+// Bestehende IDs 0–3 bleiben unverändert, damit gespeicherte Funde ihre Bedeutung behalten.
+enum Fundart : uint8_t { FUND_STEIN, FUND_BLATT, FUND_FEDER, FUND_ZAPFEN,
+                         FUND_MICKY, FUND_MUSCHEL, FUND_DRACHE, FUND_TRIFORCE, FUND_FOSSIL, FUND_JUNIMO, FUNDARTEN };
 enum Fundort : uint8_t { FUND_GASSI };
 const uint16_t SAMMLUNG_MAX = 256;
 struct Fundstueck {
@@ -17,7 +19,9 @@ struct Sammlung {
   Fundstueck fund[SAMMLUNG_MAX];
 };
 Sammlung sammlung = {};
-const char* const FUND_NAME[FUNDARTEN] = {"Glatter Stein", "Kleines Blatt", "Weiche Feder", "Tannenzapfen"};
+const char* const FUND_NAME[] = {"Glatter Stein", "Kleines Blatt", "Weiche Feder", "Tannenzapfen",
+                               "Micky-Knopf", "Arielles Muschel", "Kleiner Gartendrache", "Triforce-Anhänger", "Spiralfossil", "Junimo-Figur"};
+static_assert(sizeof(FUND_NAME) / sizeof(FUND_NAME[0]) == FUNDARTEN, "Jede Fundart braucht einen Namen");
 
 bool sammlungGueltig(const Sammlung& s) {
   if (s.anzahl > SAMMLUNG_MAX) return false;
