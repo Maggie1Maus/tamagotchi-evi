@@ -2,9 +2,14 @@
 
 Stand: 24. November 2026
 
-## Wunsch nach allgemeiner Raumtiefe und Zimmerentwurf (24. November 2026)
+## Kompaktes Zimmer und allgemeine Raumtiefe eingebaut (24. November 2026)
 
-Die Nutzerin wünscht für das ganze Tamagotchi Bewegungen nach vorne/hinten mit passender Größenänderung, etwa Evi beim Suchen im Blumenbeet und auch im Zimmer. Neuer Zimmer-Gesamtentwurf im Stil des bestätigten Gartens angefragt. Zwei Varianten unter `entwuerfe/zimmer/raumtiefe/`. Die Nutzerin mag beide, bevorzugt aber ausdrücklich **den ersten, gemütlicheren und kompakteren Entwurf** (`erste_fassung.png`); der zweite wirkt ihr überdimensional und zu groß. Der erste ist die gewählte gestalterische Grundlage. Raumtiefe über passende Skalierung und Verdeckung auf der vorhandenen Bodenfläche schaffen, ohne das Zimmer zu vergrößern. Details und Vorschlag für weiche Skalierung, altersabhängige Grundgrößen, Bodenanker, Verdeckung durch Möbel/Beete und Laufwege in [Raumtiefe_und_Zimmer.md](Raumtiefe_und_Zimmer.md). **Kompakter erster Zimmerentwurf als Richtung ausgewählt; allgemeine Tiefenbewegung und neuer Zimmerhintergrund noch nicht in der Firmware umgesetzt.**
+- Nutzerin bevorzugt den gemütlicheren ersten Zimmerentwurf und hat die Umsetzung mit „Ok dann leg los“ beauftragt. Der kompakte Raum ist jetzt die Zimmeransicht (`entwuerfe/zimmer/kompakt/`); Proportionen und Möbelgrößen des ersten Entwurfs erhalten. Weihnachtsfassung passend zum selben Zimmer, Baum auf dem Boden statt rechter Tisch/Pflanze/Regal, Fenstersterne und Kerzentablett im bestehenden Zeitraum 18.11.–5.1.
+- Gemeinsamer Renderer `raumtiefe.h/.ino` für Zimmer/Garten: Füße als Bodenanker, weiche Größenänderung von 65 % hinten bis 100 % vorne, altersabhängige Grundgrößen und ursprüngliche Posen/Zeichnungen erhalten. Vordergrundstempel lassen beim Verdecken die Originalpixel der Möbel/Beetkante stehen. Sichtbare Figurteile bleiben antippbar, verdeckte Teile reagieren nicht.
+- Zimmer: zusätzliche Bodenposition und begehbare Wege, Fensterbesuch seitlich am Sideboard vorbei und dahinter. Kuscheln hält die aktuelle Tiefenposition, danach geht es zum vorderen Teppich zurück. Sideboardlauf skaliert mit. Minispiele behalten ihre separaten Spielkoordinaten.
+- Garten: auf der freien Wiese zur Suchstelle, dann kleiner in die Tiefe zum Baum/Busch/Beet. Nach Untersuchen wieder herauskommen, Ergebnis weiter vorne zeigen, anschließend auf die freie Wiese zurück. Pfoten hinter der vorderen Beetkante verdeckt.
+- Neuer Fensterausblick aus der echten Gartenansicht, damit Saison/Wetter/Tag-Nacht zusammenpassen. Besuch auf die neue Scheibe abgebildet, Rahmen/Kreuz bleiben davor. Keine Änderungen am Spielstandformat oder den Fundregeln; Handy-App unverändert.
+- Details in [Raumtiefe_und_Zimmer.md](Raumtiefe_und_Zimmer.md), Generator `make-zimmer-tiefe.py`. Alle neun PC-Prüfprogramme ohne Fehler/Warnungen und echte Pico-2-Übersetzung erfolgreich: Programm 486360 Bytes (11 %), globale Variablen 33380 Bytes (6 %, ohne Stack/Heap). Am echten Board noch prüfen.
 
 ## Bestätigten Garten-Gesamtentwurf eingebaut (24. November 2026)
 

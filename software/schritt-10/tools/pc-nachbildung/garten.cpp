@@ -58,9 +58,9 @@ int main() {
   warten(15000); PRUEFE(garten.phase == GA_WARTEN && sammlung.anzahl == vorher, "keine schnelle Reaktion nötig und kein automatischer Fund");
   beruehrt(0, 150); PRUEFE(garten.phase == GA_WARTEN, "Tippen fern von der Suchstelle löst nichts aus");
   beruehrt(250, 160); PRUEFE(garten.phase == GA_UNTERSUCHEN, "Antippen hilft bei der Untersuchung");
-  zeichneAlles(); foto("garten-untersuchen"); warten(1200);
+  zeichneAlles(); foto("garten-untersuchen"); warten(2000);
   PRUEFE(garten.phase == GA_ZEIGEN || garten.phase == GA_LEER, "Suche hat ein Ergebnis");
-  knopf(K_A);
+  knopf(K_A); warten(800);
   // Alle drei Stellen: mindestens ein Fund, danach pro Stelle heute kein weiterer Versuch.
   for (int i = 0; i < 3; i++) { garten.stelle = i; gartenErgebnis(jetztMs()); }
   PRUEFE(sammlung.anzahl >= 1 && sammlung.gartenVersucht == 7, "mindestens eine ergiebige Stelle am Tag");

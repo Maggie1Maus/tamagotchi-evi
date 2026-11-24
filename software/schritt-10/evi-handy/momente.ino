@@ -145,7 +145,7 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
     case M_GEHEN: {
       const int seite = random(0, 2) ? 1 : -1;
       akt(A_MELDUNG, 9000, 0, "Ein kleiner Spaziergang …");
-      akt(A_GEHEN, seite * (int)random(30, (seite < 0 ? 66 : 56) + 1), 0, nullptr);   // bleibt im Zimmer
+      akt(A_GEHEN, seite * (int)random(30, (seite < 0 ? 60 : 46) + 1), (int)random(170,187), nullptr);   // bleibt im Zimmer
       akt(A_WARTEN, 10, 0, nullptr);
       akt(A_HUEPFEN, 1, 5, nullptr);
       akt(A_WARTEN, 12, 0, nullptr);
@@ -154,7 +154,7 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
     }
     case M_FENSTER:
       akt(A_MELDUNG, 12000, 0, fensterText(jetztMs()));   // je nach Wetter (umgebung.ino)
-      akt(A_GEHEN, -66, 0, nullptr);
+      akt(A_GEHEN, -84, 151, nullptr);
       akt(A_FLIP, 0, 0, nullptr);
       akt(A_BILD, MB_FENSTER, 0, nullptr);
       akt(A_WARTEN, 6, 0, nullptr);
@@ -332,10 +332,11 @@ void momentAufraeumen() {
 // Beendet einen Moment. Evi läuft zu ihrem Teppich zurück, oder ist sofort dort
 // (für Spiele, Gute Nacht und Schlaf).
 void momentStoppen(bool sofort) {
-  const bool weg = geher.x != 0 || geher.flip;
+  const bool weg = geher.x != 0 || geher.fuss != RAUM_HEIM_Y || geher.flip;
   momentAufraeumen();
   if (sofort) {
     geher.x = 0;
+    geher.fuss = RAUM_HEIM_Y;
     geher.flip = false;
   } else if (weg) {
     momentStarten(M_HEIM, GD_KEINER);
@@ -343,30 +344,36 @@ void momentStoppen(bool sofort) {
 }
 
 // ---------- Gehen, Hüpfen, Flattern ----------
-void gangBeginnen(int ziel) {
-  gang.ziel = ziel;
-  gang.schritte = 0;
-  gang.laeuft = geher.x != ziel;
-  if (!gang.laeuft) return;
-  gang.vorher = moment.bild;
-  moment.bild = MB_LAUFEN;
-  geher.flip = ziel > geher.x;    // gezeichnet nach links schauend: nach rechts gespiegelt
+// Einfache begehbare Wege: vor dem Sideboard vorbei, seitlich dahinter, dann zum Fenster.
+void gangBeginnenTief(int ziel, int fuss) {
+  fuss=max(151,min(RAUM_HEIM_Y,fuss));
+  gang.ziel=ziel; gang.zielY=fuss; gang.schritte=0; gang.punkt=0; gang.anzahl=0;
+  auto punkt=[&](int x,int y){ if(gang.anzahl<5) { gang.wegX[gang.anzahl]=x; gang.wegY[gang.anzahl++]=y; } };
+  const bool hintenLinks=geher.x < -51 && geher.fuss < 164;
+  if(hintenLinks) punkt(-37,geher.fuss);
+  if(fuss < 163 && ziel < -51) {
+    if(geher.fuss>=163) punkt(-37,RAUM_HEIM_Y);
+    punkt(-37,fuss);
+  } else if(hintenLinks) punkt(-37,max(fuss,170));
+  punkt(ziel,fuss);
+  gang.laeuft=geher.x!=ziel || geher.fuss!=fuss;
+  if(!gang.laeuft)return;
+  gang.vorher=moment.bild; moment.bild=MB_LAUFEN;
 }
-
-// Ein Schritt; true = angekommen (dann geht es ohne Warten weiter)
+void gangBeginnen(int ziel) { gangBeginnenTief(ziel,RAUM_HEIM_Y); }
 bool gangSchritt() {
-  if (!gang.laeuft) return true;
-  if (geher.x == gang.ziel) {
-    geher.lift = 0;
-    moment.bild = gang.vorher;
-    gang.laeuft = false;
-    return true;
-  }
-  const int rest = gang.ziel - geher.x;
-  const int weite = abs(rest) < SCHRITT_WEITE ? abs(rest) : SCHRITT_WEITE;
-  geher.x += rest > 0 ? weite : -weite;
-  geher.lift = (gang.schritte / 2) % 2 ? 2 : 0;
-  gang.schritte++;
+  if(!gang.laeuft)return true;
+  if(gang.punkt>=gang.anzahl){ geher.lift=0; moment.bild=gang.vorher; gang.laeuft=false; return true; }
+  const int dx=gang.wegX[gang.punkt]-geher.x, dy=gang.wegY[gang.punkt]-geher.fuss;
+  if(!dx && !dy){ gang.punkt++; return false; }
+  // Bewegung entlang der Strecke: beide Achsen erreichen gemeinsam den nächsten Bodenpunkt.
+  const int laenge=max(abs(dx),abs(dy)), schritt=min(SCHRITT_WEITE,laenge);
+  int sx=(int)lroundf((float)dx*schritt/laenge), sy=(int)lroundf((float)dy*schritt/laenge);
+  if(!sx && dx && !sy)sx=dx>0?1:-1;
+  if(!sy && dy && !sx)sy=dy>0?1:-1;
+  geher.x+=sx; geher.fuss+=sy;
+  if(sx)geher.flip=sx>0;
+  geher.lift=(gang.schritte++/2)%2?1:0;
   return false;
 }
 
@@ -445,7 +452,7 @@ int aktSchritt(int nummer) {
     case A_TON: if (a.a == 0) piep(TON(TON_SPEZIAL)); else piep(TON(TON_ZWITSCHERN)); return 0;
     case A_WARTEN: return moment.zaehler++ == 0 ? a.a : 0;
     case A_GEHEN:
-      if (moment.zaehler++ == 0) gangBeginnen(a.a);
+      if (moment.zaehler++ == 0) gangBeginnenTief(a.a, a.b ? a.b : RAUM_HEIM_Y);
       return gangSchritt() ? 0 : 1;
     case A_HEIM:
       if (moment.zaehler++ == 0) gangBeginnen(0);
@@ -664,7 +671,7 @@ void begruessenPlanen(ms_t seit) {
 // ---------- Jeder Takt (runMoments in app.js) ----------
 void momentTakt(ms_t jetzt) {
   const Stimmung s = beschreiben(pet, jetzt);
-  if (ruhend(s) && (moment.art != M_KEINER || geher.x != 0 || geher.flip)) momentStoppen(true);
+  if (ruhend(s) && (moment.art != M_KEINER || geher.x != 0 || geher.fuss != RAUM_HEIM_Y || geher.flip)) momentStoppen(true);
   if (moment.grussGeplant && (int32_t)(millis() - moment.grussUm) >= 0) {
     moment.grussGeplant = false;
     if (bildschirmAn) begruessen(moment.grussSeit);
@@ -709,8 +716,8 @@ void zeichneBildBeschnitten(const Bild& b, int x, int y, bool spiegeln, int x0, 
       const int px = x + (spiegeln ? b.w - 1 - c : c);
       if (px < x0 || px >= x1) continue;
       const int i = r * zeile + c / 8, bit = 0x80 >> (c % 8);
-      if (b.linien[i] & bit) bild.drawPixel(px, py, 0);
-      else if (b.maske && (b.maske[i] & bit)) bild.drawPixel(px, py, 1);
+      if (b.linien[i] & bit) zimmerFensterPunkt(px, py, 0);
+      else if (b.maske && (b.maske[i] & bit)) zimmerFensterPunkt(px, py, 1);
     }
   }
 }
@@ -740,8 +747,7 @@ void momentZeichnenHinten() {
     const int bx = (int)lroundf(vogel.px), by = (int)lroundf(vogel.py) + 23;
     zeichneBildBeschnitten(BESUCH_VOGEL, bx, by, true, 33, 26 + 23, 95, 95 + 23);   // nur im Fenster
     // Das Fensterkreuz liegt vor dem Vogel
-    bild.fillRect(61, 24 + 23, 4, 75, 0);
-    bild.fillRect(31, 58 + 23, 65, 4, 0);
+    // Das Kreuz ist bereits Teil der kompakten Originalzeichnung und wird nicht übermalt.
   }
   if (stern.sichtbar) {
     static const int8_t TEILE[10][4] = {{2, 0, 1, 5}, {0, 2, 5, 1}, {1, 1, 3, 3}, {5, 1, 3, 1}, {8, 0, 3, 1},
@@ -751,27 +757,28 @@ void momentZeichnenHinten() {
       for (int y = 0; y < TEILE[i][3]; y++)
         for (int x = 0; x < TEILE[i][2]; x++) {
           const int px = sx + TEILE[i][0] + x, py = sy + TEILE[i][1] + y;
-          if (himmelPunkt(px, py)) bild.drawPixel(px, py, 1);
+          if (px>=GLAS_X && px<GLAS_X+GLAS_B && py>=GLAS_Y && py<GLAS_Y+GLAS_H) zimmerFensterPunkt(px,py,1);
         }
   }
 }
 
 // Was vor Evi liegt: Gedankenwolke, Summ-Noten (beide gehen mit ihr) und der Schmetterling
 void momentZeichnenVorne() {
-  const int wx = geher.x;
+  const int wx = eviLinks + eviBreite/2 - BODEN_X;
+  const int wy = eviOben - 90;
   if (moment.gedanke != GD_KEINER) {
     static const float WOLKE[6][4] = {{222, 86, 4, 2}, {229, 76, 5.5f, 3.5f}, {238, 58, 13, 11},
                                       {252, 50, 15, 13}, {266, 58, 13, 11}, {252, 66, 12, 10}};
-    for (int i = 0; i < 6; i++) kreisFuellen(WOLKE[i][0] + wx, WOLKE[i][1], WOLKE[i][2], 0);
-    for (int i = 0; i < 6; i++) kreisFuellen(WOLKE[i][0] + wx, WOLKE[i][1], WOLKE[i][3], 1);
+    for (int i = 0; i < 6; i++) kreisFuellen(WOLKE[i][0] + wx, WOLKE[i][1] + wy, WOLKE[i][2], 0);
+    for (int i = 0; i < 6; i++) kreisFuellen(WOLKE[i][0] + wx, WOLKE[i][1] + wy, WOLKE[i][3], 1);
     const Bild& g = *GEDANKE_BILD[moment.gedanke];
-    zeichneSymbol(g, 252 + wx - g.w / 2, 56 - g.h / 2, 0);
+    zeichneSymbol(g, 252 + wx - g.w / 2, 56 + wy - g.h / 2, 0);
   }
   if (moment.summt) {
     // notes 1.6 s steps(4): 4, 0, -4, -8 Punkte
     const int dy = 4 - 4 * (int)((millis() % 1600) / 400);
-    zeichneSymbol(SYM_NOTE_KLEIN, 214 + wx, 96 - SYM_NOTE_KLEIN.h + dy, 0);
-    zeichneSymbol(SYM_NOTEN, 232 + wx, 80 - SYM_NOTEN.h + dy, 0);
+    zeichneSymbol(SYM_NOTE_KLEIN, 214 + wx, 96 + wy - SYM_NOTE_KLEIN.h + dy, 0);
+    zeichneSymbol(SYM_NOTEN, 232 + wx, 80 + wy - SYM_NOTEN.h + dy, 0);
   }
   if (falter.sichtbar) {
     zeichneBild(BESUCH_FALTER, (int)lroundf(falter.px), (int)lroundf(falter.py));

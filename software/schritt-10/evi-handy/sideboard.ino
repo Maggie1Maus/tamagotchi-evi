@@ -60,11 +60,10 @@ void sideboardEviZeichnen(Phase ph) {
   const bool hinten = sideboard.phase == SB_OEFFNEN;
   const Bild& b = *MOMENT_BILD[ph][hinten ? MB_FENSTER : MB_LAUFEN];
   const int lift = hinten ? 0 : ((millis() - sideboard.seit) / 100) % 2 * 2;
-  const int fuss = BODEN_Y + (BODEN_X - sideboard.x) * 20 / (BODEN_X - 55);
-  const int y = fuss + b.oy - lift;
-  ellipseFuellen(sideboard.x, fuss - 1, (int)(b.w * 0.25f), 3, 0);
-  if (sideboard.phase == SB_HEIM) zeichneBildGespiegelt(b, sideboard.x - b.ox - b.w, y);
-  else zeichneBild(b, sideboard.x + b.ox, y);
+  const int fort = max(0,min(1000,(BODEN_X-sideboard.x)*1000/(BODEN_X-55)));
+  // Erst vor dem Schrank entlang, dann seitlich bis zu dessen Vorderkante.
+  const int fuss=RAUM_HEIM_Y - fort*30/1000;
+  raumFigurZeichnen(b,ph,sideboard.x,fuss,sideboard.phase==SB_HEIM,lift,false,false);
 }
 
 void sammlungZeichnen() {

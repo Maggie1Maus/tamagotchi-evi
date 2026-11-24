@@ -90,13 +90,13 @@ struct MomentZustand {
 MomentZustand moment;
 
 // Wo Evi ist: x = Abstand vom Teppich, flip = gespiegelt, lift = angehoben (Schritt, Hüpfer)
-struct { int x = 0, lift = 0; bool flip = false; } geher;
+struct { int x = 0, lift = 0, fuss = 194; bool flip = false; } geher;
 // Besuch: Schmetterling (frei im Zimmer), Vogel und Sternschnuppe (im Fenster)
 // x/y: wo er hinfliegt; px/py: wo er gerade gezeichnet wird (mit Flattern); bild: Flügel bzw. Haltung
 struct Besucher { bool sichtbar = false; float x = 0, y = 0, px = 0, py = 0; int t = 0; uint8_t bild = 0; };
 Besucher falter, vogel, stern;
 // Ein Gang durchs Zimmer (walkTo in app.js); es läuft immer nur einer
-struct { int ziel = 0, schritte = 0; bool laeuft = false; MomentBild vorher = MB_KEINS; } gang;
+struct { int ziel = 0, schritte = 0, zielY = 194, punkt = 0, anzahl = 0; int wegX[5], wegY[5]; bool laeuft = false; MomentBild vorher = MB_KEINS; } gang;
 // Tageslaune (momente.ino: LAUNEN): 0 verspielt, 1 verschmust, 2 verfressen, 3 verträumt
 const int LAUNE_VERSCHMUST = 1;
 // Wo Evis Bild zuletzt gezeichnet wurde (für den Schmetterling auf ihrem Kopf)

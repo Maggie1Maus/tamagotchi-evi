@@ -21,7 +21,7 @@ const int KUSCHEL_RAND = 12;   // so viele Punkte neben Evi zählen noch als „
 // Liegt der Punkt auf Evi (oder dem Ei)? Ihr Bild vom letzten Zeichnen, mit etwas Rand.
 bool aufEvi(int x, int y) {
   return x >= eviLinks - KUSCHEL_RAND && x < eviLinks + eviBreite + KUSCHEL_RAND && y >= eviOben - KUSCHEL_RAND &&
-         y < BODEN_Y + 6;
+         y < eviFuss + 6 && raumFigurTreffer(x,y);
 }
 
 bool kuschelnLaeuft() { return kuschel.seit && (int32_t)(millis() - kuschel.bis) < 0; }
@@ -100,7 +100,7 @@ void kuschelnBeginnen() {
     geher.x = x;
     geher.flip = flip;
   }
-  kuschel.heim = geher.x != 0 || geher.flip;
+  kuschel.heim = geher.x != 0 || geher.fuss != RAUM_HEIM_Y || geher.flip;
   const uint32_t dauer = wunsch ? KUSCHEL_WUNSCH_DAUER : KUSCHEL_DAUER;
   kuschelZeigen(false, wunsch, dauer);
   if (laeuftSchon && evi.reaktion == R_KUSCHELN) {
@@ -149,7 +149,7 @@ void kuschelTakt() {
   }
   if (kuschel.heim) {
     kuschel.heim = false;
-    if (moment.art == M_KEINER && (geher.x != 0 || geher.flip)) momentStarten(M_HEIM, GD_KEINER);
+    if (moment.art == M_KEINER && (geher.x != 0 || geher.fuss != RAUM_HEIM_Y || geher.flip)) momentStarten(M_HEIM, GD_KEINER);
   }
   if (m - kuschel.bis >= HERZ_STEIGT) kuschel.seit = 0;   // alle Herzen sind oben
 }

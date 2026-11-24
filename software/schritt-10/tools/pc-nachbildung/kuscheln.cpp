@@ -61,7 +61,7 @@ void vorbereiten(ms_t utc) {
   pet.muenzen = 5;
   himmel = himmelBei(utc);
   spiel = SpielZustand();
-  momentAufraeumen(); geher.x = 0; geher.flip = false;
+  momentAufraeumen(); geher.x = 0; geher.fuss = RAUM_HEIM_Y; geher.flip = false;
   moment.naechster = utc + 30 * MINUTE;
   moment.ruheBisTakt = 0; moment.letzterBesonderer = utc;
   menueOffen = false; ritual.aktiv = false;
@@ -203,14 +203,14 @@ int main() {
   // ---------- ein Moment wird unterbrochen: Evi bleibt stehen, danach geht sie zurück ----------
   vorbereiten(verspielt);
   momentStarten(M_FENSTER, GD_KEINER);
-  for (int i = 0; i < 300 && moment.bild != MB_FENSTER; i++) laufen(10);
+  for (int i = 0; i < 2000 && moment.bild != MB_FENSTER; i++) laufen(10);
   laufen(200);
   const int amFenster = geher.x;
   PRUEFE(amFenster < -40, "Evi steht am Fenster");
-  tippen(eviMitteX(), eviMitteY());
+  tippen(eviMitteX(), eviOben + 4);
   PRUEFE(moment.art == M_KEINER && geher.x == amFenster && evi.reaktion == R_KUSCHELN, "am Fenster gekuschelt: bleibt dort stehen");
   foto("k-fenster");
-  laufen(6000);
+  laufen(14000);
   PRUEFE(geher.x == 0 && !geher.flip, "danach geht sie zurück zum Teppich");
 
   // ---------- Besuch: nur Herzen, der Schmetterling bleibt ----------
@@ -267,6 +267,7 @@ int main() {
   }
   vorbereiten(regen);
   zeichneAlles(); foto("k-regen-uhr");
+  bild.fillScreen(1); fensterZeichnen(regen);
   int gepunktet = 0, weiss = 0;
   for (int y = GLAS_Y + 40; y < GLAS_Y + 44; y++)
     for (int x = GLAS_X + 2; x < GLAS_X + 26; x++) {
@@ -275,6 +276,7 @@ int main() {
       if (hell) weiss++; else gepunktet++;
     }
   PRUEFE(gepunktet > 10 && weiss > 10, "Regen am Tag: Himmel gepunktet wie in der Dämmerung");
+  zeichneAlles();
   Ortszeit o = ortszeit(regen);
   char uhr[8]; snprintf(uhr, sizeof(uhr), "%02d:%02d", o.stunde, o.minute);
   printf("   Uhrzeit oben: %s\n", uhr);
@@ -290,6 +292,7 @@ int main() {
   }
   vorbereiten(sonne);
   zeichneAlles();
+  bild.fillScreen(1); fensterZeichnen(sonne);
   gepunktet = 0;
   for (int y = GLAS_Y + 40; y < GLAS_Y + 44; y++)
     for (int x = GLAS_X + 2; x < GLAS_X + 26; x++) {

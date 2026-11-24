@@ -240,7 +240,7 @@ void tagAntwort(int antwort) {
 // Der rollende Ball liegt vor Evi auf dem Boden (wie der Ball beim Ballfangen, 14 × 14)
 void bewegungZeichnenVorne() {
   if (!rollBall.sichtbar) return;
-  const int bx = (int)lroundf(rollBall.x) - 7, by = BODEN_Y - 14;
+  const int bx = (int)lroundf(rollBall.x) - 7, by = RAUM_HEIM_Y - 14;
   for (int y = 0; y < 14; y++) {
     bild.drawFastHLine(bx + BALL_ZEILEN[y][0], by + y, BALL_ZEILEN[y][1] - BALL_ZEILEN[y][0] + 1, 0);
     if (y >= 3 && y <= 5) bild.drawFastHLine(bx + 4 + ((int)rollBall.x / 4) % 4, by + y, 3, 1);   // Glanzloch wandert: er rollt

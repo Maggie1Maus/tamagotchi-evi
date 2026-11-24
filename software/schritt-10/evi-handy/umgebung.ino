@@ -152,18 +152,18 @@ void fensterZeichnen(ms_t jetzt) {
 // Das ganze Zimmer: Grund, Möbel je nach Zeit, Fenster.
 // Zu Weihnachten steht der Baum auf dem Boden; Tisch, Regal und Pflanze sind dann weg.
 void zimmerZeichnen(ms_t jetzt) {
-  uint8_t* puffer = bild.getBuffer();
-  for (int i = 0; i < 40 * 224; i++) puffer[i] = ~ZIMMER_GRUND[i];
-  fensterZeichnen(jetzt);
-  if (weihnachtsZeit(jetzt)) {
-    zeichneAnStelle(WEIHNACHTSBAUM);
-    zeichneAnStelle(KERZEN);
-    zeichneAnStelle(FENSTERSTERNE);   // Sternengirlande der Nutzerin über dem Fenster
-  } else {
-    zeichneAnStelle(TISCH);
-    zeichneAnStelle(REGAL);
-    zeichneAnStelle(PFLANZE);
+  // Das tatsächliche Gartenbild liefert denselben Ausblick, dieselbe Jahreszeit und Wetterbewegung.
+  // Nur die kleine Scheibe puffern, keinen zweiten ganzen Bildschirm anlegen.
+  gartenSzeneZeichnen(jetzt);
+  uint8_t fenster[ZF_H][(ZF_W+7)/8] = {};
+  for (int y=0;y<ZF_H;y++) for(int x=0;x<ZF_W;x++) {
+    const int sx=x*158/ZF_W, sy=27+y*112/ZF_H;
+    if (bild.getBuffer()[sy*40+sx/8] & (0x80>>(sx%8))) fenster[y][x/8]|=0x80>>(x%8);
   }
+  bild.fillScreen(1);
+  zeichneBild(weihnachtsZeit(jetzt) ? ZIMMER_NEU_WEIHNACHTEN : ZIMMER_NEU_NORMAL,0,27);
+  for(int y=0;y<ZF_H;y++) for(int x=0;x<ZF_W;x++)
+    if(zimmerScheibe(ZF_X+x,ZF_Y+y)) bild.drawPixel(ZF_X+x,ZF_Y+y,(fenster[y][x/8] & (0x80>>(x%8)))?1:0);
 }
 
 // Für den Moment „aus dem Fenster schauen“

@@ -57,7 +57,7 @@ void vorbereiten(int stunde, int minute) {
   pet.muenzen = 5;
   himmel = himmelBei(utc);
   spiel = SpielZustand();
-  momentAufraeumen(); geher.x = 0; geher.flip = false;
+  momentAufraeumen(); geher.x = 0; geher.fuss = RAUM_HEIM_Y; geher.flip = false;
   moment.naechster = utc + 30 * MINUTE;
   moment.ruheBisTakt = 0; moment.letzterBesonderer = utc;
   menueOffen = false; ritual.aktiv = false;

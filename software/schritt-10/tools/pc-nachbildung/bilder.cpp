@@ -50,7 +50,7 @@ void vorbereiten(int stunde, int minute, ms_t seitGeburt = 4 * TAG) {
   pet.muenzen = 12;
   himmel = himmelBei(utc);
   spiel = SpielZustand();
-  momentAufraeumen(); geher.x = 0; geher.flip = false;
+  momentAufraeumen(); geher.x = 0; geher.fuss = RAUM_HEIM_Y; geher.flip = false;
   moment.naechster = utc + 10 * MINUTE;
   moment.ruheBisTakt = 0; moment.letzterBesonderer = utc;   // kein Besuch von selbst
   menueOffen = false; ritual.aktiv = false;

@@ -37,6 +37,8 @@
 #include "garten.h"
 #include "gartenbilder.h"
 #include "gartenlandschaft.h"
+#include "zimmerlandschaft.h"
+#include "raumtiefe.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 80;
@@ -307,6 +309,7 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
     dx = WIEGEN[(seit / 120) % 8];
   }
 
+  if (!spiel.aktiv && ph == TOT) { raumFigurZeichnen(ART_GRAB, ph, BODEN_X, RAUM_HEIM_Y, false, 0, false, false); return; }
   if (ph == TOT) {
     ellipseFuellen(BODEN_X, BODEN_Y - 1, 34, 4, 0);
     zeichneBild(ART_GRAB, BODEN_X + ART_GRAB.ox, BODEN_Y + ART_GRAB.oy);
@@ -320,6 +323,7 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
     static const int WACKEL[4] = {0, 1, 0, -1};
     const int w = (schnell || t < evi.wackelnBis) ? WACKEL[(schnell ? t : t / 2) % 4] : 0;
     const Bild& ei = w > 0 ? ART_EI_RECHTS : w < 0 ? ART_EI_LINKS : *ART[EI][0];
+    if (!spiel.aktiv) { raumFigurZeichnen(ei, EI, BODEN_X + dx, RAUM_HEIM_Y, false, -dy, false, false); return; }
     ellipseFuellen(BODEN_X, BODEN_Y - 1, (int)(ART[EI][0]->w * 0.32f + 0.5f), 4, 0);
     zeichneBild(ei, BODEN_X + ei.ox + dx, BODEN_Y + ei.oy + dy);
     eviLinks = BODEN_X + ei.ox; eviBreite = ei.w; eviOben = BODEN_Y + ei.oy; eviHoehe = ei.h;
@@ -336,7 +340,12 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
   else if (!jubelt) b = momentBild(ph);
   if (!b) b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
   // Wo: auf dem Teppich, im Moment oder Spiel verschoben, gespiegelt oder angehoben
+  if (!spiel.aktiv) {
+    raumFigurZeichnen(*b, ph, BODEN_X + geher.x + dx, geher.fuss, geher.flip, geher.lift - dy + (evi.atem ? 1 : 0), false, false);
+    return;
+  }
   const int wx = geher.x + spiel.eviX;
+  eviFuss = BODEN_Y;
   ellipseFuellen(BODEN_X + wx, BODEN_Y - 1, (int)(b->w * 0.32f * schatten + 0.5f), 4, 0);
   const int oben = BODEN_Y + b->oy - (evi.atem ? 2 : 0);
   eviOben = oben;
@@ -348,12 +357,10 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
 }
 
 void zeichneZ() {
-  bild.fillRect(200, 62, 44, 24, 1);
-  bild.drawRect(199, 61, 46, 26, 0);
-  bild.drawRect(200, 62, 44, 24, 0);
-  static const char* Z[3] = {"z", "zZ", "zZz"};
-  const char* z = Z[evi.zStufe];
-  schreibe(bild, 222 - textBreite(z, 2) / 2, 66, z, 0, 2, true);
+  const int x=min(272,eviLinks+eviBreite+5), y=max(35,eviOben-13);
+  bild.fillRect(x,y,44,24,1);bild.drawRect(x-1,y-1,46,26,0);bild.drawRect(x,y,44,24,0);
+  static const char* Z[3]={"z","zZ","zZz"};
+  const char* z=Z[evi.zStufe];schreibe(bild,x+22-textBreite(z,2)/2,y+4,z,0,2,true);
 }
 
 // Die Uhrzeit, klein oben an der Wand zwischen Fenster und Evi (Wunsch der Nutzerin vom 24.11.2026).
@@ -377,8 +384,10 @@ void zeichneReaktion() {
   const Bild& gross = evi.reaktion == R_SPIELEN ? SYM_R_NOTE : evi.reaktion == R_PUTZEN || evi.reaktion == R_SCHLUEPFEN ||
                       evi.reaktion == R_ENTWICKLUNG ? SYM_R_STERN : evi.reaktion == R_MEDIZIN ? SYM_R_PLUS : SYM_R_HERZ;
   const int wx = geher.x + spiel.eviX;    // die Zeichen gehen mit Evi mit (evi-pos in der App)
-  zeichneSymbol(gross, 213 + wx - gross.w / 2, 105 - gross.h + dy, 0);
-  zeichneSymbol(SYM_R_STERN_KLEIN, 234 + wx, 116 - SYM_R_STERN_KLEIN.h + dy, 0);
+  const int rx = spiel.aktiv ? 213 + wx : eviLinks + eviBreite + 5;
+  const int ry = spiel.aktiv ? 105 : eviOben + eviHoehe / 3;
+  zeichneSymbol(gross, rx - gross.w / 2, ry - gross.h + dy, 0);
+  zeichneSymbol(SYM_R_STERN_KLEIN, rx + 17, ry + 11 - SYM_R_STERN_KLEIN.h + dy, 0);
 }
 
 void wunschText(const Wunsch& w, ms_t jetzt, const Bild*& sym, char* text, size_t n) {
@@ -407,7 +416,7 @@ void zeichneBlase(ms_t jetzt) {
   float prozent = 58 + geher.x / 3.2f;
   if (prozent < 4) prozent = 4;
   if (prozent > 58) prozent = 58;
-  const int x = 186 + (int)lroundf(BREITE * (prozent - 58) / 100), y = 54, maxB = 128;
+  const int x = 186 + (int)lroundf(BREITE * (prozent - 58) / 100), y = max(34, eviOben - 43), maxB = 128;
   const int maxZeichen = (maxB - 4 - 16 - sym->w - 5) / 6;
   char zeilen[3][40];
   int n = 0;

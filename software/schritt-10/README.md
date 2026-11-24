@@ -268,3 +268,16 @@ Evi steht kleiner auf der freien Wiese, alle Altersstufen und Suchposen bleiben 
 Generator: `python3 software/schritt-10/tools/make-garten-szene.py` erzeugt `gartenlandschaft.h` aus den kleinen PNG-Quellen. Erstaufbereitung unterstützt `--prepare <Szenenmanifest>` und `--prepare-objects <Objektmanifest>`. Die Bildaufträge stehen bei den Quellen. `make-garten.py` bleibt für die unveränderten Evi-Posen/älteren Quellen erhalten. Screenshots des tatsächlich gerenderten Spiels unter `v2/vorschauen/`. Keine Änderung des Spielstandformats oder der Fundregeln.
 
 Prüfung dieser Fassung: gesamte PC-Nachbildung mit acht Prüfprogrammen erfolgreich und ohne Warnungen; neue Prüfungen für freie Himmelsmaske, deckenden Garten, jahreszeitliche Gesamtebenen, Weihnachtsgrenzen, ruhigen Sonnenhimmel und Niederschlag tags/nachts. Echte Pico-2-Übersetzung erfolgreich: **444328 Bytes Programm (10 %)**, **33288 Bytes globale Variablen (6 %, ohne Stack/Heap)**. Spielstand unverändert 3288 Bytes. Am echten Waveshare noch prüfen: Bildwirkung, Geschwindigkeit, Touch und Ton.
+
+
+## Kompaktes Zimmer und Raumtiefe (24. November 2026)
+
+Die Nutzerin hat den ersten, kompakteren Zimmerentwurf und die Umsetzung freigegeben. Neues Zimmer aus `entwuerfe/zimmer/kompakt/` mit Weihnachtsfassung im bisherigen Zeitraum 18.11.–5.1. Das Fenster zeigt die tatsächlich gerenderte Gartenansicht mit derselben Jahreszeit und demselben Wetter. Vogel und Sternschnuppe liegen weiter hinter Rahmen/Kreuz.
+
+`raumtiefe.h/.ino` zeichnet Evi in Zimmer und Garten aus derselben Bodenposition: 65 % hinten bis 100 % vorne, kontinuierlich, von den Füßen aus skaliert. Die Altersstufe bestimmt die Grundgröße, die vorhandene Zeichnung die Pose. Figur bleibt innen weiß deckend, auch gespiegelt. Vordergrundstempel maskieren nur Evi; dabei bleiben die Originalpixel der gesamten Umgebungszeichnung sichtbar. Verdeckte Körperteile werden beim Touch nicht getroffen.
+
+Zimmer: kleiner Spaziergang mit Tiefe, zum Fenster seitlich um das Sideboard, anschließend zurück zum Teppich. Kuscheln lässt Evi an ihrem aktuellen Platz. Sideboard nutzt denselben Größenwechsel. Garten: seitlich über die freie Wiese und danach in die Tiefe zu Baum/Busch/Beet. Zur Untersuchung kleiner; nachher kommt Evi wieder vor und zeigt den Fund. Mit A vollständig auf die Wiese zurück, B/START heim. RESET und Schlaf räumen die Szenenpositionen auf. Minispiele verwenden weiter ihre eigenen Koordinaten und Größen. Bedürfnisse, Fundregeln und Spielstandformat Version 3 unverändert.
+
+Generator `tools/make-zimmer-tiefe.py`; Details und Prüfplan in `Raumtiefe_und_Zimmer.md`. Neues Prüfprogramm `tools/pc-nachbildung/raumtiefe.cpp` zusätzlich zu den acht bestehenden Programmen. Am echten Board noch ausprobieren: Bildwirkung, flüssiges Laufen, Touch auf kleinen sichtbaren Figurteilen, Ton und Geschwindigkeit.
+
+Prüfung Raumtiefe: alle neun PC-Prüfprogramme ohne Fehler/Warnungen und echte Pico-2-Übersetzung erfolgreich. Programm 486360 Bytes (11 %), globale Variablen 33380 Bytes (6 %, ohne Stack/Heap). Spielstandformat unverändert. Am echten Board noch testen.
