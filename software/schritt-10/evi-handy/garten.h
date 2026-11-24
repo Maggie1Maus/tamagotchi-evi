@@ -9,5 +9,5 @@ struct GartenZustand {
   int fund = -1;
   bool schon = false, voll = false;
 } garten;
-const int GARTEN_X[3] = {65, 250, 158};
+const int GARTEN_X[3] = {65, 250, 205};
 const char* const GARTEN_STELLE[3] = {"Am Baum", "Beim Busch", "Am Blumenbeet"};

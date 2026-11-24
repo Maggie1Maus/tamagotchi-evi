@@ -1,0 +1,133 @@
+[
+  {
+    "key": "baum-fruehling",
+    "season": "fruehling",
+    "part": "baum",
+    "width": 144,
+    "height": 142,
+    "prompt": "Use case: background-extraction. Input image is the approved complete fruehling garden scene and is the exact drawing reference. Extract ONLY the LEFT garden TREE with its visible trunk, branches, seasonal canopy and the small connected planted stone-edged border at its foot. Preserve the visible shape of this tree; do not turn it into a generic round icon. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "busch-fruehling",
+    "season": "fruehling",
+    "part": "busch",
+    "width": 92,
+    "height": 95,
+    "prompt": "Use case: background-extraction. Input image is the approved complete fruehling garden scene and is the exact drawing reference. Extract ONLY the RIGHT garden SHRUB, its branches and seasonal leaves, including its low curved planted stone-edged base. Preserve this exact shrub design, not a generic bush symbol. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "beet-fruehling",
+    "season": "fruehling",
+    "part": "beet",
+    "width": 99,
+    "height": 55,
+    "prompt": "Use case: background-extraction. Input image is the approved complete fruehling garden scene and is the exact drawing reference. Extract ONLY the REAR garden FLOWERBED just to the right of the gate, with its seasonal flowers/stems and low stone border. Preserve the exact same species, line style and viewing angle. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "baum-sommer",
+    "season": "sommer",
+    "part": "baum",
+    "width": 144,
+    "height": 142,
+    "prompt": "Use case: background-extraction. Input image is the approved complete sommer garden scene and is the exact drawing reference. Extract ONLY the LEFT garden TREE with its visible trunk, branches, seasonal canopy and the small connected planted stone-edged border at its foot. Preserve the visible shape of this tree; do not turn it into a generic round icon. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "busch-sommer",
+    "season": "sommer",
+    "part": "busch",
+    "width": 92,
+    "height": 95,
+    "prompt": "Use case: background-extraction. Input image is the approved complete sommer garden scene and is the exact drawing reference. Extract ONLY the RIGHT garden SHRUB, its branches and seasonal leaves, including its low curved planted stone-edged base. Preserve this exact shrub design, not a generic bush symbol. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "beet-sommer",
+    "season": "sommer",
+    "part": "beet",
+    "width": 99,
+    "height": 55,
+    "prompt": "Use case: background-extraction. Input image is the approved complete sommer garden scene and is the exact drawing reference. Extract ONLY the REAR garden FLOWERBED just to the right of the gate, with its seasonal flowers/stems and low stone border. Preserve the exact same species, line style and viewing angle. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "baum-herbst",
+    "season": "herbst",
+    "part": "baum",
+    "width": 144,
+    "height": 142,
+    "prompt": "Use case: background-extraction. Input image is the approved complete herbst garden scene and is the exact drawing reference. Extract ONLY the LEFT garden TREE with its visible trunk, branches, seasonal canopy and the small connected planted stone-edged border at its foot. Preserve the visible shape of this tree; do not turn it into a generic round icon. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "busch-herbst",
+    "season": "herbst",
+    "part": "busch",
+    "width": 92,
+    "height": 95,
+    "prompt": "Use case: background-extraction. Input image is the approved complete herbst garden scene and is the exact drawing reference. Extract ONLY the RIGHT garden SHRUB, its branches and seasonal leaves, including its low curved planted stone-edged base. Preserve this exact shrub design, not a generic bush symbol. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "beet-herbst",
+    "season": "herbst",
+    "part": "beet",
+    "width": 99,
+    "height": 55,
+    "prompt": "Use case: background-extraction. Input image is the approved complete herbst garden scene and is the exact drawing reference. Extract ONLY the REAR garden FLOWERBED just to the right of the gate, with its seasonal flowers/stems and low stone border. Preserve the exact same species, line style and viewing angle. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "baum-winter",
+    "season": "winter",
+    "part": "baum",
+    "width": 144,
+    "height": 142,
+    "prompt": "Use case: background-extraction. Input image is the approved complete winter garden scene and is the exact drawing reference. Extract ONLY the LEFT garden TREE with its visible trunk, branches, seasonal canopy and the small connected planted stone-edged border at its foot. Preserve the visible shape of this tree; do not turn it into a generic round icon. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "busch-winter",
+    "season": "winter",
+    "part": "busch",
+    "width": 92,
+    "height": 95,
+    "prompt": "Use case: background-extraction. Input image is the approved complete winter garden scene and is the exact drawing reference. Extract ONLY the RIGHT garden SHRUB, its branches and seasonal leaves, including its low curved planted stone-edged base. Preserve this exact shrub design, not a generic bush symbol. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "beet-winter",
+    "season": "winter",
+    "part": "beet",
+    "width": 99,
+    "height": 55,
+    "prompt": "Use case: background-extraction. Input image is the approved complete winter garden scene and is the exact drawing reference. Extract ONLY the REAR garden FLOWERBED just to the right of the gate, with its seasonal flowers/stems and low stone border. Preserve the exact same species, line style and viewing angle. Create a separately usable cutout, actual transparent background, WHITE OPAQUE object interiors and BLACK fine contours. Do not include fence, gate, string lights, sky, lawn, path, unrelated plants, other objects, text or interface. Same natural perspective and unified delicate linework as this supplied illustration, no thick cartoon outline, no decorative sticker border, no gray, no colors, no dense dithering. Retain this season. Complete recognizable cutout, transparent padding, no cast shadow outside the object. This is a sprite derived from the existing scene, not a new design."
+  },
+  {
+    "key": "zaun",
+    "part": "zaun",
+    "width": 320,
+    "height": 70,
+    "prompt": "Use case: background-extraction. Extract the continuous wooden FENCE only, with its modest posts and thin wood grain, retaining the slightly receding perspective from the reference. Omit the central gate so it can be a separate cutout from the supplied approved garden illustration as an individual sprite. Preserve this exact drawing style, modest natural detail and fine consistent contour weight. Actual transparent background with opaque white object interiors, black lines only. No shadows outside object, no other objects, no ground, no character, no UI, no text, no grayscale, no colors. Do not redesign as a generic thick-outline icon. Transparent padding."
+  },
+  {
+    "key": "gartentuer",
+    "part": "gartentuer",
+    "width": 58,
+    "height": 64,
+    "prompt": "Use case: background-extraction. Extract the central wooden GARDEN GATE with its two posts, curved top, simple latch and modest wood grain, same exact frontal perspective and proportions from the supplied approved garden illustration as an individual sprite. Preserve this exact drawing style, modest natural detail and fine consistent contour weight. Actual transparent background with opaque white object interiors, black lines only. No shadows outside object, no other objects, no ground, no character, no UI, no text, no grayscale, no colors. Do not redesign as a generic thick-outline icon. Transparent padding."
+  },
+  {
+    "key": "lichterkette",
+    "part": "lichterkette",
+    "width": 82,
+    "height": 19,
+    "prompt": "Use case: background-extraction. Extract only the SINGLE sagging STRING OF SMALL ROUND FAIRY LIGHTS suspended between the two fence posts to the RIGHT of the gate, EXACT curved cable shape and restrained thin contour weight. The reference's string lights are small round bulbs, not stars. Absolutely no fence, sky or posts from the supplied approved garden illustration as an individual sprite. Preserve this exact drawing style, modest natural detail and fine consistent contour weight. Actual transparent background with opaque white object interiors, black lines only. No shadows outside object, no other objects, no ground, no character, no UI, no text, no grayscale, no colors. Do not redesign as a generic thick-outline icon. Transparent padding."
+  },
+  {
+    "key": "kranz",
+    "part": "kranz",
+    "width": 22,
+    "height": 24,
+    "prompt": "Use case: stylized-concept. Supporting reference: the supplied winter garden defines perspective, scale, line weight and style. Draw ONLY A small restrained evergreen CHRISTMAS WREATH for the central garden gate, with a small simple fabric bow. Natural branches, modest detail, the same thin black contour weight as this garden, white inside. It will be small in a 320px-wide scene, not a bold cartoon badge. A standalone sprite with truly transparent background. Black ink and opaque white fills, no colors, no gray, no shadows outside object, no ground, no interface, no labels, no extra objects. Subdued cozy and natural style, matches the reference."
+  },
+  {
+    "key": "schneemann",
+    "part": "schneemann",
+    "width": 32,
+    "height": 49,
+    "prompt": "Use case: stylized-concept. Supporting reference: the supplied winter garden defines perspective, scale, line weight and style. Draw ONLY A small naturally proportioned garden SNOWMAN with two or three snowballs, modest scarf, twig arms and a tiny wool hat. Same slightly elevated garden perspective, thin uniform black contours matching this garden. White opaque inside, sparse details, not a chibi sticker. A standalone sprite with truly transparent background. Black ink and opaque white fills, no colors, no gray, no shadows outside object, no ground, no interface, no labels, no extra objects. Subdued cozy and natural style, matches the reference."
+  }
+]

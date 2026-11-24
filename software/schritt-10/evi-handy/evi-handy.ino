@@ -36,6 +36,7 @@
 #include "extras.h"
 #include "garten.h"
 #include "gartenbilder.h"
+#include "gartenlandschaft.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 80;

@@ -2,9 +2,13 @@
 
 Stand: 24. November 2026
 
-## Neuer Garten-Gesamtentwurf zur stilistischen Abstimmung (24. November 2026)
+## Bestätigten Garten-Gesamtentwurf eingebaut (24. November 2026)
 
-Die Nutzerin lehnt die bisherige Gartengestaltung als lieblos und zusammengewürfelt ab: unterschiedliche Strichstärken, isolierte Sonne/Wolke, fehlende natürliche Zusammengehörigkeit. Neuer zusammenhängender Sommerentwurf unter `entwuerfe/garten/neuentwurf/`, inklusive 320×174-Ansicht und Bildauftrag. Gemeinsame Perspektive, natürliche Pflanzränder, geschwungener Trittsteinweg, zurückhaltende runde Lichter und ruhiger Himmel ohne Wettersymbole. **Noch Gestaltungsentwurf, nicht in die Firmware eingebaut.** Als Nächstes den gewünschten Stil mit der Nutzerin weiter schärfen, dann zusammenpassende Einzelobjekte/Ebenen und saisonale Varianten ableiten und einbauen. Die bisherige Suchfunktion, Evis Zeichnungen und Spielstände bleiben erhalten.
+- Nutzerin fand die erste Gartenfassung lieblos/zusammengewürfelt (Strichstärken, isolierte Sonne/Wolke). Den neuen natürlichen Gesamtentwurf bestätigte sie anschließend ausdrücklich mit „Jaaaaaaaa 100%. Das sieht gut aus“. Diese Gestaltung ist jetzt in der Waveshare-Firmware eingebaut.
+- Fünf zusammenhängende Gartenebenen (Frühling/Sommer/Herbst/Winter/Weihnachten) unter `entwuerfe/garten/v2/`. Dieselbe Perspektive, verbundene Beete, natürlicher Baum/Busch, Trittsteinweg, kleine runde Lichter. Zusätzlich 17 passende Einzelobjekte in `v2/einzelobjekte/`. Neue Szene wird nicht erneut aus lose nebeneinanderstehenden Symbolen zusammengesetzt.
+- Ruhiger Himmel ohne Sonne-/Wolkensymbole; Wetter als atmosphärische Himmelsschichten, fallender Regen/Schnee im Himmel und auf der offenen Wiese, nachts Sterne und helle Konturen. Jahreszeiten/Wetter/Sonnenzeiten identisch zum Fenster; Weihnachten weiterhin 18.11.–5.1.
+- Evi kleiner zur Gartenperspektive, Fundsuche beim Beet jetzt an der passenden Stelle. Alle zwölf Suchposen und alten Zeichnungen unverändert. Fundregeln, Metadaten und Version-3-Spielstand unverändert.
+- Generator `make-garten-szene.py` → `gartenlandschaft.h`; gespeicherte Quellen, Bildaufträge und aktuelle Bildschirmansichten unter `entwuerfe/garten/v2/`. Erste Gartenfassung und bestätigter Entwurf bleiben zur Nachvollziehbarkeit erhalten. Handy-App unverändert. Acht PC-Prüfprogramme und echte Pico-2-Übersetzung erfolgreich: 444328 Bytes Programm (10 %), 33288 Bytes globale Variablen (6 %, ohne Stack/Heap). Spielstand 3288 Bytes unverändert. Am echten Board noch testen.
 
 ## Garten und Evi-Suchposen umgesetzt (24. November 2026)
 

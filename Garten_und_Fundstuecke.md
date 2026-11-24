@@ -1,6 +1,16 @@
 # Gemeinsamer Garten und Fundstücke
 Stand: 24. November 2026
 
+## Überarbeitete Gestaltung, von der Nutzerin bestätigt
+
+Die erste Gartenfassung wurde als lieblos und zusammengewürfelt abgelehnt. Der neue Gesamtentwurf unter `entwuerfe/garten/neuentwurf/` wurde anschließend mit „Jaaaaaaaa 100%. Das sieht gut aus“ bestätigt und ist jetzt in der Firmware eingebaut.
+
+Die Darstellung nutzt fünf zusammenhängende Gartenebenen unter `entwuerfe/garten/v2/`: Frühling, Sommer, Herbst, Winter und Weihnachten. Einheitliche Perspektive und Linienführung; verbundene Steinränder, natürlicher Baum links, Busch rechts, hinteres Blumenbeet, geschwungene Trittsteine, zurückhaltende runde Lichter. Keine einzeln aufgesetzten Sonne-/Wolkenbilder. Das Wetter verändert die Atmosphäre im freigestellten Himmel; Regen und Schnee fallen im Himmel und auf der offenen Wiese, bevor Evi darüber gezeichnet wird. Nachts wenige Sterne und schmale helle Silhouettenkanten. Die 17 zusätzlich abgeleiteten Einzelobjekte liegen unter `v2/einzelobjekte/` und werden nicht wieder als unterschiedlich große Symbole zum Garten zusammengesetzt. Die Lichter ergänzen den Winterzaun außerhalb der Weihnachtszeit.
+
+Evi ist im Garten passend zur räumlichen Tiefe etwas kleiner; ihre Zeichnungen selbst bleiben unverändert. Die Blumenbeet-Suchposition liegt jetzt vor dem tatsächlich rechts vom Weg befindlichen Beet. Suchablauf, Funddatum, Erinnerungssätze und Spielstandformat bleiben erhalten. Der Weihnachtszeitraum bleibt 18. November bis einschließlich 5. Januar.
+
+`software/schritt-10/tools/make-garten-szene.py` erzeugt `gartenlandschaft.h` aus den gespeicherten kleinen PNGs. Der freigegebene Sommerentwurf liefert direkt die Sommerkonturen. Alle Quellen sind schwarz-weiß, Gartenflächen deckend, der Himmel transparent. Bildaufträge sind bei den Quellen dokumentiert. Die früheren Einzelzeichnungen unter `entwuerfe/garten/` bleiben als frühere Fassung erhalten. Aktuelle Bildschirmansichten: `entwuerfe/garten/v2/vorschauen/`.
+
 ## Eingebaut auf dem Waveshare
 
 Der gemeinsame, eingezäunte Garten ersetzt den Park. Er ist über „In den Garten“ im Zimmermenü auch vom Sofa aus erreichbar. Stil: gemütlich & schlicht, schwarz-weiß, Lichterketten, Gartentür, Baum, Busch und Blumenbeet. Eigene Ansicht, damit der Zimmerbildschirm frei bleibt. Die Handy-App bleibt unverändert.
@@ -18,7 +28,7 @@ Der gemeinsame, eingezäunte Garten ersetzt den Park. Er ist über „In den Gar
 
 Zwölf neue Evi-Zeichnungen: **schnuppern**, **mit einer Pfote untersuchen**, **stolz einen Fund zeigen** für **Baby, Teenager, Erwachsene und Oma**. Mit „Generationen“ sind in dieser Umsetzung diese bereits vorhandenen Lebensphasen berücksichtigt; zukünftige Partner oder eine Verpaarungsmechanik sind damit nicht festgelegt. Neue Dateien unter `entwuerfe/evi/garten/`, bestehende Evi-Zeichnungen bleiben unverändert. Alle Körper weiß deckend, nur außen transparent. Der Fund wird als separates Bild über die Pfoten gelegt, damit jeder Fund zu jeder Altersstufe passt.
 
-Siebzehn einzelne Gartenbilder unter `entwuerfe/garten/`: Baum, Busch und Beet je viermal; Zaun, Gartentür, Sternenlichterkette, Kranz und Schneemann. Die vollständigen Bildaufträge sind daneben als JSON dokumentiert. Gesamtansichten des tatsächlich gerenderten Gartens in `vorschauen/`.
+Erste Fassung: siebzehn einzelne Gartenbilder unter `entwuerfe/garten/`: Baum, Busch und Beet je viermal; Zaun, Gartentür, Sternenlichterkette, Kranz und Schneemann. Die vollständigen Bildaufträge sind daneben als JSON dokumentiert. Gesamtansichten des tatsächlich gerenderten Gartens in `vorschauen/`.
 
 - Frühling: Blüten und junge Blätter.
 - Sommer: dichtes Laub und blühendes Beet.

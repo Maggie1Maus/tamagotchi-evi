@@ -125,6 +125,28 @@ int main() {
   PRUEFE(garten.voll && !memcmp(&erster,&sammlung.fund[0],sizeof(erster)), "volle Sammlung überschreibt nichts");
   sammlung = Sammlung(); fundAufnehmen(FUND_BLATT,FUND_GARTEN,20261124,1,WT_REGEN,JZ_HERBST,0);
   bereit(jetzt); sideboardOeffnen(); sideboard.phase = SB_OFFEN; zeichneAlles(); foto("garten-erinnerung"); sideboardSofortZu();
+  // Neue Gesamtebenen: durchsichtiger Himmel, vollständig deckender Garten, Datumswechsel.
+  for (int j = 0; j < 4; j++) {
+    const Bild& b = *GARTEN_LANDSCHAFT[j];
+    PRUEFE(b.w == 320 && b.h == 174 && !bildDeckt(b,200,0), "Gesamtszene passt zum Display und hat freien Himmel");
+    bool bodenDeckend = true;
+    for (int y = 72; y < 174; y++) for (int x = 0; x < 320; x++) bodenDeckend &= bildDeckt(b,x,y);
+    PRUEFE(bodenDeckend, "Rasen, Schnee, Zaun und Beete lassen keinen Himmel durch");
+  }
+  PRUEFE(&gartenLandschaftBei(ausOrtszeit(2026,11,17,12,0)) == &LANDSCHAFT_WINTER &&
+         &gartenLandschaftBei(ausOrtszeit(2026,11,18,12,0)) == &LANDSCHAFT_WEIHNACHTEN &&
+         &gartenLandschaftBei(ausOrtszeit(2027,1,5,12,0)) == &LANDSCHAFT_WEIHNACHTEN &&
+         &gartenLandschaftBei(ausOrtszeit(2027,1,6,12,0)) == &LANDSCHAFT_WINTER,
+         "Weihnachts-Gesamtszene erscheint am 18. November und geht am 6. Januar");
+  ms_t sonnig = 0;
+  for (int d = 0; d < 31 && !sonnig; d++) {
+    const ms_t k = ausOrtszeit(2026,7,1,12,0) + d * TAG;
+    if (wetterBei(k) == WT_SONNE) sonnig = k;
+  }
+  gartenSzeneZeichnen(sonnig); bool himmelRuhig = true;
+  for (int y = 30; y < 60; y++) for (int x = 190; x < 300; x++)
+    himmelRuhig &= (bild.getBuffer()[y*40+x/8] & (0x80 >> (x%8))) != 0;
+  PRUEFE(sonnig && himmelRuhig, "Sonnentag hat ruhigen Himmel ohne aufgeklebte Wettersymbole");
   // Vollständige Ansichten aller Jahreszeiten; separater Nacht- und Weihnachtstest.
   const int monate[] = {4,7,10,1,12,12};
   const int tage[] = {12,12,12,15,12,12};

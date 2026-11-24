@@ -1,0 +1,5 @@
+# Bestätigte Garten-Gestaltung
+
+Diese Fassung setzt den von der Nutzerin bestätigten Gesamtentwurf um. `fruehling.png`, `sommer.png`, `herbst.png`, `winter.png` und `weihnachten.png` sind zusammenhängende 320×174-Bildebenen mit transparentem Himmel und deckendem Garten. `einzelobjekte/` enthält 17 gesonderte Bilder aus denselben Vorlagen. Die Spielszene bleibt gestalterisch zusammenhängend; die Einzelobjekte werden nicht mit frei veränderten Größen wieder zusammengesetzt. Wetter und Evi liegen auf eigenen Ebenen. `vorschauen/` zeigt die tatsächliche Spielansicht.
+
+Die Bilder wurden aus dem bestätigten Gesamtentwurf abgeleitet, nur verkleinert und in Schwarz-Weiß mit Deckmaske für das Board umgerechnet. Sommerkonturen direkt aus dem bestätigten Entwurf; andere Jahreszeiten und Weihnachtsdeko als Varianten desselben Gartens. Bildaufträge in `bildauftraege.json` und `einzelobjekte/bildauftraege.json`. `software/schritt-10/tools/make-garten-szene.py` erzeugt den Header reproduzierbar aus den PNGs.

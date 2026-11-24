@@ -97,70 +97,83 @@ void gartenFundZeichnen(const Bild& b, int cx, int cy) {
   const int w = max(1, b.w * 21 / max(b.w, b.h)), h = max(1, b.h * 21 / max(b.w, b.h));
   gartenBildZeichnen(b, cx - w / 2, cy - h / 2, w, h, false);
 }
+// Die freigegebene Gesamtszene bleibt eine zusammenhängende Ebene.
+const Bild& gartenLandschaftBei(ms_t jetzt) {
+  return weihnachtsZeit(jetzt) ? LANDSCHAFT_WEIHNACHTEN : *GARTEN_LANDSCHAFT[jahreszeitBei(jetzt)];
+}
+
+// Atmosphäre statt einzelner Wetterzeichen: ruhiger Himmel, breite Wolkenschichten,
+// nachts wenige Sterne. Sonne/Wolke aus dem Menü werden hier nicht als Bilder eingesetzt.
+void gartenHimmelZeichnen(ms_t jetzt) {
+  const Himmel h = himmelBei(jetzt);
+  const Wetter w = wetterBei(jetzt);
+  if (h == HIMMEL_NACHT) bild.fillRect(0, 27, 320, 72, 0);
+  else if (h != HIMMEL_TAG || w != WT_SONNE) {
+    // Nur die sichtbare Himmelszone; Sinus je Spalte statt je Bildpunkt berechnen.
+    for (int x = 0; x < 320; x++) {
+      const int kante = 40 + (int)(4 * sinf(x * .025f) + 2 * sinf(x * .061f));
+      for (int y = 27; y < 99; y++) {
+        uint16_t f = 1;
+        if (h == HIMMEL_DAEMMERUNG) f = (x + 3 * y) % 5 != 0;
+        else {
+          const bool wolke = w != WT_SONNE_WOLKEN || (y >= kante && y < kante + 7);
+          const int abstand = w == WT_REGEN ? 5 : w == WT_BEWOELKT ? 7 : 11;
+          if (wolke) f = (x + 3 * y) % abstand != 0;
+        }
+        bild.drawPixel(x, y, f);
+      }
+    }
+  }
+  if (h == HIMMEL_NACHT && w != WT_REGEN && w != WT_BEWOELKT && w != WT_SCHNEE) {
+    for (int i = 0; i < (w == WT_SONNE_WOLKEN ? 7 : 14); i++)
+      bild.drawPixel(128 + i * 43 % 181, 32 + i * 17 % 42, 1);
+  }
+}
+
+// Regen und Schnee hinter Evi, vor dem offenen Rasen; Pflanzen und Zaun bleiben lesbar.
 void gartenWetterZeichnen(ms_t jetzt) {
   const Wetter w = wetterBei(jetzt);
-  const Himmel h = himmelBei(jetzt);
-  if (h == HIMMEL_NACHT) {
-    for (int i = 0; i < 18; i++) bild.drawPixel(12 + i * 47 % 295, 34 + i * 19 % 45, 1);
-    bild.fillCircle(235, 52, 9, 1); bild.fillCircle(239, 49, 8, 0);
-  } else {
-    if (w == WT_SONNE || w == WT_SONNE_WOLKEN) zeichneBild(WETTER_SONNE, 205, 35);
-    if (w != WT_SONNE) {
-      zeichneBild(w == WT_REGEN ? WETTER_REGENWOLKE : WETTER_WOLKE, 142, 36);
-      if (w == WT_BEWOELKT) zeichneBild(WETTER_WOLKE, 234, 53);
-    }
-  }
-  // Niederschlag hinter den Objekten; 40-ms-Bilder, Schnee langsamer mit seitlichem Pendeln.
   if (w != WT_REGEN && w != WT_SCHNEE) return;
-  const uint16_t f = h == HIMMEL_NACHT ? 1 : 0;
+  const bool nacht = himmelBei(jetzt) == HIMMEL_NACHT;
+  const Bild& szene = gartenLandschaftBei(jetzt);
+  auto punkt = [&](int x, int y) {
+    if (x < 0 || x >= 320 || y < 27 || y >= 201) return;
+    const bool himmel = !bildDeckt(szene, x, y - 27);
+    const bool rasen = y >= 140 && x > 88 - (y - 140) / 2 && x < 258 + (y - 140) / 2;
+    if (himmel || rasen) bild.drawPixel(x, y, nacht && himmel ? 1 : 0);
+  };
   for (int i = 0; i < 32; i++) {
-    const int lauf = (millis() / (w == WT_REGEN ? 22 : 90) + i * 31) % 160;
-    int x = 5 + i * 47 % 310, y = 34 + lauf;
-    if (w == WT_REGEN) { x = (x + 320 - lauf / 4) % 320; bild.drawLine(x, y, x - 2, min(y + 5, 197), f); }
-    else {
+    const int lauf = (millis() / (w == WT_REGEN ? 22 : 90) + i * 31) % 168;
+    int x = 5 + i * 47 % 310, y = 29 + lauf;
+    if (w == WT_REGEN) {
+      x = (x + 320 - lauf / 4) % 320;
+      for (int k = 0; k < 4; k++) punkt(x - k / 2, y + k);
+    } else {
       x += (int)lroundf(2 * sinf((millis() % 6000) * .002f + i));
-      bild.drawPixel(x, y, f);
-      if (i % 3 == 0 && y < 196) { bild.drawPixel(x - 1, y, f); bild.drawPixel(x + 1, y, f); bild.drawPixel(x, y - 1, f); bild.drawPixel(x, y + 1, f); }
+      punkt(x, y);
+      if (i % 3 == 0) { punkt(x - 1, y); punkt(x + 1, y); punkt(x, y - 1); punkt(x, y + 1); }
     }
   }
 }
-// Helle Mondlichtkante: kahle Zweige und Zaunkonturen verschwinden nachts nicht im Himmel.
-void gartenObjektZeichnen(const Bild& b, int x0, int y0, bool nacht) {
-  if (nacht) for (int y = 0; y < b.h; y++) for (int x = 0; x < b.w; x++) {
-    if (!bildDeckt(b, x, y)) continue;
-    static const int8_t RICHTUNG[4][2] = {{-1,0},{1,0},{0,-1},{0,1}};
-    for (auto& r : RICHTUNG) {
-      const int nx = x + r[0], ny = y + r[1];
-      if (y0 + ny >= 27 && y0 + ny < 123 && !bildDeckt(b, nx, ny)) bild.drawPixel(x0 + nx, y0 + ny, 1);
-    }
-  }
-  zeichneBild(b, x0, y0);
-}
+
 void gartenSzeneZeichnen(ms_t jetzt) {
   bild.fillScreen(1);
-  const Himmel h = himmelBei(jetzt);
-  if (h == HIMMEL_NACHT) bild.fillRect(0, 27, BREITE, 96, 0);
-  else if (h == HIMMEL_DAEMMERUNG || wetterBei(jetzt) == WT_REGEN)
-    for (int y = 27; y < 123; y++) for (int x = 0; x < BREITE; x++) bild.drawPixel(x, y, (x + y) & 1);
-  gartenWetterZeichnen(jetzt);
-  // Heller Weg und wenige Grashalme; Winter bleibt ruhig und verschneit.
-  bild.drawLine(148, 123, 123, 198, 0); bild.drawLine(172, 123, 193, 198, 0);
-  if (jahreszeitBei(jetzt) != JZ_WINTER) for (int i = 0; i < 14; i++) {
-    const int x = 9 + i * 41 % 302, y = 147 + i * 17 % 46;
-    if (x > 123 && x < 193) continue;
-    bild.drawLine(x, y, x - 2, y - 3, 0); bild.drawLine(x, y, x + 2, y - 4, 0);
+  gartenHimmelZeichnen(jetzt);
+  const Bild& b = gartenLandschaftBei(jetzt);
+  if (himmelBei(jetzt) == HIMMEL_NACHT) {
+    // Ein Pixel Mondlicht um die tatsächlichen Silhouetten, damit schwarze Zweige sichtbar bleiben.
+    for (int y = 0; y < 72; y++) for (int x = 0; x < 320; x++) {
+      if (!bildDeckt(b, x, y)) continue;
+      static const int8_t R[4][2] = {{-1,0},{1,0},{0,-1},{0,1}};
+      for (auto& r : R) {
+        const int nx = x + r[0], ny = y + r[1];
+        if (nx >= 0 && nx < 320 && ny >= 0 && !bildDeckt(b, nx, ny)) bild.drawPixel(nx, ny + 27, 1);
+      }
+    }
   }
-  const Jahreszeit j = jahreszeitBei(jetzt);
-  gartenObjektZeichnen(GA_ZAUN, 160 - GA_ZAUN.w, 121 - GA_ZAUN.h, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(GA_ZAUN, 160, 121 - GA_ZAUN.h, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(GA_GARTENTUER, 160 - GA_GARTENTUER.w / 2, 128 - GA_GARTENTUER.h, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(GA_LICHTERKETTE, 160 - GA_LICHTERKETTE.w, 77, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(GA_LICHTERKETTE, 160, 77, h == HIMMEL_NACHT);
-  if (weihnachtsZeit(jetzt)) gartenObjektZeichnen(GA_KRANZ, 160 - GA_KRANZ.w / 2, 91, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(*GARTEN_BAUM[j], 49 - GARTEN_BAUM[j]->w / 2, 163 - GARTEN_BAUM[j]->h, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(*GARTEN_BUSCH[j], 263 - GARTEN_BUSCH[j]->w / 2, 171 - GARTEN_BUSCH[j]->h, h == HIMMEL_NACHT);
-  gartenObjektZeichnen(*GARTEN_BEET[j], 161 - GARTEN_BEET[j]->w / 2, 153 - GARTEN_BEET[j]->h, h == HIMMEL_NACHT);
-  if (weihnachtsZeit(jetzt)) gartenObjektZeichnen(GA_SCHNEEMANN, 205, 174 - GA_SCHNEEMANN.h, h == HIMMEL_NACHT);
+  zeichneBild(b, 0, 27);
+  if (jahreszeitBei(jetzt) == JZ_WINTER && !weihnachtsZeit(jetzt)) zeichneBild(LANDSCHAFT_LICHTER, 173, 85);
+  gartenWetterZeichnen(jetzt);
 }
 void gartenZeichnen() {
   const ms_t jetzt = jetztMs(); const Phase ph = phaseBei(pet, jetzt);
@@ -169,7 +182,7 @@ void gartenZeichnen() {
     const bool laeuft = garten.phase == GA_HIN;
     const int pose = garten.phase == GA_ZEIGEN ? 2 : garten.phase == GA_UNTERSUCHEN ? 1 : 0;
     const Bild& b = laeuft ? *MOMENT_BILD[ph][MB_LAUFEN] : garten.phase == GA_WAHL ? *ART[ph][1] : *GARTEN_EVI[ph][pose];
-    static const int MAX_H[5] = {0, 70, 82, 86, 82};
+    static const int MAX_H[5] = {0, 54, 64, 68, 64};
     const int hoehe = min((int)b.h, MAX_H[ph]), breite = b.w * hoehe / b.h;
     const int lift = laeuft ? (millis() / 140 % 2) * 2 : 0;
     const int x = max(2, min(garten.x - breite / 2, 318 - breite)), y = 195 - hoehe - lift;

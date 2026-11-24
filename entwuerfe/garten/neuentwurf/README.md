@@ -8,4 +8,4 @@ Dieser neue Sommerentwurf legt zuerst eine gemeinsame Perspektive, Linienführun
 - `gesamtentwurf-sommer-320.png`: verkleinerte 320 × 174-Pixel-Fassung zur Prüfung der Lesbarkeit auf dem Board.
 - `bildauftrag.txt`: vollständiger Bildauftrag.
 
-Als zusammenhängende Illustration mit der integrierten Bildgenerierung erstellt, anschließend nur verkleinert und in reines Schwarz-Weiß überführt. Noch ein Gestaltungsentwurf: Die Firmware verwendet weiterhin den bisherigen Garten. Rückmeldung zum neuen Stil einarbeiten; daraus danach zueinander passende Ebenen/Einzelobjekte, Jahreszeiten, Wetter und Weihnachtsdeko für die Firmware ableiten. Evi selbst und die Suchregeln bleiben dabei erhalten.
+Als zusammenhängende Illustration mit der integrierten Bildgenerierung erstellt, anschließend nur verkleinert und in reines Schwarz-Weiß überführt. Der Gesamtentwurf wurde von der Nutzerin ausdrücklich bestätigt. Die daraus abgeleiteten saisonalen Gartenebenen und Einzelobjekte sind inzwischen unter `../v2/` gespeichert und in die Firmware eingebaut. Der Sommer verwendet die Konturen dieses Entwurfs direkt. Evi selbst und die Suchregeln bleiben dabei erhalten.
