@@ -2,6 +2,11 @@
 
 Stand: 25. November 2026
 
+## Graustufen-Zeichnungen für 20 andere Tamagotchis
+
+- Unter `entwuerfe/neue-tamagotchis/graustufen/` liegen 80 einzelne Graustufen-PNGs. Jede Figur hat die Pose „Glücklich“ als Baby, Teenager, erwachsene und ältere Figur (Oma oder Opa). Die PNGs sind 72 × 64 Pixel groß, haben eine gemeinsame Standlinie und verwenden die 16 Graustufen des Spiels mit binärer Transparenz.
+- Die bestehenden Figurenentwürfe und Evis Alltagsposen dienten als Vorlagen. Lottis freigegebene Erwachsenenzeichnung aus dem Park ist mittig in die gemeinsame Bildfläche eingesetzt. Zwei Übersichten zeigen die Lebensphasen nebeneinander.
+
 ## Öffentlicher Parkeingang mit Lotti und Fundstücken
 
 - Im Waveshare-Menü führt „In den Park“ zum bestätigten Graustufenentwurf. Touch oder Steuerkreuz und A wählen Lotti, den Kiesweg oder den Wiesenrand. Evi läuft selbst zu ihrem Ziel. Bei Lotti folgt eine Begrüßung. An einer Fundstelle schnuppert Evi, und mit A oder einem weiteren Tipper schaut sie nach.
