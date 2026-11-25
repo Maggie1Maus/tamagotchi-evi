@@ -1,7 +1,7 @@
 // Graustufen-Bilder von Evi zeichnen (seit 25.11.2026). Die Bilddaten stehen in evigrau.h (4 Bit je Punkt,
 // 15 = durchsichtig). Zu jedem vorhandenen Schwarz-Weiß-Bild gibt es höchstens ein Graustufen-Bild gleicher Größe;
-// das Schwarz-Weiß-Bild bleibt für Trefferprüfung und Verdeckung zuständig. Bilder ohne Graustufen-Gegenstück
-// (Zimmer, Symbole, Funde …) werden wie bisher schwarz-weiß gezeichnet.
+// das Schwarz-Weiß-Bild bleibt für Trefferprüfung und Verdeckung zuständig. Symbole ohne Graustufen-Gegenstück
+// werden wie bisher schwarz-weiß gezeichnet. Das Zimmer hat eigene Ebenen mit separaten Alpha-Masken.
 #pragma once
 #include "evigrau.h"
 #include "spielgrau.h"

@@ -18,7 +18,7 @@ void sideboardOeffnen() {
   sideboard.auswahl = sammlung.anzahl ? sammlung.anzahl - 1 : 0;
   sideboard.phase = sideboardKannLaufen(jetztMs()) ? SB_HIN : SB_OFFEN;
   sideboard.seit = millis();
-  if(sideboard.phase==SB_HIN){const auto&p=einrichtung.platz[Z_SIDEBOARD];gangBeginnenTief(p.x+EVI_SIDEBOARD.w/2-BODEN_X,p.fuss+5);sideboardSchrittMs=millis();}
+  if(sideboard.phase==SB_HIN){const auto&p=einrichtung.platz[Z_SIDEBOARD];gangBeginnenTief(p.x+ZG_SIDEBOARD.w/2-BODEN_X,p.fuss+5);sideboardSchrittMs=millis();}
 }
 
 void sideboardSchliessen() {

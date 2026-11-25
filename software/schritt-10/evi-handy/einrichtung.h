@@ -3,14 +3,32 @@
 #pragma once
 enum ZimmerZone : uint8_t { Z_HINTEN, Z_MITTE, Z_VORNE };
 enum ZimmerMoebel : uint8_t { Z_BETT, Z_SIDEBOARD, Z_REGAL, Z_TEPPICH, Z_MOEBEL_ANZAHL };
+struct ZimmerBild {
+ uint16_t w, h;
+ const uint8_t *grau, *maske;
+ // Aufrufer begrenzen die Koordinaten auf das Bild.
+ bool deckt(int x, int y) const {
+  const int i = y * w + x;
+  return !maske || (maske[i / 8] & (128 >> (i % 8)));
+ }
+ uint8_t wert(int x, int y) const { return grauStufe(grau, w, x, y) * 17; }
+};
+#include "zimmergrau.h"
+
+constexpr int ZIMMER_RAHMEN_X = 71, ZIMMER_RAHMEN_Y = 38;
+constexpr int ZIMMER_GLAS_DX = 7, ZIMMER_GLAS_DY = 7;
+constexpr int ZF_X = ZIMMER_RAHMEN_X + ZIMMER_GLAS_DX, ZF_Y = ZIMMER_RAHMEN_Y + ZIMMER_GLAS_DY;
+constexpr int ZF_W = ZG_HUEGEL.w, ZF_H = ZG_HUEGEL.h;
+constexpr int BETT_RAND = ZG_TIERBETT.h - ZG_TIERBETT_VORDERRAND.h;
+
 struct ZimmerStellung { int16_t x, fuss; uint8_t aufgestellt; };
 struct ZimmerInventar { ZimmerStellung platz[Z_MOEBEL_ANZAHL]; };
-struct ZimmerMoebelArt { const char* name; const EviGrafik* grafik; uint8_t breiteSlots,hoeheSlots,ablagen,tiefe; bool wand,bodenfrei; };
+struct ZimmerMoebelArt { const char* name; const ZimmerBild* grafik; uint8_t breiteSlots,hoeheSlots,ablagen,tiefe; bool wand,bodenfrei; };
 const ZimmerMoebelArt Z_MOEBEL[Z_MOEBEL_ANZAHL]={
- {"Tierbett",&EVI_TIERBETT,2,1,0,18,false,false},
- {"Sideboard",&EVI_SIDEBOARD,2,2,2,13,false,false},
- {"Regal",&EVI_REGAL,2,1,2,0,true,false},
- {"Teppich",&EVI_TEPPICH,3,1,0,0,false,true}
+ {"Tierbett",&ZG_TIERBETT,2,1,0,18,false,false},
+ {"Sideboard",&ZG_SIDEBOARD,2,2,2,13,false,false},
+ {"Regal",&ZG_REGAL,2,1,2,0,true,false},
+ {"Teppich",&ZG_TEPPICH,3,1,0,0,false,true}
 };
 inline ZimmerInventar zimmerStart(){return {{{20,167,1},{195,148,1},{195,77,1},{99,194,1}}};}
 ZimmerInventar einrichtung=zimmerStart();
@@ -58,7 +76,7 @@ inline bool zimmerGueltig(const ZimmerInventar& z){
   else if(p.fuss<146||p.fuss>=ZIMMER_VORNE_AB)return false;
   if(!a.wand&&!a.bodenfrei&&zimmerUeberlappt(p.x,p.fuss-a.tiefe,w,a.tiefe,267,158,46,16))return false;
   const bool wand=a.wand||(!a.bodenfrei&&zimmerZone(p.fuss)==Z_HINTEN);
-  if(wand&&zimmerUeberlappt(p.x,p.fuss-h,w,h,71,38,81,69))return false;
+  if(wand&&zimmerUeberlappt(p.x,p.fuss-h,w,h,ZIMMER_RAHMEN_X,ZIMMER_RAHMEN_Y,ZG_FENSTERRAHMEN.w,ZG_FENSTERRAHMEN.h))return false;
   for(int j=0;j<i;j++){
    const auto&b=Z_MOEBEL[j];const auto&q=z.platz[j];if(!q.aufgestellt||a.bodenfrei||b.bodenfrei)continue;
    const bool andereWand=b.wand||zimmerZone(q.fuss)==Z_HINTEN;

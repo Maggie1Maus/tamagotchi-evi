@@ -63,7 +63,7 @@ bool raumFigurTreffer(int x,int y) {
 }
 bool zimmerScheibe(int x,int y) {
   return x>=ZF_X && x<ZF_X+ZF_W && y>=ZF_Y && y<ZF_Y+ZF_H &&
-         zimmerBit(ZIMMER_SCHEIBE,ZF_W,x-ZF_X,y-ZF_Y);
+         !ZG_FENSTERRAHMEN.deckt(x-ZIMMER_RAHMEN_X, y-ZIMMER_RAHMEN_Y);
 }
 // Fensterbesuch behält seine eigenen Koordinaten, wird aber auf die neue Scheibe abgebildet.
 void zimmerFensterPunkt(int x,int y,uint16_t farbe) {

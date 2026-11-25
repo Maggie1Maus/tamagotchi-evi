@@ -38,8 +38,6 @@
 #include "extras.h"
 #include "grau.h"
 #include "zimmerlandschaft.h"
-#include "zimmergrafiken.h"
-#include "zimmergrau.h"
 #include "einrichtung.h"
 #include "raumtiefe.h"
 
@@ -399,6 +397,7 @@ void zeichneUhrzeit(ms_t jetzt) {
   snprintf(z, sizeof(z), "%02d:%02d", o.stunde, o.minute);
   bild.fillRect(UHRZEIT_X - 2, UHRZEIT_Y - 2, textBreite(z) + 3, 11, 1);
   schreibe(bild, UHRZEIT_X, UHRZEIT_Y, z, 0);
+  zimmerWetterZeichnen(jetzt, UHRZEIT_X + textBreite(z) + 4, STATUS_H + 1);
 }
 
 void zeichneReaktion() {

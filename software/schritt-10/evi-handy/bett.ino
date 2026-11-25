@@ -7,10 +7,9 @@
 // Ausgeschlafener wird sie dadurch nicht (so gewünscht). Ist das Bett im Inventar, schläft sie wie bisher auf dem Teppich.
 
 const int BETT_LIEGEN = 37;   // Zeile im Bettbild, auf der Evis Unterkante liegt (hinter dem vorderen Rand)
-const int BETT_RAND = 31;     // ab dieser Zeile ist der vordere Rand des Korbs, er liegt vor Evi
 
 bool bettDa() { return einrichtung.platz[Z_BETT].aufgestellt; }
-int bettMitteX() { return einrichtung.platz[Z_BETT].x + EVI_TIERBETT.w / 2; }
+int bettMitteX() { return einrichtung.platz[Z_BETT].x + ZG_TIERBETT.w / 2; }
 
 static void bettHeim() { geher.x = 0; geher.fuss = RAUM_HEIM_Y; geher.lift = 0; bettZustand.phase = BETT_NEIN; }
 static void bettHinlegen() {
@@ -60,18 +59,15 @@ bool bettLiegt() { return bettZustand.phase == BETT_LIEGT; }
 // Evi im Bett zeichnen (aus zeichneEvi): b ist ihr Schlafbild
 void bettEviZeichnen(const Bild& b, Phase ph, int atem) {
   const auto& p = einrichtung.platz[Z_BETT];
-  const int oben = p.fuss - EVI_TIERBETT.h;
+  const int oben = p.fuss - ZG_TIERBETT.h;
   raumImBett = true;
-  raumFigurZeichnen(b, ph, bettMitteX(), p.fuss, false, EVI_TIERBETT.h - BETT_LIEGEN + atem, false, false);
+  raumFigurZeichnen(b, ph, bettMitteX(), p.fuss, false, ZG_TIERBETT.h - BETT_LIEGEN + atem, false, false);
   raumImBett = false;
-  const int w = EVI_TIERBETT.w;
-  const uint8_t* g = zimmerGrauDaten(EVI_TIERBETT);   // Graustufen-Zeichnung des Korbs (zimmergrau.h)
-  for (int y = BETT_RAND; y < (int)EVI_TIERBETT.h; y++)
-    for (int x = 0; x < w; x++) {
-      const uint8_t st = grauStufe(g, w, x, y);
-      if (st == 15) continue;
-      const int px = p.x + x, py = oben + y;
-      if (raumVerdeckt(false, p.fuss, px, py)) continue;   // was vor dem Bett steht, bleibt davor
-      bild.drawPixel(px, py, grauWert(st));
+  const auto& rand = ZG_TIERBETT_VORDERRAND;
+  for (int y = 0; y < rand.h; y++)
+    for (int x = 0; x < rand.w; x++) {
+      const int px = p.x + x, py = oben + BETT_RAND + y;
+      if (rand.deckt(x, y) && !raumVerdeckt(false, p.fuss, px, py))
+        bild.drawPixel(px, py, rand.wert(x, y));
     }
 }

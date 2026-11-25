@@ -2,14 +2,16 @@
 
 Stand: 25. November 2026
 
+## Zimmer, Möbel und Wetter in Graustufen (25. November 2026)
+
+- Die Waveshare-Firmware zeichnet Wand, Fußleiste und Dielen in drei Tageszeitvarianten. Tierbett, Sideboard, Regal und Teppich bleiben im Einrichtungsmodus verschiebbar und verwenden ihre PNG-Deckkraft für die Verdeckung. Evi schläft hinter dem separaten vorderen Bettrand.
+- Das Fenster kombiniert die zugelieferten Ebenen für Himmel, Wolken, Himmelszeichen, Hügel, saisonale Bäume, Laub und Schnee. Regen und Schnee laufen in je 16 Phasen hinter dem Fensterrahmen. Neben der Uhr erscheinen die neuen Wettersymbole. Nachts verwendet der Ausblick die dunklen Graustufen-PNGs.
+- `software/schritt-10/tools/make-zimmer-grau.py` erzeugt `evi-handy/zimmergrau.h` aus 96 Zimmer-, Möbel- und Fenster-PNGs. Der Export enthält alle 16 Graustufen und speichert die Deckkraft getrennt. Die Pico-2-Übersetzung und die PC-Prüfungen für Einrichtung, Wetter und Kuscheln sind erfolgreich. Alle 411 gerenderten Fensteransichten stimmen pixelgenau mit den PNG-Ebenen überein. Der Test am physischen Board steht aus.
+
 ## Graustufen für Fundstücke und Weihnachtsschmuck (25. November 2026)
 
-- Neue Zeichnungen der Nutzerin unter `entwuerfe/zimmer/graustufen/spielgrafiken/` (111 Bilder) geprüft: alle nur 16 Grautöne, Alpha 0/255, keine Farben, Größen wie in `liste.txt`.
+- Spielgrafiken unter `entwuerfe/zimmer/graustufen/spielgrafiken/` geprüft. Die 109 PNGs verwenden 16 Grautöne und Alpha 0/255 in den Größen aus `liste.txt`.
 - Eingebaut (1:1, `tools/make-spiel-grau.py` → `evi-handy/spielgrau.h`, 25637 Byte): die 10 Fundstücke, großer Weihnachtsbaum, Kerzentablett, Fenstersterne. Größen stimmen mit den Schwarz-Weiß-Bildern überein, die weiter für Treffer/Verdeckung gelten. Wie bei Evi nur 15 Stufen (Weiß und Hellgrau zusammengelegt).
-- **Zimmer-Umbau (25.11.2026, zweiter Schritt):** Wand/Boden (Tag, Dämmerung, Nacht), Tierbett, Sideboard, Regal, Teppich, Fensterrahmen und alle Fensterebenen (Himmel, Himmelszeichen, Wolken, Hügel, Bäume je Jahreszeit und Tageszeit, Laub, Boden-/Astschnee, 16 Regen- und 16 Schneephasen, Herbstblatt) werden in Graustufen gezeichnet. Generator `tools/make-zimmer-grau.py` → `evi-handy/zimmergrau.h` (235 693 Byte). Die Ebenen werden in der Reihenfolge aus `liste.txt` gestapelt. Nachts, Regen und Schnee kommen direkt aus den Zeichnungen der Nutzerin, die frühere Umkehr-Logik (Baum abends weiß/nachts schwarz, Nachthimmel schwarz) entfällt. Himmelszeichen nur bei klarem/leicht bewölktem Wetter, in der Dämmerung keins.
-- **Fenster-Scheibe behoben:** Die Scheibe ist jetzt der durchsichtige Teil des neuen Rahmens (`ZIMMER_SCHEIBE`), der Ausblick sitzt bei (7, 7) im Rahmen (`ZF_X=78, ZF_Y=45`, vorher 79/46). Test prüft: keine Lücke und keine Überdeckung zwischen Glas und Rahmen.
-- **Treffer und Verdeckung** laufen weiter über die alten Masken (`EviGrafik.maske`, `Bild.maske`); die neuen Umrisse weichen nur um höchstens 1 Pixel am Rand ab.
-- PC-Prüfung (`pruefen.sh`) angepasst: Garten-Test entfällt (Garten pausiert), Fenster-/Nacht-Tests prüfen jetzt Graustufen-Regeln, 70 statt 82 Evi-Graustufen-Bilder. Alle Prüfprogramme ohne Fehler. Echte Pico-2-Übersetzung und Boardtest stehen aus (Programmgröße wächst um etwa 260 KB).
 
 ## Garten pausiert (25. November 2026)
 

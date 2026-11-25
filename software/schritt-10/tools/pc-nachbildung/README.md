@@ -6,6 +6,12 @@ In der Cloud gibt es keine Arduino IDE. Damit Änderungen an `evi-handy` trotzde
 bash software/schritt-10/tools/pc-nachbildung/pruefen.sh
 ```
 
+Für Zimmer, Fensterebenen, Wetter und Einrichten genügt der gezielte Lauf mit installiertem Pillow.
+
+```sh
+bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-zimmer --zimmer
+```
+
 - `arduino_zusammensetzen.py` setzt `evi-handy.ino` und die anderen `.ino`-Dateien so zusammen wie die Arduino IDE (Hauptdatei zuerst, dann alphabetisch, Funktionsankündigungen vor die erste Funktion).
 - `ersatz/`: sehr einfache Ersatz-Bibliotheken (Arduino, Wire, SPI, EEPROM, I2S, Adafruit GFX). Die Zeit läuft nur, wenn das Prüfprogramm sie weiterstellt. Die Schrift ist ein Ersatz aus DejaVu Sans Mono, nicht die echte 5×7-Schrift.
 - `bilder.cpp`: Spiele, alle Momente, Begrüßung; speichert Bildschirmbilder als PBM.
@@ -13,6 +19,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh
 - `tasten.cpp`: Tastenlogik (`tasten.h`) mit einem nachgebildeten MCP23017 (`ersatz/Wire.h`, mit Merken von Änderungen in INTF/INTCAP): kurzes Antippen, Festhalten mit Wiederholung, Flackern beim Loslassen, zwei Tasten zugleich.
 - `bewegung.cpp`: Lagesensor (nachgebildeter QMI8658 in `ersatz/Wire.h`, `simLage`): Gehen und Schütteln lösen nichts aus (Gassi seit 25.11.2026 entfernt), kippen, aufs Gesicht legen, „Wie war dein Tag?“, Kekse fangen, Schnick, Schnack, Schnuck.
 - `umgebung.cpp`: Jahreszeiten, Weihnachtszeit und Wetter; fotografiert das Zimmer in allen Kombinationen.
+- `einrichtung.cpp` prüft Möbelpositionen, den vorderen Bettrand und die bewegten Fensterebenen. `pruefe-zimmer-grau.py` vergleicht die Graustufenfotos aller 51 Fensterkombinationen und Animationsphasen mit den PNG-Ebenen.
 - `kuscheln.cpp`: Touch zum Kuscheln (nachgebildeter Touch-Chip CST328 in `ersatz/Wire.h`, `simFinger`), Kuschelwunsch, Menü ohne Uhr/Name/Hilfe, kleine Uhrzeit, trüber Regenhimmel.
 - Das Display ist mit nachgebildet (`ersatz/SPI.h`: Spalten, Zeilen, Schreiben). Nach jedem Bild wird verglichen, ob auf dem Display genau das Bild des Programms steht; so wird geprüft, dass `zeigen()` alles Geänderte schickt.
 

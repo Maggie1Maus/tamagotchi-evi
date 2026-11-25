@@ -2,7 +2,9 @@
 
 Diese Umsetzung betrifft ausschließlich die Waveshare-Firmware unter `software/schritt-10/`. Die Handy-App bleibt auf dem bisherigen Stand, wie am 24. November beschlossen.
 
-## Neues Zimmer und Fensterausblick
+## Zimmer und Fensterausblick
+
+Die aktuelle Firmware nutzt die [Graustufen-Spielgrafiken](software/schritt-10/README.md#zimmer-möbel-und-fensterausblick-in-graustufen-25-november-2026). Unten steht der ursprüngliche Einbau der V2-Grafiken.
 
 Die bestätigte V2-Vorschau ist jetzt eingebaut: Frontalansicht ohne Seitenwände, Tierbett, Sideboard, leeres Regal und Teppich. Evi verwendet weiterhin die bestehenden Originalzeichnungen aller Altersstufen und Posen.
 

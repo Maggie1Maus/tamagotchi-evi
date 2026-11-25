@@ -52,22 +52,20 @@ void niederschlagPruefen(Wetter wetter, int stunde) {
   }
   PRUEFE(t != 0, "Tag für Niederschlag gefunden");
   if (!t) return;
-  uint8_t vorher[40 * 240];
+  uint8_t vorher[BREITE * HOEHE];
   bild.fillScreen(1); fensterZeichnen(t);
-  memcpy(vorher, bild.bits(), sizeof(vorher));
-  simMillis += 180;
+  memcpy(vorher, bild.getBuffer(), sizeof(vorher));
+  simMillis += wetter == WT_SCHNEE ? 190 : 110;
   fensterZeichnen(t);
   int bewegt = 0, ausserhalb = 0;
-  const Bild& vorne = *FENSTER_JAHRESZEIT[jahreszeitBei(t)];
-  for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++) {
-    const int i = y * 40 + x / 8, bit = 0x80 >> (x % 8);
-    if (!((vorher[i] ^ bild.bits()[i]) & bit)) continue;
+  for (int y = 0; y < HOEHE; y++) for (int x = 0; x < BREITE; x++) {
+    const int i = y * BREITE + x;
+    if (vorher[i] == bild.getBuffer()[i]) continue;
     bewegt++;
-    if (x < GLAS_X || x >= GLAS_X + GLAS_B || y < GLAS_Y || y >= GLAS_Y + GLAS_H ||
-        bildDeckt(vorne, x - GLAS_X, y - GLAS_Y) || (x >= 61 && x < 65) || (y >= 81 && y < 85)) ausserhalb++;
+    if (!zimmerScheibe(x, y)) ausserhalb++;
   }
   PRUEFE(bewegt > 0, "Regen/Schnee bewegt sich am Tag und in der Nacht");
-  PRUEFE(ausserhalb == 0, "Niederschlag bleibt hinter Baum, Hügeln und Fensterkreuz");
+  PRUEFE(ausserhalb == 0, "Niederschlag bleibt innerhalb der vier Fensterscheiben");
   char name[50]; snprintf(name, sizeof(name), "animation-%s-%s", wetter == WT_REGEN ? "regen" : "schnee", stunde == 1 ? "nacht" : "tag");
   zimmerFoto(name, t);
 

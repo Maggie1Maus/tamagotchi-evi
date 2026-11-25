@@ -312,14 +312,14 @@ int main() {
   vorbereiten(regen);
   zeichneAlles(); foto("k-regen-uhr");
   bild.fillScreen(1); fensterZeichnen(regen);
-  int gepunktet = 0, weiss = 0;
-  for (int y = GLAS_Y + 40; y < GLAS_Y + 44; y++)
-    for (int x = GLAS_X + 2; x < GLAS_X + 26; x++) {
-      if (bildDeckt(*FENSTER_JAHRESZEIT[jahreszeitBei(regen)], x - GLAS_X, y - GLAS_Y)) continue;
-      const bool hell = bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8));
-      if (hell) weiss++; else gepunktet++;
-    }
-  PRUEFE(gepunktet > 10 && weiss > 10, "Regen am Tag: Himmel gepunktet wie in der Dämmerung");
+  auto himmelHelligkeit = []() {
+    int summe = 0;
+    for (int y = ZF_Y + 6; y < ZF_Y + 24; y++)
+      for (int x = ZF_X + 2; x < ZF_X + 28; x++)
+        summe += bild.stufe(x, y);
+    return summe;
+  };
+  const int regenHelligkeit = himmelHelligkeit();
   zeichneAlles();
   Ortszeit o = ortszeit(regen);
   char uhr[8]; snprintf(uhr, sizeof(uhr), "%02d:%02d", o.stunde, o.minute);
@@ -328,7 +328,7 @@ int main() {
   for (int y = UHRZEIT_Y; y < UHRZEIT_Y + 7; y++)
     for (int x = UHRZEIT_X; x < UHRZEIT_X + 30; x++) if (!(bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8)))) schwarz++;
   PRUEFE(schwarz > 20, "Uhrzeit steht oben an der Wand");
-  // Sonne: Himmel bleibt weiß
+  // Bei Sonne ist der obere Bereich derselben Scheibe heller.
   ms_t sonne = 0;
   for (int tag = 0; tag < 365 && !sonne; tag++) {
     const ms_t k = ausOrtszeit(2027, 3, 1, 11, 0) + (ms_t)tag * TAG;
@@ -337,13 +337,8 @@ int main() {
   vorbereiten(sonne);
   zeichneAlles();
   bild.fillScreen(1); fensterZeichnen(sonne);
-  gepunktet = 0;
-  for (int y = GLAS_Y + 40; y < GLAS_Y + 44; y++)
-    for (int x = GLAS_X + 2; x < GLAS_X + 26; x++) {
-      if (bildDeckt(*FENSTER_JAHRESZEIT[jahreszeitBei(sonne)], x - GLAS_X, y - GLAS_Y)) continue;
-      if (!(bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8)))) gepunktet++;
-    }
-  PRUEFE(gepunktet < 5, "Sonne: Himmel bleibt hell");
+  PRUEFE(regen > 0 && sonne > 0 && himmelHelligkeit() > regenHelligkeit + 500,
+         "Regenwetter hat einen dunkleren Graustufenhimmel als Sonne");
 
   printf("Display: %ld Bilder, %ld falsche Punkte\n", simBilder, simFalschePunkte);
   if (simFalschePunkte) { printf("FEHLER: Display weicht ab\n"); fehler++; }
