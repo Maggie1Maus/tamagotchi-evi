@@ -1,7 +1,8 @@
-// Eigene Ansicht für Fundstücke. Das Zimmer bleibt frei, die Kerzen stehen weiter obenauf.
+// Collection access follows the current sideboard placement and safe room paths.
+uint32_t sideboardSchrittMs=0;
 bool sideboardKannLaufen(ms_t jetzt) {
   const Phase ph = phaseBei(pet, jetzt);
-  return ph != EI && ph != TOT && !schlaeft(pet, jetzt) && !evi.schluepfen;
+  return einrichtung.platz[Z_SIDEBOARD].aufgestellt && ph != EI && ph != TOT && !schlaeft(pet, jetzt) && !evi.schluepfen;
 }
 
 void sideboardSofortZu() {
@@ -17,6 +18,7 @@ void sideboardOeffnen() {
   sideboard.auswahl = sammlung.anzahl ? sammlung.anzahl - 1 : 0;
   sideboard.phase = sideboardKannLaufen(jetztMs()) ? SB_HIN : SB_OFFEN;
   sideboard.seit = millis();
+  if(sideboard.phase==SB_HIN){const auto&p=einrichtung.platz[Z_SIDEBOARD];gangBeginnenTief(p.x+EVI_SIDEBOARD.w/2-BODEN_X,p.fuss+5);sideboardSchrittMs=millis();}
 }
 
 void sideboardSchliessen() {
@@ -24,6 +26,7 @@ void sideboardSchliessen() {
   sideboard.phase = SB_HEIM;
   sideboard.vonX = sideboard.x;
   sideboard.seit = millis();
+  gangBeginnen(0);sideboardSchrittMs=millis();
 }
 
 void sideboardTakt(ms_t jetzt) {
@@ -35,10 +38,10 @@ void sideboardTakt(ms_t jetzt) {
     return;
   }
   if (sideboard.phase == SB_HIN || sideboard.phase == SB_HEIM) {
-    const int ziel = sideboard.phase == SB_HIN ? 55 : BODEN_X;
-    const int fortschritt = (int)min(seit, (uint32_t)1000);
-    sideboard.x = sideboard.vonX + (ziel - sideboard.vonX) * fortschritt / 1000;
-    if (seit >= 1000) {
+    if(millis()-sideboardSchrittMs<20)return;
+    sideboardSchrittMs=millis();
+    const bool fertig=gangSchritt();sideboard.x=BODEN_X+geher.x;
+    if (fertig) {
       if (sideboard.phase == SB_HEIM) { sideboardSofortZu(); moment.ruheBisTakt = evi.takt + RUHE_TAKTE; }
       else { sideboard.phase = SB_OEFFNEN; sideboard.seit = millis(); }
     }
@@ -60,10 +63,7 @@ void sideboardEviZeichnen(Phase ph) {
   const bool hinten = sideboard.phase == SB_OEFFNEN;
   const Bild& b = *MOMENT_BILD[ph][hinten ? MB_FENSTER : MB_LAUFEN];
   const int lift = hinten ? 0 : ((millis() - sideboard.seit) / 100) % 2 * 2;
-  const int fort = max(0,min(1000,(BODEN_X-sideboard.x)*1000/(BODEN_X-55)));
-  // Erst vor dem Schrank entlang, dann seitlich bis zu dessen Vorderkante.
-  const int fuss=RAUM_HEIM_Y - fort*30/1000;
-  raumFigurZeichnen(b,ph,sideboard.x,fuss,sideboard.phase==SB_HEIM,lift,false,false);
+  raumFigurZeichnen(b,ph,BODEN_X+geher.x,geher.fuss,sideboard.phase==SB_HEIM,lift,false,false);
 }
 
 void sammlungZeichnen() {

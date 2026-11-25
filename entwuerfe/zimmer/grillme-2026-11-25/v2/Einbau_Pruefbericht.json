@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-25",
+  "target": "Waveshare RP2350 / Schritt 10",
+  "base_commit": "ea4101ddbb612a4c0d2c2ac308dc7304ad7876b5",
+  "pc_suite": {
+    "passed": true,
+    "programs": [
+      "bilder",
+      "ablauf",
+      "tasten",
+      "bewegung",
+      "umgebung",
+      "sideboard",
+      "kuscheln",
+      "garten",
+      "raumtiefe",
+      "schlaf",
+      "einrichtung"
+    ],
+    "errors": 0,
+    "warnings": 0
+  },
+  "independent_window_comparison": {
+    "passed": true,
+    "combinations": 51,
+    "pixel_exact": true,
+    "outside_glass_unchanged": true
+  },
+  "latest_room_persistence_recheck": {
+    "passed": true,
+    "separate_eeprom_area": true,
+    "padding_deterministic": true
+  },
+  "original_evi": "Existing firmware drawings and poses unchanged",
+  "handy_app_changed": false,
+  "pico2_hardware_compile": "not run: Arduino toolchain unavailable in this environment",
+  "physical_board_tested": false,
+  "screenshots": {
+    "v2-einrichten-auswahl.png": "589a4ef52756f990930e23869ffb239cc987ca270eccc2b28ee1e229d0f8aba7",
+    "v2-einrichten-verschieben.png": "295bc4c677839525391a980c3ab61b2d54eb6400d3dea6e68b70060ed279128b",
+    "v2-zimmer-sommer.png": "9b7397269a7f564eeb9c70a47955cf743c2577bcf8d076168b86762dc57faa24",
+    "v2-zimmer-weihnachten.png": "7742ec0c7abf8f512179d2fe66381b8ab9dfff7de730e3ed670ca40cd782d82f"
+  }
+}

@@ -19,9 +19,7 @@ bool raumVerdeckt(bool draussen, int fuss, int x, int y) {
     if (fuss < 163 && raumMaske(TIEFE_GARTEN_BAUM,x,y)) return true;
     if (fuss < 178 && raumMaske(TIEFE_GARTEN_BUSCH,x,y)) return true;
   } else {
-    if (fuss < 163 && raumMaske(TIEFE_SIDEBOARD,x,y)) return true;
-    if (fuss < 162 && raumMaske(weihnachtsZeit(jetztMs()) ? TIEFE_BAUM : TIEFE_TISCH,x,y)) return true;
-    if (fuss < 191 && raumMaske(TIEFE_NAPF,x,y)) return true;
+    return zimmerNeuVerdeckt(fuss,x,y);
   }
   return false;
 }
@@ -50,7 +48,7 @@ bool raumFigurTreffer(int x,int y) {
 }
 bool zimmerScheibe(int x,int y) {
   return x>=ZF_X && x<ZF_X+ZF_W && y>=ZF_Y && y<ZF_Y+ZF_H &&
-         !(x>=83 && x<86) && !(y>=76 && y<79);
+         zimmerBit(EVI_FENSTER_SCHEIBENMASKE.linien,ZF_W,x-ZF_X,y-ZF_Y);
 }
 // Fensterbesuch behält seine eigenen Koordinaten, wird aber auf die neue Scheibe abgebildet.
 void zimmerFensterPunkt(int x,int y,uint16_t farbe) {

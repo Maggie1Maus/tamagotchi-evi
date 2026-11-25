@@ -8,8 +8,18 @@ Stand: 25. November 2026
   - **Gassi gehen ganz entfernt** (Schritte, Mittraben, Belohnung, Funde beim Spaziergang, Schrittzeilen; auch die Schüttel-Erkennung). Ältere Spaziergang-Funde bleiben. Neue Funde nur aus dem Garten, dort sind alle Arten erreichbar. Spielstand unverändert.
   - **Dunkel wacht der Chip nur noch alle 120 ms auf** (zu jedem Spielschritt) statt alle 20 ms. Der Lagesensor misst dann einmal; Umdrehen weckt weiter (nach etwa 0,5 s).
   - **Dunkel ist Touch aus** (Touch-Chip im Reset). Wecken mit Tasten, Umdrehen oder Ereignissen. Ohne gefundene Tasten bleibt Touch an.
-- Alle zehn PC-Prüfprogramme ohne Fehler und Warnungen. **Am Board noch nicht ausprobiert, Strom noch nicht gemessen.** Einzelheiten in `software/schritt-10/README.md`.
+- Alle PC-Prüfprogramme ohne Fehler und Warnungen, auch nach dem Zusammenführen mit dem Einrichtungsmodus (elf Programme und der Fenstervergleich). **Am Board noch nicht ausprobiert, Strom noch nicht gemessen.** Einzelheiten in `software/schritt-10/README.md`.
 - Offen, falls es immer noch viel ist: Ein großer Teil des Stroms kommt vermutlich von Bauteilen des Boards, die das Programm nicht abschalten kann (`PWR`-LED, Spannungsregler, Lade-Chip, evtl. Verstärker). Der Schaltplan von Waveshare war aus der Cloud-Sitzung nicht abrufbar.
+
+## Grillme-Zimmer V2 und erster Einrichtungsmodus (25. November 2026)
+
+- Die Nutzerin hat die korrigierte Fenstervorschau mit vollständigem Bäumchen, Hügeln sowie großer Sonne und Wolke bestätigt und anschließend den Einbau sowie die Umsetzung weiterer klar beschlossener Grillme-Punkte und das Hochladen beauftragt. Nur Waveshare, entsprechend der geltenden Projektregel.
+- Das geprüfte V2-Grafikpaket ist jetzt eingebaut: 51 Kombinationen, drei Tageszeiten, Regen/Schnee in getrennten Ebenen, Schneefall nur im Winter, ausschließlich Schwarz-Weiß. Fensterrahmen und Kreuz liegen davor. Originalzeichnungen von Evi, bisherige Bedürfnisse und Jahreszeitenregeln bleiben erhalten. Weihnachtsbaum, Fenstersterne und Kerzentablett bleiben im bisherigen Zeitraum erhalten.
+- Neu im Menü: **Zimmer einrichten**. Tierbett, Sideboard, Regal und Teppich verschieben oder ins Inventar räumen; A bestätigt, B/START verwirft die Platzierungsvorschau, RESET verwirft und schaltet aus. Drei Tiefenzonen, geschützte vordere Spielfläche, Wandbelegung hinten und Verdeckung durch mittlere Möbel. Navigationsprüfung hält Fenster, Bett und Sideboard erreichbar. Evis Gänge folgen den aktuellen Möbelpositionen.
+- Kataloggrundlage für Breiten-/Höhenbelegung und Ablagekapazität: Sideboard zwei Plätze, Kerzentablett benötigt beide. Endgültiges Slotraster, weitere Gegenstände, Käufe und Möbelwirkungen bleiben offen. Vier-Pixel-Schritte sind eine konfigurierbare Prototypentscheidung, kein neuer endgültiger Rasterbeschluss.
+- Möbel/Inventar separat mit Version und Prüfsumme ab EEPROM 3328; vorhandene Spielstände und der Freundschafts-/Geburtstagsbereich ab 3584 bleiben erhalten. Weitere Entscheidungen zu öffentlichem Park, gekauftem Garten und romantischen Beziehungen sind dokumentiert, nicht mit erfundenen Preisen oder Regeln vorweggenommen.
+- Prüfung: alle elf PC-Prüfprogramme ohne Fehler und Warnungen; zusätzlich alle 51 Firmware-Fenster pixelgenau gegen das bestätigte Grafikpaket verglichen. Einrichtung, Inventar, Abbrechen, RESET, freie Wege und getrennte EEPROM-Bereiche geprüft. Bildschirmbilder und Einbau-Prüfbericht liegen im V2-Entwurfsordner.
+- Einzelheiten, Bedienung und Prüfung in [Einrichtung_und_Grillme.md](Einrichtung_und_Grillme.md). Echte Pico-2-Übersetzung und physischer Boardtest stehen aus; Arduino-Werkzeug hier nicht vorhanden.
 
 ## Schlafmodus eingebaut, Helligkeit 50 % (25. November 2026)
 

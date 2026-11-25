@@ -41,6 +41,7 @@ void bereit(ms_t jetzt, ms_t alter = 4 * TAG) {
   spiel = SpielZustand(); ritual.aktiv = false; menueOffen = false;
   bildschirmAn = true; himmel = himmelBei(jetzt);
 }
+bool warteAuf(SideboardPhase phase,uint32_t grenze=3500){for(uint32_t t=0;t<grenze&&sideboard.phase!=phase;t+=10)warten(10);return sideboard.phase==phase;}
 int main() {
   bildschirmStarten(); bild.cp437(true);
   const ms_t jetzt = ausOrtszeit(2026, 11, 24, 14, 0);
@@ -49,9 +50,9 @@ int main() {
   for (int i = 0; i < menueAnzahl; i++) if (menue[i].e == E_SIDEBOARD) imMenue = true;
   PRUEFE(imMenue, "Sideboard ist im Menü erreichbar");
   aktionAusfuehren(E_SIDEBOARD); warten(500);
-  PRUEFE(sideboard.phase == SB_HIN && sideboard.x > 55 && sideboard.x < 167, "Evi läuft zum Sideboard");
+  PRUEFE(sideboard.phase == SB_HIN && sideboard.x > 167 && sideboard.x <= 246, "Evi läuft zum Sideboard");
   zeichneAlles(); foto("sideboard-hinweg");
-  warten(600); PRUEFE(sideboard.phase == SB_OEFFNEN, "Evi steht kurz von hinten vor dem Sideboard");
+  PRUEFE(warteAuf(SB_OEFFNEN), "Evi steht kurz von hinten vor dem Sideboard");
   zeichneAlles(); foto("sideboard-rueckansicht");
   warten(700); PRUEFE(sideboard.phase == SB_OFFEN, "eigene Sammlungsansicht öffnet sich");
   zeichneAlles(); foto("sideboard-leer");
@@ -65,11 +66,11 @@ int main() {
   taste(RECHTS); PRUEFE(sideboard.auswahl == 0, "Touch-Notlösung (ohne Tasten): rechts blättert und läuft am Ende um");
   taste(LINKS); PRUEFE(sideboard.auswahl == 1, "Touch-Notlösung (ohne Tasten): links blättert zurück");
   knopf(K_B); PRUEFE(sideboard.phase == SB_HEIM, "B schließt die Sammlung");
-  warten(1200); PRUEFE(sideboard.phase == SB_ZU && geher.x == 0, "Evi kehrt ins Zimmer zurück");
+  PRUEFE(warteAuf(SB_ZU) && geher.x == 0, "Evi kehrt ins Zimmer zurück");
   zeichneAlles(); foto("sideboard-zurueck");
   // Alle vier Lebensphasen verwenden ihre vorhandenen Lauf- und Rückansichten.
   for (ms_t alter : {3 * STUNDE, 36 * STUNDE, 4 * TAG, 9 * TAG}) {
-    bereit(jetzt, alter); sideboardOeffnen(); warten(1100);
+    bereit(jetzt, alter); sideboardOeffnen(); warteAuf(SB_OEFFNEN);
     PRUEFE(sideboard.phase == SB_OEFFNEN, "Rückansicht in jeder Lebensphase");
     warten(700); knopf(K_RESET);
     PRUEFE(sideboard.phase == SB_ZU && !bildschirmAn, "RESET schließt Sideboard und schaltet aus");

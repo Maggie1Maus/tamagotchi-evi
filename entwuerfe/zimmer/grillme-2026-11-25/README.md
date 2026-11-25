@@ -61,3 +61,7 @@ Regen und Schneefall später dezent animieren. Keine Animation ist durch die sta
 - Fenstergrafik ohne Grauabstufungen erstellen. Bildauftrag dafür (mit allen Grillme-Beschlüssen, Abwandlung ohne Evi und Bausteinen für andere Fensterausblicke): [bildauftrag.md](bildauftrag.md).
 - Evi aus der bestehenden Grafik übernehmen und Konturen in tatsächlicher Spielgröße prüfen.
 - Möbel-Slots, Tiefenskalierung und Erreichbarkeit der Interaktionspunkte im Prototyp prüfen.
+
+## Eingebauter V2-Stand
+
+Die korrigierte Fenstervorschau und das ausgearbeitete Grafikpaket wurden bestätigt und in die Waveshare-Firmware integriert. Quellen, tatsächliche Spielgrafiken und Bildschirmbilder stehen unter [v2/](v2/README.md). Der neue Einrichtungsmodus und die noch offenen Grillme-Punkte sind in [Einrichtung_und_Grillme.md](../../../Einrichtung_und_Grillme.md) beschrieben.

@@ -353,3 +353,9 @@ Zimmer: kleiner Spaziergang mit Tiefe, zum Fenster seitlich um das Sideboard, an
 Generator `tools/make-zimmer-tiefe.py`; Details und Prüfplan in `Raumtiefe_und_Zimmer.md`. Neues Prüfprogramm `tools/pc-nachbildung/raumtiefe.cpp` zusätzlich zu den acht bestehenden Programmen. Am echten Board noch ausprobieren: Bildwirkung, flüssiges Laufen, Touch auf kleinen sichtbaren Figurteilen, Ton und Geschwindigkeit.
 
 Prüfung Raumtiefe: alle neun PC-Prüfprogramme ohne Fehler/Warnungen und echte Pico-2-Übersetzung erfolgreich. Programm 486360 Bytes (11 %), globale Variablen 33380 Bytes (6 %, ohne Stack/Heap). Spielstandformat unverändert. Am echten Board noch testen.
+
+## Neues Zimmer und Einrichten – 25. November 2026
+
+Die bestätigte V2-Grafikgrundlage mit vollständigen saisonalen Bäumen und 51 Fensterzuständen ist eingebaut. Menü → **Zimmer einrichten**: Startmöbel mit Steuerkreuz verschieben, A bestätigen, B/START abbrechen; rechts in der Auswahlliste legt ein Möbel ins Inventar. RESET verwirft eine offene Vorschau. Drei Tiefenzonen und freie Interaktionswege werden geprüft. Weihnachten bleibt erhalten. Möbel/Inventar werden separat ab EEPROM 3328 gespeichert.
+
+Siehe [Einrichtung_und_Grillme.md](../../Einrichtung_und_Grillme.md) für Bedienung, Grenzen und Datenformat. Der Grafik-Header lässt sich mit `python3 software/schritt-10/tools/make-zimmer-v2.py` reproduzieren. Die PC-Nachbildung enthält jetzt zusätzlich `einrichtung.cpp` und den unabhängigen Pixelvergleich aller 51 Fensterausblicke. Für diesen Stand stehen echte Pico-2-Übersetzung und physischer Boardtest noch aus.
