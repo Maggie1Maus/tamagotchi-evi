@@ -9,6 +9,7 @@ Stand: 25. November 2026
   - **Dunkel wacht der Chip nur noch alle 120 ms auf** (zu jedem Spielschritt) statt alle 20 ms. Der Lagesensor misst dann einmal; Umdrehen weckt weiter (nach etwa 0,5 s).
   - **Dunkel ist Touch aus** (Touch-Chip im Reset). Wecken mit Tasten, Umdrehen oder Ereignissen. Ohne gefundene Tasten bleibt Touch an.
 - Alle PC-Prüfprogramme ohne Fehler und Warnungen, auch nach dem Zusammenführen mit dem Einrichtungsmodus (elf Programme und der Fenstervergleich). **Am Board noch nicht ausprobiert, Strom noch nicht gemessen.** Einzelheiten in `software/schritt-10/README.md`.
+- **Am Board (25. November 2026, laut Nutzerin):** aufgespielt. `P` dunkel: `lcd=schlaeft touch=aus ton=aus takt=48MHz`, geschlafen 97 %. **Gemessen dunkel 43–50 mA** (gleiche Messweise, dieselben schon etwas verbrauchten Batterien). Also keine messbare Ersparnis gegenüber der ersten Fassung (30–47 mA). Der Chip schläft schon fast immer; der Rest kommt sehr wahrscheinlich von Bauteilen des Boards. Messwerte schwanken auch mit dem Ladezustand der Batterien (weniger Spannung, mehr Strom); künftig zusätzlich die Spannung der Batterien messen.
 - Offen, falls es immer noch viel ist: Ein großer Teil des Stroms kommt vermutlich von Bauteilen des Boards, die das Programm nicht abschalten kann (`PWR`-LED, Spannungsregler, Lade-Chip, evtl. Verstärker). Der Schaltplan von Waveshare war aus der Cloud-Sitzung nicht abrufbar.
 
 ## Grillme-Zimmer V2 und erster Einrichtungsmodus (25. November 2026)
