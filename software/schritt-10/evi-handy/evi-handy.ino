@@ -36,10 +36,7 @@
 #include "umgebung.h"
 #include "fundbilder.h"
 #include "extras.h"
-#include "garten.h"
-#include "gartenbilder.h"
 #include "grau.h"
-#include "gartenlandschaft.h"
 #include "zimmerlandschaft.h"
 #include "zimmergrafiken.h"
 #include "einrichtung.h"
@@ -69,7 +66,7 @@ bool bildschirmAn = true;
 // Typen stehen hier oben, weil die Arduino IDE Funktionsköpfe vor die erste Funktion setzt.
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
-                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD, E_GARTEN,
+                         E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD,
                          E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN };   // Zimmergestaltung
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
@@ -624,7 +621,6 @@ void menueBauen() {
     // Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft.
     punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
     punkt(E_EINRICHTEN, &SYM_M_HERZ, "Zimmer einrichten");
-    if (gartenMoeglich(jetzt)) punkt(E_GARTEN, &SYM_M_SONNE, "In den Garten");
   }
   gewaehlt = 0;
 }
@@ -700,7 +696,6 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
 
 void zeichneAlles() {
   if (zimmerEditor.offen) { zimmerEditorZeichnen(); return; }
-  if (garten.phase != GA_ZU) { gartenZeichnen(); zeigen(); return; }
   if (sideboard.phase == SB_OFFEN) { sammlungZeichnen(); zeigen(); return; }
   const ms_t jetzt = jetztMs();
   const Phase ph = phaseBei(pet, jetzt);
@@ -737,7 +732,7 @@ void zeichneAlles() {
   if (!spiel.aktiv) zeichneStatus(ph);            // im Spiel tritt die Leiste zur Seite
   zeichneZeile(ph, s, jetzt);
   if (menueOffen) zeichneMenue();
-  if (!spiel.aktiv && garten.phase == GA_ZU) freundZeichnen();   // Geburtstag einstellen (freunde.ino)
+  if (!spiel.aktiv) freundZeichnen();   // Geburtstag einstellen (freunde.ino)
   zeigen();
 }
 
@@ -774,7 +769,6 @@ void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
   if (e == E_EINRICHTEN) { zimmerEinrichten(); return; }
-  if (e == E_GARTEN) { gartenOeffnen(); return; }
   if (e == E_PLAUDERN) { freundPlaudern(); return; }
   if (e >= E_ANTWORT0 && e <= E_ANTWORT3) { freundAntwort(e - E_ANTWORT0); return; }
   if (e == E_SIDEBOARD) { sideboardOeffnen(); return; }
@@ -835,7 +829,6 @@ void aktionAusfuehren(Eintrag e) {
 // Die drei Tasten der App
 void taste(Taste k) {
   if(zimmerEditor.offen){zimmerEditorTaste(k);return;}
-  if (garten.phase != GA_ZU) { gartenTaste(k); return; }
   if (sideboard.phase != SB_ZU) { sideboardTaste(k); return; }
   const ms_t jetzt = jetztMs();
   if (geweckt(pet, jetzt)) wachHalten(pet, jetzt);   // touch() in app.js
@@ -862,7 +855,6 @@ void taste(Taste k) {
 // Momente enden. Wieder an geht er mit jeder Taste, jedem Tipper und bei wichtigen Ereignissen.
 void bildschirmAus() {
   zimmerEditor=ZimmerEditor();
-  if (garten.phase != GA_ZU) gartenSchliessen();
   if (sideboard.phase != SB_ZU) sideboardSofortZu();
   if (spiel.aktiv) spielEnde(true);
   if (ritual.aktiv) ritualBeenden();
@@ -880,9 +872,8 @@ void knopf(Knopf k) {
   if (zimmerEditor.offen) { zimmerEditorKnopf(k); return; }
   if (freundKnopf(k)) return;                       // Geburtstag einstellen (freunde.ino)
   // Offene Frage von Evi: A oder START zeigt die Antworten (freunde.ino)
-  if ((k == K_A || k == K_START) && !menueOffen && freundFrageOffen() && garten.phase == GA_ZU && sideboard.phase == SB_ZU &&
+  if ((k == K_A || k == K_START) && !menueOffen && freundFrageOffen() && sideboard.phase == SB_ZU &&
       !spiel.aktiv) { freundFrageMenue(); return; }
-  if (garten.phase != GA_ZU) { gartenKnopf(k); return; }
   if (sideboard.phase != SB_ZU) {
     if (k == K_B || k == K_A || k == K_START) sideboardSchliessen();
     else if (k == K_UP || k == K_L) sideboardBlaettern(-1);
@@ -1163,7 +1154,6 @@ void loop() {
   seriellPruefen();
   bewegungTakt();                 // Lagesensor: kippen, aufs Gesicht
   sideboardTakt(jetztMs());
-  gartenTakt(jetztMs());
 
   // Touch: Seit 24.11.2026 (Wunsch der Nutzerin) keine Tasten mehr, sondern Evi antippen oder streicheln = kuscheln.
   // Nur wenn die echten Tasten nicht gefunden werden, gelten als Notlösung die drei Drittel wie früher.
@@ -1201,9 +1191,9 @@ void loop() {
     eviTakt(jetzt);
     ritualWeiter();
     launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
-    if (!zimmerEditor.offen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
+    if (!zimmerEditor.offen && sideboard.phase == SB_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
     bettTakt(jetzt);                // schläft Evi, geht sie ins Tierbett (bett.ino)
-    if (!zimmerEditor.offen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
+    if (!zimmerEditor.offen && sideboard.phase == SB_ZU) momentTakt(jetzt);
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
     // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)
@@ -1218,7 +1208,7 @@ void loop() {
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
   } else if (bildschirmAn && ((spiel.aktiv && m - letztesBild >= 12) ||
              (!spiel.aktiv && sideboard.phase != SB_OFFEN && m - letztesBild >= 40 &&
-              (garten.phase != GA_ZU || sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
+              (sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
     // Spiele etwa 80-mal, Regen und Schnee etwa 25-mal pro Sekunde zeichnen.
     // Spielregeln und Evis Momente behalten ihren bisherigen Takt; gesendet werden nur Änderungen.
     zeichneAlles();

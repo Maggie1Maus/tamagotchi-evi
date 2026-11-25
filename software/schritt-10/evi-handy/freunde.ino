@@ -848,7 +848,7 @@ void freundTakt(ms_t jetzt) {
   }
   // Offene Frage: Zeit um, eingeschlafen oder krank → ohne Folgen vorbei
   if (gespraech.frage >= 0) {
-    if ((int32_t)(millis() - gespraech.bis) >= 0 || ruhend(s) || garten.phase != GA_ZU || sideboard.phase != SB_ZU) {
+    if ((int32_t)(millis() - gespraech.bis) >= 0 || ruhend(s) || sideboard.phase != SB_ZU) {
       const bool sagen_ = !ruhend(s) && bildschirmAn;
       frageSchliessen();
       if (sagen_) sage(fuenf(S_VERPASST), &SYM_W_HERZ, 3000);

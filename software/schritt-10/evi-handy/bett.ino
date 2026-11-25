@@ -22,7 +22,7 @@ static void bettHinlegen() {
 void bettTakt(ms_t jetzt) {
   const Phase ph = phaseBei(pet, jetzt);
   const bool imSchlaf = ph != EI && ph != TOT && !evi.schluepfen && beschreiben(pet, jetzt) == S_SCHLAEFT && bettDa();
-  const bool frei = !spiel.aktiv && sideboard.phase == SB_ZU && garten.phase == GA_ZU && !zimmerEditor.offen;
+  const bool frei = !spiel.aktiv && sideboard.phase == SB_ZU && !zimmerEditor.offen;
   switch (bettZustand.phase) {
     case BETT_NEIN:
       if (!imSchlaf || !frei) return;

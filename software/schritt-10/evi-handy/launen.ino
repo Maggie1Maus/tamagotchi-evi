@@ -198,7 +198,7 @@ void launenTakt(ms_t jetzt) {
   if (launenWunschOffen()) {
     // Schläft sie ein, wird krank, oder beschäftigst du dich mit ihr (Spiel, Garten, Sideboard),
     // endet der Wunsch ohne Folgen.
-    if (ruhend(beschreiben(pet, jetzt)) || spiel.aktiv || garten.phase != GA_ZU || sideboard.phase != SB_ZU) {
+    if (ruhend(beschreiben(pet, jetzt)) || spiel.aktiv || sideboard.phase != SB_ZU) {
       launen.art = LW_KEINER;
     } else if ((int32_t)(millis() - launen.bis) >= 0) {
       launenVerpasst(jetzt);

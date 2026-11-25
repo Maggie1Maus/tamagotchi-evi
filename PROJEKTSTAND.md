@@ -2,6 +2,11 @@
 
 Stand: 25. November 2026
 
+## Garten pausiert (25. November 2026)
+
+- Wunsch der Nutzerin: Der Garten wird erstmal nicht gebraucht. Menüpunkt „In den Garten“ und alle Garten-Abfragen sind aus der Waveshare-Firmware entfernt (`evi-handy.ino`, Kuscheln, Bett, Bewegung, Freunde, Launen). Der Garten-Code und die Garten-Bilder liegen unverändert in `software/schritt-10/evi-handy/pausiert-garten/` (wird von Arduino nicht mitübersetzt) und können später zurückgeholt werden. Alte Garten-Funde im Sideboard und der Spielstand bleiben unverändert. Handy-App nicht angefasst.
+- Noch nicht geprüft: echte Pico-2-Übersetzung (hier nicht möglich). Die Generatoren `make-garten*.py` schreiben noch nach `evi-handy/`; beim Zurückholen die Dateien wieder an den alten Ort schieben.
+
 ## Nachthimmel vollständig schwarz (25. November 2026)
 
 - Weiterer ausdrücklicher Wunsch der Nutzerin: Der Nachthimmel ist jetzt bei allen Wetterlagen eine geschlossene schwarze Fläche. Mond, Sterne und Niederschlag werden nachts weiß gezeichnet; Wolken erhalten helle Konturen. Der Baum bleibt schwarz mit weißem Rand. Die 17 Tages- und 17 Dämmerungsansichten bleiben pixelgleich zum vorigen Stand; Dämmerung weiterhin mit weißem Baum und ohne Mond.

@@ -6,6 +6,7 @@
 enum Fundart : uint8_t { FUND_STEIN, FUND_BLATT, FUND_FEDER, FUND_ZAPFEN,
                          FUND_MICKY, FUND_MUSCHEL, FUND_DRACHE, FUND_TRIFORCE, FUND_FOSSIL, FUND_JUNIMO, FUNDARTEN };
 enum Fundort : uint8_t { FUND_GASSI, FUND_GARTEN };
+const char* const GARTEN_STELLE[3] = {"Am Baum", "Beim Busch", "Am Blumenbeet"};   // alte Garten-Funde
 const uint8_t FUND_UNBEKANNT = 255;
 const uint16_t SAMMLUNG_MAX = 256;
 struct Fundstueck {
@@ -61,7 +62,7 @@ const char* fundErinnerung(const Fundstueck& f) {
 }
 
 // Funde vom Gassigehen gibt es seit 25.11.2026 nicht mehr (Gassi entfernt); ältere bleiben in der Sammlung
-// und zeigen weiter „Vom gemeinsamen Spaziergang mitgebracht.“. Neue Funde kommen aus dem Garten (garten.ino).
+// und zeigen weiter „Vom gemeinsamen Spaziergang mitgebracht.“. Der Garten ist pausiert (pausiert-garten/).
 
 enum SideboardPhase : uint8_t { SB_ZU, SB_HIN, SB_OEFFNEN, SB_OFFEN, SB_HEIM };
 struct SideboardZustand {

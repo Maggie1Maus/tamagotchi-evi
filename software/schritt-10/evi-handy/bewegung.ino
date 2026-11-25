@@ -84,7 +84,7 @@ void zeichneZeichen(int zeichen, int cx, int cy, int h, uint16_t vorne, uint16_t
 
 // ---------- Was Evi tut ----------
 bool eviKannReagieren(ms_t jetzt) {
-  if (sideboard.phase != SB_ZU || garten.phase != GA_ZU) return false;
+  if (sideboard.phase != SB_ZU) return false;
   return bildschirmAn && !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
          momenteFuer(phaseBei(pet, jetzt)) && !ruhend(beschreiben(pet, jetzt));
 }
