@@ -58,6 +58,6 @@ Regen und Schneefall später dezent animieren. Keine Animation ist durch die sta
 ## Noch auszuarbeiten
 
 - PNG-Dateien in diesen Entwurfsordner übernehmen.
-- Fenstergrafik ohne Grauabstufungen erstellen.
+- Fenstergrafik ohne Grauabstufungen erstellen. Bildauftrag dafür (mit allen Grillme-Beschlüssen, Abwandlung ohne Evi und Bausteinen für andere Fensterausblicke): [bildauftrag.md](bildauftrag.md).
 - Evi aus der bestehenden Grafik übernehmen und Konturen in tatsächlicher Spielgröße prüfen.
 - Möbel-Slots, Tiefenskalierung und Erreichbarkeit der Interaktionspunkte im Prototyp prüfen.
