@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-25",
+  "scope": "Fensterdarstellung Dämmerung / Nacht",
+  "base_commit": "b8d6f191e94fa94cd4bc22b7fe0b182021ef2bd0",
+  "checks": {
+    "compiler_warnings": 0,
+    "pc_programs_passed": [
+      "einrichtung",
+      "umgebung",
+      "raumtiefe"
+    ],
+    "window_combinations_pixel_exact": 51,
+    "original_day_combinations_unchanged": 17,
+    "twilight_white_tree_dark_border_seasons": 4,
+    "night_black_tree_white_border_seasons": 4,
+    "moon_only_at_night": true,
+    "legacy_twilight_moon_removed": true,
+    "generator_reproducible": true,
+    "merged_pc_suite_programs": 11
+  },
+  "hardware_compile_and_physical_test": "pending",
+  "preview": "board/fenster-tag-daemmerung-nacht.png",
+  "merged_upstream_commit": "0fb24aef5b03676b2014697533b9498602826e7b"
+}

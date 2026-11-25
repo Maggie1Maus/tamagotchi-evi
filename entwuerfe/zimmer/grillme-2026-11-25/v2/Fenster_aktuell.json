@@ -1,0 +1,262 @@
+{
+  "width": 66,
+  "height": 53,
+  "atlas": "Fenster_aktuell.png",
+  "states": [
+    {
+      "id": "fruehling-tag-klar",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "fruehling-daemmerung-klar",
+      "x": 66,
+      "y": 0
+    },
+    {
+      "id": "fruehling-nacht-klar",
+      "x": 132,
+      "y": 0
+    },
+    {
+      "id": "fruehling-tag-leicht-bewoelkt",
+      "x": 0,
+      "y": 53
+    },
+    {
+      "id": "fruehling-daemmerung-leicht-bewoelkt",
+      "x": 66,
+      "y": 53
+    },
+    {
+      "id": "fruehling-nacht-leicht-bewoelkt",
+      "x": 132,
+      "y": 53
+    },
+    {
+      "id": "fruehling-tag-regen",
+      "x": 0,
+      "y": 106
+    },
+    {
+      "id": "fruehling-daemmerung-regen",
+      "x": 66,
+      "y": 106
+    },
+    {
+      "id": "fruehling-nacht-regen",
+      "x": 132,
+      "y": 106
+    },
+    {
+      "id": "fruehling-tag-bedeckt",
+      "x": 0,
+      "y": 159
+    },
+    {
+      "id": "fruehling-daemmerung-bedeckt",
+      "x": 66,
+      "y": 159
+    },
+    {
+      "id": "fruehling-nacht-bedeckt",
+      "x": 132,
+      "y": 159
+    },
+    {
+      "id": "sommer-tag-klar",
+      "x": 0,
+      "y": 212
+    },
+    {
+      "id": "sommer-daemmerung-klar",
+      "x": 66,
+      "y": 212
+    },
+    {
+      "id": "sommer-nacht-klar",
+      "x": 132,
+      "y": 212
+    },
+    {
+      "id": "sommer-tag-leicht-bewoelkt",
+      "x": 0,
+      "y": 265
+    },
+    {
+      "id": "sommer-daemmerung-leicht-bewoelkt",
+      "x": 66,
+      "y": 265
+    },
+    {
+      "id": "sommer-nacht-leicht-bewoelkt",
+      "x": 132,
+      "y": 265
+    },
+    {
+      "id": "sommer-tag-regen",
+      "x": 0,
+      "y": 318
+    },
+    {
+      "id": "sommer-daemmerung-regen",
+      "x": 66,
+      "y": 318
+    },
+    {
+      "id": "sommer-nacht-regen",
+      "x": 132,
+      "y": 318
+    },
+    {
+      "id": "sommer-tag-bedeckt",
+      "x": 0,
+      "y": 371
+    },
+    {
+      "id": "sommer-daemmerung-bedeckt",
+      "x": 66,
+      "y": 371
+    },
+    {
+      "id": "sommer-nacht-bedeckt",
+      "x": 132,
+      "y": 371
+    },
+    {
+      "id": "herbst-tag-klar",
+      "x": 0,
+      "y": 424
+    },
+    {
+      "id": "herbst-daemmerung-klar",
+      "x": 66,
+      "y": 424
+    },
+    {
+      "id": "herbst-nacht-klar",
+      "x": 132,
+      "y": 424
+    },
+    {
+      "id": "herbst-tag-leicht-bewoelkt",
+      "x": 0,
+      "y": 477
+    },
+    {
+      "id": "herbst-daemmerung-leicht-bewoelkt",
+      "x": 66,
+      "y": 477
+    },
+    {
+      "id": "herbst-nacht-leicht-bewoelkt",
+      "x": 132,
+      "y": 477
+    },
+    {
+      "id": "herbst-tag-regen",
+      "x": 0,
+      "y": 530
+    },
+    {
+      "id": "herbst-daemmerung-regen",
+      "x": 66,
+      "y": 530
+    },
+    {
+      "id": "herbst-nacht-regen",
+      "x": 132,
+      "y": 530
+    },
+    {
+      "id": "herbst-tag-bedeckt",
+      "x": 0,
+      "y": 583
+    },
+    {
+      "id": "herbst-daemmerung-bedeckt",
+      "x": 66,
+      "y": 583
+    },
+    {
+      "id": "herbst-nacht-bedeckt",
+      "x": 132,
+      "y": 583
+    },
+    {
+      "id": "winter-tag-klar",
+      "x": 0,
+      "y": 636
+    },
+    {
+      "id": "winter-daemmerung-klar",
+      "x": 66,
+      "y": 636
+    },
+    {
+      "id": "winter-nacht-klar",
+      "x": 132,
+      "y": 636
+    },
+    {
+      "id": "winter-tag-leicht-bewoelkt",
+      "x": 0,
+      "y": 689
+    },
+    {
+      "id": "winter-daemmerung-leicht-bewoelkt",
+      "x": 66,
+      "y": 689
+    },
+    {
+      "id": "winter-nacht-leicht-bewoelkt",
+      "x": 132,
+      "y": 689
+    },
+    {
+      "id": "winter-tag-regen",
+      "x": 0,
+      "y": 742
+    },
+    {
+      "id": "winter-daemmerung-regen",
+      "x": 66,
+      "y": 742
+    },
+    {
+      "id": "winter-nacht-regen",
+      "x": 132,
+      "y": 742
+    },
+    {
+      "id": "winter-tag-bedeckt",
+      "x": 0,
+      "y": 795
+    },
+    {
+      "id": "winter-daemmerung-bedeckt",
+      "x": 66,
+      "y": 795
+    },
+    {
+      "id": "winter-nacht-bedeckt",
+      "x": 132,
+      "y": 795
+    },
+    {
+      "id": "winter-tag-schneefall",
+      "x": 0,
+      "y": 848
+    },
+    {
+      "id": "winter-daemmerung-schneefall",
+      "x": 66,
+      "y": 848
+    },
+    {
+      "id": "winter-nacht-schneefall",
+      "x": 132,
+      "y": 848
+    }
+  ]
+}

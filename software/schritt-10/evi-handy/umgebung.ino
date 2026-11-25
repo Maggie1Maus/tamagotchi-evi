@@ -83,10 +83,10 @@ void fensterZeichnen(ms_t jetzt) {
                                         {91, 29, 1, 3}, {90, 30, 3, 1}, {70, 53, 1, 1}, {89, 50, 1, 1}};
     for (auto& s : STERNE) bild.fillRect(s[0], s[1] + 23, s[2], s[3], 1);
   }
-  if (h != HIMMEL_TAG) {
+  if (h == HIMMEL_NACHT) {
     bild.fillCircle(78, 65, 10, 0);
     bild.fillCircle(78, 65, 8, 1);
-  } else if (w == WT_SONNE || w == WT_SONNE_WOLKEN) {
+  } else if (h == HIMMEL_TAG && (w == WT_SONNE || w == WT_SONNE_WOLKEN)) {
     const Bild& s = w == WT_SONNE ? WETTER_SONNE : WETTER_SONNE_WOLKE;
     zeichneBild(s, GLAS_X + (28 - s.w) / 2, GLAS_Y + 2);
   }

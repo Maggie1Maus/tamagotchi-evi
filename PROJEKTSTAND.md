@@ -2,6 +2,13 @@
 
 Stand: 25. November 2026
 
+## Fensterausblick: Dämmerung und Nacht konkretisiert (25. November 2026)
+
+- Ausdrücklicher Wunsch der Nutzerin: Dämmerung mit weißem Baum und dunkler Kontur, ohne Mond; nachts schwarzer Baum mit weißem Rand, Mond erst bei Nacht. Die vorhandene Baumform und die Tagdarstellung bleiben erhalten. Der ältere Fensterzeichner hatte den Mond auch bei Dämmerung eingeblendet; diese Bedingung ist ebenfalls korrigiert.
+- Die Kontrastvarianten werden aus den vorhandenen Masken vorberechnet und nicht bei jedem Bild neu gesucht. `make-zimmer-v2.py` erzeugt auch die aktuellen 51 Fensterreferenzen. Direkter Vergleich unter `entwuerfe/zimmer/grillme-2026-11-25/v2/board/fenster-tag-daemmerung-nacht.png`.
+- Geprüft: drei betroffene PC-Prüfprogramme ohne Fehler, Syntaxprüfung ohne Warnungen, alle 51 Fensterzustände pixelgenau gegen aktuelle PNG-Referenzen; die 17 Tagesansichten bleiben unverändert. Eigene Prüfungen sichern Baumfüllung/-rand aller vier Jahreszeiten sowie den fehlenden Dämmerungsmond auch im älteren Zeichner.
+- Nach dem Zusammenführen mit den parallelen Stromspar-/Gassi-Änderungen zusätzlich alle elf PC-Prüfprogramme und den 51-Fenster-Vergleich erneut erfolgreich ausgeführt, ohne Warnungen.
+
 ## Tieferer Schlaf, Touch im Dunkeln aus, Gassi entfernt (25. November 2026, zweite Fassung)
 
 - Nach der Messung (hell etwa 120 mA, dunkel 30–47 mA, schwankend) Wunsch der Nutzerin: Gassi gehen ganz entfernen, den Chip tiefer schlafen lassen, im Dunkeln Touch grundsätzlich aus. Umgesetzt, nur Waveshare:

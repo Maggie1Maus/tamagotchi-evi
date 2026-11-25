@@ -7,16 +7,20 @@ bool zimmerPunkt(const EviGrafik& a,int x,int y,bool vorher){
  if(x<0||y<0||x>=a.w||y>=a.h||(a.maske&&!zimmerBit(a.maske,a.w,x,y)))return vorher;
  return zimmerBit(a.linien,a.w,x,y);
 }
-// Exactly the 51 native combinations in the approved archive, clipped before the frame.
+// Original day artwork; white twilight tree, black night tree with white rim.
 void zimmerFensterNeu(Jahreszeit j,Himmel h,Wetter w,int phase){
  if(j!=JZ_WINTER&&w==WT_SCHNEE)w=WT_BEWOELKT;
  const int f=phase%16;
  const int lx=19+(int)lround(sin(f*2*M_PI/16)*2),ly=28+f*18/16;
- const EviGrafik& sky=*Z_HIMMEL[h][w],&zeichen=*Z_ZEICHEN[h][w],&wolken=*Z_WOLKEN[h][w],&baum=*Z_BAEUME[j];
+ const EviGrafik& sky=*Z_HIMMEL[h][w],&zeichen=*Z_ZEICHEN[h][w],&wolken=*Z_WOLKEN[h][w];
+ const EviGrafik& baum=*(h==HIMMEL_NACHT?Z_BAEUME_NACHT[j]:h==HIMMEL_DAEMMERUNG?Z_BAEUME_ABEND[j]:Z_BAEUME[j]);
  for(int y=0;y<53;y++)for(int x=0;x<66;x++){
   if(!zimmerBit(EVI_FENSTER_SCHEIBENMASKE.linien,66,x,y))continue;
   bool schwarz=zimmerPunkt(sky,x,y,false);
-  schwarz=zimmerPunkt(zeichen,x,y,schwarz);schwarz=zimmerPunkt(wolken,x,y,schwarz);
+  // No moon-like disc at twilight; keep its cloud when lightly overcast.
+  if(h!=HIMMEL_DAEMMERUNG)schwarz=zimmerPunkt(zeichen,x,y,schwarz);
+  schwarz=zimmerPunkt(wolken,x,y,schwarz);
+  if(h==HIMMEL_DAEMMERUNG&&w==WT_SONNE_WOLKEN)schwarz=zimmerPunkt(EVI_WETTER_WOLKE,x-4,y-18,schwarz);
   schwarz=zimmerPunkt(EVI_LANDSCHAFT_HUEGEL_BODEN,x,y,schwarz);schwarz=zimmerPunkt(baum,x,y,schwarz);
   if(j==JZ_HERBST){schwarz=zimmerPunkt(EVI_HERBSTLAUB_BODEN,x,y,schwarz);schwarz=zimmerPunkt(EVI_HERBSTBLATT,x-lx,y-ly,schwarz);}
   if(w==WT_REGEN)schwarz=zimmerPunkt(*Z_REGEN[f],x,y,schwarz);

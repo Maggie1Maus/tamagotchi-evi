@@ -42,8 +42,44 @@ void bereit(ms_t jetzt, ms_t alter = 4 * TAG) {
   bildschirmAn = true; himmel = himmelBei(jetzt);
   meldungBis=0;sagen.bis=0;
 }
+void fensterPalettenPruefen(){
+ uint8_t abend[9600];
+ for(int j=0;j<4;j++){
+  bild.fillScreen(1);zimmerFensterNeu((Jahreszeit)j,HIMMEL_DAEMMERUNG,WT_SONNE,0);memcpy(abend,bild.getBuffer(),sizeof(abend));
+  zimmerFensterNeu((Jahreszeit)j,HIMMEL_NACHT,WT_SONNE,0);
+  const EviGrafik& original=*Z_BAEUME[j];int koerper=0,rand=0;bool weiss=true,schwarz=true,hellerRand=true;
+  for(int y=1;y<45;y++)for(int x=1;x<65;x++){
+   if(!zimmerScheibe(79+x,46+y)||!zimmerBit(original.maske,66,x,y))continue;
+   const int i=(46+y)*40+(79+x)/8,b=128>>((79+x)%8);const bool vor=abend[i]&b,nach=bild.getBuffer()[i]&b;
+   if(zimmerBit(original.linien,66,x,y)){koerper++;weiss&=vor;schwarz&=!nach;}
+   bool aussen=false;for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)aussen|=!zimmerBit(original.maske,66,x+dx,y+dy);
+   if(aussen&&!zimmerBit(original.linien,66,x,y)){rand++;hellerRand&=nach&&!vor;}
+  }
+  PRUEFE(koerper>20&&weiss&&schwarz,"Baumkörper aller Jahreszeiten ist abends weiß und nachts schwarz");
+  PRUEFE(rand>10&&hellerRand,"Baumrand aller Jahreszeiten ist abends dunkel und nachts weiß");
+ }
+ bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,HIMMEL_DAEMMERUNG,WT_SONNE,0);bool leererHimmel=true;
+ for(int y=1;y<38;y++)for(int x=1;x<29;x++)if(zimmerScheibe(79+x,46+y)){
+  const bool hell=bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
+  leererHimmel&=hell!=zimmerBit(Z_HIMMEL[HIMMEL_DAEMMERUNG][WT_SONNE]->linien,66,x,y);
+ }
+ PRUEFE(leererHimmel,"Dämmerung zeigt keinen Mond oder mondähnlichen Himmelskörper");
+ bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,HIMMEL_NACHT,WT_SONNE,0);int mond=0;
+ for(int y=1;y<23;y++)for(int x=1;x<25;x++)if(zimmerScheibe(79+x,46+y)){
+  const bool hell=bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
+  if(hell==zimmerBit(Z_HIMMEL[HIMMEL_NACHT][WT_SONNE]->linien,66,x,y))mond++;
+ }
+ PRUEFE(mond>10,"Der Mond ist erst nachts im klaren Himmel sichtbar");
+ // The legacy renderer used h != DAY and accidentally drew a moon at twilight.
+ ms_t zeit=0;for(int tag=0;tag<50&&!zeit;tag++){const ms_t t=sonnenzeiten(ausOrtszeit(2027,1,7,12,0)+tag*TAG).untergang+MINUTE;if(himmelBei(t)==HIMMEL_DAEMMERUNG&&wetterBei(t)==WT_SONNE)zeit=t;}
+ bool keinMond=true;int himmelPunkte=0;
+ if(zeit){bild.fillScreen(1);fensterZeichnen(zeit);const Bild& baum=*FENSTER_JAHRESZEIT[jahreszeitBei(zeit)];for(int y=55;y<76;y++)for(int x=68;x<89;x++)if(!bildDeckt(baum,x-GLAS_X,y-GLAS_Y)){const bool hell=bild.getBuffer()[y*40+x/8]&(128>>(x%8));keinMond&=hell==bool((x+y)&1);himmelPunkte++;}}
+ PRUEFE(zeit&&himmelPunkte>10&&keinMond,"Auch der ältere Fensterzeichner blendet den Mond erst nachts ein");
+ for(int h=0;h<3;h++){bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,(Himmel)h,WT_SONNE,0);zimmerEbene(EVI_FENSTER_RAHMEN,71,38);char name[40];snprintf(name,sizeof(name),"v2-palette-%d",h);foto(name);}
+}
 int main(){
  bildschirmStarten();bild.cp437(true);bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);
+ fensterPalettenPruefen();
  PRUEFE(zimmerGueltig(einrichtung),"Starterzimmer mit freien Interaktionswegen gültig");
  PRUEFE(zimmerZone(151)==Z_HINTEN&&zimmerZone(164)==Z_MITTE&&zimmerZone(194)==Z_VORNE,"Drei unsichtbare Tiefenzonen");
  ZimmerInventar probe=einrichtung;probe.platz[Z_BETT].fuss=181;
