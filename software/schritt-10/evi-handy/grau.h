@@ -4,6 +4,7 @@
 // (Zimmer, Symbole, Funde …) werden wie bisher schwarz-weiß gezeichnet.
 #pragma once
 #include "evigrau.h"
+#include "spielgrau.h"
 
 // Graustufen-Daten zu einem Bild oder nullptr
 static const uint8_t* grauDaten(const Bild& b) {
@@ -12,6 +13,7 @@ static const uint8_t* grauDaten(const Bild& b) {
   if (&b == letzte) return letzteDaten;
   letzte = &b; letzteDaten = nullptr;
   for (int i = 0; i < GRAU_ANZAHL; i++) if (GRAU_TABELLE[i].alt == &b) { letzteDaten = GRAU_TABELLE[i].daten; break; }
+  if (!letzteDaten) for (int i = 0; i < SPIEL_GRAU_ANZAHL; i++) if (SPIEL_GRAU_TABELLE[i].alt == &b) { letzteDaten = SPIEL_GRAU_TABELLE[i].daten; break; }
   return letzteDaten;
 }
 

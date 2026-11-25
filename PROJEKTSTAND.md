@@ -2,6 +2,12 @@
 
 Stand: 25. November 2026
 
+## Graustufen für Fundstücke und Weihnachtsschmuck (25. November 2026)
+
+- Neue Zeichnungen der Nutzerin unter `entwuerfe/zimmer/graustufen/spielgrafiken/` (111 Bilder) geprüft: alle nur 16 Grautöne, Alpha 0/255, keine Farben, Größen wie in `liste.txt`.
+- Eingebaut (1:1, `tools/make-spiel-grau.py` → `evi-handy/spielgrau.h`, 25637 Byte): die 10 Fundstücke, großer Weihnachtsbaum, Kerzentablett, Fenstersterne. Größen stimmen mit den Schwarz-Weiß-Bildern überein, die weiter für Treffer/Verdeckung gelten. Wie bei Evi nur 15 Stufen (Weiß und Hellgrau zusammengelegt).
+- **Noch nicht eingebaut:** Zimmer (Wand/Boden), Möbel, Fensterebenen, Wetter. Sie laufen über die eigene Zimmer-Pipeline (`zimmergrafiken.h`, `einrichtung.ino`) und brauchen dort eine Graustufen-Erweiterung. Echte Pico-2-Übersetzung und Boardtest stehen aus.
+
 ## Garten pausiert (25. November 2026)
 
 - Wunsch der Nutzerin: Der Garten wird erstmal nicht gebraucht. Menüpunkt „In den Garten“ und alle Garten-Abfragen sind aus der Waveshare-Firmware entfernt (`evi-handy.ino`, Kuscheln, Bett, Bewegung, Freunde, Launen). Der Garten-Code und die Garten-Bilder liegen unverändert in `software/schritt-10/evi-handy/pausiert-garten/` (wird von Arduino nicht mitübersetzt) und können später zurückgeholt werden. Alte Garten-Funde im Sideboard und der Spielstand bleiben unverändert. Handy-App nicht angefasst.
