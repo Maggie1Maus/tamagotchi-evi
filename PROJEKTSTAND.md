@@ -2,6 +2,13 @@
 
 Stand: 25. November 2026
 
+## Batterien nach weniger als einem Tag leer (25. November 2026)
+
+- Laut Nutzerin ging der Bildschirm aus und flackerte danach an und aus: Die vier AAA waren leer, obwohl der Bildschirm seit dem Vorabend meist mit RESET ausgeschaltet war. Ob die Batterien neu waren, ist nicht bekannt.
+- Ursache laut Code: „Bildschirm aus“ schaltet nur die Hintergrundbeleuchtung ab. Der Chip läuft ohne Pause mit vollem Takt weiter und fragt ständig Touch, Lagesensor und Tasten ab. Bildschirmsteuerung, Touch-Chip, Verstärker und `PWR`-LED bleiben ebenfalls an. Grob geschätzt (nicht gemessen) braucht das Board so etwa 40–60 mA, mit Licht etwa 100–150 mA. Vier AAA reichen damit für ungefähr 10–15 Stunden, mit Licht für etwa 6–10 Stunden.
+- Für eine Woche mit 4 × AAA dürfte das Gerät im Mittel nur etwa 5 mA brauchen. Dafür müsste der Chip bei dunklem Bildschirm wirklich schlafen und durch Taste, Touch oder Uhr geweckt werden. **Noch nicht eingebaut, Entscheidung der Nutzerin offen.** Vorher den echten Strom mit dem Multimeter messen: mA-Bereich, in Reihe zwischen Batteriefach und Pololu, einmal mit Licht und einmal ohne.
+- Flackern bei leeren Batterien: Das Board startet, die Spannung bricht ein, es startet neu. Sofort eine AAA herausnehmen, sonst kann der Spielstand beim Speichern beschädigt werden (nur eine Kopie mit Prüfsumme).
+
 ## Beschlossen: Freundschaft, Fragen und Plaudern (Fragerunde vom 25. November 2026)
 
 Ergebnis einer Fragerunde mit der Nutzerin (nur Waveshare). Sie wünscht sich mehr als Pflege: Fortschritt (A), Gestalten (B), Sammeln (D), Gespräche (E). Grundgerüst ist eine **verborgene Freundschaft**, die nach und nach Dinge freischaltet. Die Texte schreibt Claude direkt; die Nutzerin will sie vorher **nicht** lesen (Überraschung).
