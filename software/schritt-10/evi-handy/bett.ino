@@ -67,7 +67,9 @@ void bettEviZeichnen(const Bild& b, Phase ph, int atem) {
   for (int y = 0; y < rand.h; y++)
     for (int x = 0; x < rand.w; x++) {
       const int px = p.x + x, py = oben + BETT_RAND + y;
-      if (rand.deckt(x, y) && !raumVerdeckt(false, p.fuss, px, py))
-        bild.drawPixel(px, py, rand.wert(x, y));
+      if (rand.deckt(x, y) && !raumVerdeckt(false, p.fuss, px, py)) {
+        const uint8_t wert = rand.wert(x, y);
+        bild.drawPixel(px, py, pet.lichtAus ? zimmerDunkelwert(wert) : wert);
+      }
     }
 }

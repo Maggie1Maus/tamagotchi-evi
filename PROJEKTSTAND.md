@@ -4,9 +4,9 @@ Stand: 25. November 2026
 
 ## Zimmer, Möbel und Wetter in Graustufen (25. November 2026)
 
-- Die Waveshare-Firmware zeichnet Wand, Fußleiste und Dielen in drei Tageszeitvarianten. Tierbett, Sideboard, Regal und Teppich bleiben im Einrichtungsmodus verschiebbar und verwenden ihre PNG-Deckkraft für die Verdeckung. Evi schläft hinter dem separaten vorderen Bettrand.
-- Das Fenster kombiniert die zugelieferten Ebenen für Himmel, Wolken, Himmelszeichen, Hügel, saisonale Bäume, Laub und Schnee. Regen und Schnee laufen in je 16 Phasen hinter dem Fensterrahmen. Neben der Uhr erscheinen die neuen Wettersymbole. Nachts verwendet der Ausblick die dunklen Graustufen-PNGs.
-- `software/schritt-10/tools/make-zimmer-grau.py` erzeugt `evi-handy/zimmergrau.h` aus 96 Zimmer-, Möbel- und Fenster-PNGs. Der Export enthält alle 16 Graustufen und speichert die Deckkraft getrennt. Die Pico-2-Übersetzung und die PC-Prüfungen für Einrichtung, Wetter und Kuscheln sind erfolgreich. Alle 411 gerenderten Fensteransichten stimmen pixelgenau mit den PNG-Ebenen überein. Der Test am physischen Board steht aus.
+- Nach dem Test der Nutzerin am Waveshare wurden Wand, Fußleiste und Dielen aufgehellt. Das Zimmer bleibt bei eingeschaltetem Licht den ganzen Tag gleich hell. „Licht aus“ dimmt den Innenraum einschließlich Möbeln und vorderem Bettrand. Die Uhr bleibt lesbar.
+- Im Fenster wechseln Tageszeit und Wetter. Der Winterbaum hat kahle Äste, die bei Schneefall etwas Schnee tragen. Regen und Schnee laufen in je 16 Phasen hinter dem Rahmen. Die Wetteranzeige neben der Uhr wurde entfernt.
+- Tierbett, Sideboard, Regal und Teppich sind im Einrichtungsmodus verschiebbar. Ihre PNG-Deckkraft steuert die Verdeckung. `software/schritt-10/tools/make-zimmer-grau.py` erzeugt `evi-handy/zimmergrau.h` aus 89 Zimmer-, Möbel- und Fenster-PNGs und speichert die 16 Graustufen und die Deckkraft getrennt.
 
 ## Graustufen für Fundstücke und Weihnachtsschmuck (25. November 2026)
 

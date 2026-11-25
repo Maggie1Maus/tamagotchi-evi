@@ -91,9 +91,61 @@ void fensterPruefen() {
   PRUEFE(animationPasst, "Regen, Schnee und Herbstblatt bewegen nur die Fensterscheiben");
 }
 
+void zimmerLichtPruefen() {
+  const ms_t mittag = ausOrtszeit(2027, 7, 12, 12, 0);
+  const ms_t zeiten[] = {mittag, sonnenzeiten(mittag).untergang + MINUTE,
+                         ausOrtszeit(2027, 7, 12, 1, 0)};
+  const char* fotos[][2] = {{"licht-tag-an", "licht-tag-aus"},
+                            {"licht-abend-an", "licht-abend-aus"},
+                            {"licht-nacht-an", "licht-nacht-aus"}};
+  static uint8_t tag[BREITE * HOEHE], hell[BREITE * HOEHE];
+  bool innenGleich = true, aussenWechselt = false, schalterPasst = true;
+  for (int i = 0; i < 3; i++) {
+    bereit(zeiten[i]);
+    schalterPasst &= himmelBei(zeiten[i]) == (Himmel)i;
+    pet.lichtAus = false;
+    zimmerNeuZeichnen(zeiten[i]);
+    memcpy(hell, bild.getBuffer(), sizeof(hell));
+    if (i == 0) memcpy(tag, hell, sizeof(tag));
+    for (int y = STATUS_H; y < ZEILE_Y; y++) for (int x = 0; x < BREITE; x++) {
+      const int p = y * BREITE + x;
+      if (zimmerScheibe(x, y)) aussenWechselt |= tag[p] != hell[p];
+      else innenGleich &= tag[p] == hell[p];
+    }
+    pet.lichtAus = true;
+    zimmerNeuZeichnen(zeiten[i]);
+    bool aussenGleich = true, innenDunkler = true;
+    for (int y = STATUS_H; y < ZEILE_Y; y++) for (int x = 0; x < BREITE; x++) {
+      const int p = y * BREITE + x;
+      const uint8_t dunkel = bild.getBuffer()[p];
+      if (zimmerScheibe(x, y)) aussenGleich &= dunkel == hell[p];
+      else innenDunkler &= hell[p] <= 17 ? dunkel == hell[p] : dunkel < hell[p];
+    }
+    schalterPasst &= aussenGleich && innenDunkler;
+    pet.lichtAus = false;
+    zeichneAlles();
+    fotoGrau(fotos[i][0], 0, 0, BREITE, HOEHE);
+    pet.lichtAus = true;
+    zeichneAlles();
+    fotoGrau(fotos[i][1], 0, 0, BREITE, HOEHE);
+  }
+  PRUEFE(innenGleich && aussenWechselt, "Bei Licht an bleibt das Zimmer tagsüber, abends und nachts gleich hell");
+  PRUEFE(schalterPasst, "Licht aus dunkelt das Zimmer ab und lässt die Fensterscheiben hell wie zuvor");
+
+  bild.fillScreen(204);
+  zeichneUhrzeit(mittag);
+  bool nebenDerUhrFrei = true;
+  for (int y = STATUS_H + 1; y < STATUS_H + 27; y++)
+    for (int x = UHRZEIT_X + textBreite("12:00") + 4; x < UHRZEIT_X + textBreite("12:00") + 33; x++)
+      nebenDerUhrFrei &= bild.getBuffer()[y * BREITE + x] == 204;
+  PRUEFE(nebenDerUhrFrei, "Neben der Uhr wird kein Wettersymbol gezeichnet");
+}
+
 int main(){
  bildschirmStarten();bild.cp437(true);bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);
  fensterPruefen();
+ zimmerLichtPruefen();
+ bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);
  PRUEFE(zimmerGueltig(einrichtung),"Starterzimmer mit freien Interaktionswegen gültig");
  PRUEFE(zimmerZone(151)==Z_HINTEN&&zimmerZone(164)==Z_MITTE&&zimmerZone(194)==Z_VORNE,"Drei unsichtbare Tiefenzonen");
  ZimmerInventar probe=einrichtung;probe.platz[Z_BETT].fuss=181;
@@ -148,8 +200,10 @@ int main(){
  for (int y = 0; y < rand.h; y++) for (int x = 0; x < rand.w; x++) {
    if (!rand.deckt(x, y)) continue;
    const int px = bp.x + x, py = bp.fuss - rand.h + y;
-   if (!raumVerdeckt(false, bp.fuss, px, py))
-     randDavor &= bild.getBuffer()[py * BREITE + px] == rand.wert(x, y);
+   if (!raumVerdeckt(false, bp.fuss, px, py)) {
+     const uint8_t wert = pet.lichtAus ? zimmerDunkelwert(rand.wert(x, y)) : rand.wert(x, y);
+     randDavor &= bild.getBuffer()[py * BREITE + px] == wert;
+   }
  }
  PRUEFE(randDavor,"vorderer Rand des Korbs liegt vor Evi");
  pet.wachBis=jetztMs()+30*MINUTE;   // aufgeweckt

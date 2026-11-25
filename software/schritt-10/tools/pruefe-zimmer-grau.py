@@ -41,7 +41,7 @@ def pruefen(fotos):
                     if saison == "winter":
                         voreinander.append("schnee-boden")
                     voreinander.append(f"baum-{saison}" + ("", "-hell", "-dunkel")[h])
-                    if saison == "winter":
+                    if wetter == "schneefall":
                         voreinander.append("schnee-aeste")
                     if saison == "herbst":
                         voreinander.append("laub-herbst")

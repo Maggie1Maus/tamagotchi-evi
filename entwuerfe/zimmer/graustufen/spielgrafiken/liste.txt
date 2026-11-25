@@ -54,12 +54,12 @@ fenster/baum-sommer-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Som
 fenster/baum-herbst.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Herbst · Tag.
 fenster/baum-herbst-hell.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Herbst · Dämmerung.
 fenster/baum-herbst-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Herbst · Nacht.
-fenster/baum-winter.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Winter · Tag.
-fenster/baum-winter-hell.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Winter · Dämmerung.
-fenster/baum-winter-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Winter · Nacht.
+fenster/baum-winter.png | 66 × 53 | Kahler Winterbaum mit feinen Ästen · Tag.
+fenster/baum-winter-hell.png | 66 × 53 | Kahler Winterbaum mit feinen Ästen · Dämmerung.
+fenster/baum-winter-dunkel.png | 66 × 53 | Kahler Winterbaum mit feinen Ästen · Nacht.
 fenster/laub-herbst.png | 66 × 53 | Verstreute Herbstblätter auf dem Boden.
 fenster/schnee-boden.png | 66 × 53 | Schneedecke hinter dem Baum.
-fenster/schnee-aeste.png | 66 × 53 | Kleine Schneekissen auf winterlichem Geäst.
+fenster/schnee-aeste.png | 66 × 53 | Dünne Schneesäume auf kahlen Ästen bei Schneefall.
 fenster/regen-0.png | 66 × 53 | Regen · Animationsphase 1/16.
 fenster/regen-1.png | 66 × 53 | Regen · Animationsphase 2/16.
 fenster/regen-2.png | 66 × 53 | Regen · Animationsphase 3/16.
@@ -120,6 +120,6 @@ Himmel, Himmelszeichen und Wolken sind jahreszeitenübergreifend verwendbar.
 Himmelszeichen bei klarem oder leicht bewölktem Wetter einblenden.
 Dämmerung: Baum mit Endung -hell. Nacht: Baum mit Endung -dunkel.
 Bei Regen und Schnee die Phasen 0 bis 15 der Reihe nach abspielen und wiederholen.
-Bodenschnee und Astschnee sind Winterebenen. Schneefall ist auf Winter beschränkt.
+Bodenschnee gehört zum Winter. Astschnee wird bei Schneefall eingeblendet.
 Den vorderen Tierbettrand bei (0, 31) relativ zum Tierbett positionieren.
 Graupalette: 0, 17, 34, …, 255. Alpha: 0 oder 255.

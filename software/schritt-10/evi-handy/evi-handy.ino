@@ -397,7 +397,6 @@ void zeichneUhrzeit(ms_t jetzt) {
   snprintf(z, sizeof(z), "%02d:%02d", o.stunde, o.minute);
   bild.fillRect(UHRZEIT_X - 2, UHRZEIT_Y - 2, textBreite(z) + 3, 11, 1);
   schreibe(bild, UHRZEIT_X, UHRZEIT_Y, z, 0);
-  zimmerWetterZeichnen(jetzt, UHRZEIT_X + textBreite(z) + 4, STATUS_H + 1);
 }
 
 void zeichneReaktion() {
@@ -708,13 +707,6 @@ void zeichneAlles() {
     momentZeichnenHinten();                        // Vogel und Sternschnuppe im Fenster
   }
   bild.fillRect(0, 224, BREITE, HOEHE - 224, 1);
-  // Licht aus: das Zimmer wird zu 50 % gepunktet (Schachbrett aus schwarzen Punkten), Evi bleibt hell
-  if (!spiel.aktiv && s == S_SCHLAEFT && pet.lichtAus) {
-    uint8_t* puffer = bild.getBuffer();
-    for (int y = 0; y < 224; y++)
-      for (int x = (y % 2); x < BREITE; x += 2) puffer[y * BREITE + x] = 0;
-    bild.markieren();
-  }
   if (!spiel.aktiv) zeichneUhrzeit(jetzt);         // nach dem Abdunkeln: bleibt hell
   zeichneEvi(jetzt, s, ph);
   zeichneReaktion();

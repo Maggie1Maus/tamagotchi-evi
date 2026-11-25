@@ -14,7 +14,7 @@ void zimmerFensterNeu(Jahreszeit j, Himmel h, Wetter w, int phase) {
  zimmerEbene(ZG_HUEGEL, ZF_X, ZF_Y);
  if (j == JZ_WINTER) zimmerEbene(ZG_SCHNEE_BODEN, ZF_X, ZF_Y);
  zimmerEbene(*ZG_BAEUME[h][j], ZF_X, ZF_Y);
- if (j == JZ_WINTER) zimmerEbene(ZG_SCHNEE_AESTE, ZF_X, ZF_Y);
+ if (w == WT_SCHNEE) zimmerEbene(ZG_SCHNEE_AESTE, ZF_X, ZF_Y);
  if (j == JZ_HERBST) {
   zimmerEbene(ZG_LAUB_HERBST, ZF_X, ZF_Y);
   const int lx = 19 + (int)lround(sin(f * 2 * M_PI / 16) * 2);
@@ -31,23 +31,15 @@ void fensterZeichnen(ms_t jetzt) {
  zimmerFensterNeu(jahreszeitBei(jetzt), himmelBei(jetzt), w, (millis() / dauer) % 16);
 }
 
-void zimmerWetterZeichnen(ms_t jetzt, int x, int y) {
- static const ZimmerBild* const symbole[] = {
-  &ZG_WETTER_SONNE, &ZG_WETTER_SONNE_WOLKE, &ZG_WETTER_REGENWOLKE, &ZG_WETTER_WOLKE, &ZG_WETTER_WOLKE
- };
- const Wetter w = wetterBei(jetzt);
- const Himmel h = himmelBei(jetzt);
- const bool sichtbarerHimmel = w == WT_SONNE || w == WT_SONNE_WOLKEN;
- const ZimmerBild& symbol = sichtbarerHimmel && h == HIMMEL_NACHT ? ZG_MOND : *symbole[w];
- constexpr int breite = 29, hoehe = 26;
- bild.fillRect(x, y, breite, hoehe, 1);
- const int symbolY = w == WT_SCHNEE ? y + 1 : y + (hoehe - symbol.h) / 2;
- zimmerEbene(symbol, x + (breite - symbol.w) / 2, symbolY);
- if (w == WT_SCHNEE) {
-  bild.drawPixel(x + 8, y + 21, 102);
-  bild.drawPixel(x + 15, y + 23, 68);
-  bild.drawPixel(x + 21, y + 20, 102);
+// Die Zimmerlampe ändert die Innenbeleuchtung. Der Ausblick behält seine eigenen Helligkeiten.
+static void zimmerAbdunkeln() {
+ uint8_t* puffer = bild.getBuffer();
+ for (int y = STATUS_H; y < ZEILE_Y; y++) {
+  uint8_t* zeile = puffer + y * BREITE;
+  for (int x = 0; x < BREITE; x++)
+   if (!zimmerScheibe(x, y)) zeile[x] = zimmerDunkelwert(zeile[x]);
  }
+ bild.markieren();
 }
 // Weihnachtsbaum: steht rechts auf dem Boden (Fuß bei y = 173) und reicht bis unter die Balkenleiste oben
 // (Wunsch der Nutzerin vom 25.11.2026: „viel größer, bis zum oberen Rand“; vorher 100 Punkte hoch).
@@ -55,7 +47,7 @@ const int XBAUM_FUSS = 173, XBAUM_H = XBAUM_FUSS - 28, XBAUM_W = WEIHNACHTSBAUM.
 const int XBAUM_X = 317 - XBAUM_W, XBAUM_Y = XBAUM_FUSS - XBAUM_H;
 void zimmerMoebelZeichnen(int id){const auto&p=einrichtung.platz[id];if(p.aufgestellt)zimmerEbene(*Z_MOEBEL[id].grafik,p.x,p.fuss-Z_MOEBEL[id].grafik->h);}
 void zimmerNeuZeichnen(ms_t jetzt){
- bild.fillScreen(1);zimmerEbene(*ZG_RAUM[himmelBei(jetzt)],0,STATUS_H);
+ bild.fillScreen(1);zimmerEbene(ZG_WAND_BODEN,0,STATUS_H);
  fensterZeichnen(jetzt);
  zimmerMoebelZeichnen(Z_TEPPICH);
  const bool festlich=weihnachtsZeit(jetzt);
@@ -73,6 +65,7 @@ void zimmerNeuZeichnen(ms_t jetzt){
   const int sw=95,sh=FENSTERSTERNE.h*sw/FENSTERSTERNE.w;
   raumRasterZeichnen(FENSTERSTERNE,64,29,sw,sh,false,false,false,0);
  }
+ if (pet.lichtAus) zimmerAbdunkeln();
 }
 bool zimmerNeuVerdeckt(int fuss,int x,int y){
  for(int i=0;i<Z_MOEBEL_ANZAHL;i++){const auto&a=Z_MOEBEL[i];const auto&p=einrichtung.platz[i];if(!p.aufgestellt||a.wand||a.bodenfrei||fuss>=p.fuss)continue;

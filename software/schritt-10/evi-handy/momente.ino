@@ -725,7 +725,7 @@ bool himmelPunkt(int x, int y) {
   return bild.stufe(x, y) < 4;   // dunkel
 }
 
-// Was im Fenster passiert (vor dem Abdunkeln bei Licht aus): Vogel und Sternschnuppe.
+// Was im Fenster passiert: Vogel und Sternschnuppe.
 // Das Fenster der App liegt 23 Punkte tiefer (translate(0 23)).
 void momentZeichnenHinten() {
   if (vogel.sichtbar) {

@@ -21,6 +21,8 @@ constexpr int ZF_X = ZIMMER_RAHMEN_X + ZIMMER_GLAS_DX, ZF_Y = ZIMMER_RAHMEN_Y + 
 constexpr int ZF_W = ZG_HUEGEL.w, ZF_H = ZG_HUEGEL.h;
 constexpr int BETT_RAND = ZG_TIERBETT.h - ZG_TIERBETT_VORDERRAND.h;
 
+inline uint8_t zimmerDunkelwert(uint8_t wert) { return (((wert >> 4) + 1) / 2) * 17; }
+
 struct ZimmerStellung { int16_t x, fuss; uint8_t aufgestellt; };
 struct ZimmerInventar { ZimmerStellung platz[Z_MOEBEL_ANZAHL]; };
 struct ZimmerMoebelArt { const char* name; const ZimmerBild* grafik; uint8_t breiteSlots,hoeheSlots,ablagen,tiefe; bool wand,bodenfrei; };

@@ -70,8 +70,7 @@ def erzeugen():
         ausgabe.append("")
         return name
 
-    raum = [export("zimmer/wand-boden" + ende, (320, 174))
-            for ende in ("", "-daemmerung", "-nacht")]
+    export("zimmer/wand-boden", (320, 174))
     for name, groesse in (
         ("tierbett", (81, 45)), ("tierbett-vorderrand", (81, 14)), ("sideboard", (102, 51)),
         ("regal", (93, 20)), ("teppich", (130, 36)), ("fensterrahmen", (81, 69)),
@@ -89,11 +88,7 @@ def erzeugen():
         export("fenster/" + name, GLAS)
     regen = [export(f"fenster/regen-{i}", GLAS) for i in range(16)]
     schnee = [export(f"fenster/schnee-{i}", GLAS) for i in range(16)]
-    for name, groesse in (
-        ("herbstblatt", (5, 6)), ("wetter-sonne", (22, 22)), ("wetter-sonne-wolke", (26, 24)),
-        ("wetter-wolke", (27, 21)), ("wetter-regenwolke", (27, 17)), ("mond", (16, 17)),
-    ):
-        export("fenster/" + name, groesse)
+    export("fenster/herbstblatt", (5, 6))
 
     if bilder["ZG_TIERBETT"][31 * 81:] != bilder["ZG_TIERBETT_VORDERRAND"]:
         raise ValueError("Der Vorderrand muss dem Tierbett ab der Zeile 31 entsprechen")
@@ -103,8 +98,7 @@ def erzeugen():
             if bool(alpha) != (31 <= x < 35 or 26 <= y < 30):
                 raise ValueError("Der Fensterrahmen passt nicht zur Glasfläche (7, 7)")
 
-    for name, eintraege in (("ZG_RAUM", raum), ("ZG_ZEICHEN", zeichen),
-                            ("ZG_REGEN", regen), ("ZG_SCHNEE", schnee)):
+    for name, eintraege in (("ZG_ZEICHEN", zeichen), ("ZG_REGEN", regen), ("ZG_SCHNEE", schnee)):
         ausgabe.append(f"static constexpr const ZimmerBild* {name}[] = {{"
                        + ", ".join("&" + eintrag for eintrag in eintraege) + "};")
     for name, zeilen in (("ZG_HIMMEL", himmel), ("ZG_WOLKEN", wolken), ("ZG_BAEUME", baeume)):

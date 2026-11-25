@@ -10,8 +10,8 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 ## Zimmer, Möbel und Fensterausblick in Graustufen (25. November 2026)
 
 - `tools/make-zimmer-grau.py` liest die PNGs aus `entwuerfe/zimmer/graustufen/spielgrafiken/` und erzeugt `evi-handy/zimmergrau.h`. Graustufen und Alpha bleiben getrennt gespeichert. Das nutzt alle 16 Stufen der Anzeige.
-- Wand und Boden wechseln mit der Tageszeit. Die Möbel nutzen ihre eigenen Deckmasken. Der vordere Bettrand wird über Evi gezeichnet, wenn sie schläft. Die gespeicherten Möbelpositionen folgen weiter dem bestehenden Format.
-- Die 66 × 53 Pixel große Fensterfläche beginnt bei (78, 45). Darauf liegen Himmel, Himmelszeichen, Wolken, Hügel, Baum und optionale saisonale Ebenen. Regen und Schnee laufen in je 16 Phasen. Der Holzrahmen zeichnet Kreuz und Fensterbank davor. Die Wettersymbole stehen neben der Uhr.
+- Wand und Dielen sind heller. Die Zimmerlampe bestimmt die Helligkeit der Einrichtung, die Tageszeit bestimmt den Ausblick. Die Möbel nutzen ihre eigenen Deckmasken. Evi schläft hinter dem vorderen Bettrand. Der Rand folgt der Zimmerbeleuchtung.
+- Die 66 × 53 Pixel große Fensterfläche beginnt bei (78, 45). Darauf liegen Himmel, Himmelszeichen, Wolken, Hügel, Baum und die saisonalen Ebenen. Der Winterbaum hat kahle Äste mit dezentem Astschnee bei Schneefall. Regen und Schnee laufen in je 16 Phasen hinter dem Holzrahmen.
 - Für den Raspberry Pi Pico 2 übersetzt. Die PC-Nachbildung prüft Einrichtung, Bettüberdeckung, Wetter und 411 gerenderte Fensteransichten pixelgenau. Die Prüfung auf dem physischen Waveshare-Display steht aus.
 
 ## Graustufen-Anzeige und Evis Graustufen-Bilder (25. November 2026)
