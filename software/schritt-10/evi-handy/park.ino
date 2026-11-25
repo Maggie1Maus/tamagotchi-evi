@@ -1,13 +1,120 @@
 // Öffentlicher Parkeingang. Evi läuft selbst zu den drei antippbaren Zielen.
 static constexpr ParkPunkt PARK_WEGPUNKT = {137, 146};
-static constexpr ParkPunkt PARK_ANKUNFT[PARK_ZIELE] = {{158, 150}, {110, 120}, {155, 135}};
+static constexpr ParkPunkt PARK_ANKUNFT[2] = {{158, 150}, {110, 120}};
 static constexpr ParkPunkt PARK_FUNDPLATZ[2] = {{179, 149}, {104, 105}};
-static constexpr int PARK_LOTTI_X = 185, PARK_LOTTI_FUSS = 133;
+// Dort steht der Besuch (früher immer Lotti). Füße auf derselben Höhe wie Lotti bisher.
+static constexpr int PARK_BESUCH_X = 185, PARK_BESUCH_FUSS = 133;
 // Figuren im Park 10 % größer als früher (Wunsch vom 25.11.2026).
 static constexpr int PARK_GROESSE_Z = 11, PARK_GROESSE_N = 10;
-static constexpr int PARK_LOTTI_W = (PARK_LOTTI.w * PARK_GROESSE_Z + PARK_GROESSE_N / 2) / PARK_GROESSE_N;
-static constexpr int PARK_LOTTI_H = (PARK_LOTTI.h * PARK_GROESSE_Z + PARK_GROESSE_N / 2) / PARK_GROESSE_N;
-static constexpr int PARK_LOTTI_OBEN = PARK_LOTTI_FUSS - PARK_LOTTI_H + 1;
+// Der Besuch wechselt alle paar Stunden, nicht bei jedem Parkbesuch (Wunsch vom 25.11.2026).
+static constexpr int PARK_BESUCH_STUNDEN = 4;
+
+// 50 Begrüßungen, zufällig (Wunsch vom 25.11.2026). * wird durch Evis Namen ersetzt.
+// Höchstens 40 Zeichen, damit „Glöckchen: “ und der Satz in eine Zeile passen.
+static const char* const PARK_GRUSS_TEXT[] = {
+  "Hallo, *! Schön, dass du da bist.",
+  "Hallo, *! Schön, dich zu sehen.",
+  "Da bist du ja, *!",
+  "Hui, *! Wie schön!",
+  "Hallihallo, *!",
+  "Hallo, *! Wie geht es dir?",
+  "Na, *? Spielst du mit mir?",
+  "Oh, *! Ich hab an dich gedacht.",
+  "Juhu, Besuch! Hallo, *!",
+  "Hallo, *! Magst du den Park auch?",
+  "Schön, dass wir uns treffen, *!",
+  "Hey, *! Lange nicht gesehen!",
+  "Ich hab auf dich gewartet, *!",
+  "Hallo, *! Hast du was gefunden?",
+  "Komm, *, wir laufen eine Runde!",
+  "*! Wollen wir Verstecken spielen?",
+  "Hallo, *! Ich freu mich so!",
+  "Na so was, *! Auch im Park?",
+  "Hallöchen, *! Alles gut bei dir?",
+  "Guck mal, *! Hier ist es schön.",
+  "*! Erzähl mal, was gibt's Neues?",
+  "Huhu, *! Hier drüben!",
+  "Hallo, *! Du siehst fröhlich aus.",
+  "Schön, dass du vorbeikommst, *!",
+  "Moin, *! Wie war dein Tag?",
+  "Servus, *! Gehen wir ein Stück?",
+  "Grüß dich, *! Was machst du heute?",
+  "Oh, Besuch! Hallo, *!",
+  "*! Ich wollte dich gerade besuchen!",
+  "Hallo, *! Schön ruhig hier, oder?",
+  "Hey, *! Fangen spielen?",
+  "Da ist ja *! Hallo!",
+  "Hallo, *! Heute sind wir Parkfreunde.",
+  "*! Mit dir ist der Park viel schöner.",
+  "Hallo, *! Riechst du die frische Luft?",
+  "Pssst, *! Ich hab was Tolles gesehen.",
+  "Hallo, *! Wollen wir zusammen sitzen?",
+  "Endlich, *! Mir war schon langweilig.",
+  "*! Du bist mein Lieblingsbesuch.",
+  "Hallo, *! Heute ist ein guter Tag.",
+  "Oh, *! Ich hab mich gerade ausgeruht.",
+  "Hallo, *! Komm, ich zeig dir was.",
+  "Na, *, auch ein bisschen frische Luft?",
+  "Hallo, *! Wie lieb, dass du kommst.",
+  "Juchhu, *! Jetzt sind wir zu zweit.",
+  "Hallo, *! Erzählst du mir was?",
+  "*! Wollen wir um die Wette hüpfen?",
+  "*! Hier ist ein schönes Plätzchen.",
+  "Ach, *! Du kommst wie gerufen.",
+  "Tschüss Langeweile, hallo *!",
+};
+static constexpr int PARK_GRUESSE = sizeof(PARK_GRUSS_TEXT) / sizeof(PARK_GRUSS_TEXT[0]);
+static_assert(PARK_GRUESSE == 50, "50 Begrüßungen");
+
+// Wer gerade im Park ist. Lotti (Evis Freundin) etwa jedes dritte Mal, sonst eins der anderen 19.
+int parkBesucher(ms_t jetzt) {
+  char schluessel[40];
+  snprintf(schluessel, sizeof(schluessel), "%ld:park:besuch:%d", (long)tagKennung(jetzt),
+           stundeVon(jetzt) / PARK_BESUCH_STUNDEN);
+  const uint32_t h = streuwert(schluessel);
+  return h % 3 == 0 ? 0 : 1 + (int)((h / 3) % (BESUCHER - 1));
+}
+
+// Der Besuch hat dieselbe Lebensphase wie Evi.
+static const BesuchBild& parkBesuchBild(Phase ph) { return BESUCH_BILD[park.besuch][ph - BABY]; }
+
+// Bildschirmlage des Besuchs (ohne STATUS_H): das 72 x 64 große Bild um 10 % vergrößert,
+// mittig auf PARK_BESUCH_X, Standlinie auf PARK_BESUCH_FUSS.
+static ParkRahmen parkBesuchRahmen(Phase ph) {
+  const BesuchBild& b = parkBesuchBild(ph);
+  ParkRahmen r;
+  r.ursprungX = PARK_BESUCH_X - BESUCH_BREITE / 2 * PARK_GROESSE_Z / PARK_GROESSE_N;
+  r.ursprungY = PARK_BESUCH_FUSS - ((BESUCH_STANDLINIE + 1) * PARK_GROESSE_Z - 1) / PARK_GROESSE_N;
+  r.links = r.ursprungX + (b.x * PARK_GROESSE_Z + PARK_GROESSE_N - 1) / PARK_GROESSE_N;
+  r.rechts = r.ursprungX + ((b.x + b.bild.w) * PARK_GROESSE_Z + PARK_GROESSE_N - 1) / PARK_GROESSE_N - 1;
+  r.oben = r.ursprungY + (b.y * PARK_GROESSE_Z + PARK_GROESSE_N - 1) / PARK_GROESSE_N;
+  return r;
+}
+
+// Evi bleibt links vor dem Besuch stehen, auch wenn er breit ist (Tetro, Mimi).
+static ParkPunkt parkAnkunft(ParkZiel ziel, Phase ph) {
+  if (ziel != PARK_ZIEL_BESUCH) return PARK_ANKUNFT[ziel];
+  return {min(155, parkBesuchRahmen(ph).links - 12), 135};
+}
+
+// Neuer Satz, nie zweimal hintereinander derselbe.
+static void parkGrussWaehlen() {
+  static int letzter = -1;
+  int neu = random(PARK_GRUESSE - (letzter >= 0 ? 1 : 0));
+  if (letzter >= 0 && neu >= letzter) neu++;
+  park.gruss = neu;
+  letzter = neu;
+}
+
+static void parkGrussText(char* ziel, size_t platz) {
+  size_t n = snprintf(ziel, platz, "%s: ", BESUCH_NAME[park.besuch]);
+  for (const char* s = PARK_GRUSS_TEXT[park.gruss]; *s && n + 1 < platz; s++) {
+    if (*s == '*') n += snprintf(ziel + n, platz - n, "%s", pet.name[0] ? pet.name : "Evi");
+    else ziel[n++] = *s;
+    if (n >= platz) n = platz - 1;
+  }
+  ziel[n] = 0;
+}
 
 bool parkOffen() { return park.phase != PARK_ZU; }
 
@@ -32,6 +139,7 @@ void parkOeffnen(ms_t jetzt) {
   sagen.bis = 0;
   park = ParkZustand();
   park.phase = PARK_WAHL;
+  park.besuch = parkBesucher(jetzt);
 }
 
 const Fundstueck* parkLetzterFund() {
@@ -105,10 +213,11 @@ void parkTakt(ms_t jetzt, uint32_t m) {
     if (seit >= park.dauer) {
       if (!park.amWegpunkt) {
         park.amWegpunkt = true;
-        parkGehen(PARK_ANKUNFT[park.ziel], m);
+        parkGehen(parkAnkunft(park.ziel, phaseBei(pet, jetzt)), m);
       } else {
         park.seit = m;
-        park.phase = park.ziel == PARK_ZIEL_LOTTI ? PARK_GRUSS : PARK_SCHNUPPERT;
+        park.phase = park.ziel == PARK_ZIEL_BESUCH ? PARK_GRUSS : PARK_SCHNUPPERT;
+        if (park.phase == PARK_GRUSS) { park.rechts = true; parkGrussWaehlen(); }
       }
     }
   } else if (park.phase == PARK_SCHNUPPERT && seit >= 650) {
@@ -136,7 +245,9 @@ void parkTouch(int x, int y) {
   y -= STATUS_H;
   if (y < 0 || park.phase == PARK_LAEUFT || park.phase == PARK_SCHNUPPERT || park.phase == PARK_SUCHT) return;
   ParkZiel ziel = PARK_ZIELE;
-  if (abs(x - PARK_LOTTI_X) <= PARK_LOTTI_W / 2 + 4 && y >= PARK_LOTTI_OBEN - 4 && y <= PARK_LOTTI_FUSS + 3) ziel = PARK_ZIEL_LOTTI;
+  const ParkRahmen besuch = parkBesuchRahmen(phaseBei(pet, jetztMs()));
+  if (x >= besuch.links - 4 && x <= besuch.rechts + 4 && y >= besuch.oben - 4 && y <= PARK_BESUCH_FUSS + 3)
+    ziel = PARK_ZIEL_BESUCH;
   else if (abs(x - PARK_FUNDPLATZ[0].x) <= 21 && abs(y - PARK_FUNDPLATZ[0].y) <= 13) ziel = PARK_KIESWEG;
   else if (abs(x - PARK_FUNDPLATZ[1].x) <= 23 && abs(y - PARK_FUNDPLATZ[1].y) <= 20) ziel = PARK_WIESE;
   if (ziel == PARK_ZIELE) return;
@@ -207,6 +318,22 @@ static void parkGegenstand(Fundart art, int cx, int fuss, int groesse) {
   raumRasterZeichnen(b, cx - w / 2, fuss - h + 1, w, h, false, false, true, fuss);
 }
 
+// Der Besuch, Pixel für Pixel aus der Zeichnung (nur um 10 % vergrößert, wie Lotti bisher).
+static void parkBesuchZeichnen(Phase ph) {
+  const BesuchBild& b = parkBesuchBild(ph);
+  const ParkRahmen r = parkBesuchRahmen(ph);
+  ellipseFuellen(PARK_BESUCH_X, STATUS_H + PARK_BESUCH_FUSS, max(10, (r.rechts - r.links) / 4), 1, 119);
+  for (int y = r.oben; y <= PARK_BESUCH_FUSS; y++) {
+    const int sy = (y - r.ursprungY) * PARK_GROESSE_N / PARK_GROESSE_Z - b.y;
+    if (sy < 0 || sy >= b.bild.h) continue;
+    for (int x = r.links; x <= r.rechts; x++) {
+      const int sx = (x - r.ursprungX) * PARK_GROESSE_N / PARK_GROESSE_Z - b.x;
+      if (sx >= 0 && sx < b.bild.w && b.bild.deckt(sx, sy))
+        bild.drawPixel(x, STATUS_H + y, b.bild.wert(sx, sy));
+    }
+  }
+}
+
 static void parkFigurZeichnen(Phase ph, uint32_t m) {
   const int fuss = STATUS_H + park.fuesse.y;
   const bool gefunden = park.phase == PARK_FUND && park.fund >= 0;
@@ -244,12 +371,7 @@ void parkZeichnen(ms_t jetzt) {
   const uint32_t m = millis();
   parkHintergrund(jahreszeitBei(jetzt), h, w);
   parkNiederschlag(w, h, m);
-  ellipseFuellen(PARK_LOTTI_X, STATUS_H + PARK_LOTTI_FUSS, 10, 1, 119);
-  for (int y = 0; y < PARK_LOTTI_H; y++) for (int x = 0; x < PARK_LOTTI_W; x++) {
-    const int sx = x * PARK_LOTTI.w / PARK_LOTTI_W, sy = y * PARK_LOTTI.h / PARK_LOTTI_H;
-    if (PARK_LOTTI.deckt(sx, sy))
-      bild.drawPixel(PARK_LOTTI_X - PARK_LOTTI_W / 2 + x, STATUS_H + PARK_LOTTI_OBEN + y, PARK_LOTTI.wert(sx, sy));
-  }
+  parkBesuchZeichnen(ph);
   const int stelle = parkFundstelle(jetzt);
   if (stelle >= 0 && sammlung.anzahl < SAMMLUNG_MAX) {
     const auto& pos = PARK_FUNDPLATZ[stelle];
@@ -261,14 +383,15 @@ void parkZeichnen(ms_t jetzt) {
   }
   parkFigurZeichnen(ph, m);
   if (park.phase == PARK_WAHL && tastenDa) {
-    const auto& ziel = park.ziel == PARK_ZIEL_LOTTI ? ParkPunkt{PARK_LOTTI_X, PARK_LOTTI_OBEN - 4} : PARK_FUNDPLATZ[park.ziel];
+    const auto& ziel = park.ziel == PARK_ZIEL_BESUCH ? ParkPunkt{PARK_BESUCH_X, parkBesuchRahmen(ph).oben - 4} : PARK_FUNDPLATZ[park.ziel];
     const int y = STATUS_H + ziel.y - 17;
     bild.fillTriangle(ziel.x - 4, y, ziel.x + 4, y, ziel.x, y + 5, 0);
   }
   zeichneStatus(ph);
   bild.fillRect(0, ZEILE_Y, BREITE, HOEHE - ZEILE_Y, 1);
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
-  const char* zieltext = park.ziel == PARK_ZIEL_LOTTI ? "Lotti" : PARK_STELLE[park.ziel];
+  const char* zieltext = park.ziel == PARK_ZIEL_BESUCH ? BESUCH_NAME[park.besuch] : PARK_STELLE[park.ziel];
+  char grusstext[64];
   const char* text = zieltext;
   const char* aktion = tastenDa ? "A Losgehen" : "Ziel antippen";
   switch (park.phase) {
@@ -276,7 +399,7 @@ void parkZeichnen(ms_t jetzt) {
     case PARK_SCHNUPPERT: text = "Evi schnuppert …"; aktion = ""; break;
     case PARK_HILFE: text = "Was ist da?"; aktion = tastenDa ? "A Nachsehen" : "Nachsehen"; break;
     case PARK_SUCHT: text = "Evi schaut nach …"; aktion = ""; break;
-    case PARK_GRUSS: text = "Lotti: Hallo, Evi! Schön, dass du da bist."; aktion = tastenDa ? "A Weiter" : "Weiter"; break;
+    case PARK_GRUSS: parkGrussText(grusstext, sizeof(grusstext)); text = grusstext; aktion = tastenDa ? "A Weiter" : "Weiter"; break;
     case PARK_FUND:
       text = park.fund >= 0 ? FUND_NAME[sammlung.fund[park.fund].art] :
              sammlung.anzahl >= SAMMLUNG_MAX ? "Das Sideboard ist voll." : "Hier liegt heute nichts.";

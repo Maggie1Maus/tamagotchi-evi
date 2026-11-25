@@ -185,7 +185,7 @@ void parkPruefen() {
   warten(350);
   PRUEFE(park.phase == PARK_LAEUFT && park.fuesse.x > 62, "Evi läuft zum gewählten Ziel selbstständig los");
   warten(1800);
-  PRUEFE(park.phase == PARK_GRUSS && park.ziel == PARK_ZIEL_LOTTI, "Steuerkreuz und A führen zur Begrüßung bei Lotti");
+  PRUEFE(park.phase == PARK_GRUSS && park.ziel == PARK_ZIEL_BESUCH, "Steuerkreuz und A führen zur Begrüßung bei Lotti");
 
   beruehrt(179, STATUS_H + 149);
   warten(2300);

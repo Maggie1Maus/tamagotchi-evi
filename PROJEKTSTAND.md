@@ -2,6 +2,13 @@
 
 Stand: 25. November 2026
 
+## Wechselnder Besuch im Park (25. November 2026)
+
+- Wunsch der Nutzerin: Die 20 Graustufen-Figuren gefallen ihr sehr gut. Im Park steht jetzt nicht mehr immer Lotti, sondern wechselnder Besuch. Er bleibt jeweils 4 Stunden derselbe und wechselt nicht bei jedem Parkbesuch. Lotti als Evis Freundin kommt etwa jedes dritte Mal, sonst eine der 19 anderen Figuren. Der Besuch hat immer dieselbe Lebensphase wie Evi.
+- 50 Begrüßungssätze erscheinen zufällig, nie zweimal derselbe hintereinander (`PARK_GRUSS_TEXT` in `park.ino`). Höchstens 40 Zeichen, damit der Name und der Satz in eine Zeile passen.
+- Die Bilder werden 1:1 übernommen, nur zugeschnitten und wie Lotti um 10 % vergrößert: `software/schritt-10/tools/make-besucher-grau.py` → `evi-handy/besucherbilder.h`. Läuft ohne Pillow, auch mit dem Python aus dem Arduino-Paket (`pngklein.py`). Evi bleibt links vor breiten Figuren stehen.
+- Echte Pico-2-Übersetzung ohne Fehler: 1301480 Bytes Programm (31 %), globale Variablen 115080 Bytes (21 %). Vorschau aller 80 Figuren im Park: `entwuerfe/park/entwurf-1/besuch-vorschau.png`. Die PC-Nachbildung (`pruefen.sh`) konnte auf dem Haupt-PC nicht laufen (kein g++). Am Board noch prüfen.
+
 ## Graustufen-Zeichnungen für 20 andere Tamagotchis
 
 - Unter `entwuerfe/neue-tamagotchis/graustufen/` liegen 80 einzelne Graustufen-PNGs. Jede Figur hat die Pose „Glücklich“ als Baby, Teenager, erwachsene und ältere Figur (Oma oder Opa). Die PNGs sind 72 × 64 Pixel groß, haben eine gemeinsame Standlinie und verwenden die 16 Graustufen des Spiels mit binärer Transparenz.

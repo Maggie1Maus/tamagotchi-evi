@@ -42,6 +42,7 @@
 #include "raumtiefe.h"
 #include "park.h"
 #include "parkbilder.h"
+#include "besucherbilder.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom

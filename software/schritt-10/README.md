@@ -9,8 +9,9 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 
 ## Öffentlicher Parkeingang
 
-- „In den Park“ steht im Zimmermenü, wenn Evi wach ist. Mit Touch oder Steuerkreuz und A wählt man Lotti, die Stelle am Kiesweg oder die Stelle am Wiesenrand. Evi läuft selbst dorthin. B, START oder „Nach Hause“ führen ins Zimmer.
+- „In den Park“ steht im Zimmermenü, wenn Evi wach ist. Mit Touch oder Steuerkreuz und A wählt man den Besuch, die Stelle am Kiesweg oder die Stelle am Wiesenrand. Evi läuft selbst dorthin. B, START oder „Nach Hause“ führen ins Zimmer.
 - Lotti begrüßt Evi. An einer Fundstelle schnuppert Evi zuerst. Mit A oder einem zweiten Tipper untersucht sie die Stelle und zeigt einen gefundenen Gegenstand. Pro Ortsdatum gibt es einen Fund. Fundort und Datum stehen im Sideboard. Wetter und Jahreszeit werden mitgespeichert.
+- Besuch im Park (seit 25.11.2026): Eine der 20 Figuren aus `entwuerfe/neue-tamagotchis/graustufen/` in Evis Lebensphase. Sie wechselt alle 4 Stunden (`parkBesucher`, Lotti etwa jedes dritte Mal). Beim Ankommen sagt sie einen von 50 zufälligen Sätzen. Bilder: `python software/schritt-10/tools/make-besucher-grau.py` → `evi-handy/besucherbilder.h`.
 - Der Park verwendet `jahreszeitBei`, `himmelBei` und `wetterBei` wie das Zimmerfenster. `python software/schritt-10/tools/make-park-grau.py` erzeugt `evi-handy/parkbilder.h` aus den Park-PNGs unter `entwuerfe/park/entwurf-1/` und Evis Zeichnungen aus `Evi-Graustufen.zip`.
 
 ## Zimmer, Möbel und Fensterausblick in Graustufen (25. November 2026)
