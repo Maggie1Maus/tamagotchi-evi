@@ -40,3 +40,7 @@ Die Darstellung ist eingebaut. Bedürfnisse, Sammlung und Version-3-Spielstand b
 ## Prüfung
 
 Eigene PC-Prüfung `raumtiefe.cpp`: alle Altersstufen nah/mittel/fern, kontinuierliche Skalierung, Bodenanker, Originalpixel bei Verdeckung, Touch auf sichtbare/verdeckte Teile, begehbarer Fensterweg und Rückweg, Garten-Tiefengang und Rückkehr, neuer Fensterausblick bei Regen/Schnee tags/nachts, RESET und unveränderte Minispielkoordinaten. Dazu die bisherigen Prüfprogramme und echte Pico-2-Übersetzung. Screenshots unter `entwuerfe/zimmer/kompakt/vorschauen/`. Am echten Board noch ausprobieren.
+
+## Nachtrag 25. November: V2-Zimmer und verschiebbare Möbel
+
+Die alte kompakte Gesamtszene ist durch das bestätigte V2-Zimmer mit getrennten Ebenen ersetzt. Fenster und Figur verwenden weiterhin dieselben Wetter-, Kalender- und Tiefenmechanismen; die Verdeckung prüft nun die aktuellen Möbelmasken statt fester Vordergrundstempel. Der Weg zum Fenster führt zum neuen Fenster bei x = 79, y = 46. Evis Gänge verwenden die aktuellen Bodenflächen; der Sideboardgang folgt der gespeicherten Sideboardposition. Drei Tiefenzonen und die geschützte Vorderfläche sind im Einrichtungsmodus berücksichtigt. [Aktueller Einbau und Bedienung](Einrichtung_und_Grillme.md).

@@ -153,7 +153,7 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
     }
     case M_FENSTER:
       akt(A_MELDUNG, 12000, 0, fensterText(jetztMs()));   // je nach Wetter (umgebung.ino)
-      akt(A_GEHEN, -84, 151, nullptr);
+      akt(A_GEHEN, 111-BODEN_X, 151, nullptr);
       akt(A_FLIP, 0, 0, nullptr);
       akt(A_BILD, MB_FENSTER, 0, nullptr);
       akt(A_WARTEN, 6, 0, nullptr);
@@ -345,14 +345,9 @@ void momentStoppen(bool sofort) {
 void gangBeginnenTief(int ziel, int fuss) {
   fuss=max(151,min(RAUM_HEIM_Y,fuss));
   gang.ziel=ziel; gang.zielY=fuss; gang.schritte=0; gang.punkt=0; gang.anzahl=0;
-  auto punkt=[&](int x,int y){ if(gang.anzahl<5) { gang.wegX[gang.anzahl]=x; gang.wegY[gang.anzahl++]=y; } };
-  const bool hintenLinks=geher.x < -51 && geher.fuss < 164;
-  if(hintenLinks) punkt(-37,geher.fuss);
-  if(fuss < 163 && ziel < -51) {
-    if(geher.fuss>=163) punkt(-37,RAUM_HEIM_Y);
-    punkt(-37,fuss);
-  } else if(hintenLinks) punkt(-37,max(fuss,170));
-  punkt(ziel,fuss);
+  gang.anzahl=zimmerPfad(einrichtung,BODEN_X+geher.x,geher.fuss,BODEN_X+ziel,fuss,weihnachtsZeit(jetztMs()),gang.wegX,gang.wegY,24);
+  if(gang.anzahl<0){gang.anzahl=0;gang.laeuft=false;geher.lift=0;return;}
+  for(int i=0;i<gang.anzahl;i++)gang.wegX[i]-=BODEN_X;
   gang.laeuft=geher.x!=ziel || geher.fuss!=fuss;
   if(!gang.laeuft)return;
   gang.vorher=moment.bild; moment.bild=MB_LAUFEN;

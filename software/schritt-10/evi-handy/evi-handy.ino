@@ -40,6 +40,8 @@
 #include "gartenbilder.h"
 #include "gartenlandschaft.h"
 #include "zimmerlandschaft.h"
+#include "zimmergrafiken.h"
+#include "einrichtung.h"
 #include "raumtiefe.h"
 
 // ---------- Einstellungen ----------
@@ -67,7 +69,7 @@ bool bildschirmAn = true;
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
                          E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD, E_GARTEN,
-                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3 };   // seit 25.11.2026 (freunde.ino)
+                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN };   // Zimmergestaltung
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
@@ -146,6 +148,7 @@ void grundText(Grund g, Aktion a, char* aus, size_t n) {
 void speichern(ms_t jetzt) {
   spielstandSpeichern(pet, tonAn);
   freundSpeichern();                // Freundschaft, Antworten, Geburtstag (freunde.ino)
+  zimmerSpeichern();
   letztesSpeichern = jetzt;
 }
 
@@ -377,7 +380,7 @@ void zeichneZ() {
 // Die Uhrzeit, klein oben an der Wand zwischen Fenster und Evi (Wunsch der Nutzerin vom 24.11.2026).
 // Dort ist in jeder Jahreszeit und auch zu Weihnachten Platz. Ein weißes Feld dahinter hält sie lesbar,
 // auch bei Licht aus.
-const int UHRZEIT_X = 124, UHRZEIT_Y = 31;
+const int UHRZEIT_X = 159, UHRZEIT_Y = 31;
 void zeichneUhrzeit(ms_t jetzt) {
   const Ortszeit o = ortszeit(jetzt);
   char z[8];
@@ -549,13 +552,13 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
 // ---------- Menü ----------
 // symbol = Bild aus der App; ohne Bild eine gezeichnete Figur (zeichen: 0 Schere, 3 Wolke, 4 Regenwolke)
 struct MenuePunkt { Eintrag e; const Bild* symbol; int8_t zeichen; char text[26]; };
-MenuePunkt menue[14];
+MenuePunkt menue[16];
 int menueAnzahl = 0, gewaehlt = 0;
 bool menueOffen = false, spieleAuswahl = false, tagAuswahl = false;
 bool frageAuswahl = false;   // Antworten auf Evis Frage (freunde.ino)
 
 void punkt(Eintrag e, const Bild* s, const char* t, int zeichen = -1) {
-  if (menueAnzahl >= 14) return;
+  if (menueAnzahl >= (int)(sizeof(menue)/sizeof(menue[0]))) return;
   menue[menueAnzahl].e = e;
   menue[menueAnzahl].symbol = s;
   menue[menueAnzahl].zeichen = (int8_t)zeichen;
@@ -608,6 +611,7 @@ void menueBauen() {
     // Uhr stellen, Name ändern und Hilfe sind seit 24.11.2026 nicht mehr im Menü (Wunsch der Nutzerin).
     // Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft.
     punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
+    punkt(E_EINRICHTEN, &SYM_M_HERZ, "Zimmer einrichten");
     if (gartenMoeglich(jetzt)) punkt(E_GARTEN, &SYM_M_SONNE, "In den Garten");
   }
   gewaehlt = 0;
@@ -683,6 +687,7 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
 }
 
 void zeichneAlles() {
+  if (zimmerEditor.offen) { zimmerEditorZeichnen(); return; }
   if (garten.phase != GA_ZU) { gartenZeichnen(); zeigen(); return; }
   if (sideboard.phase == SB_OFFEN) { sammlungZeichnen(); zeigen(); return; }
   const ms_t jetzt = jetztMs();
@@ -757,6 +762,7 @@ void ritualWeiter() {
 void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
+  if (e == E_EINRICHTEN) { zimmerEinrichten(); return; }
   if (e == E_GARTEN) { gartenOeffnen(); return; }
   if (e == E_PLAUDERN) { freundPlaudern(); return; }
   if (e >= E_ANTWORT0 && e <= E_ANTWORT3) { freundAntwort(e - E_ANTWORT0); return; }
@@ -817,6 +823,7 @@ void aktionAusfuehren(Eintrag e) {
 
 // Die drei Tasten der App
 void taste(Taste k) {
+  if(zimmerEditor.offen){zimmerEditorTaste(k);return;}
   if (garten.phase != GA_ZU) { gartenTaste(k); return; }
   if (sideboard.phase != SB_ZU) { sideboardTaste(k); return; }
   const ms_t jetzt = jetztMs();
@@ -843,6 +850,7 @@ void taste(Taste k) {
 // RESET schaltet den Bildschirm aus. Ein laufendes Spiel wird dabei abgebrochen, Gute Nacht und
 // Momente enden. Wieder an geht er mit jeder Taste, jedem Tipper und bei wichtigen Ereignissen.
 void bildschirmAus() {
+  zimmerEditor=ZimmerEditor();
   if (garten.phase != GA_ZU) gartenSchliessen();
   if (sideboard.phase != SB_ZU) sideboardSofortZu();
   if (spiel.aktiv) spielEnde(true);
@@ -858,6 +866,7 @@ void bildschirmAus() {
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
   if (k == K_RESET) { bildschirmAus(); return; }
+  if (zimmerEditor.offen) { zimmerEditorKnopf(k); return; }
   if (freundKnopf(k)) return;                       // Geburtstag einstellen (freunde.ino)
   // Offene Frage von Evi: A oder START zeigt die Antworten (freunde.ino)
   if ((k == K_A || k == K_START) && !menueOffen && freundFrageOffen() && garten.phase == GA_ZU && sideboard.phase == SB_ZU &&
@@ -1110,6 +1119,7 @@ void setup() {
   }
   himmel = himmelBei(jetzt);
   freundLaden();                  // Freundschaft und Geburtstag, vor dem ersten Speichern (freunde.ino)
+  zimmerLaden();
   speichern(jetzt);
   letzteRunde = millis();
   moment.naechster = jetzt + naechsterAbstand();
@@ -1135,7 +1145,7 @@ void loop() {
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
       bildschirmEin();
-      if (tastenDa) beruehrt(x, y);
+      if (tastenDa || zimmerEditor.offen) beruehrt(x, y);
       else taste(tasteBei(x));
     }
   } else if (fingerUnten && bildschirmAn && tastenDa && !fingerHatGeweckt) {
@@ -1161,8 +1171,8 @@ void loop() {
     eviTakt(jetzt);
     ritualWeiter();
     launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
-    if (sideboard.phase == SB_ZU && garten.phase == GA_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
-    if (sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
+    if (!zimmerEditor.offen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
+    if (!zimmerEditor.offen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
     // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)

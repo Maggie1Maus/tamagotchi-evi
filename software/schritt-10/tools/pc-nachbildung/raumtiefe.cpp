@@ -64,12 +64,12 @@ int main() {
   bereit(jetzt); momentStoppen(true);
   // Unter der Verdeckung bleiben exakt die Originalpixel des möblierten Zimmers stehen.
   zimmerZeichnen(jetzt); uint8_t original[9600]; memcpy(original,bild.getBuffer(),sizeof(original));
-  geher.x=-97; geher.fuss=151;
-  raumFigurZeichnen(ART_ERWACHSEN_GLUECKLICH,ERWACHSEN,70,151,false,0,false,false);
+  geher.x=185-BODEN_X; geher.fuss=141;
+  raumFigurZeichnen(ART_ERWACHSEN_GLUECKLICH,ERWACHSEN,185,141,false,0,false,false);
   int sichtbar=0,verdecktGeaendert=0;
   for(int y=27;y<201;y++)for(int x=0;x<320;x++) {
     const int i=y*40+x/8; if(!((original[i]^bild.getBuffer()[i])&(0x80>>(x%8))))continue;
-    if(raumVerdeckt(false,151,x,y))verdecktGeaendert++;else sichtbar++;
+    if(raumVerdeckt(false,141,x,y))verdecktGeaendert++;else sichtbar++;
   }
   PRUEFE(sichtbar>5 && verdecktGeaendert==0,"Hinter dem Sideboard bleibt dessen Originalbild unverändert vor Evi");
   bool sichtbarerTreffer=false;
@@ -77,21 +77,21 @@ int main() {
     const int px=eviLinks+x,py=eviOben+y;
     if(bildDeckt(*figurLage.bild,x*figurLage.bild->w/eviBreite,y*figurLage.bild->h/eviHoehe) && !raumVerdeckt(false,eviFuss,px,py)) sichtbarerTreffer=aufEvi(px,py);
   }
-  PRUEFE(!aufEvi(70,130) && sichtbarerTreffer,"Touch ignoriert verdeckte Figurteile und trifft den sichtbaren Kopf");
+  PRUEFE(!aufEvi(200,130) && sichtbarerTreffer,"Touch ignoriert verdeckte Figurteile und trifft den sichtbaren Kopf");
   zeichneAlles();foto("tiefe-hinter-sideboard");
   zimmerZeichnen(jetzt); memcpy(original,bild.getBuffer(),sizeof(original));
-  raumFigurZeichnen(ART_ERWACHSEN_GLUECKLICH,ERWACHSEN,70,194,false,0,false,false);
+  raumFigurZeichnen(ART_ERWACHSEN_GLUECKLICH,ERWACHSEN,185,194,false,0,false,false);
   int davor=0;
-  for(int y=120;y<163;y++)for(int x=32;x<108;x++)if((original[y*40+x/8]^bild.getBuffer()[y*40+x/8])&(0x80>>(x%8)))davor++;
+  for(int y=100;y<148;y++)for(int x=195;x<298;x++)if((original[y*40+x/8]^bild.getBuffer()[y*40+x/8])&(0x80>>(x%8)))davor++;
   PRUEFE(davor>5,"Vor dem Sideboard wird Evi vor dessen Konturen gezeichnet");foto("tiefe-vor-sideboard");
-  bereit(jetzt); momentStoppen(true); gangBeginnenTief(-84,151);
+  bereit(jetzt); momentStoppen(true); gangBeginnenTief(111-BODEN_X,151);
   int schritte=0; bool durchMoebel=false,diagonal=false;
   while(!gangSchritt() && schritte++<500){
     const int x=BODEN_X+geher.x;
-    durchMoebel |= x<111 && x>30 && geher.fuss>=153 && geher.fuss<164;
+    durchMoebel |= !zimmerBodenFrei(einrichtung,x,geher.fuss,false);
     diagonal |= geher.fuss<RAUM_HEIM_Y;
   }
-  PRUEFE(schritte<500 && !durchMoebel && diagonal && geher.x==-84 && geher.fuss==151,"Weg zum Fenster führt seitlich um das feste Sideboard");
+  PRUEFE(schritte<500 && !durchMoebel && diagonal && geher.x==111-BODEN_X && geher.fuss==151,"Weg zum Fenster hält Abstand zu den aktuellen Möbeln");
   moment.bild=MB_FENSTER;zeichneAlles();foto("tiefe-am-fenster");
   gangBeginnen(0);schritte=0;while(!gangSchritt() && schritte++<500){}
   PRUEFE(geher.x==0 && geher.fuss==RAUM_HEIM_Y,"Rückweg endet am vorderen Teppich");

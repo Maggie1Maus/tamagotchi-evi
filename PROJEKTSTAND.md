@@ -2,6 +2,17 @@
 
 Stand: 25. November 2026
 
+## Grillme-Zimmer V2 und erster Einrichtungsmodus (25. November 2026)
+
+- Die Nutzerin hat die korrigierte Fenstervorschau mit vollständigem Bäumchen, Hügeln sowie großer Sonne und Wolke bestätigt und anschließend den Einbau sowie die Umsetzung weiterer klar beschlossener Grillme-Punkte und das Hochladen beauftragt. Nur Waveshare, entsprechend der geltenden Projektregel.
+- Das geprüfte V2-Grafikpaket ist jetzt eingebaut: 51 Kombinationen, drei Tageszeiten, Regen/Schnee in getrennten Ebenen, Schneefall nur im Winter, ausschließlich Schwarz-Weiß. Fensterrahmen und Kreuz liegen davor. Originalzeichnungen von Evi, bisherige Bedürfnisse und Jahreszeitenregeln bleiben erhalten. Weihnachtsbaum, Fenstersterne und Kerzentablett bleiben im bisherigen Zeitraum erhalten.
+- Neu im Menü: **Zimmer einrichten**. Tierbett, Sideboard, Regal und Teppich verschieben oder ins Inventar räumen; A bestätigt, B/START verwirft die Platzierungsvorschau, RESET verwirft und schaltet aus. Drei Tiefenzonen, geschützte vordere Spielfläche, Wandbelegung hinten und Verdeckung durch mittlere Möbel. Navigationsprüfung hält Fenster, Bett und Sideboard erreichbar. Evis Gänge folgen den aktuellen Möbelpositionen.
+- Kataloggrundlage für Breiten-/Höhenbelegung und Ablagekapazität: Sideboard zwei Plätze, Kerzentablett benötigt beide. Endgültiges Slotraster, weitere Gegenstände, Käufe und Möbelwirkungen bleiben offen. Vier-Pixel-Schritte sind eine konfigurierbare Prototypentscheidung, kein neuer endgültiger Rasterbeschluss.
+- Möbel/Inventar separat mit Version und Prüfsumme ab EEPROM 3328; vorhandene Spielstände und der Freundschafts-/Geburtstagsbereich ab 3584 bleiben erhalten. Weitere Entscheidungen zu öffentlichem Park, gekauftem Garten und romantischen Beziehungen sind dokumentiert, nicht mit erfundenen Preisen oder Regeln vorweggenommen.
+- Prüfung: alle elf PC-Prüfprogramme ohne Fehler und Warnungen; zusätzlich alle 51 Firmware-Fenster pixelgenau gegen das bestätigte Grafikpaket verglichen. Einrichtung, Inventar, Abbrechen, RESET, freie Wege und getrennte EEPROM-Bereiche geprüft. Bildschirmbilder und Einbau-Prüfbericht liegen im V2-Entwurfsordner.
+- Einzelheiten, Bedienung und Prüfung in [Einrichtung_und_Grillme.md](Einrichtung_und_Grillme.md). Echte Pico-2-Übersetzung und physischer Boardtest stehen aus; Arduino-Werkzeug hier nicht vorhanden.
+
+
 ## Schlafmodus eingebaut, Helligkeit 50 % (25. November 2026)
 
 - Auf Wunsch der Nutzerin („Ja bau den Schlafmodus ein, Helligkeit auf 50 %“), nur Waveshare. Neue Datei `software/schritt-10/evi-handy/schlaf.h`. Der Chip schläft zwischen den Abfragen (dunkel bis zur nächsten Messung des Lagesensors, höchstens 20 ms; hell 2 ms). Dunkel läuft er nach 3 s mit 48 statt 150 MHz, und der Bildschirm-Chip schläft. Der Ton-Chip bekommt nur bei Tönen Takt. Tasten, Antippen, Gassi und Piepen gehen weiter. Jede Stelle ist einzeln abschaltbar. `P` im Seriellen Monitor zeigt, wie viel der Chip geschlafen hat. Einzelheiten in `software/schritt-10/README.md`.
