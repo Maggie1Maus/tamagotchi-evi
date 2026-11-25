@@ -1,5 +1,6 @@
-// Prüft den Schlafmodus (schlaf.h, seit 25.11.2026): Helligkeit 50 %, Chip schläft zwischen den Abfragen,
-// langsamer Takt im Dunkeln, Bildschirm-Chip schläft, Ton-Chip nur bei Tönen an, Gassi zählt im Dunkeln weiter.
+// Prüft den Schlafmodus (schlaf.h, seit 25.11.2026): Helligkeit 50 %, Chip schläft zwischen den Abfragen
+// (dunkel bis zum nächsten Spielschritt, 120 ms), langsamer Takt im Dunkeln, Bildschirm-Chip schläft, Ton-Chip nur
+// bei Tönen an, Touch im Dunkeln aus (Tasten wecken), Umdrehen weckt weiter.
 // Anders als in den anderen Prüfprogrammen vergeht hier beim Schlafen auch die Zeit (wie am Board).
 #include "Arduino.h"
 #include <string>
@@ -114,13 +115,16 @@ int main() {
   // ---------- Dunkel ----------
   PRUEFE(simLicht == 0, "dunkel: Licht aus");
   PRUEFE(lcdSchlaeft && SPI1.schlaeft && !SPI1.anzeigeAn, "dunkel: Bildschirm-Chip schläft (0x28, 0x10)");
+  PRUEFE(touchAus && simTouchRst == 0, "dunkel: Touch-Chip im Reset");
+  const uint32_t taktVorher = evi.takt;
   s = laufen(10000, inDerHand);
-  printf("   dunkel: %u Runden in 10 s, geschlafen %u ms, längste Pause %u ms, Messungen %u\n", s.runden, s.geschlafen, s.laengster,
-         s.messungen);
-  PRUEFE(s.laengster <= L::ABTAST_MS, "dunkel: Pausen höchstens bis zur nächsten Messung (20 ms)");
-  PRUEFE(s.geschlafen > 9000, "dunkel: der Chip schläft über 90 % der Zeit");
-  PRUEFE(s.runden < 600, "dunkel: nur etwa 50 Runden pro Sekunde");
-  PRUEFE(s.messungen >= 450, "dunkel: Lagesensor misst weiter etwa 50-mal pro Sekunde");
+  printf("   dunkel: %u Runden in 10 s, geschlafen %u ms, längste Pause %u ms, Messungen %u, Spielschritte %u\n", s.runden, s.geschlafen,
+         s.laengster, s.messungen, evi.takt - taktVorher);
+  PRUEFE(s.laengster <= SCHLAF_DUNKEL_MS, "dunkel: Pausen höchstens bis zum nächsten Spielschritt (120 ms)");
+  PRUEFE(s.geschlafen > 9800, "dunkel: der Chip schläft über 98 % der Zeit");
+  PRUEFE(s.runden < 100, "dunkel: nur etwa 8 Runden pro Sekunde");
+  PRUEFE(s.messungen >= 70 && s.messungen <= 90, "dunkel: Lagesensor misst etwa 8-mal pro Sekunde");
+  PRUEFE(evi.takt - taktVorher >= 75, "dunkel: Evis Spielschritte laufen weiter (etwa alle 120 ms)");
   PRUEFE(taktGesenkt, "dunkel: nach 3 s langsamer Takt");
   PRUEFE(s.taktGesenktRunden > s.runden / 2, "dunkel: die meiste Zeit langsamer Takt");
   PRUEFE(!bildschirmAn && lcdSchlaeft, "bleibt dunkel");
@@ -130,9 +134,16 @@ int main() {
   piep(TON(TON_WUNSCH));
   PRUEFE(!taktGesenkt && i2sLaeuft && i2s.starts == startsVorher + 1, "Ton: voller Takt, Ton-Chip an");
   bool taktBeiTon = true;
-  for (int i = 0; i < 400 && tonSpielt(); i++) { laufen(1); if (tonSpielt() && taktGesenkt) taktBeiTon = false; }
+  uint32_t tonPause = 0;
+  for (int i = 0; i < 400 && tonSpielt(); i++) {
+    const bool spieltVorher = tonSpielt();
+    const Statistik t = laufen(1);
+    if (tonSpielt() && taktGesenkt) taktBeiTon = false;
+    if (spieltVorher && tonSpielt() && t.laengster > tonPause) tonPause = t.laengster;   // Pause mitten im Ton
+  }
   PRUEFE(!tonSpielt(), "Ton zu Ende gespielt");
   PRUEFE(taktBeiTon, "während des Tons voller Takt");
+  PRUEFE(tonPause <= SCHLAF_TON_MS, "während des Tons höchstens 20 ms Pause (der Ton-Puffer reicht)");
   laufen(500);
   PRUEFE(i2sLaeuft, "Ton-Chip läuft kurz nach");
   laufen(2000);
@@ -144,6 +155,7 @@ int main() {
   PRUEFE(bildschirmAn, "Taste weckt den Bildschirm");
   PRUEFE(!taktGesenkt, "wach: voller Takt");
   PRUEFE(!lcdSchlaeft && !SPI1.schlaeft && SPI1.anzeigeAn, "wach: Bildschirm-Chip wach (0x11, 0x29)");
+  PRUEFE(!touchAus && simTouchRst == 1, "wach: Touch wieder an");
   PRUEFE(simLicht == 127, "wach: Helligkeit wieder 50 %");
   laufen(1000);
   PRUEFE(simFalschePunkte == 0, "wach: Bildschirm zeigt genau das Bild");
@@ -157,29 +169,35 @@ int main() {
   laufen(1000);
   PRUEFE(simFalschePunkte == 0, "danach zeigt der Bildschirm genau das Bild");
 
-  // Aufwachen durch Antippen
+  // Dunkel weckt Antippen nicht (Touch aus, Wunsch der Nutzerin vom 25.11.2026)
   druecken(K_RESET);
   laufen(5000);
-  PRUEFE(taktGesenkt && lcdSchlaeft, "wieder dunkel und langsam");
+  PRUEFE(taktGesenkt && lcdSchlaeft && touchAus, "wieder dunkel, langsam, Touch aus");
   simFinger(true, 160, 120);
-  laufen(30);
+  laufen(500);
   simFinger(false);
-  PRUEFE(bildschirmAn && !taktGesenkt && !lcdSchlaeft, "Antippen weckt Bildschirm, Takt und Bildschirm-Chip");
+  laufen(500);
+  PRUEFE(!bildschirmAn && taktGesenkt, "dunkel: Antippen weckt nicht");
+  druecken(K_B);
+  PRUEFE(bildschirmAn && !taktGesenkt && !lcdSchlaeft && !touchAus, "Taste weckt Bildschirm, Takt, Bildschirm-Chip und Touch");
   laufen(1000);
 
-  // Gassi im Dunkeln: Schritte zählen weiter
-  druecken(K_RESET);
-  const uint32_t schritteVorher = bewegung.schritteHeute;
-  uint32_t phase = 0;
-  auto gehen = [&](uint32_t t, float& x, float& y, float& z) {
-    const float w = 1 + 0.35f * sinf((t + phase) / 1000.0f * 2 * 3.14159f * 1.8f);
-    x = 0; y = 0.71f * w; z = 0.71f * w;
-  };
-  s = laufen(20000, gehen);
-  printf("   Gassi im Dunkeln: %u Schritte, geschlafen %u von 20000 ms, Bildschirm %s, Moment %d\n", bewegung.schritteHeute - schritteVorher,
-         s.geschlafen, bildschirmAn ? "an" : "aus", (int)moment.art);
-  PRUEFE(bewegung.schritteHeute - schritteVorher >= 25, "Gassi im Dunkeln: Schritte werden gezählt");
-  PRUEFE(s.geschlafen > 15000, "Gassi im Dunkeln: der Chip schläft trotzdem meistens");
+  // Aufs Gesicht legen und wieder umdrehen: geht auch mit dem seltenen Messen im Dunkeln
+  for (int i = 0; i < 3; i++) { laufen(300, inDerHand); druecken(K_B); }   // Achsen lernen wie beim Bedienen
+  PRUEFE(lage.nAchse >= 0, "Bildschirm-Achse gelernt");
+  laufen(2000, inDerHand);
+  auto gesichtUnten = [](uint32_t, float& x, float& y, float& z) { x = 0; y = 0; z = -1; };
+  laufen(2500, gesichtUnten);
+  PRUEFE(!bildschirmAn && bewegung.ausDurchLage, "aufs Gesicht gelegt: Bildschirm aus");
+  s = laufen(20000, gesichtUnten);
+  PRUEFE(s.geschlafen > 19600 && taktGesenkt, "liegt auf dem Gesicht: der Chip schläft");
+  const uint32_t umgedrehtUm = simMillis;
+  uint32_t anNach = 0;
+  for (int i = 0; i < 300 && !bildschirmAn; i++) { laufen(10, inDerHand); anNach = simMillis - umgedrehtUm; }
+  printf("   umgedreht: Bildschirm an nach %u ms\n", anNach);
+  PRUEFE(bildschirmAn && anNach <= 1000, "umgedreht: Bildschirm geht innerhalb 1 s an");
+  laufen(1000, inDerHand);
+  PRUEFE(simFalschePunkte == 0, "danach zeigt der Bildschirm genau das Bild");
 
   printf("Display: %ld Bilder, %ld falsche Punkte\n", simBilder, simFalschePunkte);
   if (fehler) { printf("NICHT OK: %d Fehler\n", fehler); return 1; }

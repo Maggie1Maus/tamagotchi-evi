@@ -123,7 +123,7 @@ MomentArt momentWaehlen(Stimmung s, bool istMuede, int laune, Gedanke& gedanke) 
 }
 
 bool momentErlaubt() {
-  return !(lage.gassi && millis() - lage.letzterGezaehlt < L::GASSI_ZEIGEN_MS) && !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
+  return !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
          evi.takt >= evi.reaktionBisTakt && evi.takt >= moment.ruheBisTakt;
 }
 
@@ -258,10 +258,6 @@ void momentStarten(MomentArt art, Gedanke gedanke) {
       akt(A_HEIM, 0, 0, nullptr);
       break;
     // Seit 24.11.2026: Bewegung (bewegung.ino)
-    case M_GASSI:
-      // Du gehst mit Evi spazieren: Sie trabt auf dem Teppich mit, solange Schritte kommen.
-      akt(A_GASSI, 0, 0, nullptr);
-      break;
     case M_ROLLEN:
       // Gekippt: Der Ball rollt zur tieferen Seite, Evi rennt hinterher. Liegt das Gerät wieder gerade,
       // holt sie ihn sich.
@@ -547,17 +543,6 @@ int aktSchritt(int nummer) {
         return 1;
       }
       stern.sichtbar = false;
-      return 0;
-    case A_GASSI:
-      // Traben auf der Stelle: Bild „laufen“, kleine Schritte auf und ab
-      if (lage.gassi && millis() - lage.letzterGezaehlt < L::GASSI_ZEIGEN_MS) {
-        moment.bild = MB_LAUFEN;
-        geher.lift = (moment.zaehler / 2) % 2 ? 2 : 0;
-        moment.zaehler++;
-        return 1;
-      }
-      moment.bild = MB_KEINS;
-      geher.lift = 0;
       return 0;
     case A_ROLLEN: {
       // Der Ball rollt mit der Neigung (Punkte pro Takt), prallt sanft von den Wänden ab.

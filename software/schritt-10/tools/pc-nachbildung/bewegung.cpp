@@ -80,66 +80,26 @@ int main() {
   printf("   Neigung in der Hand: %.2f\n", lageKippen());
   PRUEFE(fabsf(lageKippen()) < 0.05f, "gerade gehalten: keine Neigung");
 
-  // ---------- Gassi gehen ----------
-  // Schritte mit 1,8 pro Sekunde: die Kraft schwingt um 1 g (±0,35 g)
-  const uint32_t munzenVorher = pet.muenzen;
-  const double launeVorher = pet.laune, sattVorher = pet.satt;
-  // Beim Aufteilen des Spaziergangs die Schrittphase fortsetzen. Ein Neustart der Sinuskurve
-  // zwischen zwei laufen()-Aufrufen wäre ein unregelmäßiger Schritt und setzt die Erkennung zurück.
-  uint32_t gehenPhase = 0;
-  auto gehen = [&](uint32_t t, float& x, float& y, float& z) {
-    const float w = 1 + 0.35f * sinf((t + gehenPhase) / 1000.0f * 2 * 3.14159f * 1.8f);
-    x = 0; y = 0.71f * w; z = 0.71f * w;
-  };
-  laufen(7000, gehen);
-  gehenPhase += 7000;
-  PRUEFE(lage.gassi, "Gehen erkannt");
-  PRUEFE(moment.art == M_GASSI, "Evi trabt mit");
-  laufen(2000, gehen);
-  gehenPhase += 2000;
-  char zeile[100];
-  stimmungsText(beschreiben(pet, jetztMs()), jetztMs(), zeile, sizeof(zeile));
-  printf("   Zeile: %s\n", zeile);
-  PRUEFE(strstr(zeile, "Gassi gehen") != nullptr, "Zeile zeigt die Schritte");
-  zeichneAlles(); foto("gassi");
-  laufen(240000, gehen);   // 4 Minuten Spaziergang
-  printf("   Schritte bisher: %lu (erwartet etwa %d)\n", (unsigned long)lage.gassiSchritte, (int)(249 * 1.8));
-  PRUEFE(lage.gassiSchritte > 420 && lage.gassiSchritte < 460, "Schritte richtig gezählt");
-  laufen(5000, inDerHand);
-  PRUEFE(moment.art != M_GASSI, "nach dem Gehen trabt sie nicht mehr");
-  laufen(60000, inDerHand);
-  printf("   Laune %.1f -> %.1f, Münzen %lu -> %lu, Satt %.1f -> %.1f\n", launeVorher, pet.laune,
-         (unsigned long)munzenVorher, (unsigned long)pet.muenzen, sattVorher, pet.satt);
-  printf("   Meldung: %s\n", meldung);
-  PRUEFE(!lage.gassi, "Spaziergang ist zu Ende");
-  PRUEFE(pet.muenzen == munzenVorher + bewegung.schritteHeute / 500, "1 Münze je 500 Schritte");
-  PRUEFE(pet.laune > launeVorher + 5, "Evi freut sich nach dem Spaziergang");
-  PRUEFE(strstr(meldung, "Spaziergang") != nullptr, "Meldung zum Spaziergang");
-  PRUEFE(bewegung.schritteHeute > 400, "Schritte von heute gemerkt");
-  // Ruhig liegend (kleines Zittern) zählt nichts
-  laufen(60000, [](uint32_t t, float& x, float& y, float& z) { x = 0.01f * sinf(t * 0.37f); y = 0.71f; z = 0.71f + 0.02f * sinf(t * 0.11f); });
-  PRUEFE(!lage.gassi, "Zittern ist kein Gehen");
-
   // ---------- Was am Board zu viel auslöste (24.11.2026) ----------
-  // In der Hand stillhalten: die Hand zittert und bewegt sich etwas (zufällig bis ±0,12 g, kleine Ruckler)
+  // Gassi gehen (Schritte zählen) und Schütteln sind seit 25.11.2026 ganz entfernt (Schlafmodus).
+  // Bei alldem soll Evi nichts Besonderes tun.
   vorbereiten(12, 10);
   srand(7);
+  // In der Hand stillhalten: die Hand zittert und bewegt sich etwas (zufällig bis ±0,12 g, kleine Ruckler)
   auto hand = [](uint32_t t, float& x, float& y, float& z) {
     auto z1 = []() { return (rand() % 2001 - 1000) / 1000.0f; };
     const float ruck = (t % 1700 < 60) ? 0.25f : 0;
     x = 0.06f * z1() + 0.05f * sinf(t * 0.004f); y = 0.71f + 0.08f * z1() + ruck; z = 0.71f + 0.08f * z1() - ruck;
   };
-  const uint32_t schritteVorher = bewegung.schritteHeute;
   laufen(120000, hand);
-  PRUEFE(!lage.gassi && bewegung.schritteHeute == schritteVorher, "in der Hand stillgehalten: keine Schritte");
   PRUEFE(moment.art == M_KEINER, "in der Hand stillgehalten: Evi tut nichts Besonderes");
-  // Nach links und rechts kippen, immer wieder (je 1,5 s)
-  laufen(60000, [](uint32_t t, float& x, float& y, float& z) {
-    const float w = 0.6f * sinf(t / 1500.0f * 3.14159f);
-    x = sinf(w) * 0.71f; y = 0.71f; z = cosf(w) * 0.71f; });
-  PRUEFE(!lage.gassi && bewegung.schritteHeute == schritteVorher, "hin und her gekippt: keine Schritte");
-  laufen(3000, inDerHand);
-  momentStoppen(true);
+  // Mit Evi in der Hand gehen (1,8 Schritte pro Sekunde): kein Mittraben, keine Meldung, keine Münzen
+  const uint32_t muenzenVorher = pet.muenzen;
+  laufen(30000, [](uint32_t t, float& x, float& y, float& z) {
+    const float w = 1 + 0.35f * sinf(t / 1000.0f * 2 * 3.14159f * 1.8f); x = 0; y = 0.71f * w; z = 0.71f * w; });
+  laufen(70000, inDerHand);
+  PRUEFE(moment.art == M_KEINER && pet.muenzen == muenzenVorher && !strstr(meldung, "Spaziergang"),
+         "gehen: Evi trabt nicht mit, kein Spaziergang (Gassi entfernt)");
   // Auf den Tisch legen: hinunter bewegen, kurz aufsetzen (Stoß mit Nachschwingen), dann still flach
   auto ablegen = [](uint32_t t, float& x, float& y, float& z) {
     if (t < 800) { const float a = t / 800.0f; x = 0; y = 0.71f * (1 - a); z = 0.71f + 0.29f * a; z += 0.3f * sinf(a * 3.14159f); return; }
@@ -148,25 +108,17 @@ int main() {
   };
   for (int i = 0; i < 5; i++) { laufen(4000, ablegen); laufen(2000, inDerHand); }
   PRUEFE(moment.art == M_KEINER, "fünfmal auf den Tisch gelegt: Evi tut nichts Besonderes");
-  PRUEFE(!lage.gassi && bewegung.schritteHeute == schritteVorher, "auf den Tisch gelegt: keine Schritte");
-  // Wackeln und Schütteln: seit 24.11.2026 ohne Reaktion (Wunsch der Nutzerin), und es zählt nicht als Gehen
+  // Wackeln und Schütteln: seit 24.11.2026 ohne Reaktion (Wunsch der Nutzerin)
   laufen(2000, inDerHand);
-  const char* meldungVorher = meldung;
   laufen(2000, [](uint32_t t, float& x, float& y, float& z) { x = 1.0f * sinf(t / 1000.0f * 2 * 3.14159f * 3); y = 0.71f; z = 0.71f; });
   laufen(1200, [](uint32_t t, float& x, float& y, float& z) { x = 2.6f * sinf(t / 1000.0f * 2 * 3.14159f * 4); y = 0.71f; z = 0.71f; });
-  PRUEFE(moment.art == M_KEINER && !lage.gassi && geher.x == 0 && !strstr(meldung, "dreht"), "gewackelt und geschüttelt: Evi tut nichts");
-  (void)meldungVorher;
+  PRUEFE(moment.art == M_KEINER && geher.x == 0 && !strstr(meldung, "dreht"), "gewackelt und geschüttelt: Evi tut nichts");
   laufen(10000, inDerHand);
   momentStoppen(true);
   // Sensor misst im doppelten Maßstab (anders eingestellt als erwartet): nach kurzer Ruhe stimmt es wieder
   laufen(8000, [](uint32_t, float& x, float& y, float& z) { x = 0; y = 1.42f; z = 1.42f; });
   printf("   gelernter Maßstab: 1 g = %.2f\n", lage.eins);
   PRUEFE(fabsf(lage.eins - 2) < 0.1f, "anderer Maßstab: beim Stillhalten gelernt");
-  laufen(120000, [&hand](uint32_t t, float& x, float& y, float& z) { hand(t, x, y, z); x *= 2; y *= 2; z *= 2; });
-  PRUEFE(!lage.gassi, "anderer Maßstab: Stillhalten gibt keine Schritte");
-  laufen(30000, [](uint32_t t, float& x, float& y, float& z) {
-    const float w = 1 + 0.35f * sinf(t / 1000.0f * 2 * 3.14159f * 1.8f); x = 0; y = 1.42f * w; z = 1.42f * w; });
-  PRUEFE(lage.gassi, "anderer Maßstab: Gehen wird erkannt");
   laufen(70000, [](uint32_t, float& x, float& y, float& z) { x = 0; y = 1.42f; z = 1.42f; });
   laufen(3000, inDerHand);
 

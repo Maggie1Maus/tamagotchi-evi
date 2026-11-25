@@ -12,8 +12,8 @@
 // Etappe 2: die drei Spiele (spiele.ino). Etappe 3 (Name ändern und Hilfe) seit 24.11.2026 wieder entfernt.
 // Etappe 4: Evis eigene Momente, Begrüßung, Tageslaune und Besuch (momente.ino, ab Baby bis Oma).
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
-// Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): Gassi gehen, kippen, aufs Gesicht
-// legen (Schütteln seit 24.11.2026 wieder entfernt); dazu „Wie war dein Tag?“ und die Spiele Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board).
+// Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): kippen, aufs Gesicht legen (Schütteln seit 24.11.2026,
+// Gassi gehen seit 25.11.2026 wieder entfernt); dazu „Wie war dein Tag?“ und die Spiele Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board).
 // Seit 25.11.2026: Schlafmodus (schlaf.h), damit die Batterien länger halten; Helligkeit 50 %.
 //
 // Board in der Arduino IDE: „Raspberry Pi Pico 2“. Bibliothek: „Adafruit GFX Library“.
@@ -154,6 +154,8 @@ void bildschirmEin() {
   letzteBeruehrung = millis();
   taktVoll();                     // Schlafmodus (schlaf.h): erst wieder voller Takt, dann den Bildschirm-Chip wecken
   lcdAufwachen();
+  touchAufwachen();
+  lage.abtastMs = L::ABTAST_MS;
   if (!bildschirmAn) bildschirmAn = true;
   helligkeit(HELL_PROZENT);
 }
@@ -530,15 +532,13 @@ void stimmungsText(Stimmung s, ms_t jetzt, char* aus, size_t n) {
     default: {
       Wunsch w;
       if (geweckt(pet, jetzt)) { snprintf(aus, n, "Gähn … wach für %d Min.", (int)max((ms_t)1, (pet.wachBis - jetzt + MINUTE - 1) / MINUTE)); return; }
-      if (gassiZeile(jetzt, aus, n)) return;
       if (launenBeleidigt()) { snprintf(aus, n, "%s", beleidigtZeile()); return; }
       if (aktuellerWunsch(pet, jetzt, w)) { snprintf(aus, n, "Ein Wunsch!"); return; }
       if (ausgeschlafen(pet, jetzt)) { snprintf(aus, n, "Ausgeschlafen! Guten Morgen"); return; }
       if (muede(pet, jetzt)) { snprintf(aus, n, "%s", stundeVon(jetzt) < 12 ? "Gähn … guten Morgen" : "Gähn … Zeit für Gute Nacht?"); return; }
-      // Alle 10 Sekunden im Wechsel: Tageslaune (ab Baby), Schritte von heute, Hinweis zum Menü
+      // Alle 10 Sekunden im Wechsel: Tageslaune (ab Baby), Hinweis zum Menü
       const int wechsel = (int)((jetzt / 10000) % 3);
       if (momenteFuer(phaseBei(pet, jetzt)) && wechsel == 1) { launeZeile(jetzt, aus, n); return; }
-      if (wechsel == 2 && schritteZeile(jetzt, aus, n)) return;
       // Mit Tasten ist Touch zum Kuscheln da: im Wechsel daran erinnern
       if (tastenDa && (jetzt / 30000) % 2) snprintf(aus, n, "Tipp mich an zum Kuscheln ♥");
       else snprintf(aus, n, "%s", tastenDa ? "A öffnet das Menü" : "Mitte öffnet das Menü");
@@ -851,7 +851,7 @@ void bildschirmAus() {
   menueZeigen(false);
   bildschirmAn = false;
   helligkeit(0);
-  lcdSchlafen();                  // Schlafmodus: auch der Bildschirm-Chip ruht (bildschirm.h)
+  schlafmodusDunkel();            // Schlafmodus: Bildschirm-Chip, Touch und Lagesensor ruhen (schlaf.h)
   dunkelSeit = jetztMs();
 }
 
@@ -995,17 +995,35 @@ void uhrStellenBildschirm(ms_t vorschlag) {
 }
 
 // ---------- Schlafmodus (seit 25.11.2026, schlaf.h) ----------
+// Bildschirm geht aus: Bildschirm-Chip schlafen legen, Touch aus (nur wenn es Tasten gibt), Lagesensor seltener
+void schlafmodusDunkel() {
+  lcdSchlafen();
+  if (SCHLAF_TOUCH && tastenDa) touchSchlafen();
+  lage.abtastMs = LAGE_DUNKEL_MS;
+}
+
 // Am Ende jeder Runde: Ist nichts zu tun, schläft der Chip bis zur nächsten Abfrage.
 void stromSparen() {
   // Dunkel und still seit ein paar Sekunden: langsamer Takt. Ein Ton oder der Bildschirm holen ihn zurück.
   if (!bildschirmAn && !tonSpielt() && jetztMs() - dunkelSeit >= (ms_t)TAKT_SENKEN_NACH) taktSenken();
+  if (!bildschirmAn && touchAus && !tastenDa) touchAufwachen();   // Tasten weg (Kabel ab?): Touch muss wecken können
   if (!SCHLAF_CHIP || fingerUnten || (bildschirmAn && spiel.aktiv)) return;   // Finger auf Evi, Spiele: flüssig bleiben
-  // Höchstens bis zur nächsten Messung des Lagesensors (alle 20 ms), damit Gassi auch im Dunkeln Schritte zählt
-  uint32_t ms = bildschirmAn ? SCHLAF_HELL_MS : SCHLAF_DUNKEL_MS;
-  if (lage.da) {
-    const uint32_t seit = millis() - lage.letzteMessung;
-    if (seit >= L::ABTAST_MS) ms = 0;
-    else if (L::ABTAST_MS - seit < ms) ms = L::ABTAST_MS - seit;
+  const uint32_t m = millis();
+  uint32_t ms;
+  if (bildschirmAn) {
+    ms = SCHLAF_HELL_MS;
+  } else {
+    // Dunkel: bis zum nächsten Spielschritt (Evis Uhr, Momente, Fragen laufen weiter)
+    const uint32_t seit = m - letzterTakt;
+    ms = seit >= TAKT_MS ? 0 : TAKT_MS - seit;
+    if (ms > SCHLAF_DUNKEL_MS) ms = SCHLAF_DUNKEL_MS;
+    if (tonSpielt() && ms > SCHLAF_TON_MS) ms = SCHLAF_TON_MS;
+  }
+  // Hell nie über die nächste Messung des Lagesensors hinaus (dunkel misst er bei jedem Aufwachen)
+  if (bildschirmAn && lage.da) {
+    const uint32_t seit = m - lage.letzteMessung;
+    if (seit >= lage.abtastMs) ms = 0;
+    else if (lage.abtastMs - seit < ms) ms = lage.abtastMs - seit;
   }
   if (ms > 0) schlafen(ms);
 }
@@ -1036,18 +1054,18 @@ void seriellPruefen() {
       // Lagesensor prüfen (Seriellen Monitor öffnen, „L“ senden): was er misst und was Evi gelernt hat
       char z[200];
       snprintf(z, sizeof(z), "LAGE da=%d adresse=0x%02X bytes=%s 1g=%.3f | x=%.2f y=%.2f z=%.2f g | Bildschirm-Achse=%d(%d) Oberkante=%d(%d) | "
-               "Unruhe=%.2f Neigung=%.2f Serie=%d Schritte=%lu",
+               "Unruhe=%.2f Neigung=%.2f",
                lage.da, lage.adresse, lage.grossEndian ? "gross" : "klein", lage.eins, lage.x, lage.y, lage.z,
-               lage.nAchse, lage.nVz, lage.uAchse, lage.uVz, lage.unruhe, lageKippen(), lage.serie, (unsigned long)lage.gassiSchritte);
+               lage.nAchse, lage.nVz, lage.uAchse, lage.uVz, lage.unruhe, lageKippen());
       Serial.println(z);
     }
     if (c == 'P') {
       // Schlafmodus prüfen (schlaf.h): wie viel der Chip seit der letzten Abfrage geschlafen hat
       const uint32_t m = millis(), dauer = m - schlafSeit;
       char z[160];
-      snprintf(z, sizeof(z), "STROM bildschirm=%s licht=%d%% lcd=%s ton=%s takt=%luMHz geschlafen=%lu von %lu ms (%lu%%)",
+      snprintf(z, sizeof(z), "STROM bildschirm=%s licht=%d%% lcd=%s touch=%s ton=%s takt=%luMHz geschlafen=%lu von %lu ms (%lu%%)",
                bildschirmAn ? "an" : "aus", bildschirmAn ? HELL_PROZENT : 0, lcdSchlaeft ? "schlaeft" : "wach",
-               i2sLaeuft ? "an" : "aus", (unsigned long)taktMhz(), (unsigned long)schlafMs, (unsigned long)dauer,
+               touchAus ? "aus" : "an", i2sLaeuft ? "an" : "aus", (unsigned long)taktMhz(), (unsigned long)schlafMs, (unsigned long)dauer,
                (unsigned long)(dauer ? (uint64_t)schlafMs * 100 / dauer : 0));
       Serial.println(z);
       schlafMs = 0;
@@ -1121,7 +1139,7 @@ void setup() {
 void loop() {
   tonWeiter();
   seriellPruefen();
-  bewegungTakt();                 // Lagesensor: Gassi, kippen, aufs Gesicht
+  bewegungTakt();                 // Lagesensor: kippen, aufs Gesicht
   sideboardTakt(jetztMs());
   gartenTakt(jetztMs());
 
@@ -1171,7 +1189,7 @@ void loop() {
       bildschirmAn = false;
       menueZeigen(false);
       helligkeit(0);
-      lcdSchlafen();
+      schlafmodusDunkel();
       dunkelSeit = jetzt;
     }
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }

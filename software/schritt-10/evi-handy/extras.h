@@ -47,13 +47,12 @@ SpielZustand spiel;
 // ---------- Evis Momente (moments.js, SCRIPTS in app.js) ----------
 const ms_t GRUSS_NACH = 3 * MINUTE, LANGE_WEG = 4 * STUNDE;   // Begrüßung: nach 3 Minuten weg, „endlich“ nach 4 Stunden
 const uint32_t RUHE_TAKTE = 120;   // QUIET_TICKS: etwa 15 s ohne neuen Moment nach Begrüßung und Pflege
-// Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Gassi (mittraben),
-// Rollen (gekippt: der Ball rollt), Nickerchen (wieder umgedreht), Trösten (Antwort auf „Wie war dein Tag?“)
+// Seit 24.11.2026 dazu, ausgelöst durch Bewegung (bewegung.ino): Rollen (gekippt: der Ball rollt), Nickerchen (wieder umgedreht), Trösten (Antwort auf „Wie war dein Tag?“)
 // Seit 24.11.2026 dazu: Kuschelwunsch (Evi möchte gekuschelt werden, kuscheln.ino)
 // Seit 24.11.2026 ist M_KUSCHELN der Launenwunsch aller vier Tageslaunen (launen.ino), M_ENTTAEUSCHT die Folge,
 // wenn ein Wunsch nicht erfüllt wurde.
 enum MomentArt : uint8_t { M_GEHEN, M_FENSTER, M_DENKEN, M_SUMMEN, M_GAEHNEN, M_DREHEN, M_FALTER, M_VOGEL, M_STERN, M_HEIM,
-                           M_GASSI, M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_ENTTAEUSCHT,
+                           M_ROLLEN, M_NICKERCHEN, M_TROESTEN, M_KUSCHELN, M_ENTTAEUSCHT,
                            // Seit 25.11.2026 (freunde.ino): Geschenk, beste Freunde geworden/verloren, Geburtstag
                            M_GESCHENK, M_BESTE, M_BESTE_WEG, M_GEBURTSTAG, M_KEINER = 255 };
 // Bilder der Momente: Nummer in MOMENT_BILD (momente.h); ab 100 Evis Emotionsbilder (ART)
@@ -65,7 +64,7 @@ enum Gedanke : int8_t { GD_KEINER = -1, GD_HERZ, GD_KEKS, GD_BALL, GD_NOTE, GD_F
 enum AktArt : uint8_t { A_MELDUNG, A_SAGEN, A_TON, A_WARTEN, A_GEHEN, A_HEIM, A_HUEPFEN, A_BILD, A_FLIP, A_DENKEN, A_SUMMEN, A_DREHEN,
                         A_FALTER_REIN, A_FALTER_KREISEN, A_FALTER_LANDEN, A_FALTER_SITZEN, A_FALTER_WEG,
                         A_VOGEL_REIN, A_VOGEL_SINGEN, A_VOGEL_WEG, A_STERN,
-                        A_GASSI, A_ROLLEN, A_BALL_WEG,
+                        A_ROLLEN, A_BALL_WEG,
                         A_WUNSCH_WARTEN,     // wartet, solange der Launenwunsch offen ist (launen.ino)
                         A_HERZEN, A_GESCHENK, A_MELODIE };   // freunde.ino: viele Herzen, Münzen schenken, Melodie (a)
 struct Akt { AktArt art; int16_t a, b; const char* text; };
@@ -116,7 +115,7 @@ ms_t dunkelSeit = 0;
 // Evi antippen oder über sie streichen. seit/bis: millis(), solange Herzen aufsteigen.
 struct {
   uint32_t seit = 0, bis = 0;
-  bool klein = false;          // nur Herzen, Evi bleibt, wie sie ist (Schlaf, Ei, Besuch, Gassi)
+  bool klein = false;          // nur Herzen, Evi bleibt, wie sie ist (Schlaf, Ei, Besuch)
   bool gross = false;          // erfüllter Kuschelwunsch: mehr Herzen
   bool heim = false;           // danach zum Teppich zurückgehen (ein Moment wurde unterbrochen)
   ms_t letzteWirkung = 0;      // wann die Stimmung zuletzt stieg (höchstens einmal pro Minute)
@@ -196,9 +195,5 @@ const int GLAS_X = 33, GLAS_Y = 49, GLAS_B = 62, GLAS_H = 69;
 struct { bool sichtbar = false; float x = 0, v = 0; int gerade = 0; } rollBall;
 struct {
   bool ausDurchLage = false;     // Bildschirm ging aus, weil das Gerät aufs Gesicht gelegt wurde
-  bool gassiOffen = false;       // Ein Spaziergang endete bei dunklem Bildschirm: beim Einschalten erzählen
-  char gassiText[64] = "";
-  uint32_t schritteHeute = 0;    // nur im Arbeitsspeicher
-  int32_t schritteTag = -1;
   int32_t tagGefragt = -1, tagBeantwortet = -1;   // „Wie war dein Tag?“ (Tageskennung)
 } bewegung;

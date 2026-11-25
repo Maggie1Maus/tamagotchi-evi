@@ -1,11 +1,10 @@
 // Evi spürt Bewegung (Wunsch der Nutzerin vom 24.11.2026, nur auf dem Board, nicht in der Handy-App).
 // Der Lagesensor und die Erkennung stehen in lage.h; hier steht, was Evi dann tut:
-//  - Gassi gehen: Trägst du Evi beim Gehen mit, zählt sie die Schritte und trabt mit. Ab 100 Schritten
-//    freut sie sich nach dem Spaziergang (Regeln: gassiBeenden in pet.h).
 //  - Kippen: Ein Ball rollt zur tieferen Seite, und Evi rennt hinterher.
 //  - Aufs Gesicht legen: Der Bildschirm geht aus (nachts macht das auch das Licht aus).
 //    Umgedreht geht er wieder an, und Evi gähnt oder begrüßt dich.
 // Dazu „Wie war dein Tag?“: Abends fragt Evi einmal danach und reagiert auf deine Antwort.
+// Gassi gehen (Schritte zählen, mittraben) wurde am 25.11.2026 auf Wunsch der Nutzerin ganz entfernt (Schlafmodus).
 
 const int TAG_FRAGEN_AB = 18, TAG_FRAGEN_BIS = 23;   // Uhrzeit
 const uint32_t NICKERCHEN_AB_MS = 20000;
@@ -92,42 +91,11 @@ bool eviKannReagieren(ms_t jetzt) {
 
 bool besuchDa() { return moment.art == M_FALTER || moment.art == M_VOGEL || moment.art == M_STERN; }
 
-void schritteZaehlen(ms_t jetzt) {
-  const int32_t heute = tagKennung(jetzt);
-  if (bewegung.schritteTag != heute) { bewegung.schritteTag = heute; bewegung.schritteHeute = 0; }
-}
-
-void gassiSchritte(ms_t jetzt, uint32_t neu) {
-  schritteZaehlen(jetzt);
-  bewegung.schritteHeute += neu;
-  // Evi trabt mit, wenn du zuschaust und sie gerade nichts anderes tut
-  if (moment.art == M_KEINER && eviKannReagieren(jetzt) && !geweckt(pet, jetzt)) momentStarten(M_GASSI, GD_KEINER);
-}
-
-void gassiErzaehlen() {
-  reagiere(R_JUBEL, 20);
-  sage("Das war schön draußen!", &SYM_W_HERZ, 4000);
-  zeigeMeldung(bewegung.gassiText, 6000);
-  piep(TON(TON_MUENZE));
-  moment.ruheBisTakt = evi.takt + RUHE_TAKTE;
-}
-
-void gassiZuEnde(ms_t jetzt, uint32_t schritte) {
-  const Ergebnis r = gassiBeenden(pet, schritte, jetzt);
-  if (!r.geaendert) return;
-  const int fund = fundBeimGassi(schritte, jetzt, pet.generation);
-  speichern(jetzt);
-  snprintf(bewegung.gassiText, sizeof(bewegung.gassiText), "Spaziergang: %lu Schritte · +%d Münzen", (unsigned long)schritte, r.muenzen);
-  if (fund >= 0) snprintf(bewegung.gassiText, sizeof(bewegung.gassiText), "Spaziergang: %lu Schritte · Fund: %s", (unsigned long)schritte, FUND_NAME[fund]);
-  if (bildschirmAn && !spiel.aktiv && !ritual.aktiv && sideboard.phase == SB_ZU && garten.phase == GA_ZU) gassiErzaehlen();
-  else bewegung.gassiOffen = true;   // erzählt sie, sobald der Bildschirm wieder an ist
-}
-
 void gekippt(ms_t jetzt, int seite) {
   if (!bildschirmAn || spiel.aktiv || ritual.aktiv || menueOffen) return;
   const Phase ph = phaseBei(pet, jetzt);
   if (ph == EI) { evi.wackelnBis = evi.takt + 12; return; }
-  if (!eviKannReagieren(jetzt) || besuchDa() || moment.art == M_ROLLEN || moment.art == M_GASSI) return;
+  if (!eviKannReagieren(jetzt) || besuchDa() || moment.art == M_ROLLEN) return;
   momentStoppen(true);
   rollBall.x = BODEN_X + seite * 24;
   rollBall.v = seite * 2.0f;
@@ -162,31 +130,9 @@ void wiederUmgedreht(ms_t jetzt, uint32_t dauer) {
 void bewegungTakt() {
   const uint8_t e = lageLesen();
   const ms_t jetzt = jetztMs();
-  if (e & LE_SCHRITTE) { gassiSchritte(jetzt, lage.neu); lage.neu = 0; }
-  if (e & LE_GASSI_ENDE) gassiZuEnde(jetzt, lage.gassiEnde);
   if (e & LE_KIPPEN) gekippt(jetzt, lage.kippSeite);
   if (e & LE_GESICHT_UNTEN) aufsGesicht(jetzt);
   if (e & LE_GESICHT_OBEN) wiederUmgedreht(jetzt, lage.untenDauer);
-  if (bewegung.gassiOffen && bildschirmAn && !spiel.aktiv && !ritual.aktiv && !menueOffen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) {
-    bewegung.gassiOffen = false;
-    gassiErzaehlen();
-  }
-}
-
-// Zeile unten: Gassi und Schritte heute (stimmungsText in evi-handy.ino)
-bool gassiZeile(ms_t jetzt, char* aus, size_t n) {
-  if (lage.gassi && millis() - lage.letzterGezaehlt < L::GASSI_ZEIGEN_MS) {
-    snprintf(aus, n, "Gassi gehen … %lu Schritte", (unsigned long)lage.gassiSchritte);
-    return true;
-  }
-  return false;
-}
-
-bool schritteZeile(ms_t jetzt, char* aus, size_t n) {
-  schritteZaehlen(jetzt);
-  if (bewegung.schritteHeute == 0) return false;
-  snprintf(aus, n, "Heute %lu Schritte zusammen", (unsigned long)bewegung.schritteHeute);
-  return true;
 }
 
 // ---------- „Wie war dein Tag?“ ----------

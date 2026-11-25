@@ -56,6 +56,27 @@ void touchStarten() {
   attachInterrupt(digitalPinToInterrupt(TOUCH_INT), touchUnterbrechung, FALLING);
 }
 
+// Im Dunkeln ist Touch aus (Wunsch der Nutzerin vom 25.11.2026, schlaf.h): Der Touch-Chip wird im Reset
+// gehalten und braucht so kaum Strom. Wecken geht dann nur mit den Tasten. Nach dem Loslassen braucht der Chip
+// etwa 100 ms, bis er wieder misst (wie in touchStarten); so lange werden Meldungen nicht beachtet.
+bool touchAus = false;
+static uint32_t touchBereitAb = 0;
+
+void touchSchlafen() {
+  if (touchAus) return;
+  digitalWrite(TOUCH_RST, LOW);
+  touchAus = true;
+  touchMeldet = false;
+}
+
+void touchAufwachen() {
+  if (!touchAus) return;
+  digitalWrite(TOUCH_RST, HIGH);
+  touchAus = false;
+  touchBereitAb = millis() + 150;
+  touchMeldet = false;
+}
+
 const char* touchName() {
   switch (touchChip) {
     case TOUCH_CST3530: return "CST3530 (V2)";
@@ -71,6 +92,7 @@ int touchRohX = -1, touchRohY = -1;
 bool touchLesen(int& x, int& y) {
   if (!touchMeldet) return false;
   touchMeldet = false;
+  if (touchAus || (int32_t)(millis() - touchBereitAb) < 0) return false;   // im Reset oder startet noch
 
   int rx, ry;
   if (touchChip == TOUCH_CST3530) {

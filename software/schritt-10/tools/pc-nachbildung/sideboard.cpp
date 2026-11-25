@@ -56,10 +56,9 @@ int main() {
   warten(700); PRUEFE(sideboard.phase == SB_OFFEN, "eigene Sammlungsansicht öffnet sich");
   zeichneAlles(); foto("sideboard-leer");
   PRUEFE(sammlung.anzahl == 0, "Öffnen erzeugt keine erfundenen Funde");
-  PRUEFE(fundBeimGassi(99, jetzt, 1) == -1, "zu kurzer Spaziergang bringt nichts mit");
-  PRUEFE(fundBeimGassi(100, jetzt, 1) >= 0, "erster ausreichender Spaziergang bringt einen Fund");
-  PRUEFE(sammlung.anzahl == 1 && sammlung.fund[0].tag == 20261124, "Fund merkt echtes Datum und Generation");
-  PRUEFE(fundBeimGassi(1000, jetzt, 1) == -1 && sammlung.anzahl == 1, "höchstens ein Fund pro Tag");
+  // Funde vom Gassigehen gibt es seit 25.11.2026 nicht mehr; ältere bleiben in der Sammlung (hier nachgestellt)
+  PRUEFE(fundAufnehmen(FUND_STEIN, FUND_GASSI, 20261124, 1), "älterer Fund vom Spaziergang wird aufgenommen");
+  PRUEFE(sammlung.anzahl == 1 && sammlung.fund[0].tag == 20261124 && sammlung.fund[0].generation == 1, "Fund merkt echtes Datum und Generation");
   PRUEFE(fundAufnehmen(FUND_BLATT, FUND_GASSI, 20261123, 1), "weiterer Fund kann aufgenommen werden");
   sideboard.auswahl = 0; zeichneAlles(); foto("sideboard-fund");
   knopf(K_R); PRUEFE(sideboard.auswahl == 1, "rechts blättert vor");
@@ -115,12 +114,15 @@ int main() {
     for (int art = 0; art < FUNDARTEN; art++)
       PRUEFE(sammlung.fund[art].art == art && sammlung.fund[art].tag == 20261124, "Bildzuordnung und Fundtag bleiben erhalten");
     sammlung = Sammlung();
+    // Seit Gassi entfernt ist (25.11.2026), kommen neue Funde nur aus dem Garten: jede Art muss dort vorkommen
     bool gesehen[FUNDARTEN] = {};
-    for (int tag = 0; tag < 365; tag++) {
-      const int art = fundBeimGassi(1000, jetzt + (ms_t)tag * TAG, pet.generation);
-      if (art >= 0) gesehen[art] = true;
+    for (int tag = 0; tag < 365; tag++) for (uint8_t st = 0; st < 3; st++) {
+      sammlung = Sammlung(); garten.stelle = st; garten.fund = -1;
+      gartenErgebnis(jetzt + (ms_t)tag * TAG);
+      if (garten.fund >= 0) gesehen[sammlung.fund[garten.fund].art] = true;
     }
-    for (int art = 0; art < FUNDARTEN; art++) PRUEFE(gesehen[art], "jede neue Art ist beim Gassigehen erreichbar");
+    garten = GartenZustand();
+    for (int art = 0; art < FUNDARTEN; art++) PRUEFE(gesehen[art], "jede Art ist im Garten erreichbar");
     sammlung = vorher;
   }
   for (int i = sammlung.anzahl; i < SAMMLUNG_MAX; i++) fundAufnehmen(FUND_STEIN, FUND_GASSI, 20261124, 1);

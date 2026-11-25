@@ -55,8 +55,9 @@ void tonStarten() {
   if (!TON_PAUSE_AUS) i2sAn();
 }
 
-// Spielt gerade ein Ton? Dann bleibt der volle Takt (sonst stimmt die Tonhöhe nicht).
-bool tonSpielt() { return melodie != nullptr; }
+// Spielt gerade ein Ton (auch das Ende, das noch im Puffer steht, etwa 70 ms)? Dann bleibt der volle Takt
+// (sonst stimmt die Tonhöhe nicht), und der Chip schläft nur kurz, damit der Puffer nicht leerläuft.
+bool tonSpielt() { return melodie != nullptr || (i2sLaeuft && millis() - tonZuletzt < 100); }
 
 void piep(const Note* noten, int laenge) {
   if (!tonAn) return;

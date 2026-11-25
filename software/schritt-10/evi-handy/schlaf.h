@@ -1,12 +1,15 @@
 // Schlafmodus (Wunsch der Nutzerin vom 25.11.2026): Vier neue AAA waren nach weniger als einem Tag leer,
 // obwohl der Bildschirm meist aus war. „Bildschirm aus“ hat bis dahin nur das Licht abgeschaltet; der Chip
-// lief ohne Pause mit vollem Takt weiter. Jetzt spart Evi an vier Stellen:
+// lief ohne Pause mit vollem Takt weiter. Jetzt spart Evi an fünf Stellen:
 //  1. Der Chip schläft zwischen zwei Abfragen (delay() wartet beim RP2350 schlafend, nicht rechnend).
-//     Dunkel: bis zur nächsten Messung des Lagesensors (alle 20 ms, damit Gassi weiter Schritte zählt).
 //     Hell: kurze Pausen von 2 ms, außer in Spielen und solange ein Finger auf dem Bildschirm liegt.
+//     Dunkel: bis zum nächsten Spielschritt (alle 120 ms). Der Lagesensor misst dann auch nur so oft; das reicht
+//     fürs Umdrehen. (Erste Fassung: alle 20 ms für Gassi; gemessen dunkel 30–47 mA. Gassi ist seitdem entfernt.)
 //  2. Dunkel läuft der Chip langsamer (48 statt 150 MHz). Bildschirm an oder ein Ton: sofort wieder voll.
 //  3. Der Bildschirm-Chip schläft, solange der Bildschirm aus ist (bildschirm.h: lcdSchlafen/lcdAufwachen).
 //  4. Der Ton-Chip bekommt nur Takt, während ein Ton spielt (ton.h).
+//  5. Dunkel ist Touch aus: Der Touch-Chip wird im Reset gehalten (touch.h). Wecken mit den Tasten.
+//     Nur wenn die Tasten fehlen (MCP23017 nicht gefunden), bleibt Touch an, sonst ließe sich Evi nicht wecken.
 // Jede Stelle lässt sich hier einzeln abschalten (false), falls am Board etwas nicht stimmt.
 // Im Seriellen Monitor zeigt „P“, wie viel der Chip seit der letzten Abfrage geschlafen hat.
 #pragma once
@@ -17,7 +20,10 @@
 const bool SCHLAF_CHIP = true;           // 1. zwischen den Abfragen schlafen
 const bool SCHLAF_TAKT = true;           // 2. dunkel langsamer laufen
 const uint32_t SCHLAF_HELL_MS = 2;       // Pause je Runde bei hellem Bildschirm
-const uint32_t SCHLAF_DUNKEL_MS = 20;    // längste Pause je Runde bei dunklem Bildschirm (wie der Lagesensor)
+const uint32_t SCHLAF_DUNKEL_MS = 120;   // längste Pause je Runde bei dunklem Bildschirm (ein Spielschritt)
+const uint32_t LAGE_DUNKEL_MS = 100;     // Lagesensor im Dunkeln: bei jedem Aufwachen (etwa alle 120 ms) einmal messen
+const uint32_t SCHLAF_TON_MS = 20;       // längste Pause, solange ein Ton spielt (der Ton-Puffer reicht für etwa 70 ms)
+const bool SCHLAF_TOUCH = true;          // 5. dunkel Touch aus
 const uint32_t TAKT_DUNKEL_KHZ = 48000;  // Takt bei dunklem Bildschirm
 const uint32_t TAKT_SENKEN_NACH = 3000;  // so lange (ms) muss es dunkel und still sein, bevor der Takt sinkt
 

@@ -44,6 +44,7 @@ void laufen(uint32_t ms) {
   }
 }
 void tippen(int x, int y) { simFinger(true, x, y); laufen(60); simFinger(false); laufen(250); }
+void druecken(int k) { simTaste(k, true); laufen(60); simTaste(k, false); laufen(60); }
 // Ein Tag mit dieser Tageslaune (ab dem 24.11.2026), mittags
 ms_t tagMitLaune(int laune) {
   for (int tag = 0; tag < 60; tag++) {
@@ -282,13 +283,25 @@ int main() {
   PRUEFE(spiel.aktiv && spiel.treffer == 0 && kuschel.seit == 0, "im Spiel: Touch fängt nicht und kuschelt nicht");
   spielEnde(true);
 
-  // ---------- Bildschirm aus: der erste Tipper weckt nur ----------
+  // ---------- Bildschirm aus: Touch ist aus (seit 25.11.2026, Schlafmodus), Tasten wecken ----------
   vorbereiten(verspielt);
   bildschirmAus();
+  PRUEFE(touchAus && simTouchRst == 0, "dunkel: Touch-Chip im Reset");
   tippen(eviMitteX(), eviMitteY());
-  PRUEFE(bildschirmAn && kuschel.seit == 0, "dunkel: erster Tipper macht nur den Bildschirm an (auch wenn der Finger kurz liegen bleibt)");
+  PRUEFE(!bildschirmAn && kuschel.seit == 0, "dunkel: Antippen weckt nicht");
+  druecken(K_A);
+  PRUEFE(bildschirmAn && !touchAus && simTouchRst == 1, "Taste weckt, Touch wieder an");
+  laufen(200);
   tippen(eviMitteX(), eviMitteY());
   PRUEFE(kuschel.seit != 0, "danach kuschelt der nächste Tipper");
+  // Ohne Tasten (MCP23017 nicht gefunden) bleibt Touch im Dunkeln an, sonst ließe sich Evi nicht wecken
+  vorbereiten(verspielt);
+  tastenDa = false; tastenLetzteSuche = millis();
+  bildschirmAus();
+  PRUEFE(!touchAus, "ohne Tasten: Touch bleibt im Dunkeln an");
+  tippen(eviMitteX(), eviMitteY());
+  PRUEFE(bildschirmAn && kuschel.seit == 0, "ohne Tasten: erster Tipper macht nur den Bildschirm an");
+  tastenDa = true;
 
   // ---------- Uhrzeit und Regenhimmel ----------
   ms_t regen = 0;

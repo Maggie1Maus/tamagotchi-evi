@@ -29,11 +29,6 @@ const int SPIEL_MUENZEN_TREFFER = 2, SPIEL_RUNDEN = 5;
 const ms_t KRANK_NACH = 4 * STUNDE; const double KRANK_LAUNE = 1.5;
 const ms_t TOD_VERNACHLAESSIGT = 30 * STUNDE, TOD_KRANK = 24 * STUNDE;
 const double NIEDRIG = 30;
-// Gassi gehen (24.11.2026, nur auf dem Board): ab 100 Schritten +10 Stimmung, je volle 1000 Schritte +5 mehr
-// (höchstens +25), Spazierengehen macht etwas hungrig und die Pfoten schmutzig (je -5), 1 Münze je 500 Schritte (höchstens 10).
-const uint32_t GASSI_MIN_SCHRITTE = 100, GASSI_SCHRITTE_JE_MUENZE = 500;
-const double GASSI_LAUNE = 10, GASSI_LAUNE_JE_1000 = 5, GASSI_LAUNE_MAX = 25, GASSI_SATT = -5, GASSI_SAUBER = -5;
-const int GASSI_MUENZEN_MAX = 10;
 // Kuscheln (24.11.2026, nur auf dem Board): Evi antippen oder streicheln. +5 Stimmung, an verschmusten Tagen +8,
 // wenn sie selbst kuscheln wollte +10. Wirkt höchstens einmal pro Minute, öfter gibt es nur Herzen.
 const double KUSCHEL_LAUNE = 5, KUSCHEL_LAUNE_VERSCHMUST = 8, KUSCHEL_LAUNE_WUNSCH = 10;
@@ -362,27 +357,6 @@ static inline Ergebnis spielBeenden(Tier& p, int treffer, ms_t jetzt, Wunschart 
   p.pflege++;
   if (geweckt(p, jetzt) && p.wachBis < jetzt + R::WACH_BLEIBEN) p.wachBis = jetzt + R::WACH_BLEIBEN;
   e.wunsch = wunschErfuellen(p, hatteWunsch, w, spiel);
-  return e;
-}
-
-// Ein Spaziergang ist zu Ende (Gassi gehen, nur auf dem Board). Zählt nur, wenn Evi wach und gesund ist.
-static inline Ergebnis gassiBeenden(Tier& p, uint32_t schritte, ms_t jetzt) {
-  Ergebnis e;
-  weiterrechnen(p, jetzt);
-  if (schritte < R::GASSI_MIN_SCHRITTE) { e.grund = G_UNBEKANNT; return e; }
-  if (!wach(p, jetzt)) { e.grund = G_SCHLAEFT; return e; }
-  if (p.krank) { e.grund = G_KRANK; return e; }
-  e.geaendert = true;
-  double laune = R::GASSI_LAUNE + (schritte / 1000) * R::GASSI_LAUNE_JE_1000;
-  if (laune > R::GASSI_LAUNE_MAX) laune = R::GASSI_LAUNE_MAX;
-  p.laune = begrenzt(p.laune + laune);
-  p.satt = begrenzt(p.satt + R::GASSI_SATT);
-  p.sauber = begrenzt(p.sauber + R::GASSI_SAUBER);
-  int muenzen = (int)(schritte / R::GASSI_SCHRITTE_JE_MUENZE);
-  if (muenzen > R::GASSI_MUENZEN_MAX) muenzen = R::GASSI_MUENZEN_MAX;
-  e.muenzen = muenzen;
-  p.muenzen += muenzen;
-  p.pflege++;
   return e;
 }
 

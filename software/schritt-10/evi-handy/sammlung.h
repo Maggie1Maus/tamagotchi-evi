@@ -60,19 +60,8 @@ const char* fundErinnerung(const Fundstueck& f) {
   return "Am kleinen Blumenbeet gefunden.";
 }
 
-// Ab 100 Schritten: beim ersten Fund sicher, danach 40 % je Spaziergang, höchstens ein Fund
-// pro echtem Tag. Eine volle Sammlung wird niemals überschrieben. Park-Regeln bleiben offen.
-int fundBeimGassi(uint32_t schritte, ms_t jetzt, uint16_t generation) {
-  const int32_t tag = tagKennung(jetzt);
-  if (schritte < 100 || sammlung.anzahl >= SAMMLUNG_MAX || sammlung.letzterFundTag == tag) return -1;
-  sammlung.ausfluege++;
-  char schluessel[64];
-  snprintf(schluessel, sizeof(schluessel), "%ld:fund:%u:%lu", (long)tag, generation, (unsigned long)sammlung.ausfluege);
-  const uint32_t zufall = streuwert(schluessel);
-  if (sammlung.ausfluege > 1 && zufall % 100 >= 40) return -1;
-  const Fundart art = (Fundart)((zufall / 100) % FUNDARTEN);
-  return fundAufnehmen(art, FUND_GASSI, tag, generation) ? (int)art : -1;
-}
+// Funde vom Gassigehen gibt es seit 25.11.2026 nicht mehr (Gassi entfernt); ältere bleiben in der Sammlung
+// und zeigen weiter „Vom gemeinsamen Spaziergang mitgebracht.“. Neue Funde kommen aus dem Garten (garten.ino).
 
 enum SideboardPhase : uint8_t { SB_ZU, SB_HIN, SB_OEFFNEN, SB_OFFEN, SB_HEIM };
 struct SideboardZustand {

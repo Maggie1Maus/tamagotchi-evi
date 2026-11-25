@@ -72,8 +72,8 @@ void sammlungZeichnen() {
   bild.drawFastHLine(20, 38, 280, 0);
   if (!sammlung.anzahl) {
     schreibe(bild, 42, 90, "Noch keine Fundstücke.", 0);
-    schreibe(bild, 42, 114, "Im Garten oder beim", 0);
-    schreibe(bild, 42, 129, "Gassigehen suchen wir!", 0);
+    schreibe(bild, 42, 114, "Im Garten suchen wir", 0);
+    schreibe(bild, 42, 129, "zusammen welche!", 0);
   } else {
     if (sideboard.auswahl >= sammlung.anzahl) sideboard.auswahl = sammlung.anzahl - 1;
     const Fundstueck& f = sammlung.fund[sideboard.auswahl];

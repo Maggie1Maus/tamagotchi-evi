@@ -52,7 +52,7 @@ Ziel war ungefähr zehn Arten. Mit allen gewünschten Motiven waren es elf; zehn
 | Junimo-Figur (Stardew Valley) | Gezeichnet und eingebaut |
 | Stitch-Anhänger | Bestätigt, Bildgenerator hat die Erstellung abgelehnt, ohne Ersatz offen |
 
-Alle zehn vorhandenen Arten sind im Garten und beim echten Gassigehen erreichbar, im Sideboard einsehbar und nach Neustart erhalten. Fundbilder unter `entwuerfe/sammlung/`.
+Alle zehn vorhandenen Arten sind im Garten erreichbar, im Sideboard einsehbar und nach Neustart erhalten. (Gassi gehen und damit Funde beim echten Spaziergang wurden am 25. November 2026 auf Wunsch der Nutzerin entfernt, damit Evi im Dunkeln Strom spart. Ältere Spaziergang-Funde bleiben in der Sammlung.) Fundbilder unter `entwuerfe/sammlung/`.
 
 ## Zurückgestellt oder gestrichen
 

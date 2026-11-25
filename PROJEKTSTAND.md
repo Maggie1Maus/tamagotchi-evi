@@ -2,13 +2,22 @@
 
 Stand: 25. November 2026
 
+## Tieferer Schlaf, Touch im Dunkeln aus, Gassi entfernt (25. November 2026, zweite Fassung)
+
+- Nach der Messung (hell etwa 120 mA, dunkel 30–47 mA, schwankend) Wunsch der Nutzerin: Gassi gehen ganz entfernen, den Chip tiefer schlafen lassen, im Dunkeln Touch grundsätzlich aus. Umgesetzt, nur Waveshare:
+  - **Gassi gehen ganz entfernt** (Schritte, Mittraben, Belohnung, Funde beim Spaziergang, Schrittzeilen; auch die Schüttel-Erkennung). Ältere Spaziergang-Funde bleiben. Neue Funde nur aus dem Garten, dort sind alle Arten erreichbar. Spielstand unverändert.
+  - **Dunkel wacht der Chip nur noch alle 120 ms auf** (zu jedem Spielschritt) statt alle 20 ms. Der Lagesensor misst dann einmal; Umdrehen weckt weiter (nach etwa 0,5 s).
+  - **Dunkel ist Touch aus** (Touch-Chip im Reset). Wecken mit Tasten, Umdrehen oder Ereignissen. Ohne gefundene Tasten bleibt Touch an.
+- Alle zehn PC-Prüfprogramme ohne Fehler und Warnungen. **Am Board noch nicht ausprobiert, Strom noch nicht gemessen.** Einzelheiten in `software/schritt-10/README.md`.
+- Offen, falls es immer noch viel ist: Ein großer Teil des Stroms kommt vermutlich von Bauteilen des Boards, die das Programm nicht abschalten kann (`PWR`-LED, Spannungsregler, Lade-Chip, evtl. Verstärker). Der Schaltplan von Waveshare war aus der Cloud-Sitzung nicht abrufbar.
+
 ## Schlafmodus eingebaut, Helligkeit 50 % (25. November 2026)
 
 - Auf Wunsch der Nutzerin („Ja bau den Schlafmodus ein, Helligkeit auf 50 %“), nur Waveshare. Neue Datei `software/schritt-10/evi-handy/schlaf.h`. Der Chip schläft zwischen den Abfragen (dunkel bis zur nächsten Messung des Lagesensors, höchstens 20 ms; hell 2 ms). Dunkel läuft er nach 3 s mit 48 statt 150 MHz, und der Bildschirm-Chip schläft. Der Ton-Chip bekommt nur bei Tönen Takt. Tasten, Antippen, Gassi und Piepen gehen weiter. Jede Stelle ist einzeln abschaltbar. `P` im Seriellen Monitor zeigt, wie viel der Chip geschlafen hat. Einzelheiten in `software/schritt-10/README.md`.
 - Geprüft in der PC-Nachbildung mit neuem `schlaf.cpp`: alle zehn Prüfprogramme ohne Fehler und Warnungen. Dabei wurde auch ein schon vorher fehlschlagender Launenwunsch-Test in `kuscheln.cpp` berichtigt (der Test hatte die offene Geburtstagsfrage und eine Zeitangabe falsch gesetzt, das Spiel selbst war richtig). **Echte Pico-2-Übersetzung in dieser Sitzung nicht möglich, am Board noch nicht ausprobiert.** Beim Aufspielen auf Fehlermeldungen achten (benutzt `set_sys_clock_khz`, `clock_get_hz`, `i2s.end()`).
 - Erwartung (nicht gemessen): dunkel vorher etwa 50 mA, jetzt hoffentlich etwa 5–15 mA, hell mit 50 % etwa 60–90 mA. Strom messen, sobald die Nutzerin kann.
 - **Am Board (25. November 2026, laut Nutzerin):** Übersetzt und aufgespielt. `P` im Seriellen Monitor (USB, COM8): hell `takt=150MHz lcd=wach ton=aus`, geschlafen 28 % (enthält den Start; Zeichnen kostet Rechenzeit). Dunkel nach RESET: `licht=0% lcd=schlaeft ton=aus takt=48MHz`, geschlafen 91 %. Der Serielle Monitor funktioniert auch mit 48 MHz. Wecken mit Taste und Touch, Ton und Ball laut Nutzerin in Ordnung.
-- **Gemessen am 25. November 2026** (PCW01A, Bereich A⎓ 200m, drei AAA, Multimeter über den leeren vierten Platz, also bei etwa 4,5 V): **Bildschirm an etwa 120 mA** (beim Uhrstellen, 50 % Licht), **Bildschirm aus etwa 30 mA** (10 s nach RESET). Das sind etwa 0,54 W und 0,14 W. Mit vier frischen AAA (grob 5 Wh) reicht das nur dunkel für etwa 1,5 Tage, hell für etwa 9 Stunden. Weniger Ersparnis als erhofft (geschätzt waren 5–15 mA dunkel). Ein Wert von vor dem Schlafmodus wurde nicht gemessen. Messtipp: Spitzen festkleben, beim Uhrstellen fünfmal A drücken. Nächste Schritte noch offen (siehe Antwort an die Nutzerin): herausfinden, wohin die 30 mA gehen, tieferer Schlaf, Akku statt AAA.
+- **Gemessen am 25. November 2026** (PCW01A, Bereich A⎓ 200m, drei AAA, Multimeter über den leeren vierten Platz, also bei etwa 4,5 V): **Bildschirm an etwa 120 mA** (beim Uhrstellen, 50 % Licht), **Bildschirm aus etwa 30 mA** (10 s nach RESET; bei einer zweiten Messung schwankte es zwischen 30 und 47 mA). Das sind etwa 0,54 W und 0,14 W. Mit vier frischen AAA (grob 5 Wh) reicht das nur dunkel für etwa 1,5 Tage, hell für etwa 9 Stunden. Weniger Ersparnis als erhofft (geschätzt waren 5–15 mA dunkel). Ein Wert von vor dem Schlafmodus wurde nicht gemessen. Messtipp: Spitzen festkleben, beim Uhrstellen fünfmal A drücken. Nächste Schritte noch offen (siehe Antwort an die Nutzerin): herausfinden, wohin die 30 mA gehen, tieferer Schlaf, Akku statt AAA.
 
 ## Batterien nach weniger als einem Tag leer (25. November 2026)
 

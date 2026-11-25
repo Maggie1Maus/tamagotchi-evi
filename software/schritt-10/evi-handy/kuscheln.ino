@@ -10,7 +10,7 @@
 //    Bleibt der Wunsch unerfüllt, hat das Folgen (launen.ino). Beleidigt wirkt Kuscheln nicht.
 //  - Schläft sie, kuschelt sie sich nur im Schlaf an (ein Herz, sie wacht nicht auf, keine Wirkung).
 //  - Das Ei wackelt ein wenig. Nach dem Tod passiert nichts.
-//  - Bei Besuch, Gassi, dem rollenden Ball und beim Trösten gibt es nur Herzen; das läuft weiter.
+//  - Bei Besuch, dem rollenden Ball und beim Trösten gibt es nur Herzen; das läuft weiter.
 //    Andere Momente hören auf; Evi bleibt beim Kuscheln stehen, wo sie ist, und geht danach zurück.
 //  - Nicht im Menü, in Spielen, bei Gute Nacht und vor dem Sideboard.
 
@@ -84,7 +84,7 @@ void kuschelnBeginnen() {
   if (launenBeleidigt() && !ruhend(s)) { launenBeleidigtAngetippt(); return; }
   // Kuschel- oder Fensterwunsch der Tageslaune: Antippen erfüllt ihn (launen.ino)
   const bool wunsch = launenWunschDurchTippen() && launenWunschErfuellen(launen.art, false);
-  const bool besonders = moment.art == M_FALTER || moment.art == M_VOGEL || moment.art == M_STERN || moment.art == M_GASSI ||
+  const bool besonders = moment.art == M_FALTER || moment.art == M_VOGEL || moment.art == M_STERN ||
                          moment.art == M_ROLLEN || moment.art == M_TROESTEN;
   const int laune = launeHeute(jetzt);
   // Stimmung: höchstens einmal pro Minute, der erfüllte Kuschelwunsch immer

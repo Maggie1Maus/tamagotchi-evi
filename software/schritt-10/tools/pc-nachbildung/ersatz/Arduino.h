@@ -21,7 +21,8 @@ using std::max; using std::min;
 extern uint32_t simMillis;
 extern int simDC;   // Pin 14 (LCD_DC): 0 = Befehl, 1 = Daten; für das nachgebildete Display
 inline int simLicht = -1;   // letzter Wert der Hintergrundbeleuchtung (Pin 16, 0–255)
-inline void pinMode(int,int){} inline void digitalWrite(int p,int v){ if (p == 14) simDC = v; } inline void analogWrite(int p,int v){ if (p == 16) simLicht = v; } inline int analogRead(int){return 0;}
+inline int simTouchRst = 1; // Reset-Leitung des Touch-Chips (Pin 17): 0 = im Reset gehalten
+inline void pinMode(int,int){} inline void digitalWrite(int p,int v){ if (p == 14) simDC = v; if (p == 17) simTouchRst = v; } inline void analogWrite(int p,int v){ if (p == 16) simLicht = v; } inline int analogRead(int){return 0;}
 inline void delay(unsigned long ms){ simMillis += ms; } inline unsigned long millis(){return simMillis;} inline unsigned long micros(){return simMillis*1000;}
 inline long random(long a,long b){ return b<=a ? a : a + rand() % (b-a);} inline long random(long b){return b<=0?0:rand()%b;} inline void randomSeed(unsigned long s){srand(s);}
 inline int digitalPinToInterrupt(int p){return p;} inline void attachInterrupt(int, void(*)(), int){}

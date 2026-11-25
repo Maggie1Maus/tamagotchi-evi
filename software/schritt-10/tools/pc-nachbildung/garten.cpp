@@ -74,9 +74,11 @@ int main() {
   uhrSetzen(jetzt + 10 * TAG);
   PRUEFE(erinnerung == fundErinnerung(f), "Erinnerung hängt nicht vom heutigen Wetter ab");
   uhrSetzen(jetzt);
-  PRUEFE(fundBeimGassi(100, jetzt, pet.generation) >= 0, "Garten blockiert den ersten echten Spaziergang nicht");
-  PRUEFE(sammlung.fund[sammlung.anzahl-1].wetter == FUND_UNBEKANNT && sammlung.fund[sammlung.anzahl-1].ort == FUND_GASSI,
-         "echter Spaziergang behauptet kein gemessenes Wetter");
+  // Gassi gehen ist seit 25.11.2026 entfernt; ältere Funde vom Spaziergang bleiben und behalten ihre Erinnerung
+  PRUEFE(fundAufnehmen(FUND_FEDER, FUND_GASSI, 20261123, pet.generation) &&
+         std::string(fundErinnerung(sammlung.fund[sammlung.anzahl-1])) == "Vom gemeinsamen Spaziergang mitgebracht.",
+         "älterer Fund vom Spaziergang behält seine Erinnerung");
+  PRUEFE(sammlung.fund[sammlung.anzahl-1].wetter == FUND_UNBEKANNT, "Spaziergang-Fund behauptet kein gemessenes Wetter");
   Tier geladen; bool ton = true;
   spielstandSpeichern(pet, ton); sammlung = Sammlung();
   PRUEFE(spielstandLaden(geladen, ton) && sammlung.gartenVersucht == 7 && sammlung.fund[0].wetter == f.wetter && sammlung.fund[0].stelle == f.stelle,
