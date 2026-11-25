@@ -18,7 +18,7 @@
 
 const char* const NUTZER_NAME = "Maggie";
 const uint32_t FREUND_KENNUNG = 0x46524E44;   // "FRND"
-const uint16_t FREUND_VERSION = 1;
+const uint16_t FREUND_VERSION = 2;   // 2: Platz für 128 Fragen (Version 1 wird übernommen)
 
 // Wie schnell es geht
 const float PLUS_PRO_TAG = 12;                          // höchstens so viel Freundschaft am Tag
@@ -93,6 +93,158 @@ const FrageText FRAGEN[] = {
    "Ich trink am liebsten %s!", "Weißt du noch, was ich gern trinke?", "Du trinkst doch so gern %s!"},
   {OMA, "Was spielst du gern?", 4, {"Karten", "Rätsel", "Schach", "Bingo"},
    "Ich spiel am liebsten %s!", "Weißt du noch, was ich gern spiele?", "Du spielst doch so gern %s!"},
+
+  // ----- Seit 25.11.2026: 73 weitere, damit es 100 sind (je 25 pro Altersstufe). Nur hinten anfügen! -----
+  // Baby
+  {BABY, "Was ist dein Lieblingsspielzeug?", 4, {"Teddy", "Ball", "Bauklötze", "Puppe"},
+   "Mein liebstes Spielzeug: %s!", "Weißt du noch mein Lieblingsspielzeug?", "Dein Lieblingsspielzeug: %s!"},
+  {BABY, "Wie soll mein Kuscheltier heißen?", 4, {"Bärli", "Flocke", "Knopf", "Pünktchen"},
+   "Ich nenn es %s!", "Weißt du noch, wie mein Kuscheltier heißt?", "Du wolltest es %s nennen!"},
+  {BABY, "Was ist das Beste am Baden?", 4, {"Schaum", "Quietscheente", "Planschen", "Abtrocknen"},
+   "Beim Baden mag ich %s!", "Weißt du noch, was ich beim Baden mag?", "Beim Baden magst du %s!"},
+  {BABY, "Welches Obst magst du?", 4, {"Äpfel", "Bananen", "Erdbeeren", "Trauben"},
+   "Ich mag %s am liebsten!", "Weißt du noch, welches Obst ich mag?", "Du magst doch %s so gern!"},
+  {BABY, "Was macht der Mond nachts?", 4, {"er schläft", "er leuchtet", "er träumt", "er singt"},
+   "Ich glaub, %s!", "Weißt du noch, was der Mond nachts macht?", "Du glaubst, %s!"},
+  {BABY, "Welches Geräusch magst du?", 4, {"Regen", "Schnurren", "Vogelgezwitscher", "Glockenläuten"},
+   "Ich mag %s am liebsten!", "Weißt du noch, welches Geräusch ich mag?", "Du magst doch %s so gern!"},
+  {BABY, "Was soll ich mal malen?", 4, {"ein Haus", "eine Sonne", "dich", "einen Drachen"},
+   "Ich mal am liebsten %s!", "Weißt du noch, was ich gern male?", "Ich soll %s malen!"},
+  {BABY, "Welches Tier wärst du gern?", 4, {"ein Vogel", "ein Fisch", "ein Löwe", "ein Hase"},
+   "Ich wär gern %s!", "Weißt du noch, welches Tier ich wär?", "Du wärst gern %s!"},
+  {BABY, "Was ist das lustigste Wort?", 4, {"Pupsi", "Quatsch", "Schnuffel", "Kuddelmuddel"},
+   "Das lustigste Wort ist %s!", "Weißt du noch mein lustigstes Wort?", "Du findest %s so lustig!"},
+  {BABY, "Welche Form magst du?", 4, {"Herzen", "Sterne", "Kreise", "Monde"},
+   "Ich mag %s am liebsten!", "Weißt du noch, welche Form ich mag?", "Du magst doch %s so gern!"},
+  {BABY, "Was frühstückst du am liebsten?", 4, {"Müsli", "Brötchen", "Pfannkuchen", "Joghurt"},
+   "Ich frühstück am liebsten %s!", "Weißt du noch, was ich frühstücke?", "Du frühstückst doch %s!"},
+  {BABY, "Was ist das Beste am Winter?", 4, {"Schnee", "Kakao", "Weihnachten", "Schlitten"},
+   "Am Winter mag ich %s!", "Weißt du noch, was ich am Winter mag?", "Am Winter magst du %s!"},
+  {BABY, "Was ist das Beste am Sommer?", 4, {"Eis", "Baden", "Sonne", "Ferien"},
+   "Am Sommer mag ich %s!", "Weißt du noch, was ich am Sommer mag?", "Am Sommer magst du %s!"},
+  {BABY, "Was willst du mal fahren?", 4, {"Feuerwehr", "Zug", "Rakete", "Fahrrad"},
+   "Ich will mal %s fahren!", "Weißt du noch, was ich mal fahren will?", "Du willst mal %s fahren!"},
+  {BABY, "Wie viele Kekse passen in mich?", 4, {"drei", "zehn", "hundert", "alle"},
+   "Ich glaub, %s!", "Weißt du noch, wie viele Kekse ich schaffe?", "Du glaubst, %s!"},
+  {BABY, "Welche Lieder singst du gern?", 4, {"Schlaflieder", "Tierlieder", "Quatschlieder", "Weihnachtslieder"},
+   "Ich sing am liebsten %s!", "Weißt du noch, was ich gern singe?", "Du singst doch gern %s!"},
+  {BABY, "Wo versteckst du dich?", 4, {"unterm Bett", "im Schrank", "hinterm Sofa", "unter der Decke"},
+   "Ich versteck mich %s!", "Weißt du noch, wo ich mich verstecke?", "Du versteckst dich %s!"},
+  // Teenager
+  {TEEN, "Was ist dein Lieblingsfach?", 4, {"Kunst", "Sport", "Mathe", "Musik"},
+   "Mein Lieblingsfach ist %s!", "Weißt du noch mein Lieblingsfach?", "Dein Lieblingsfach ist %s!"},
+  {TEEN, "Was trägst du am liebsten?", 4, {"Hoodies", "Kleider", "Jeans", "Schlafanzug"},
+   "Ich trag am liebsten %s!", "Weißt du noch, was ich gern trage?", "Du trägst doch gern %s!"},
+  {TEEN, "Welche Haarfarbe hättest du gern?", 4, {"Pink", "Blau", "Silber", "Grün"},
+   "Ich hätt gern Haare in %s!", "Weißt du noch, welche Haarfarbe ich will?", "Du willst Haare in %s!"},
+  {TEEN, "Was tröstet dich am besten?", 4, {"Musik", "Schlaf", "Schokolade", "Reden"},
+   "Mich tröstet %s!", "Weißt du noch, was mich tröstet?", "Dich tröstet %s!"},
+  {TEEN, "Was findest du cringe?", 4, {"Tanzen", "Selfies", "Gedichte", "Liebesbriefe"},
+   "%s find ich cringe!", "Weißt du noch, was ich cringe finde?", "Du findest %s cringe!"},
+  {TEEN, "Wie lange schläfst du am Wochenende?", 4, {"bis 8", "bis 10", "bis 12", "bis nachmittags"},
+   "Ich schlaf %s!", "Weißt du noch, wie lang ich ausschlafe?", "Du schläfst %s!"},
+  {TEEN, "Welches Haustier hättest du gern?", 4, {"einen Hamster", "eine Schlange", "einen Papagei", "ein Pony"},
+   "Ich hätt gern %s!", "Weißt du noch, welches Haustier ich will?", "Du hättest gern %s!"},
+  {TEEN, "Was ist dein Lieblingssnack?", 4, {"Chips", "Popcorn", "Nachos", "Gummischlangen"},
+   "Mein Lieblingssnack: %s!", "Weißt du noch meinen Lieblingssnack?", "Dein Lieblingssnack: %s!"},
+  {TEEN, "Wovon träumst du nachts?", 4, {"vom Fliegen", "von Prüfungen", "von Monstern", "von Liebe"},
+   "Ich träum oft %s!", "Weißt du noch, wovon ich träume?", "Du träumst oft %s!"},
+  {TEEN, "Bist du eher laut oder leise?", 2, {"laut", "leise"},
+   "Ich bin eher %s!", "Weißt du noch: laut oder leise?", "Du bist eher %s!"},
+  {TEEN, "Was willst du mal können?", 4, {"Gitarre", "Skateboarden", "Zaubern", "Kochen"},
+   "Ich will mal %s können!", "Weißt du noch, was ich lernen will?", "Du willst %s lernen!"},
+  {TEEN, "Was ist das Schlimmste?", 4, {"Zahnarzt", "Mathetest", "Liebeskummer", "Hausarrest"},
+   "Am schlimmsten ist %s!", "Weißt du noch, was ich schlimm finde?", "Am schlimmsten findest du %s!"},
+  {TEEN, "Was machst du mit 100 Euro?", 4, {"Sparen", "Klamotten", "Süßkram", "Verschenken"},
+   "Mit 100 Euro? %s!", "Weißt du noch: Was mach ich mit 100 Euro?", "Mit 100 Euro: %s, oder?"},
+  {TEEN, "Welches Wort sagst du zu oft?", 4, {"krass", "safe", "Digga", "eigentlich"},
+   "Ich sag zu oft „%s“!", "Weißt du noch mein Lieblingswort?", "Du sagst so oft „%s“!"},
+  {TEEN, "Welche Filme magst du?", 4, {"Komödien", "Horror", "Fantasy", "Liebesfilme"},
+   "Am liebsten schau ich %s!", "Weißt du noch, welche Filme ich mag?", "Du schaust gern %s!"},
+  {TEEN, "Wo willst du mal wohnen?", 4, {"in der Stadt", "auf dem Land", "am Meer", "im Ausland"},
+   "Ich wohn mal %s!", "Weißt du noch, wo ich mal wohnen will?", "Du willst %s wohnen!"},
+  {TEEN, "Was ist dein Lieblingsemoji?", 4, {"Herz", "Lachen", "Daumen", "Feuer"},
+   "Mein Lieblingsemoji: %s!", "Weißt du noch mein Lieblingsemoji?", "Dein Lieblingsemoji: %s!"},
+  {TEEN, "Was hilft gegen Langeweile?", 4, {"Zocken", "Malen", "Rausgehen", "Telefonieren"},
+   "Gegen Langeweile hilft %s!", "Weißt du noch, was gegen Langeweile hilft?", "Gegen Langeweile: %s!"},
+  {TEEN, "Welche Superkraft willst du?", 4, {"Fliegen", "Gedankenlesen", "Zeitreisen", "Unsichtbarkeit"},
+   "Meine Superkraft: %s!", "Weißt du noch meine Superkraft?", "Deine Superkraft: %s!"},
+  // Erwachsen
+  {ERWACHSEN, "Was liest du am liebsten?", 4, {"Krimis", "Fantasy", "Liebesromane", "Sachbücher"},
+   "Ich les am liebsten %s!", "Weißt du noch, was ich gern lese?", "Du liest doch gern %s!"},
+  {ERWACHSEN, "Was kochst du am liebsten?", 4, {"Suppe", "Auflauf", "Curry", "Salat"},
+   "Ich koch am liebsten %s!", "Weißt du noch, was ich gern koche?", "Du kochst doch gern %s!"},
+  {ERWACHSEN, "Berge oder Meer?", 2, {"Berge", "Meer"},
+   "Ich bin Team %s!", "Weißt du noch: Berge oder Meer?", "Du bist Team %s!"},
+  {ERWACHSEN, "Was ist dein Lieblingsgeruch?", 4, {"Kaffee", "Regen", "frische Wäsche", "Kuchen"},
+   "Ich riech am liebsten %s!", "Weißt du noch meinen Lieblingsgeruch?", "Du riechst so gern %s!"},
+  {ERWACHSEN, "Was macht dich glücklich?", 4, {"Sonne", "Musik", "Freunde", "Ruhe"},
+   "Glücklich macht mich: %s!", "Weißt du noch, was mich glücklich macht?", "Für dich heißt Glück: %s!"},
+  {ERWACHSEN, "Was würdest du gern lernen?", 4, {"Malen", "eine Sprache", "Tanzen", "Klavier"},
+   "Ich würd gern %s lernen!", "Weißt du noch, was ich lernen will?", "Du willst %s lernen!"},
+  {ERWACHSEN, "Wie ist dein perfekter Abend?", 4, {"Sofa und Film", "Essen gehen", "ein Bad", "Freunde treffen"},
+   "Perfekter Abend: %s!", "Weißt du noch meinen perfekten Abend?", "Dein perfekter Abend: %s!"},
+  {ERWACHSEN, "Stadt oder Land?", 2, {"Stadt", "Land"},
+   "Ich bin ein %skind!", "Weißt du noch: Stadt oder Land?", "Du bist ein %skind!"},
+  {ERWACHSEN, "Was ist das beste Gewürz?", 4, {"Salz", "Pfeffer", "Zimt", "Knoblauch"},
+   "Ohne %s geht nichts!", "Weißt du noch mein liebstes Gewürz?", "Bei dir muss %s rein!"},
+  {ERWACHSEN, "Was sammelst du?", 4, {"Steine", "Bücher", "Tassen", "Erinnerungen"},
+   "Ich sammle %s!", "Weißt du noch, was ich sammle?", "Du sammelst %s!"},
+  {ERWACHSEN, "Wie ist dein Lieblingspulli?", 4, {"schwarz", "grau", "weiß", "bunt"},
+   "Mein Lieblingspulli ist %s!", "Weißt du noch, wie mein Pulli ist?", "Dein Lieblingspulli ist %s!"},
+  {ERWACHSEN, "Wann bist du am kreativsten?", 4, {"morgens", "mittags", "abends", "nachts"},
+   "Ich bin %s am kreativsten!", "Weißt du noch, wann ich kreativ bin?", "Du bist %s am kreativsten!"},
+  {ERWACHSEN, "Welche Spiele magst du?", 4, {"Videospiele", "Brettspiele", "Kartenspiele", "Rätsel"},
+   "Ich spiel am liebsten %s!", "Weißt du noch, welche Spiele ich mag?", "Du spielst doch gern %s!"},
+  {ERWACHSEN, "Duschen oder Baden?", 2, {"Duschen", "Baden"},
+   "Ich bin Team %s!", "Weißt du noch: Duschen oder Baden?", "Du bist Team %s!"},
+  {ERWACHSEN, "Was ist das Beste am Herbst?", 4, {"bunte Blätter", "Kürbisse", "Kuscheldecken", "Tee"},
+   "Am Herbst mag ich %s!", "Weißt du noch, was ich am Herbst mag?", "Am Herbst magst du %s!"},
+  {ERWACHSEN, "Was tust du bei Gewitter?", 4, {"Zugucken", "Verstecken", "Weiterschlafen", "Blitze zählen"},
+   "Bei Gewitter: %s!", "Weißt du noch, was ich bei Gewitter tu?", "Bei Gewitter: %s, oder?"},
+  {ERWACHSEN, "Welche Pizza magst du?", 4, {"Margherita", "Salami", "Hawaii", "Funghi"},
+   "Ich nehm immer %s!", "Weißt du noch, welche Pizza ich mag?", "Du nimmst immer %s!"},
+  {ERWACHSEN, "Wie wäre dein Traumhaus?", 4, {"ein Baumhaus", "ein Schloss", "eine Hütte", "ein Hausboot"},
+   "Mein Traumhaus: %s!", "Weißt du noch mein Traumhaus?", "Dein Traumhaus: %s!"},
+  // Oma
+  {OMA, "Was hast du früher gespielt?", 4, {"Gummitwist", "Murmeln", "Verstecken", "Seilspringen"},
+   "Früher spielte ich %s!", "Weißt du noch, was ich früher spielte?", "Du hast früher %s gespielt!"},
+  {OMA, "Was ist das beste Hausmittel?", 4, {"Hühnersuppe", "Kamillentee", "Wärmflasche", "Schlaf"},
+   "Da hilft nur %s!", "Weißt du noch mein Hausmittel?", "Bei dir hilft %s!"},
+  {OMA, "Wozu tanzt du gern?", 4, {"Walzer", "Schlager", "Rock'n'Roll", "Tango"},
+   "Zum Tanzen: %s!", "Weißt du noch, wozu ich gern tanze?", "Du tanzt gern zu %s!"},
+  {OMA, "Was ist das Beste am Altwerden?", 4, {"Ruhe", "Enkel", "Weisheit", "Mittagsschlaf"},
+   "Das Beste am Alter: %s!", "Weißt du noch, was am Alter schön ist?", "Für dich das Beste: %s!"},
+  {OMA, "Was strickst du am liebsten?", 4, {"Socken", "Schals", "Mützen", "Pullover"},
+   "Ich strick am liebsten %s!", "Weißt du noch, was ich gern stricke?", "Du strickst gern %s!"},
+  {OMA, "Welchen Vogel magst du?", 4, {"die Amsel", "die Meise", "das Rotkehlchen", "den Spatz"},
+   "Am liebsten mag ich %s!", "Weißt du noch, welchen Vogel ich mag?", "Du magst %s so gern!"},
+  {OMA, "Was gehört in jede Handtasche?", 4, {"Taschentücher", "Bonbons", "eine Brille", "Pflaster"},
+   "In meiner Tasche: %s!", "Weißt du noch, was in meiner Tasche ist?", "In deiner Tasche: %s!"},
+  {OMA, "Was machst du sonntags?", 4, {"Ausruhen", "Kuchen backen", "Spazieren", "Besuch haben"},
+   "Sonntags: %s!", "Weißt du noch, was ich sonntags mache?", "Sonntags magst du %s!"},
+  {OMA, "Welches Gemüse magst du?", 4, {"Kartoffeln", "Möhren", "Erbsen", "Kohl"},
+   "Ich mag %s am liebsten!", "Weißt du noch, welches Gemüse ich mag?", "Du magst doch %s so!"},
+  {OMA, "Was hebst du auf?", 4, {"Briefe", "Fotos", "Muscheln", "Postkarten"},
+   "Ich heb %s auf!", "Weißt du noch, was ich aufhebe?", "Du hebst %s auf!"},
+  {OMA, "Was braucht eine gute Oma?", 4, {"Kekse", "Geduld", "Geschichten", "Umarmungen"},
+   "Eine gute Oma hat %s!", "Weißt du noch, was eine Oma braucht?", "Für dich wichtig: %s!"},
+  {OMA, "Wann gehst du ins Bett?", 4, {"um 8", "um 9", "um 10", "nach Mitternacht"},
+   "Ich geh %s ins Bett!", "Weißt du noch, wann ich ins Bett geh?", "Du gehst %s ins Bett!"},
+  {OMA, "Was war dein erstes Haustier?", 4, {"ein Hund", "eine Katze", "ein Wellensittich", "ein Goldfisch"},
+   "Mein erstes Haustier: %s!", "Weißt du noch mein erstes Haustier?", "Dein erstes Haustier: %s!"},
+  {OMA, "Welche Marmelade ist die beste?", 4, {"Erdbeere", "Kirsche", "Aprikose", "Pflaume"},
+   "Die beste Marmelade: %s!", "Weißt du noch meine Marmelade?", "Du magst %s-Marmelade!"},
+  {OMA, "Kreuzworträtsel oder Sudoku?", 2, {"Kreuzworträtsel", "Sudoku"},
+   "Ich bin Team %s!", "Weißt du noch: Rätsel oder Sudoku?", "Du bist Team %s!"},
+  {OMA, "Was erzählst du Kindern?", 4, {"Märchen", "Witze", "Geschichten", "Gruselgeschichten"},
+   "Ich erzähl am liebsten %s!", "Weißt du noch, was ich erzähle?", "Du erzählst gern %s!"},
+  {OMA, "Wie trinkst du Tee?", 4, {"mit Honig", "mit Zitrone", "mit Milch", "ganz pur"},
+   "Tee trink ich %s!", "Weißt du noch, wie ich Tee trinke?", "Du trinkst Tee %s!"},
+  {OMA, "Was hast du früher gehört?", 4, {"Schlager", "Rock'n'Roll", "Jazz", "Volksmusik"},
+   "Früher hörte ich %s!", "Weißt du noch, was ich früher hörte?", "Früher hast du %s gehört!"},
+  {OMA, "Worauf freust du dich jeden Tag?", 4, {"aufs Frühstück", "auf die Post", "aufs Nickerchen", "auf Besuch"},
+   "Ich freu mich %s!", "Weißt du noch, worauf ich mich freue?", "Du freust dich %s!"},
 };
 const int FRAGEN_ANZAHL = sizeof(FRAGEN) / sizeof(FRAGEN[0]);
 static_assert(sizeof(FRAGEN) / sizeof(FRAGEN[0]) <= FRAGEN_MAX, "Zu viele Fragen für den Spielstand");
@@ -129,8 +281,94 @@ const Meinung MEINUNGEN[] = {
   {5, "Ich träume davon, mal zu fliegen.", "Ich träume von einem Haus aus Keksen."},
   {5, "Ich wünsch mir, dass wir immer Freunde sind.", "Mein Traum? Mit dir ans Meer, %s!"},
   {5, "Du bist meine allerbeste Freundin, %s.", "Ich bin so froh, dass es dich gibt, %s."},
+
+  // ----- Seit 25.11.2026: 77 weitere, damit es 100 sind -----
+  // 1: Harmloses
+  {1, "Ich mag Pfützen!", "Pfützen sind mir zu nass."},
+  {1, "Rosa Wolken sind die schönsten.", "Gewitterwolken sehen toll aus!"},
+  {1, "Ich mag den Geruch von Regen.", "Ich mag den Geruch von Keksen."},
+  {1, "Mein Kissen ist das weichste der Welt.", "Der Teppich ist mein Lieblingsplatz."},
+  {1, "Ich mag es, wenn die Uhr tickt.", "Das Ticken der Uhr nervt mich."},
+  {1, "Ich hüpfe lieber, als zu laufen.", "Ich schleiche lieber leise."},
+  {1, "Ich mag Schneeflocken auf der Nase.", "Ich mag Sonnenstrahlen im Fell."},
+  {1, "Grüne Kekse wären toll!", "Kekse in Sternform sind die besten!"},
+  {1, "Ich mag Vögel am Fenster.", "Schmetterlinge mag ich am liebsten."},
+  {1, "Ich mag das Rascheln von Blättern.", "Ich mag das Knistern im Kamin."},
+  {1, "Morgens bin ich ganz zerzaust.", "Morgens seh ich schon schick aus!"},
+  {1, "Ich zähl gern meine Münzen.", "Münzen sind mir egal. Kekse nicht!"},
+  {1, "Ich mag Montage!", "Montage sind doof."},
+  {1, "Ich gähne immer, wenn du gähnst.", "Ich muss niesen, wenn die Sonne scheint."},
+  {1, "Ich mag laute Musik!", "Ich mag leise Musik."},
+  {1, "Ich esse den Keksrand zuerst.", "Ich esse die Keksmitte zuerst."},
+  {1, "Ich mag es, wenn es draußen stürmt.", "Bei Sturm bleib ich lieber drin."},
+  {1, "Mein Schwanz ist mein ganzer Stolz!", "Meine Ohren sind mein ganzer Stolz!"},
+  {1, "Kissenburgen sind das Beste!", "Deckenhöhlen sind das Beste!"},
+  {1, "Ich mag den Mond lieber als die Sonne.", "Ich mag die Sonne lieber als den Mond."},
+  {1, "Ich summe gern beim Essen.", "Beim Essen bin ich ganz still."},
+  {1, "Im Garten bin ich am liebsten.", "Am Fenster bin ich am liebsten."},
+  // 2: Was sie nicht mag
+  {2, "Wenn es zu still ist, mag ich das nicht.", "Lärm mag ich gar nicht."},
+  {2, "Spinnen find ich gruselig.", "Spinnen find ich niedlich!"},
+  {2, "Kalte Pfoten mag ich nicht.", "Ich mag kalte Pfoten. Echt!"},
+  {2, "Wenn du gehst, bin ich ein bisschen traurig.", "Wenn du gehst, mach ich ein Nickerchen."},
+  {2, "Gekämmt werden mag ich nicht.", "Bürsten find ich herrlich!"},
+  {2, "Saure Sachen mag ich nicht.", "Ich liebe saure Sachen!"},
+  {2, "Ich verliere nicht gern.", "Verlieren ist nicht schlimm."},
+  {2, "Der Staubsauger macht mir Angst.", "Den Staubsauger find ich lustig!"},
+  {2, "Ich mag keine Überraschungen.", "Ich liebe Überraschungen!"},
+  {2, "Medizin schmeckt eklig.", "Medizin ist gar nicht so schlimm."},
+  {2, "Mit Mütze seh ich doof aus.", "Mützen stehen mir super!"},
+  {2, "Warten mag ich gar nicht.", "Warten macht mir nichts aus."},
+  {2, "Wind in den Ohren mag ich nicht.", "Wind in den Ohren kitzelt so schön!"},
+  {2, "Ich hasse es, wenn der Keks bricht.", "Halbe Kekse sind doppelte Kekse!"},
+  {2, "Dunkle Ecken mag ich nicht.", "Dunkle Ecken sind gemütlich."},
+  {2, "Ich mag keinen Streit.", "Ein bisschen Streit ist okay."},
+  {2, "Kitzeln mag ich gar nicht!", "Kitzel mich! Hihi!"},
+  {2, "Abends allein sein mag ich nicht.", "Abends hab ich gern meine Ruhe."},
+  // 3: Kleine Geheimnisse
+  {3, "Psst … ich hab mal auf den Teppich gepupst.", "Psst … ich hab Angst vor dem Wecker."},
+  {3, "Ich übe heimlich Tanzen.", "Ich übe heimlich Singen."},
+  {3, "Manchmal red ich mit meinem Spiegelbild.", "Manchmal spiel ich, ich wär ein Drache."},
+  {3, "Geheimnis: Der Vogel ist mein Freund.", "Geheimnis: Der Schmetterling ist mein Freund."},
+  {3, "Ich hab mir mal einen Stern gewünscht.", "Ich hätte fast eine Sternschnuppe gefangen."},
+  {3, "Nachts schau ich heimlich raus.", "Ich schlaf manchmal mit offenen Augen."},
+  {3, "Psst … ich zähl deine Besuche.", "Psst … ich merk mir alles, was du sagst."},
+  {3, "Ich hab Angst, dass du mich vergisst.", "Manchmal bin ich ein bisschen einsam."},
+  {3, "Ich wär gern mal ein Vogel.", "Ich wär gern mal ganz riesig."},
+  {3, "Am schönsten ist es, wenn du kommst.", "Am schönsten ist es, wenn du mich streichelst."},
+  {3, "Ich tu nur so mutig.", "Ich bin mutiger, als ich aussehe."},
+  {3, "Ich hab einen Keks unterm Kissen.", "Ich hab eine Feder versteckt."},
+  {3, "Wenn keiner guckt, tanz ich.", "Wenn keiner guckt, sing ich ganz laut."},
+  {3, "Bei traurigen Liedern wein ich manchmal.", "Ich lach manchmal im Schlaf."},
+  {3, "Psst … der Mond hat mir zugezwinkert.", "Psst … ich kann mit Wolken reden."},
+  {3, "Ich hab mir einen Namen für dich ausgedacht.", "Ich hab heimlich ein Bild von dir gemalt."},
+  // 4: Freunde (mit deinem Namen)
+  {4, "%s, du bist echt toll!", "Ich mag dich sehr, %s!"},
+  {4, "Weißt du, %s? Du machst mich froh.", "Du bringst mich immer zum Lachen, %s!"},
+  {4, "Ich erzähl dir alles, %s.", "Dir kann ich alles sagen, %s."},
+  {4, "Mit dir wird mir nie langweilig.", "Mit dir ist jeder Tag besonders."},
+  {4, "Ich halt dir einen Platz am Fenster frei.", "Wenn du da bist, ist es so gemütlich."},
+  {4, "Du bist mein liebster Besuch, %s!", "Ich freu mich jedes Mal auf dich, %s!"},
+  {4, "Danke, dass du dich um mich kümmerst.", "Du passt immer so gut auf mich auf."},
+  {4, "Ich mag es, wenn du lachst, %s.", "Ich mag es, wenn du mit mir redest, %s."},
+  {4, "Wir sind ein gutes Team, %s!", "Zusammen sind wir unschlagbar!"},
+  {4, "Ich hab heute schon an dich gedacht.", "Ich hab dich heute vermisst."},
+  {4, "Bei dir kann ich so sein, wie ich bin.", "Du bist lieb zu mir. Das merk ich mir."},
+  // 5: Beste Freunde: Träume
+  {5, "Ich träum davon, mit dir zu verreisen.", "Ich wünsch mir einen Ausflug mit dir."},
+  {5, "Mein größter Traum? Immer bei dir sein.", "Ich will nie woanders wohnen als hier."},
+  {5, "Ich träum von einem Garten voller Blumen.", "Ich träum von einem Zimmer voller Kissen."},
+  {5, "Ich möchte mal die Sterne besuchen.", "Ich möchte mal auf einer Wolke schlafen."},
+  {5, "Ich wünsch mir, dass du glücklich bist.", "Ich wünsch dir alles Gute der Welt, %s."},
+  {5, "Du bist mein Zuhause, %s.", "Bei dir bin ich zu Hause, %s."},
+  {5, "Ich schreib mal ein Buch über uns.", "Ich mal mal ein Bild von uns beiden."},
+  {5, "Ich träum davon, das Meer zu sehen.", "Ich träum vom Rutschen auf dem Regenbogen."},
+  {5, "Für immer beste Freunde, %s?", "Versprich mir, dass du bleibst, %s."},
+  {5, "Ich bin die glücklichste Evi der Welt!", "Mit dir hab ich das schönste Leben."},
 };
 const int MEINUNGEN_ANZAHL = sizeof(MEINUNGEN) / sizeof(MEINUNGEN[0]);
+static_assert(sizeof(FRAGEN) / sizeof(FRAGEN[0]) == 100, "Es sollen 100 Fragen sein");
+static_assert(sizeof(MEINUNGEN) / sizeof(MEINUNGEN[0]) == 100, "Es sollen 100 Meinungen sein");
 
 // ---------- Sätze, je fünf ----------
 const char* const S_GLEICH[5] = {"Ich auch! Wir sind gleich! ♥", "Echt? Genau wie ich! ♥", "Wir passen zusammen! ♥", "Juhu, ich auch!",
@@ -183,6 +421,10 @@ const char* evisMeinung(int i) {
   return (eviWuerfel("meinung", i) & 1) ? m.b : m.a;
 }
 
+// Ein Bit je Frage (verraten, abgefragt)
+bool bitAn(const uint32_t* feld, int q) { return (feld[q / 32] >> (q % 32)) & 1; }
+void bitSetzen(uint32_t* feld, int q) { feld[q / 32] |= 1UL << (q % 32); }
+
 bool freundFrageOffen() { return gespraech.frage >= 0; }
 bool freundDialogOffen() { return gespraech.gebDialog; }
 
@@ -207,13 +449,40 @@ void freundNeueEvi() {
   gespraech.geaendert = true;
 }
 
+// Version 1 (bis 32 Fragen), nur zum Übernehmen. Nicht verändern.
+struct FreundStandV1 {
+  uint32_t kennung; uint16_t version, groesse; uint8_t gebTag, gebMonat; int16_t gebGefeiert; ms_t evi; float punkte;
+  uint8_t beste, plauderHeute; uint8_t antwort[32]; uint32_t verraten, abgefragt; int32_t plusTag; float plusHeute;
+  int32_t geschenkTag; uint32_t slotsErledigt; int32_t fragenTag; uint32_t pruefsumme;
+};
+static_assert(sizeof(FreundStand) <= EEPROM_GROESSE - FREUND_ADRESSE, "Freundschaft passt nicht in den Speicher");
+static_assert(sizeof(FreundStandV1) <= EEPROM_GROESSE - FREUND_ADRESSE, "Version 1 passt nicht in den Speicher");
+
 void freundLaden() {
   uint8_t* b = (uint8_t*)&freund;
   for (size_t i = 0; i < sizeof(freund); i++) b[i] = EEPROM.read(FREUND_ADRESSE + i);
-  const bool gut = freund.kennung == FREUND_KENNUNG && freund.version == FREUND_VERSION && freund.groesse == sizeof(FreundStand) &&
-                   freund.pruefsumme == pruefsumme(b, offsetof(FreundStand, pruefsumme)) && freund.punkte >= 0 && freund.punkte <= 100 &&
-                   freund.gebTag <= 31 && freund.gebMonat <= 12;
-  if (!gut) { memset(&freund, 0, sizeof(freund)); freundNeueEvi(); }
+  bool gut = freund.kennung == FREUND_KENNUNG && freund.version == FREUND_VERSION && freund.groesse == sizeof(FreundStand) &&
+             freund.pruefsumme == pruefsumme(b, offsetof(FreundStand, pruefsumme)) && freund.punkte >= 0 && freund.punkte <= 100 &&
+             freund.gebTag <= 31 && freund.gebMonat <= 12;
+  if (!gut) {
+    // Version 1 übernehmen: Geburtstag, Freundschaft und Antworten bleiben erhalten (die Fragenummern sind gleich).
+    FreundStandV1 alt;
+    uint8_t* a = (uint8_t*)&alt;
+    for (size_t i = 0; i < sizeof(alt); i++) a[i] = EEPROM.read(FREUND_ADRESSE + i);
+    const bool altGut = alt.kennung == FREUND_KENNUNG && alt.version == 1 && alt.groesse == sizeof(FreundStandV1) &&
+                        alt.pruefsumme == pruefsumme(a, offsetof(FreundStandV1, pruefsumme)) && alt.punkte >= 0 && alt.punkte <= 100 &&
+                        alt.gebTag <= 31 && alt.gebMonat <= 12;
+    memset(&freund, 0, sizeof(freund));
+    freundNeueEvi();
+    if (altGut) {
+      freund.gebTag = alt.gebTag; freund.gebMonat = alt.gebMonat; freund.gebGefeiert = alt.gebGefeiert;
+      freund.evi = alt.evi; freund.punkte = alt.punkte; freund.beste = alt.beste; freund.plauderHeute = alt.plauderHeute;
+      memcpy(freund.antwort, alt.antwort, sizeof(alt.antwort));
+      freund.verraten[0] = alt.verraten; freund.abgefragt[0] = alt.abgefragt;
+      freund.plusTag = alt.plusTag; freund.plusHeute = alt.plusHeute; freund.geschenkTag = alt.geschenkTag;
+      freund.slotsErledigt = alt.slotsErledigt; freund.fragenTag = alt.fragenTag;
+    }
+  }
   if (freund.evi != pet.geboren) freundNeueEvi();
 }
 
@@ -289,7 +558,7 @@ int naechsteFrage(Phase ph) {
 // Eine Frage für „Weißt du noch?“: Evi hat dir ihre Antwort erzählt, aber noch nicht abgefragt. -1 = keine
 int weisstDuNochFrage() {
   int nummern[FRAGEN_MAX], n = 0;
-  for (int q = 0; q < FRAGEN_ANZAHL; q++) if ((freund.verraten >> q & 1) && !(freund.abgefragt >> q & 1)) nummern[n++] = q;
+  for (int q = 0; q < FRAGEN_ANZAHL; q++) if (bitAn(freund.verraten, q) && !bitAn(freund.abgefragt, q)) nummern[n++] = q;
   return n ? nummern[random(0, n)] : -1;
 }
 
@@ -326,7 +595,7 @@ void freundAntwort(int i) {
   sagen.bis = 0;
   moment.ruheBisTakt = evi.takt + RUHE_TAKTE;
   if (gespraech.weisstDuNoch) {
-    freund.abgefragt |= 1UL << q;
+    bitSetzen(freund.abgefragt, q);
     if (i == ihre) {
       freundPlus(PLUS_WEISST);
       reagiere(R_JUBEL, 20);
@@ -338,7 +607,7 @@ void freundAntwort(int i) {
     }
   } else {
     freund.antwort[q] = (uint8_t)(i + 1);
-    freund.verraten |= 1UL << q;
+    bitSetzen(freund.verraten, q);
     freundPlus(PLUS_ANTWORT);
     if (i == ihre) {
       freundPlus(PLUS_GLEICH);
@@ -381,22 +650,22 @@ void freundPlaudern() {
   }
   if (!satz) {
     // Was in Frage kommt: 0 ihre eigene Antwort, 1 eine Meinung, 2 deine Antwort (ab „bekannt“)
-    int eigene[FRAGEN_MAX], ne = 0, deine[FRAGEN_MAX], nd = 0, meinungen[32], nm = 0;
+    int eigene[FRAGEN_MAX], ne = 0, deine[FRAGEN_MAX], nd = 0, meinungen[2 * 128], nm = 0;
     for (int q = 0; q < FRAGEN_ANZAHL; q++) {
       if (FRAGEN[q].phase == ph) eigene[ne++] = q;
       if (freund.antwort[q]) deine[nd++] = q;
     }
-    for (int i = 0; i < MEINUNGEN_ANZAHL && nm < 32; i++) {
+    for (int i = 0; i < MEINUNGEN_ANZAHL && nm < 2 * 128; i++) {
       if (MEINUNGEN[i].stufe > stufe) continue;
       meinungen[nm++] = i;
-      if (MEINUNGEN[i].stufe == stufe && nm < 32) meinungen[nm++] = i;   // Neues aus der aktuellen Stufe öfter
+      if (MEINUNGEN[i].stufe == stufe && nm < 2 * 128) meinungen[nm++] = i;   // Neues aus der aktuellen Stufe öfter
     }
     const int gewEigene = ne ? 3 : 0, gewMeinung = nm ? 4 : 0, gewDeine = (stufe >= 2 && nd) ? 2 : 0;
     int r = random(0, max(1, gewEigene + gewMeinung + gewDeine));
     if (r < gewEigene) {
       const int q = eigene[random(0, ne)];
       snprintf(freundSatz, sizeof(freundSatz), FRAGEN[q].ich, FRAGEN[q].antw[evisAntwort(q)]);
-      freund.verraten |= 1UL << q;
+      bitSetzen(freund.verraten, q);
       satz = freundSatz;
     } else if ((r -= gewEigene) < gewMeinung) {
       satz = mitName(evisMeinung(meinungen[random(0, nm)]), freundSatz, sizeof(freundSatz));

@@ -145,7 +145,7 @@ struct {
 // ---------- Freundschaft, Fragen, Plaudern (freunde.ino), seit 25.11.2026 ----------
 // Dauerhaft gespeichert im Flash hinter dem Spielstand (speicher.h: FREUND_ADRESSE).
 // Geburtstag bleibt für immer; alles andere gehört zu einer Evi (evi = ihr Zeitpunkt „geboren“).
-const int FRAGEN_MAX = 32;
+const int FRAGEN_MAX = 128;        // seit Version 2 (vorher 32)
 struct FreundStand {
   uint32_t kennung;
   uint16_t version, groesse;
@@ -156,8 +156,8 @@ struct FreundStand {
   uint8_t beste;                     // 1 = beste Freunde (der große Moment war schon)
   uint8_t plauderHeute;
   uint8_t antwort[FRAGEN_MAX];       // deine Antworten: 0 = noch nicht gefragt, sonst 1–4
-  uint32_t verraten;                 // Bit je Frage: Evi hat dir ihre Antwort erzählt
-  uint32_t abgefragt;                // Bit je Frage: „Weißt du noch?“ schon gestellt
+  uint32_t verraten[FRAGEN_MAX / 32];   // Bit je Frage: Evi hat dir ihre Antwort erzählt
+  uint32_t abgefragt[FRAGEN_MAX / 32];  // Bit je Frage: „Weißt du noch?“ schon gestellt
   int32_t plusTag;                   // Tag (tagKennung) für die Tagesgrenze
   float plusHeute;
   int32_t geschenkTag;

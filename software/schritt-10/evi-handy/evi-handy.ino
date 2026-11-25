@@ -86,7 +86,7 @@ struct {
 char meldung[100] = "";
 uint32_t meldungBis = 0;
 
-struct { char text[48]; const Bild* symbol; uint32_t bis; } sagen = {"", nullptr, 0};
+struct { char text[64]; const Bild* symbol; uint32_t bis; } sagen = {"", nullptr, 0};
 ms_t gezeigterWunsch = -1;     // -1 = noch nichts angesehen
 
 // Gute Nacht (Abendritual): Texte nacheinander, jede Taste überspringt.
@@ -415,7 +415,7 @@ void zeichneBlase(ms_t jetzt) {
   const bool wunsch = !ritual.aktiv && aktuellerWunsch(pet, jetzt, w);
   if (!redet && !wunsch) return;
   const Bild* sym;
-  char text[48];
+  char text[64];
   if (redet) { sym = sagen.symbol; strncpy(text, sagen.text, sizeof(text) - 1); text[sizeof(text) - 1] = 0; }
   else wunschText(w, jetzt, sym, text, sizeof(text));
   // Wie .wish-bubble: oben 27 + 12 %, links 58 %, höchstens 40 % breit
