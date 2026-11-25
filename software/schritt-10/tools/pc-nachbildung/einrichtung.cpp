@@ -19,16 +19,16 @@ void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleiche
 EEPROMC EEPROM;
 #include "evi-handy.ino"
 void simDisplayVergleichen() {
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
-    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+    if (simDisplay[y][x] != bild.stufe(x, y)) simFalschePunkte++;
 }
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
 void foto(const char* name) {
   char p[80]; snprintf(p, sizeof(p), "bilder/%s.pbm", name);
   FILE* f = fopen(p, "wb"); fprintf(f, "P4\n320 240\n");
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
   fclose(f);
 }
@@ -45,7 +45,7 @@ void bereit(ms_t jetzt, ms_t alter = 4 * TAG) {
 bool fensterEbeneDeckt(const EviGrafik& a,int x,int y){
  return x>=0&&y>=0&&x<a.w&&y<a.h&&(!a.maske||zimmerBit(a.maske,a.w,x,y));
 }
-bool fensterHell(int x,int y){return bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));}
+bool fensterHell(int x,int y){return bild.bits()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));}
 void nachthimmelPruefen(Jahreszeit j,Wetter w){
  int himmel=0;bool schwarz=true;
  for(int y=0;y<40;y++)for(int x=0;x<66;x++){
@@ -68,12 +68,12 @@ void nachthimmelPruefen(Jahreszeit j,Wetter w){
 void fensterPalettenPruefen(){
  uint8_t abend[9600];
  for(int j=0;j<4;j++){
-  bild.fillScreen(1);zimmerFensterNeu((Jahreszeit)j,HIMMEL_DAEMMERUNG,WT_SONNE,0);memcpy(abend,bild.getBuffer(),sizeof(abend));
+  bild.fillScreen(1);zimmerFensterNeu((Jahreszeit)j,HIMMEL_DAEMMERUNG,WT_SONNE,0);memcpy(abend,bild.bits(),sizeof(abend));
   zimmerFensterNeu((Jahreszeit)j,HIMMEL_NACHT,WT_SONNE,0);
   const EviGrafik& original=*Z_BAEUME[j];int koerper=0,rand=0;bool weiss=true,schwarz=true,hellerRand=true;
   for(int y=1;y<45;y++)for(int x=1;x<65;x++){
    if(!zimmerScheibe(79+x,46+y)||!zimmerBit(original.maske,66,x,y))continue;
-   const int i=(46+y)*40+(79+x)/8,b=128>>((79+x)%8);const bool vor=abend[i]&b,nach=bild.getBuffer()[i]&b;
+   const int i=(46+y)*40+(79+x)/8,b=128>>((79+x)%8);const bool vor=abend[i]&b,nach=bild.bits()[i]&b;
    if(zimmerBit(original.linien,66,x,y)){koerper++;weiss&=vor;schwarz&=!nach;}
    bool aussen=false;for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++)aussen|=!zimmerBit(original.maske,66,x+dx,y+dy);
    if(aussen&&!zimmerBit(original.linien,66,x,y)){rand++;hellerRand&=nach&&!vor;}
@@ -83,20 +83,20 @@ void fensterPalettenPruefen(){
  }
  bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,HIMMEL_DAEMMERUNG,WT_SONNE,0);bool leererHimmel=true;
  for(int y=1;y<38;y++)for(int x=1;x<29;x++)if(zimmerScheibe(79+x,46+y)){
-  const bool hell=bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
+  const bool hell=bild.bits()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
   leererHimmel&=hell!=zimmerBit(Z_HIMMEL[HIMMEL_DAEMMERUNG][WT_SONNE]->linien,66,x,y);
  }
  PRUEFE(leererHimmel,"Dämmerung zeigt keinen Mond oder mondähnlichen Himmelskörper");
  bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,HIMMEL_NACHT,WT_SONNE,0);int mond=0;bool weisserMond=true;
  for(int y=1;y<23;y++)for(int x=1;x<25;x++)if(zimmerScheibe(79+x,46+y)){
-  const bool hell=bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
+  const bool hell=bild.bits()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
   if(zimmerBit(Z_ZEICHEN[HIMMEL_NACHT][WT_SONNE]->linien,66,x,y)){mond++;weisserMond&=hell;}
  }
  PRUEFE(mond>10&&weisserMond,"Der Mond ist erst nachts weiß im schwarzen Himmel sichtbar");
  // The legacy renderer used h != DAY and accidentally drew a moon at twilight.
  ms_t zeit=0;for(int tag=0;tag<50&&!zeit;tag++){const ms_t t=sonnenzeiten(ausOrtszeit(2027,1,7,12,0)+tag*TAG).untergang+MINUTE;if(himmelBei(t)==HIMMEL_DAEMMERUNG&&wetterBei(t)==WT_SONNE)zeit=t;}
  bool keinMond=true;int himmelPunkte=0;
- if(zeit){bild.fillScreen(1);fensterZeichnen(zeit);const Bild& baum=*FENSTER_JAHRESZEIT[jahreszeitBei(zeit)];for(int y=55;y<76;y++)for(int x=68;x<89;x++)if(!bildDeckt(baum,x-GLAS_X,y-GLAS_Y)){const bool hell=bild.getBuffer()[y*40+x/8]&(128>>(x%8));keinMond&=hell==bool((x+y)&1);himmelPunkte++;}}
+ if(zeit){bild.fillScreen(1);fensterZeichnen(zeit);const Bild& baum=*FENSTER_JAHRESZEIT[jahreszeitBei(zeit)];for(int y=55;y<76;y++)for(int x=68;x<89;x++)if(!bildDeckt(baum,x-GLAS_X,y-GLAS_Y)){const bool hell=bild.bits()[y*40+x/8]&(128>>(x%8));keinMond&=hell==bool((x+y)&1);himmelPunkte++;}}
  PRUEFE(zeit&&himmelPunkte>10&&keinMond,"Auch der ältere Fensterzeichner blendet den Mond erst nachts ein");
  for(int h=0;h<3;h++){bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,(Himmel)h,WT_SONNE,0);zimmerEbene(EVI_FENSTER_RAHMEN,71,38);char name[40];snprintf(name,sizeof(name),"v2-palette-%d",h);foto(name);}
 }
@@ -146,7 +146,7 @@ int main(){
   bild.fillScreen(1);zimmerFensterNeu((Jahreszeit)j,(Himmel)h,(Wetter)w,0);
   char name[50];snprintf(name,sizeof(name),"v2-window-%d-%d-%d",j,h,w);foto(name);kombinationen++;
   if(h==HIMMEL_NACHT)nachthimmelPruefen((Jahreszeit)j,(Wetter)w);
-  if(w==WT_REGEN||w==WT_SCHNEE){uint8_t vorher[9600];memcpy(vorher,bild.getBuffer(),9600);zimmerFensterNeu((Jahreszeit)j,(Himmel)h,(Wetter)w,4);int bewegt=0,ausserhalb=0;for(int y=0;y<240;y++)for(int x=0;x<320;x++)if((vorher[y*40+x/8]^bild.getBuffer()[y*40+x/8])&(0x80>>(x%8))){bewegt++;if(!zimmerScheibe(x,y))ausserhalb++;}PRUEFE(bewegt>0&&ausserhalb==0,"Niederschlag bewegt nur die tatsächlichen Fensterscheiben");}
+  if(w==WT_REGEN||w==WT_SCHNEE){uint8_t vorher[9600];memcpy(vorher,bild.bits(),9600);zimmerFensterNeu((Jahreszeit)j,(Himmel)h,(Wetter)w,4);int bewegt=0,ausserhalb=0;for(int y=0;y<240;y++)for(int x=0;x<320;x++)if((vorher[y*40+x/8]^bild.bits()[y*40+x/8])&(0x80>>(x%8))){bewegt++;if(!zimmerScheibe(x,y))ausserhalb++;}PRUEFE(bewegt>0&&ausserhalb==0,"Niederschlag bewegt nur die tatsächlichen Fensterscheiben");}
  }
  PRUEFE(kombinationen==51,"Alle gültigen Jahreszeit-Wetter-Tageszeit-Kombinationen exportiert");
  bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);zeichneAlles();foto("v2-zimmer-sommer");
@@ -163,7 +163,7 @@ int main(){
  const auto&bp=einrichtung.platz[Z_BETT];
  PRUEFE(eviLinks>=bp.x&&eviLinks+eviBreite<=bp.x+(int)EVI_TIERBETT.w&&eviOben<bp.fuss,"Evi liegt im Bett, nicht daneben");
  // Der vordere Rand liegt vor Evi, ihr Fell ist deckend: im Bereich über dem Rand keine Bettlinien in Evi
- bool randDavor=true;{const int oben=bp.fuss-EVI_TIERBETT.h;for(int x=0;x<(int)EVI_TIERBETT.w;x++){const int y=EVI_TIERBETT.h-3;const bool l=zimmerBit(EVI_TIERBETT.linien,EVI_TIERBETT.w,x,y);if(l&&(bild.getBuffer()[(oben+y)*40+(bp.x+x)/8]&(0x80>>((bp.x+x)%8))))randDavor=false;}}
+ bool randDavor=true;{const int oben=bp.fuss-EVI_TIERBETT.h;for(int x=0;x<(int)EVI_TIERBETT.w;x++){const int y=EVI_TIERBETT.h-3;const bool l=zimmerBit(EVI_TIERBETT.linien,EVI_TIERBETT.w,x,y);if(l&&(bild.bits()[(oben+y)*40+(bp.x+x)/8]&(0x80>>((bp.x+x)%8))))randDavor=false;}}
  PRUEFE(randDavor,"vorderer Rand des Korbs liegt vor Evi");
  pet.wachBis=jetztMs()+30*MINUTE;   // aufgeweckt
  for(int i=0;i<400&&bettZustand.phase!=BETT_NEIN;i++)warten(120);
@@ -173,6 +173,16 @@ int main(){
  bildschirmEin();einrichtung.platz[Z_BETT].aufgestellt=false;warten(1000);
  PRUEFE(bettZustand.phase!=BETT_LIEGT,"Bett im Inventar: sie schläft nicht in der Luft");
  einrichtung=zimmerStart();
+ // Graustufen (seit 25.11.2026): Evi wird mit Zwischenstufen gezeichnet, das Zimmer bleibt Schwarz-Weiß
+ {bereit(ausOrtszeit(2026,7,12,12,0));momentStoppen(true);zeichneAlles();
+  bool stufen[16]={};for(int y=eviOben;y<eviOben+eviHoehe;y++)for(int x=eviLinks;x<eviLinks+eviBreite;x++)stufen[bild.stufe(x,y)]=true;
+  int n=0;for(bool b:stufen)n+=b;
+  PRUEFE(n>=6,"Evi wird in mehreren Graustufen gezeichnet");
+  int mitGrau=0;for(int i=0;i<GRAU_ANZAHL;i++){const Bild&b=*GRAU_TABELLE[i].alt;if(b.w>0&&b.h>0&&grauDaten(b)==GRAU_TABELLE[i].daten)mitGrau++;}
+  PRUEFE(GRAU_ANZAHL==82&&mitGrau==82,"alle 82 Graustufen-Bilder gehören zu einem vorhandenen Bild");
+  bool zimmerGrau=false;for(int y=30;y<60;y++)for(int x=10;x<60;x++){const int l=bild.stufe(x,y);if(l!=0&&l!=15)zimmerGrau=true;}
+  PRUEFE(!zimmerGrau,"Zimmer bleibt vorerst Schwarz-Weiß");
+  PRUEFE(bild.stufe(0,239)==15&&GrauCanvas::wert(1)==255&&GrauCanvas::wert(0)==0,"altes Zeichnen: Farbe 1 ist weiß, 0 schwarz");}
  PRUEFE(simFalschePunkte==0,"Display bei neuem Zimmer und Einrichtung pixelgenau");
  printf("%s: %d Fehler\n",fehler?"FEHLER":"OK",fehler);return fehler?1:0;
 }

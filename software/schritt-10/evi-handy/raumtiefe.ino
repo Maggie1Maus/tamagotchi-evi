@@ -27,6 +27,18 @@ bool raumVerdeckt(bool draussen, int fuss, int x, int y) {
   return false;
 }
 void raumRasterZeichnen(const Bild& b, int x0, int y0, int w, int h, bool spiegeln, bool tiefentest, bool draussen, int fuss) {
+  if (const uint8_t* g = grauDaten(b)) {   // Graustufen: Mittel über den Quellbereich jedes Zielpunkts (grau.h)
+    for (int y=0;y<h;y++) for(int x=0;x<w;x++) {
+      const int a0=spiegeln ? b.w-(x+1)*b.w/w : x*b.w/w, a1=spiegeln ? b.w-x*b.w/w : (x+1)*b.w/w;
+      const int s0=y*b.h/h, s1=(y+1)*b.h/h;
+      uint16_t wert;
+      if (!grauMitteln(g,b.w,a0,max(a1,a0+1),s0,max(s1,s0+1),wert)) continue;
+      const int px=x0+x, py=y0+y;
+      if (tiefentest && raumVerdeckt(draussen,fuss,px,py)) continue;
+      bild.drawPixel(px,py,wert);
+    }
+    return;
+  }
   for (int y=0;y<h;y++) for(int x=0;x<w;x++) {
     const int sx=spiegeln ? b.w-1-x*b.w/w : x*b.w/w, sy=y*b.h/h;
     if (!bildDeckt(b,sx,sy)) continue;

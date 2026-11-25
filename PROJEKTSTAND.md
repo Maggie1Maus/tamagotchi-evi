@@ -15,6 +15,14 @@ Stand: 25. November 2026
 - Geprüft: drei betroffene PC-Prüfprogramme ohne Fehler, Syntaxprüfung ohne Warnungen, alle 51 Fensterzustände pixelgenau gegen aktuelle PNG-Referenzen; die 17 Tagesansichten bleiben unverändert. Eigene Prüfungen sichern Baumfüllung/-rand aller vier Jahreszeiten sowie den fehlenden Dämmerungsmond auch im älteren Zeichner.
 - Nach dem Zusammenführen mit den parallelen Stromspar-/Gassi-Änderungen zusätzlich alle elf PC-Prüfprogramme und den 51-Fenster-Vergleich erneut erfolgreich ausgeführt, ohne Warnungen.
 
+## Graustufen: Anzeige umgebaut, Evi in Graustufen (25. November 2026)
+
+- Neue Graustufen-Bilder der Nutzerin im Repository (`entwuerfe/evi/graustufen-vorschau/`, `entwuerfe/zimmer/graustufen/`). Nach Rückfrage entschieden: **Graustufen im Spiel**. Die alte Regel „nur Schwarz-Weiß“ gilt für das Waveshare nicht mehr (`CLAUDE.md` angepasst).
+- Eingebaut: 8-Bit-Anzeige mit 16 Stufen und **alle 82 Evi-Bilder in Graustufen** (alle Lebensphasen, Emotionen, Momente, Garten-Posen, Ei). Alle elf PC-Prüfprogramme ohne Fehler. **Am Board noch nicht ausprobiert, echte Übersetzung hier nicht möglich.**
+- **Noch Schwarz-Weiß** und offen: Zimmer/Fenster/Möbel (die neuen Zimmerbilder sind fertige Gesamtbilder mit eingebackenen Möbeln und vertragen sich nicht mit „Zimmer einrichten“; es fehlen Einzelbilder von Wand, Boden, Fenster und Möbeln), Fundstücke (Bildaufträge in `entwuerfe/sammlung/bildauftraege-graustufen.md`), Symbole.
+- Die „Gegenstände“, von denen die Nutzerin sprach, liegen noch nicht im Repository.
+- Einzelheiten in `software/schritt-10/README.md`.
+
 ## Großer Weihnachtsbaum, Evi schläft im Tierbett (25. November 2026)
 
 - Laut Nutzerin funktionieren Einrichten und der Gang zum Sideboard am Board gut. Neue Wünsche, umgesetzt (nur Waveshare): Weihnachtsbaum vom Boden bis an den oberen Zimmerrand; Evi geht zum Schlafen ins Tierbett (vorhandenes Schlafbild, deckend, vorderer Korbrand davor, keine neue Zeichnung, keine Spielwirkung). Das Kerzentablett liegt jetzt richtig hinter dem Baum (stand zuerst davor). Evis Größe bleibt, wie sie ist (Entscheidung der Nutzerin). Einzelheiten in `software/schritt-10/README.md`. Alle elf PC-Prüfprogramme ohne Fehler. **Am Board noch nicht ausprobiert.**

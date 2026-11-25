@@ -722,7 +722,7 @@ void kreisFuellen(float cx, float cy, float r, uint16_t farbe) {
 bool himmelPunkt(int x, int y) {
   if (x < GLAS_X || x >= GLAS_X + GLAS_B || y < GLAS_Y || y >= GLAS_Y + GLAS_H) return false;
   if ((x >= 61 && x < 65) || (y >= 81 && y < 85)) return false;
-  return !((bild.getBuffer()[y * 40 + x / 8] >> (7 - x % 8)) & 1);
+  return bild.stufe(x, y) < 4;   // dunkel
 }
 
 // Was im Fenster passiert (vor dem Abdunkeln bei Licht aus): Vogel und Sternschnuppe.

@@ -1,6 +1,7 @@
-// Bildschirm im Querformat 320 x 240, strikt schwarz-weiß.
-// Gezeichnet wird in ein 1-Bit-Bild im Speicher (Adafruit GFX, GFXcanvas1),
-// zeigen() schickt die geänderten Stellen an den Bildschirm.
+// Bildschirm im Querformat 320 x 240 in Graustufen (seit 25.11.2026, Wunsch der Nutzerin; vorher strikt schwarz-weiß).
+// Gezeichnet wird in ein 8-Bit-Bild im Speicher (Adafruit GFX, GFXcanvas8), angezeigt werden 16 Graustufen.
+// Altes Zeichnen funktioniert unverändert: Farbe 0 = schwarz, Farbe 1 = weiß (wird 255). Graue Werte sind
+// 0, 2 bis 254 (nie 1). zeigen() schickt die geänderten Stellen an den Bildschirm.
 #pragma once
 #include <SPI.h>
 #include <Adafruit_GFX.h>
@@ -17,7 +18,36 @@ const int RAND_LINKS = 8;
 // Steht das Bild auf dem Kopf? Dann hier 1 statt 0 eintragen.
 #define BILD_DREHEN 0
 
-GFXcanvas1 bild(BREITE, HOEHE);   // 1 = weiß, 0 = schwarz
+// Zeichenfläche: alle Zeichenbefehle der alten 1-Bit-Fläche gehen weiter (0 = schwarz, 1 = weiß).
+class GrauCanvas : public GFXcanvas8 {
+ public:
+  GrauCanvas(uint16_t w, uint16_t h) : GFXcanvas8(w, h) {}
+  static inline uint16_t wert(uint16_t c) { return c == 1 ? 255 : (c > 255 ? 255 : c); }
+  void drawPixel(int16_t x, int16_t y, uint16_t c) override { geaendert = true; GFXcanvas8::drawPixel(x, y, wert(c)); }
+  void fillScreen(uint16_t c) override { geaendert = true; GFXcanvas8::fillScreen(wert(c)); }
+  void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t c) override { geaendert = true; GFXcanvas8::drawFastVLine(x, y, h, wert(c)); }
+  void drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t c) override { geaendert = true; GFXcanvas8::drawFastHLine(x, y, w, wert(c)); }
+  void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t c) override { geaendert = true; GFXcanvas8::fillRect(x, y, w, h, wert(c)); }
+  void markieren() { geaendert = true; }   // nach direktem Schreiben in getBuffer()
+  // Stufe 0–15 an dieser Stelle (so wird sie angezeigt)
+  uint8_t stufe(int x, int y) { return (x < 0 || y < 0 || x >= BREITE || y >= HOEHE) ? 0 : (getBuffer()[y * BREITE + x] >> 4); }
+  // Schwarz-weiß-Auszug (1 = hell, ab Stufe 8), 40 Byte je Zeile: für die Prüfung über USB und die PC-Prüfprogramme
+  const uint8_t* bits() {
+    if (geaendert) {
+      const uint8_t* q = getBuffer();
+      memset(auszug, 0, sizeof(auszug));
+      for (int y = 0; y < HOEHE; y++)
+        for (int x = 0; x < BREITE; x++)
+          if (q[y * BREITE + x] >= 128) auszug[y * (BREITE / 8) + x / 8] |= 0x80 >> (x % 8);
+      geaendert = false;
+    }
+    return auszug;
+  }
+ private:
+  bool geaendert = true;
+  uint8_t auszug[(BREITE / 8) * HOEHE];
+};
+GrauCanvas bild(BREITE, HOEHE);   // 0 = schwarz, 1 oder 255 = weiß, dazwischen Grau
 
 static void lcdBefehl(uint8_t b) {
   digitalWrite(LCD_DC, LOW);
@@ -38,11 +68,17 @@ static void lcdBefehlMitDaten(uint8_t befehl, const uint8_t* daten, int anzahl) 
   for (int i = 0; i < anzahl; i++) lcdDaten(daten[i]);
 }
 
-// Was zuletzt an den Bildschirm geschickt wurde. zeigen() vergleicht damit und sendet nur die
+// Was zuletzt an den Bildschirm geschickt wurde (Stufe 0–15 je Punkt). zeigen() vergleicht damit und sendet nur die
 // geänderten Stellen: Das ganze Bild braucht etwa 35 ms, ein kleiner Streifen (z. B. der Ball)
 // unter 1 ms. Darum läuft der Ball flüssig, und Menü und Momente reagieren schneller.
-static uint8_t gesendet[(BREITE / 8) * HOEHE];
+static uint8_t gesendet[BREITE * HOEHE];
 static bool gesendetGueltig = false, gesendetUmgekehrt = false;
+
+// Stufe 0–15 -> Farbe des Bildschirms (RGB565, grau): 0 = schwarz, 15 = weiß
+static uint16_t grauFarbe[16];
+static void grauFarbenRechnen() {
+  for (int l = 0; l < 16; l++) { const int v = l * 17; grauFarbe[l] = (uint16_t)(((v >> 3) << 11) | ((v >> 2) << 5) | (v >> 3)); }
+}
 
 // Helligkeit 0-100 Prozent
 void helligkeit(int prozent) {
@@ -130,8 +166,12 @@ void bildschirmStarten() {
   lcdSchlaeft = false;
   lcdWechsel = millis();
 
+  grauFarbenRechnen();
   bild.fillScreen(0);
 }
+
+// Stufe eines Punktes im Bild (0–15), bei „umgekehrt“ (Nacht) gespiegelt
+static inline uint8_t punktStufe(const uint8_t* q, int i, bool umgekehrt) { const uint8_t l = q[i] >> 4; return umgekehrt ? 15 - l : l; }
 
 // Schickt einen Ausschnitt (x0..x1, y0..y1, jeweils einschließlich) aus dem Bild an den Bildschirm.
 static void bereichSenden(int x0, int y0, int x1, int y1, bool umgekehrt) {
@@ -143,17 +183,18 @@ static void bereichSenden(int x0, int y0, int x1, int y1, bool umgekehrt) {
 
   static uint8_t zeile[BREITE * 2];
   const uint8_t* quelle = bild.getBuffer();
-  const int bytesProZeile = (BREITE + 7) / 8, n = x1 - x0 + 1;
+  const int n = x1 - x0 + 1;
 
   digitalWrite(LCD_DC, HIGH);
   digitalWrite(LCD_CS, LOW);
   for (int y = y0; y <= y1; y++) {
-    const uint8_t* q = quelle + y * bytesProZeile;
     for (int i = 0; i < n; i++) {
-      const int x = x0 + i;
-      const bool weiss = ((q[x >> 3] & (0x80 >> (x & 7))) != 0) != umgekehrt;
-      zeile[i * 2]     = weiss ? 0xFF : 0x00;
-      zeile[i * 2 + 1] = weiss ? 0xFF : 0x00;
+      const int p = y * BREITE + x0 + i;
+      const uint8_t l = punktStufe(quelle, p, umgekehrt);
+      const uint16_t f = grauFarbe[l];
+      zeile[i * 2] = (uint8_t)(f >> 8);
+      zeile[i * 2 + 1] = (uint8_t)(f & 0xFF);
+      gesendet[p] = l;
     }
     SPI1.transfer(zeile, n * 2);
   }
@@ -164,29 +205,32 @@ static void bereichSenden(int x0, int y0, int x1, int y1, bool umgekehrt) {
 // umgekehrt = true zeigt Schwarz als Weiß und Weiß als Schwarz (Nacht).
 void zeigen(bool umgekehrt = false) {
   const uint8_t* neu = bild.getBuffer();
-  const int bpz = BREITE / 8;
   if (!gesendetGueltig || umgekehrt != gesendetUmgekehrt) {
     bereichSenden(0, 0, BREITE - 1, HOEHE - 1, umgekehrt);
-    memcpy(gesendet, neu, sizeof(gesendet));
     gesendetGueltig = true;
     gesendetUmgekehrt = umgekehrt;
   } else {
+    // Zeilenweise vergleichen: Kurze Lücken (bis 4 unveränderte Zeilen) gehören zu einem Block.
+    auto zeileAnders = [&](int y, int& von, int& bis) {
+      von = BREITE; bis = -1;
+      const int o = y * BREITE;
+      for (int x = 0; x < BREITE; x++)
+        if (punktStufe(neu, o + x, umgekehrt) != gesendet[o + x]) { if (x < von) von = x; bis = x; }
+      return bis >= 0;
+    };
     for (int y = 0; y < HOEHE;) {
-      if (memcmp(neu + y * bpz, gesendet + y * bpz, bpz) == 0) { y++; continue; }
-      // Ein Block aus geänderten Zeilen; kurze Lücken (bis 4 Zeilen) gehören mit dazu.
-      int y1 = y, luecke = 0, bMin = bpz, bMax = -1;
-      for (int z = y; z < HOEHE; z++) {
-        const uint8_t* a = neu + z * bpz;
-        const uint8_t* b = gesendet + z * bpz;
-        if (memcmp(a, b, bpz) == 0) { if (++luecke > 4) break; continue; }
+      int von, bis;
+      if (!zeileAnders(y, von, bis)) { y++; continue; }
+      int y1 = y, luecke = 0, xMin = von, xMax = bis;
+      for (int z = y + 1; z < HOEHE; z++) {
+        int v, b;
+        if (!zeileAnders(z, v, b)) { if (++luecke > 4) break; continue; }
         luecke = 0;
         y1 = z;
-        for (int i = 0; i < bpz; i++) {
-          if (a[i] != b[i]) { if (i < bMin) bMin = i; if (i > bMax) bMax = i; }
-        }
+        if (v < xMin) xMin = v;
+        if (b > xMax) xMax = b;
       }
-      bereichSenden(bMin * 8, y, bMax * 8 + 7, y1, umgekehrt);
-      for (int z = y; z <= y1; z++) memcpy(gesendet + z * bpz + bMin, neu + z * bpz + bMin, bMax - bMin + 1);
+      bereichSenden(xMin, y, xMax, y1, umgekehrt);
       y = y1 + 1;
     }
   }

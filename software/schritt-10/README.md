@@ -7,6 +7,15 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Graustufen-Anzeige und Evis Graustufen-Bilder (25. November 2026)
+
+Wunsch der Nutzerin: Die neuen Graustufen-Zeichnungen von Evi (alle Lebensphasen, Emotionen, Alltagsposen, Garten, Ei) sollen ins Spiel. Auf die Rückfrage hat sie **Graustufen im Spiel** gewählt; die Regel „nur Schwarz und Weiß“ gilt für das Waveshare nicht mehr.
+- **Anzeige:** `bild` ist jetzt eine 8-Bit-Fläche (`GrauCanvas` in `bildschirm.h`, abgeleitet von `GFXcanvas8`); alles bisherige Zeichnen geht unverändert weiter (Farbe 0 = schwarz, Farbe 1 = weiß, dazwischen Werte 2–254). Zur Anzeige werden 16 Stufen als graue RGB565-Farben geschickt; `zeigen()` sendet weiter nur Geändertes (jetzt Punkt für Punkt verglichen). `bild.bits()` liefert einen Schwarz-Weiß-Auszug (für `S` über USB und die PC-Prüfprogramme), `bild.stufe(x, y)` die Stufe. Speicher: 77 KB Bild + 77 KB Vergleichsbild.
+- **Evis Bilder:** 82 Graustufen-Sprites aus `Evi-Graustufen.zip` (Ei, Baby, Teenager, Erwachsene, Oma: Ruhe, Emotionen, Beleidigt, Momente, Garten-Posen), 1:1 und gleich groß wie die alten Bilder. `tools/make-evi-grau.py` erzeugt `evigrau.h` (4 Bit je Punkt, 15 Stufen + durchsichtig, 400 KB). Jedes Graustufen-Bild gehört zu einem alten Schwarz-Weiß-Bild; das alte bleibt für Treffer und Verdeckung. `grau.h` zeichnet sie; beim Verkleinern (Tiefe) wird gemittelt. Fehlt zu einem Bild das Gegenstück, wird es wie bisher schwarz-weiß gezeichnet.
+- **Noch Schwarz-Weiß:** Zimmer und Fenster, Möbel, Weihnachtsbaum, Fundstücke, Symbole und die Texte. Das neue Graustufen-Zimmer liegt nur als fertige Gesamtbilder vor (320 × 174, mit Bett, Sideboard, Regal und Teppich eingebacken, 51 Kombinationen); damit ließe sich „Zimmer einrichten“ (Möbel verschieben) nicht mehr betreiben. Für ein Graustufen-Zimmer mit beweglichen Möbeln fehlen Wand/Boden/Fenster und die Möbel als einzelne Bilder.
+- Bildaufträge für die Fundstücke im neuen Stil: `entwuerfe/sammlung/bildauftraege-graustufen.md`.
+- Geprüft: alle elf PC-Prüfprogramme ohne Fehler und Warnungen, Display pixelgenau (16 Stufen); neue Prüfungen für Graustufen bei Evi, alle 82 Zuordnungen, Zimmer bleibt Schwarz-Weiß. **Echte Pico-2-Übersetzung nicht möglich, am Board noch nicht ausprobiert.** Darauf achten: Übersetzt `GFXcanvas8` mit den überschriebenen Funktionen? Größe des Programms (etwa 0,9 MB mehr), Geschwindigkeit des Zeichnens, Aussehen auf dem echten Bildschirm.
+
 ## Großer Weihnachtsbaum, Evi schläft im Tierbett (25. November 2026)
 
 Wünsche der Nutzerin nach dem Test von Zimmer V2 und Einrichtungsmodus („funktioniert ganz gut“, auch der Gang zum Sideboard):

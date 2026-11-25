@@ -19,16 +19,16 @@ void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleiche
 EEPROMC EEPROM;
 #include "evi-handy.ino"
 void simDisplayVergleichen() {
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
-    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+    if (simDisplay[y][x] != bild.stufe(x, y)) simFalschePunkte++;
 }
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
 void foto(const char* name) {
   char p[80]; snprintf(p, sizeof(p), "bilder/%s.pbm", name);
   FILE* f = fopen(p, "wb"); fprintf(f, "P4\n320 240\n");
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
   fclose(f);
 }
@@ -147,7 +147,7 @@ int main() {
   }
   gartenSzeneZeichnen(sonnig); bool himmelRuhig = true;
   for (int y = 30; y < 60; y++) for (int x = 190; x < 300; x++)
-    himmelRuhig &= (bild.getBuffer()[y*40+x/8] & (0x80 >> (x%8))) != 0;
+    himmelRuhig &= (bild.bits()[y*40+x/8] & (0x80 >> (x%8))) != 0;
   PRUEFE(sonnig && himmelRuhig, "Sonnentag hat ruhigen Himmel ohne aufgeklebte Wettersymbole");
   // Vollständige Ansichten aller Jahreszeiten; separater Nacht- und Weihnachtstest.
   const int monate[] = {4,7,10,1,12,12};
@@ -163,10 +163,10 @@ int main() {
     for (int d = 0; d < 31 && !t; d++) { const ms_t k = ausOrtszeit(2027,1,1,stunde,0) + d*TAG; if (wetterBei(k) == w) t = k; }
     PRUEFE(t != 0, "Datum für Regen oder Schnee gefunden");
     bereit(t); garten.phase = GA_WAHL; zeichneAlles();
-    uint8_t vor[9600]; memcpy(vor,bild.getBuffer(),sizeof(vor));
+    uint8_t vor[9600]; memcpy(vor,bild.bits(),sizeof(vor));
     simMillis += 180; zeichneAlles();
     int bewegt = 0, draussen = 0;
-    for (int y = 0; y < 240; y++) for (int x = 0; x < 40; x++) if (vor[y*40+x] != bild.getBuffer()[y*40+x]) { bewegt++; if (y < 27 || y >= 201) draussen++; }
+    for (int y = 0; y < 240; y++) for (int x = 0; x < 40; x++) if (vor[y*40+x] != bild.bits()[y*40+x]) { bewegt++; if (y < 27 || y >= 201) draussen++; }
     PRUEFE(bewegt > 0 && draussen == 0, "Niederschlag tags und nachts bewegt sich nur in der Gartenszene");
     char name[40]; snprintf(name,sizeof(name),"garten-wetter-%d-%d",w,stunde); foto(name);
   }

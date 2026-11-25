@@ -20,9 +20,9 @@ void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleiche
 EEPROMC EEPROM;
 #include "evi-handy.ino"
 void simDisplayVergleichen() {
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
-    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+    if (simDisplay[y][x] != bild.stufe(x, y)) simFalschePunkte++;
 }
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
@@ -31,7 +31,7 @@ void foto(const std::string& name) {
   std::string p = "bilder/" + name + ".pbm";
   FILE* f = fopen(p.c_str(), "wb");
   fprintf(f, "P4\n320 240\n");
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
   fclose(f);
 }
@@ -316,7 +316,7 @@ int main() {
   for (int y = GLAS_Y + 40; y < GLAS_Y + 44; y++)
     for (int x = GLAS_X + 2; x < GLAS_X + 26; x++) {
       if (bildDeckt(*FENSTER_JAHRESZEIT[jahreszeitBei(regen)], x - GLAS_X, y - GLAS_Y)) continue;
-      const bool hell = bild.getBuffer()[y * 40 + x / 8] & (0x80 >> (x % 8));
+      const bool hell = bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8));
       if (hell) weiss++; else gepunktet++;
     }
   PRUEFE(gepunktet > 10 && weiss > 10, "Regen am Tag: Himmel gepunktet wie in der Dämmerung");
@@ -326,7 +326,7 @@ int main() {
   printf("   Uhrzeit oben: %s\n", uhr);
   int schwarz = 0;
   for (int y = UHRZEIT_Y; y < UHRZEIT_Y + 7; y++)
-    for (int x = UHRZEIT_X; x < UHRZEIT_X + 30; x++) if (!(bild.getBuffer()[y * 40 + x / 8] & (0x80 >> (x % 8)))) schwarz++;
+    for (int x = UHRZEIT_X; x < UHRZEIT_X + 30; x++) if (!(bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8)))) schwarz++;
   PRUEFE(schwarz > 20, "Uhrzeit steht oben an der Wand");
   // Sonne: Himmel bleibt weiß
   ms_t sonne = 0;
@@ -341,7 +341,7 @@ int main() {
   for (int y = GLAS_Y + 40; y < GLAS_Y + 44; y++)
     for (int x = GLAS_X + 2; x < GLAS_X + 26; x++) {
       if (bildDeckt(*FENSTER_JAHRESZEIT[jahreszeitBei(sonne)], x - GLAS_X, y - GLAS_Y)) continue;
-      if (!(bild.getBuffer()[y * 40 + x / 8] & (0x80 >> (x % 8)))) gepunktet++;
+      if (!(bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8)))) gepunktet++;
     }
   PRUEFE(gepunktet < 5, "Sonne: Himmel bleibt hell");
 

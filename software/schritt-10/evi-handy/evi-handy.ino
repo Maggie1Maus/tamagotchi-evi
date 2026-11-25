@@ -38,6 +38,7 @@
 #include "extras.h"
 #include "garten.h"
 #include "gartenbilder.h"
+#include "grau.h"
 #include "gartenlandschaft.h"
 #include "zimmerlandschaft.h"
 #include "zimmergrafiken.h"
@@ -267,6 +268,11 @@ void ellipseFuellen(int cx, int cy, int rx, int ry, uint16_t farbe) {
 }
 
 void zeichneBild(const Bild& b, int x, int y) {
+  if (const uint8_t* g = grauDaten(b)) {   // Graustufen-Bild (grau.h)
+    for (int r = 0; r < b.h; r++)
+      for (int c = 0; c < b.w; c++) { const uint8_t s = grauStufe(g, b.w, c, r); if (s != 15) bild.drawPixel(x + c, y + r, grauWert(s)); }
+    return;
+  }
   if (b.maske) bild.drawBitmap(x, y, b.maske, b.w, b.h, 1);
   bild.drawBitmap(x, y, b.linien, b.w, b.h, 0);
 }
@@ -275,6 +281,11 @@ void zeichneSymbol(const Bild& b, int x, int y, uint16_t farbe) { bild.drawBitma
 
 // Gespiegelt (Evi läuft nach rechts): innen weiß, Linien schwarz
 void zeichneBildGespiegelt(const Bild& b, int x, int y) {
+  if (const uint8_t* g = grauDaten(b)) {
+    for (int r = 0; r < b.h; r++)
+      for (int c = 0; c < b.w; c++) { const uint8_t s = grauStufe(g, b.w, c, r); if (s != 15) bild.drawPixel(x + b.w - 1 - c, y + r, grauWert(s)); }
+    return;
+  }
   const int zeile = (b.w + 7) / 8;
   for (int r = 0; r < b.h; r++) {
     for (int c = 0; c < b.w; c++) {
@@ -695,20 +706,19 @@ void zeichneAlles() {
   const Phase ph = phaseBei(pet, jetzt);
   const Stimmung s = beschreiben(pet, jetzt);
   // Zimmer „Gemütlich & schlicht“ mit Jahreszeit, Wetter und Weihnachtsdeko (umgebung.ino)
-  uint8_t* puffer = bild.getBuffer();
   if (spiel.aktiv) {
     spielHintergrund();                            // Spiele nutzen den ganzen Bildschirm
   } else {
     zimmerZeichnen(jetzt);
     momentZeichnenHinten();                        // Vogel und Sternschnuppe im Fenster
   }
-  memset(puffer + 40 * 224, 0xFF, 40 * (HOEHE - 224));
-  // Licht aus: das Zimmer wird zu 50 % gepunktet, Evi bleibt hell
+  bild.fillRect(0, 224, BREITE, HOEHE - 224, 1);
+  // Licht aus: das Zimmer wird zu 50 % gepunktet (Schachbrett aus schwarzen Punkten), Evi bleibt hell
   if (!spiel.aktiv && s == S_SCHLAEFT && pet.lichtAus) {
-    for (int y = 0; y < 224; y++) {
-      const uint8_t m = (y % 2) ? 0xAA : 0x55;
-      for (int i = 0; i < 40; i++) puffer[y * 40 + i] &= m;
-    }
+    uint8_t* puffer = bild.getBuffer();
+    for (int y = 0; y < 224; y++)
+      for (int x = (y % 2); x < BREITE; x += 2) puffer[y * BREITE + x] = 0;
+    bild.markieren();
   }
   if (!spiel.aktiv) zeichneUhrzeit(jetzt);         // nach dem Abdunkeln: bleibt hell
   zeichneEvi(jetzt, s, ph);
@@ -1057,7 +1067,7 @@ void seriellPruefen() {
     const int c = Serial.read();
     if (c == 'S') {
       Serial.println("BILD 320 240");
-      Serial.write(bild.getBuffer(), 40 * 240);
+      Serial.write(bild.bits(), 40 * 240);   // schwarz-weißer Auszug (hell ab Stufe 8)
       Serial.flush();
     }
     if (c == 'L') {

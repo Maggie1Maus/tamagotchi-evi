@@ -7,10 +7,10 @@ struct Adafruit_GFX {
   Adafruit_GFX(int w, int h): W(w), H(h) {}
   virtual void drawPixel(int16_t x, int16_t y, uint16_t c) = 0;
   void setTextSize(uint8_t){} void setTextWrap(bool){} void setTextColor(uint16_t){} void setCursor(int16_t,int16_t){} void print(const char*){} void cp437(bool=true){}
-  void fillRect(int16_t x,int16_t y,int16_t w,int16_t h,uint16_t c){for(int j=y;j<y+h;j++)for(int i=x;i<x+w;i++)drawPixel(i,j,c);}
-  void fillScreen(uint16_t c){fillRect(0,0,W,H,c);}
-  void drawFastHLine(int16_t x,int16_t y,int16_t w,uint16_t c){fillRect(x,y,w,1,c);}
-  void drawFastVLine(int16_t x,int16_t y,int16_t h,uint16_t c){fillRect(x,y,1,h,c);}
+  virtual void fillRect(int16_t x,int16_t y,int16_t w,int16_t h,uint16_t c){for(int j=y;j<y+h;j++)for(int i=x;i<x+w;i++)drawPixel(i,j,c);}
+  virtual void fillScreen(uint16_t c){fillRect(0,0,W,H,c);}
+  virtual void drawFastHLine(int16_t x,int16_t y,int16_t w,uint16_t c){fillRect(x,y,w,1,c);}
+  virtual void drawFastVLine(int16_t x,int16_t y,int16_t h,uint16_t c){fillRect(x,y,1,h,c);}
   void drawRect(int16_t x,int16_t y,int16_t w,int16_t h,uint16_t c){drawFastHLine(x,y,w,c);drawFastHLine(x,y+h-1,w,c);drawFastVLine(x,y,h,c);drawFastVLine(x+w-1,y,h,c);}
   void drawRoundRect(int16_t x,int16_t y,int16_t w,int16_t h,int16_t r,uint16_t c){drawFastHLine(x+r,y,w-2*r,c);drawFastHLine(x+r,y+h-1,w-2*r,c);drawFastVLine(x,y+r,h-2*r,c);drawFastVLine(x+w-1,y+r,h-2*r,c);
     for(int k=0;k<r;k++){int d=(int)(r-sqrtf((float)r*r-(float)(r-k)*(r-k)));drawPixel(x+d,y+k,c);drawPixel(x+w-1-d,y+k,c);drawPixel(x+d,y+h-1-k,c);drawPixel(x+w-1-d,y+h-1-k,c);}}
@@ -30,5 +30,12 @@ struct GFXcanvas1: Adafruit_GFX {
   uint8_t* buf;
   GFXcanvas1(int w,int h):Adafruit_GFX(w,h){buf=(uint8_t*)calloc((w+7)/8*h,1);}
   void drawPixel(int16_t x,int16_t y,uint16_t c) override {if(x<0||y<0||x>=W||y>=H)return;uint8_t*p=&buf[y*((W+7)/8)+x/8];if(c)*p|=0x80>>(x&7);else *p&=~(0x80>>(x&7));}
+  uint8_t* getBuffer(){return buf;}
+};
+// 8-Bit-Zeichenfläche wie GFXcanvas8 der echten Bibliothek (ein Byte je Punkt)
+struct GFXcanvas8: Adafruit_GFX {
+  uint8_t* buf;
+  GFXcanvas8(int w,int h):Adafruit_GFX(w,h){buf=(uint8_t*)calloc((size_t)w*h,1);}
+  void drawPixel(int16_t x,int16_t y,uint16_t c) override {if(x<0||y<0||x>=W||y>=H)return;buf[(size_t)y*W+x]=(uint8_t)c;}
   uint8_t* getBuffer(){return buf;}
 };

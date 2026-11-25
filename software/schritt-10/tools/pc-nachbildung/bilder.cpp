@@ -19,9 +19,9 @@ EEPROMC EEPROM;
 #include "evi-handy.ino"
 // Steht auf dem nachgebildeten Display dasselbe wie im Bild des Programms?
 void simDisplayVergleichen() {
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
-    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+    if (simDisplay[y][x] != bild.stufe(x, y)) simFalschePunkte++;
 }
 
 static int fehler = 0;
@@ -31,7 +31,7 @@ void foto(const std::string& name) {
   std::string p = "bilder/" + name + ".pbm";
   FILE* f = fopen(p.c_str(), "wb");
   fprintf(f, "P4\n320 240\n");
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
   fclose(f);
 }
@@ -63,7 +63,7 @@ int main() {
   bildschirmStarten();
   // Durch den Körper des laufenden Babys darf der dunkle Boden nicht durchscheinen,
   // weder nach links noch gespiegelt nach rechts. Außerhalb der Figur bleibt der Grund sichtbar.
-  auto hell = [](int x, int y) { return (bild.getBuffer()[y * 40 + x / 8] & (0x80 >> (x % 8))) != 0; };
+  auto hell = [](int x, int y) { return (bild.bits()[y * 40 + x / 8] & (0x80 >> (x % 8))) != 0; };
   for (bool spiegeln : {false, true}) {
     bild.fillScreen(0);
     if (spiegeln) zeichneBildGespiegelt(ART_BABY_LAUFEN, 10, 10);

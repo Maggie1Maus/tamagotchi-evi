@@ -19,16 +19,16 @@ void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleiche
 EEPROMC EEPROM;
 #include "evi-handy.ino"
 void simDisplayVergleichen() {
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
-    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+    if (simDisplay[y][x] != bild.stufe(x, y)) simFalschePunkte++;
 }
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
 void foto(const char* name) {
   char p[80]; snprintf(p, sizeof(p), "bilder/%s.pbm", name);
   FILE* f = fopen(p, "wb"); fprintf(f, "P4\n320 240\n");
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
   fclose(f);
 }
@@ -63,12 +63,12 @@ int main() {
   }
   bereit(jetzt); momentStoppen(true);
   // Unter der Verdeckung bleiben exakt die Originalpixel des möblierten Zimmers stehen.
-  zimmerZeichnen(jetzt); uint8_t original[9600]; memcpy(original,bild.getBuffer(),sizeof(original));
+  zimmerZeichnen(jetzt); uint8_t original[9600]; memcpy(original,bild.bits(),sizeof(original));
   geher.x=185-BODEN_X; geher.fuss=141;
   raumFigurZeichnen(ART_ERWACHSEN_GLUECKLICH,ERWACHSEN,185,141,false,0,false,false);
   int sichtbar=0,verdecktGeaendert=0;
   for(int y=27;y<201;y++)for(int x=0;x<320;x++) {
-    const int i=y*40+x/8; if(!((original[i]^bild.getBuffer()[i])&(0x80>>(x%8))))continue;
+    const int i=y*40+x/8; if(!((original[i]^bild.bits()[i])&(0x80>>(x%8))))continue;
     if(raumVerdeckt(false,141,x,y))verdecktGeaendert++;else sichtbar++;
   }
   PRUEFE(sichtbar>5 && verdecktGeaendert==0,"Hinter dem Sideboard bleibt dessen Originalbild unverändert vor Evi");
@@ -79,10 +79,10 @@ int main() {
   }
   PRUEFE(!aufEvi(200,130) && sichtbarerTreffer,"Touch ignoriert verdeckte Figurteile und trifft den sichtbaren Kopf");
   zeichneAlles();foto("tiefe-hinter-sideboard");
-  zimmerZeichnen(jetzt); memcpy(original,bild.getBuffer(),sizeof(original));
+  zimmerZeichnen(jetzt); memcpy(original,bild.bits(),sizeof(original));
   raumFigurZeichnen(ART_ERWACHSEN_GLUECKLICH,ERWACHSEN,185,194,false,0,false,false);
   int davor=0;
-  for(int y=100;y<148;y++)for(int x=195;x<298;x++)if((original[y*40+x/8]^bild.getBuffer()[y*40+x/8])&(0x80>>(x%8)))davor++;
+  for(int y=100;y<148;y++)for(int x=195;x<298;x++)if((original[y*40+x/8]^bild.bits()[y*40+x/8])&(0x80>>(x%8)))davor++;
   PRUEFE(davor>5,"Vor dem Sideboard wird Evi vor dessen Konturen gezeichnet");foto("tiefe-vor-sideboard");
   bereit(jetzt); momentStoppen(true); gangBeginnenTief(111-BODEN_X,151);
   int schritte=0; bool durchMoebel=false,diagonal=false;
@@ -112,9 +112,9 @@ int main() {
   for(Wetter w : {WT_REGEN,WT_SCHNEE}) for(int stunde : {12,20}) {
     ms_t t=0;
     for(int d=0;d<40 && !t;d++){const ms_t k=ausOrtszeit(2027,1,1,stunde,0)+d*TAG;if(wetterBei(k)==w)t=k;}
-    bereit(t);momentStoppen(true);zimmerZeichnen(t);memcpy(original,bild.getBuffer(),sizeof(original));
+    bereit(t);momentStoppen(true);zimmerZeichnen(t);memcpy(original,bild.bits(),sizeof(original));
     simMillis+=220;zimmerZeichnen(t);int bewegt=0,ausserhalb=0;
-    for(int y=0;y<240;y++)for(int x=0;x<320;x++)if((original[y*40+x/8]^bild.getBuffer()[y*40+x/8])&(0x80>>(x%8))){bewegt++;if(!zimmerScheibe(x,y))ausserhalb++;}
+    for(int y=0;y<240;y++)for(int x=0;x<320;x++)if((original[y*40+x/8]^bild.bits()[y*40+x/8])&(0x80>>(x%8))){bewegt++;if(!zimmerScheibe(x,y))ausserhalb++;}
     PRUEFE(t && bewegt>0 && ausserhalb==0,"Neuer Fensterausblick animiert Regen/Schnee tags/nachts nur hinter dem Rahmen");
     char n[64];snprintf(n,sizeof(n),"tiefe-fenster-wetter-%d-%d",w,stunde);zeichneAlles();foto(n);
   }

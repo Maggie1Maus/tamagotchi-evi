@@ -19,16 +19,16 @@ void nachbildungBildFertig() { simMillis += 5; simBilder++; simDisplayVergleiche
 EEPROMC EEPROM;
 #include "evi-handy.ino"
 void simDisplayVergleichen() {
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++)
-    if (simDisplay[y][x] != ((b[y * 40 + x / 8] >> (7 - x % 8)) & 1)) simFalschePunkte++;
+    if (simDisplay[y][x] != bild.stufe(x, y)) simFalschePunkte++;
 }
 int fehler = 0;
 #define PRUEFE(b, t) do { if (!(b)) { printf("FEHLER: %s\n", t); fehler++; } else printf("ok: %s\n", t); } while (0)
 void foto(const char* name) {
   char p[80]; snprintf(p, sizeof(p), "bilder/%s.pbm", name);
   FILE* f = fopen(p, "wb"); fprintf(f, "P4\n320 240\n");
-  const uint8_t* b = bild.getBuffer();
+  const uint8_t* b = bild.bits();
   for (int i = 0; i < 40 * 240; i++) { uint8_t v = ~b[i]; fwrite(&v, 1, 1, f); }
   fclose(f);
 }
@@ -54,14 +54,14 @@ void niederschlagPruefen(Wetter wetter, int stunde) {
   if (!t) return;
   uint8_t vorher[40 * 240];
   bild.fillScreen(1); fensterZeichnen(t);
-  memcpy(vorher, bild.getBuffer(), sizeof(vorher));
+  memcpy(vorher, bild.bits(), sizeof(vorher));
   simMillis += 180;
   fensterZeichnen(t);
   int bewegt = 0, ausserhalb = 0;
   const Bild& vorne = *FENSTER_JAHRESZEIT[jahreszeitBei(t)];
   for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++) {
     const int i = y * 40 + x / 8, bit = 0x80 >> (x % 8);
-    if (!((vorher[i] ^ bild.getBuffer()[i]) & bit)) continue;
+    if (!((vorher[i] ^ bild.bits()[i]) & bit)) continue;
     bewegt++;
     if (x < GLAS_X || x >= GLAS_X + GLAS_B || y < GLAS_Y || y >= GLAS_Y + GLAS_H ||
         bildDeckt(vorne, x - GLAS_X, y - GLAS_Y) || (x >= 61 && x < 65) || (y >= 81 && y < 85)) ausserhalb++;
