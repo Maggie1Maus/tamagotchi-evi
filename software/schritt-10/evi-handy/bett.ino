@@ -61,7 +61,9 @@ bool bettLiegt() { return bettZustand.phase == BETT_LIEGT; }
 void bettEviZeichnen(const Bild& b, Phase ph, int atem) {
   const auto& p = einrichtung.platz[Z_BETT];
   const int oben = p.fuss - EVI_TIERBETT.h;
+  raumImBett = true;
   raumFigurZeichnen(b, ph, bettMitteX(), p.fuss, false, EVI_TIERBETT.h - BETT_LIEGEN + atem, false, false);
+  raumImBett = false;
   const int w = EVI_TIERBETT.w;
   for (int y = BETT_RAND; y < (int)EVI_TIERBETT.h; y++)
     for (int x = 0; x < w; x++) {

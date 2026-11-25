@@ -3,12 +3,15 @@ int raumSkala(int fuss, bool draussen) {
   const int t = max(0, min(1000, (fuss - hinten) * 1000 / (RAUM_HEIM_Y - hinten)));
   return 650 + t * 350 / 1000;
 }
+// Evi ist seit 25.11.2026 um 10 % größer (Wunsch der Nutzerin: „geht im Zimmer ein bisschen verloren“).
+// Im Tierbett bleibt sie in der alten Größe, sonst passt die Oma nicht in den Korb (bett.ino).
+const int EVI_GROESSE_PROZENT = 110;
 int raumFigurHoehe(const Bild& b, Phase ph, int fuss, bool draussen, bool fundPose) {
   static const int HOEHE[6] = {34,54,64,68,64,38};
   static const int FUND_BASIS[5] = {1,70,82,86,82};
   if (ph > TOT) return 1;
   const int norm = ph == EI || ph == TOT ? b.h : fundPose ? FUND_BASIS[ph] : ART[ph][1]->h;
-  return max(1, (int)b.h * HOEHE[ph] * raumSkala(fuss,draussen) / (max(1,norm) * 1000));
+  return max(1, (int)b.h * HOEHE[ph] * (raumImBett ? 100 : EVI_GROESSE_PROZENT) / 100 * raumSkala(fuss,draussen) / (max(1,norm) * 1000));
 }
 bool raumMaske(const uint8_t* maske, int x, int y) {
   return x >= 0 && x < 320 && y >= 27 && y < 201 && (maske[(y-27)*40+x/8] & (0x80>>(x%8)));

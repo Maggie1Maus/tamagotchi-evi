@@ -9,4 +9,5 @@ struct FigurLage {
   bool spiegeln = false, garten = false;
 } figurLage;
 int eviFuss = RAUM_HEIM_Y;
+bool raumImBett = false;   // Evi liegt im Tierbett: dann in der alten Größe (bett.ino, raumtiefe.ino)
 const int ZF_X = 79, ZF_Y = 46, ZF_W = 66, ZF_H = 53;
