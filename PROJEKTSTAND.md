@@ -7,6 +7,7 @@ Stand: 25. November 2026
 - Im Waveshare-Menü führt „In den Park“ zum bestätigten Graustufenentwurf. Touch oder Steuerkreuz und A wählen Lotti, den Kiesweg oder den Wiesenrand. Evi läuft selbst zu ihrem Ziel. Bei Lotti folgt eine Begrüßung. An einer Fundstelle schnuppert Evi, und mit A oder einem weiteren Tipper schaut sie nach.
 - Der erste Parkfund ist ein Stein am Kiesweg. Danach gibt es pro Ortsdatum an einer von zwei Stellen einen Fund aus dem vorhandenen Sortiment. Zwei aufeinanderfolgende Funde unterscheiden sich. Fundort, Datum, Wetter und Jahreszeit werden im Sideboard gespeichert. Vorhandene Garten- und Spaziergangsfunde bleiben lesbar.
 - Der Ausblick im Park nutzt dieselben Regeln für Tageszeit, Jahreszeit und Wetter wie das Zimmerfenster. Die Parkbilder liegen in `entwuerfe/park/entwurf-1/`. `software/schritt-10/tools/make-park-grau.py` erzeugt die Firmwaregrafiken einschließlich Evis vorhandener Such- und Fundposen.
+- Seit 25.11.2026 werden Evi und Lotti im Park 10 % größer gezeichnet (`PARK_GROESSE_Z/N` in `park.ino`). Lottis Tippfläche und Zielpfeil wachsen mit. Übersetzt fehlerfrei, am Board noch nicht angesehen.
 
 ## Zimmer, Möbel und Wetter in Graustufen (25. November 2026)
 

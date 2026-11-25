@@ -3,6 +3,11 @@ static constexpr ParkPunkt PARK_WEGPUNKT = {137, 146};
 static constexpr ParkPunkt PARK_ANKUNFT[PARK_ZIELE] = {{158, 150}, {110, 120}, {155, 135}};
 static constexpr ParkPunkt PARK_FUNDPLATZ[2] = {{179, 149}, {104, 105}};
 static constexpr int PARK_LOTTI_X = 185, PARK_LOTTI_FUSS = 133;
+// Figuren im Park 10 % größer als früher (Wunsch vom 25.11.2026).
+static constexpr int PARK_GROESSE_Z = 11, PARK_GROESSE_N = 10;
+static constexpr int PARK_LOTTI_W = (PARK_LOTTI.w * PARK_GROESSE_Z + PARK_GROESSE_N / 2) / PARK_GROESSE_N;
+static constexpr int PARK_LOTTI_H = (PARK_LOTTI.h * PARK_GROESSE_Z + PARK_GROESSE_N / 2) / PARK_GROESSE_N;
+static constexpr int PARK_LOTTI_OBEN = PARK_LOTTI_FUSS - PARK_LOTTI_H + 1;
 
 bool parkOffen() { return park.phase != PARK_ZU; }
 
@@ -131,7 +136,7 @@ void parkTouch(int x, int y) {
   y -= STATUS_H;
   if (y < 0 || park.phase == PARK_LAEUFT || park.phase == PARK_SCHNUPPERT || park.phase == PARK_SUCHT) return;
   ParkZiel ziel = PARK_ZIELE;
-  if (x >= 163 && x <= 207 && y >= 76 && y <= 136) ziel = PARK_ZIEL_LOTTI;
+  if (abs(x - PARK_LOTTI_X) <= PARK_LOTTI_W / 2 + 4 && y >= PARK_LOTTI_OBEN - 4 && y <= PARK_LOTTI_FUSS + 3) ziel = PARK_ZIEL_LOTTI;
   else if (abs(x - PARK_FUNDPLATZ[0].x) <= 21 && abs(y - PARK_FUNDPLATZ[0].y) <= 13) ziel = PARK_KIESWEG;
   else if (abs(x - PARK_FUNDPLATZ[1].x) <= 23 && abs(y - PARK_FUNDPLATZ[1].y) <= 20) ziel = PARK_WIESE;
   if (ziel == PARK_ZIELE) return;
@@ -210,7 +215,8 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
   if (pose >= 0) {
     const ZimmerBild& e = *PARK_EVI[ph - BABY][pose];
     const int basis[] = {70, 82, 86, 82};
-    const int h = max(1, raumFigurHoehe(*ART[ph][1], ph, fuss, true, false) * 4 * e.h / (5 * basis[ph - BABY]));
+    const int h = max(1, raumFigurHoehe(*ART[ph][1], ph, fuss, true, false) * 4 * PARK_GROESSE_Z * e.h /
+                                  (5 * PARK_GROESSE_N * basis[ph - BABY]));
     const int w = max(1, e.w * h / e.h);
     ellipseFuellen(park.fuesse.x, fuss, max(3, w / 5), 1, 119);
     for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) {
@@ -222,7 +228,7 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
   } else {
     const bool unterwegs = park.phase == PARK_LAEUFT;
     const Bild& e = unterwegs ? *MOMENT_BILD[ph][MB_LAUFEN] : *ART[ph][1];
-    const int h = max(1, raumFigurHoehe(e, ph, fuss, true, false) * 4 / 5);
+    const int h = max(1, raumFigurHoehe(e, ph, fuss, true, false) * 4 * PARK_GROESSE_Z / (5 * PARK_GROESSE_N));
     const int w = max(1, e.w * h / e.h);
     ellipseFuellen(park.fuesse.x, fuss, max(3, w / 5), 1, 119);
     raumRasterZeichnen(e, park.fuesse.x - w / 2, fuss - h + 1 - (unterwegs ? m / 125 % 2 * 2 : 0),
@@ -238,9 +244,12 @@ void parkZeichnen(ms_t jetzt) {
   const uint32_t m = millis();
   parkHintergrund(jahreszeitBei(jetzt), h, w);
   parkNiederschlag(w, h, m);
-  ellipseFuellen(PARK_LOTTI_X, STATUS_H + PARK_LOTTI_FUSS, 9, 1, 119);
-  zimmerEbene(PARK_LOTTI, PARK_LOTTI_X - PARK_LOTTI.w / 2,
-              STATUS_H + PARK_LOTTI_FUSS - PARK_LOTTI.h + 1);
+  ellipseFuellen(PARK_LOTTI_X, STATUS_H + PARK_LOTTI_FUSS, 10, 1, 119);
+  for (int y = 0; y < PARK_LOTTI_H; y++) for (int x = 0; x < PARK_LOTTI_W; x++) {
+    const int sx = x * PARK_LOTTI.w / PARK_LOTTI_W, sy = y * PARK_LOTTI.h / PARK_LOTTI_H;
+    if (PARK_LOTTI.deckt(sx, sy))
+      bild.drawPixel(PARK_LOTTI_X - PARK_LOTTI_W / 2 + x, STATUS_H + PARK_LOTTI_OBEN + y, PARK_LOTTI.wert(sx, sy));
+  }
   const int stelle = parkFundstelle(jetzt);
   if (stelle >= 0 && sammlung.anzahl < SAMMLUNG_MAX) {
     const auto& pos = PARK_FUNDPLATZ[stelle];
@@ -252,7 +261,7 @@ void parkZeichnen(ms_t jetzt) {
   }
   parkFigurZeichnen(ph, m);
   if (park.phase == PARK_WAHL && tastenDa) {
-    const auto& ziel = park.ziel == PARK_ZIEL_LOTTI ? ParkPunkt{PARK_LOTTI_X, 76} : PARK_FUNDPLATZ[park.ziel];
+    const auto& ziel = park.ziel == PARK_ZIEL_LOTTI ? ParkPunkt{PARK_LOTTI_X, PARK_LOTTI_OBEN - 4} : PARK_FUNDPLATZ[park.ziel];
     const int y = STATUS_H + ziel.y - 17;
     bild.fillTriangle(ziel.x - 4, y, ziel.x + 4, y, ziel.x, y + 5, 0);
   }
