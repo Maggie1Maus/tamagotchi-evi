@@ -152,6 +152,27 @@ int main(){
  bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);zeichneAlles();foto("v2-zimmer-sommer");
  bereit(ausOrtszeit(2026,12,12,12,0));momentStoppen(true);zeichneAlles();foto("v2-zimmer-weihnachten");
  zimmerEinrichten();zeichneAlles();foto("v2-einrichten-auswahl");knopf(K_A);zeichneAlles();foto("v2-einrichten-verschieben");
+ zimmerEditor.offen=false;
+ // Weihnachtsbaum reicht bis unter die Balkenleiste (Wunsch der Nutzerin vom 25.11.2026)
+ PRUEFE(XBAUM_Y<=28&&XBAUM_FUSS==173&&XBAUM_X+XBAUM_W<=318,"Weihnachtsbaum vom Boden bis an den oberen Rand des Zimmers");
+ // Evi schläft im Tierbett (bett.ino): hinlaufen, liegen, zurück; dunkel gleich ins Bett
+ einrichtung=zimmerStart();bereit(ausOrtszeit(2026,11,25,23,30));pet.lichtAus=true;pet.wachBis=0;
+ for(int i=0;i<400&&bettZustand.phase!=BETT_LIEGT;i++)warten(120);
+ PRUEFE(bettZustand.phase==BETT_LIEGT,"schläft sie ein, läuft sie ins Tierbett");
+ zeichneAlles();foto("bett-schlaeft");
+ const auto&bp=einrichtung.platz[Z_BETT];
+ PRUEFE(eviLinks>=bp.x&&eviLinks+eviBreite<=bp.x+(int)EVI_TIERBETT.w&&eviOben<bp.fuss,"Evi liegt im Bett, nicht daneben");
+ // Der vordere Rand liegt vor Evi, ihr Fell ist deckend: im Bereich über dem Rand keine Bettlinien in Evi
+ bool randDavor=true;{const int oben=bp.fuss-EVI_TIERBETT.h;for(int x=0;x<(int)EVI_TIERBETT.w;x++){const int y=EVI_TIERBETT.h-3;const bool l=zimmerBit(EVI_TIERBETT.linien,EVI_TIERBETT.w,x,y);if(l&&(bild.getBuffer()[(oben+y)*40+(bp.x+x)/8]&(0x80>>((bp.x+x)%8))))randDavor=false;}}
+ PRUEFE(randDavor,"vorderer Rand des Korbs liegt vor Evi");
+ pet.wachBis=jetztMs()+30*MINUTE;   // aufgeweckt
+ for(int i=0;i<400&&bettZustand.phase!=BETT_NEIN;i++)warten(120);
+ PRUEFE(bettZustand.phase==BETT_NEIN&&geher.x==0&&geher.fuss==RAUM_HEIM_Y,"aufgewacht: zurück auf den Teppich");
+ bereit(ausOrtszeit(2026,11,26,0,30));pet.lichtAus=true;bettZustand.phase=BETT_NEIN;geher.x=0;geher.fuss=RAUM_HEIM_Y;bildschirmAus();warten(300);
+ PRUEFE(bettZustand.phase==BETT_LIEGT,"bei dunklem Bildschirm liegt sie gleich im Bett");
+ bildschirmEin();einrichtung.platz[Z_BETT].aufgestellt=false;warten(1000);
+ PRUEFE(bettZustand.phase!=BETT_LIEGT,"Bett im Inventar: sie schläft nicht in der Luft");
+ einrichtung=zimmerStart();
  PRUEFE(simFalschePunkte==0,"Display bei neuem Zimmer und Einrichtung pixelgenau");
  printf("%s: %d Fehler\n",fehler?"FEHLER":"OK",fehler);return fehler?1:0;
 }

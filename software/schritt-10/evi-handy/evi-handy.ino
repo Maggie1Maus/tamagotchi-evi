@@ -356,6 +356,7 @@ void zeichneEvi(ms_t jetzt, Stimmung s, Phase ph) {
     b = ART_BELEIDIGT[ph];
   if (!b) b = eviBild(gezeigt, jubelt, istMuede, allesGut, ph);
   // Wo: auf dem Teppich, im Moment oder Spiel verschoben, gespiegelt oder angehoben
+  if (!spiel.aktiv && bettLiegt()) { bettEviZeichnen(*b, ph, evi.atem ? 1 : 0); return; }   // schläft im Tierbett (bett.ino)
   if (!spiel.aktiv) {
     raumFigurZeichnen(*b, ph, BODEN_X + geher.x + dx, geher.fuss, geher.flip, geher.lift - dy + (evi.atem ? 1 : 0), false, false);
     return;
@@ -1191,6 +1192,7 @@ void loop() {
     ritualWeiter();
     launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
     if (!zimmerEditor.offen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
+    bettTakt(jetzt);                // schläft Evi, geht sie ins Tierbett (bett.ino)
     if (!zimmerEditor.offen && sideboard.phase == SB_ZU && garten.phase == GA_ZU) momentTakt(jetzt);
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }

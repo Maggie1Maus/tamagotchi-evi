@@ -29,6 +29,10 @@ void zimmerFensterNeu(Jahreszeit j,Himmel h,Wetter w,int phase){
   bild.drawPixel(79+x,46+y,schwarz?0:1);
  }
 }
+// Weihnachtsbaum: steht rechts auf dem Boden (Fuß bei y = 173) und reicht bis unter die Balkenleiste oben
+// (Wunsch der Nutzerin vom 25.11.2026: „viel größer, bis zum oberen Rand“; vorher 100 Punkte hoch).
+const int XBAUM_FUSS = 173, XBAUM_H = XBAUM_FUSS - 28, XBAUM_W = WEIHNACHTSBAUM.w * XBAUM_H / WEIHNACHTSBAUM.h;
+const int XBAUM_X = 317 - XBAUM_W, XBAUM_Y = XBAUM_FUSS - XBAUM_H;
 void zimmerMoebelZeichnen(int id){const auto&p=einrichtung.platz[id];if(p.aufgestellt)zimmerEbene(*Z_MOEBEL[id].grafik,p.x,p.fuss-Z_MOEBEL[id].grafik->h);}
 void zimmerNeuZeichnen(ms_t jetzt){
  bild.fillScreen(1);zimmerEbene(EVI_RAUMSTRUKTUR,0,27);
@@ -41,8 +45,7 @@ void zimmerNeuZeichnen(ms_t jetzt){
  int a=Z_BETT,b=Z_SIDEBOARD;if(einrichtung.platz[a].fuss>einrichtung.platz[b].fuss){int t=a;a=b;b=t;}
  zimmerMoebelZeichnen(a);zimmerMoebelZeichnen(b);
  if(festlich){
-  const int h=100,w=WEIHNACHTSBAUM.w*h/WEIHNACHTSBAUM.h;
-  raumRasterZeichnen(WEIHNACHTSBAUM,317-w,173-h,w,h,false,false,false,173);
+  raumRasterZeichnen(WEIHNACHTSBAUM,XBAUM_X,XBAUM_Y,XBAUM_W,XBAUM_H,false,false,false,XBAUM_FUSS);
   const int sw=95,sh=FENSTERSTERNE.h*sw/FENSTERSTERNE.w;
   raumRasterZeichnen(FENSTERSTERNE,64,29,sw,sh,false,false,false,0);
   const auto&p=einrichtung.platz[Z_SIDEBOARD];
@@ -53,7 +56,7 @@ bool zimmerNeuVerdeckt(int fuss,int x,int y){
  for(int i=0;i<Z_MOEBEL_ANZAHL;i++){const auto&a=Z_MOEBEL[i];const auto&p=einrichtung.platz[i];if(!p.aufgestellt||a.wand||a.bodenfrei||fuss>=p.fuss)continue;
   const int sx=x-p.x,sy=y-(p.fuss-a.grafik->h);if(sx>=0&&sy>=0&&sx<a.grafik->w&&sy<a.grafik->h&&(!a.grafik->maske||zimmerBit(a.grafik->maske,a.grafik->w,sx,sy)))return true;
  }
- if(weihnachtsZeit(jetztMs())&&fuss<173){const int h=100,w=WEIHNACHTSBAUM.w*h/WEIHNACHTSBAUM.h,sx=x-(317-w),sy=y-73;if(sx>=0&&sy>=0&&sx<w&&sy<h&&bildDeckt(WEIHNACHTSBAUM,sx*WEIHNACHTSBAUM.w/w,sy*WEIHNACHTSBAUM.h/h))return true;}
+ if(weihnachtsZeit(jetztMs())&&fuss<XBAUM_FUSS){const int sx=x-XBAUM_X,sy=y-XBAUM_Y;if(sx>=0&&sy>=0&&sx<XBAUM_W&&sy<XBAUM_H&&bildDeckt(WEIHNACHTSBAUM,sx*WEIHNACHTSBAUM.w/XBAUM_W,sy*WEIHNACHTSBAUM.h/XBAUM_H))return true;}
  return false;
 }
 void zimmerLaden(){

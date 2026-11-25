@@ -7,6 +7,14 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Großer Weihnachtsbaum, Evi schläft im Tierbett (25. November 2026)
+
+Wünsche der Nutzerin nach dem Test von Zimmer V2 und Einrichtungsmodus („funktioniert ganz gut“, auch der Gang zum Sideboard):
+- **Weihnachtsbaum viel größer:** steht wie bisher rechts auf dem Boden (Fuß y = 173), reicht jetzt bis unter die Balkenleiste (145 statt 100 Punkte hoch, 84 breit, fast Originalgröße der Zeichnung). Konstanten `XBAUM_*` in `einrichtung.ino`; Zeichnen und Verdeckung nutzen dieselben Werte. Das Kerzentablett steht dadurch zum Teil hinter dem Baum.
+- **Evi schläft im Tierbett** (`bett.ino`, Zustand in `extras.h`): Schläft sie ein (nachts oder Mittagsschlaf), läuft sie bei hellem Bildschirm zum Bett, bei dunklem liegt sie gleich dort. Gezeichnet wird ihr vorhandenes Schlafbild in der Größe, die zur Tiefe des Betts passt; danach wird der vordere Rand des Korbs (ab Zeile `BETT_RAND`) noch einmal darübergelegt, so liegt sie im Korb. Die Schlafbilder aller Altersstufen sind innen ganz deckend (geprüft: keine Lücken in der Maske). Beim Aufwachen läuft sie zurück auf den Teppich. Ausgeschlafener wird sie dadurch nicht. Ist das Bett im Inventar, schläft sie wie bisher auf dem Teppich. Während sie hin- oder zurückläuft, beginnen keine Momente.
+- **Evis Größe gemessen** (vorne auf dem Teppich, Bildschirm 240 Punkte hoch): Baby 54 (22 %), Teenager 64 (27 %), Erwachsene 68 (28 %), Oma 64 (27 %). Grillme-Ziel für die Erwachsene: etwa 30 % (72 Punkte). Noch nicht geändert.
+- Geprüft: alle elf PC-Prüfprogramme ohne Fehler; `einrichtung.cpp` prüft Baumhöhe, Gang ins Bett, Lage im Bett, Rand davor, Rückweg, dunkel gleich im Bett, Bett im Inventar. **Am Board noch nicht ausprobiert.**
+
 ## Tieferer Schlaf, Touch im Dunkeln aus, Gassi entfernt (25. November 2026, zweite Fassung)
 
 Gemessen mit der ersten Fassung (unten): Bildschirm an etwa 120 mA, Bildschirm aus 30–47 mA (drei AAA, Multimeter über den leeren vierten Platz). Wunsch der Nutzerin daraufhin: Gassi gehen ganz entfernen, den Chip tiefer schlafen lassen, im Dunkeln Touch grundsätzlich aus.

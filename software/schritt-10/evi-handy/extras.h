@@ -191,6 +191,10 @@ enum Wetter : uint8_t { WT_SONNE, WT_SONNE_WOLKEN, WT_REGEN, WT_BEWOELKT, WT_SCH
 const int GLAS_X = 33, GLAS_Y = 49, GLAS_B = 62, GLAS_H = 69;
 
 // ---------- Bewegung (bewegung.ino, Lagesensor in lage.h), seit 24.11.2026 ----------
+// Evi schläft im Tierbett (bett.ino, seit 25.11.2026): hinlaufen, liegen, zurück auf den Teppich
+enum BettPhase : uint8_t { BETT_NEIN, BETT_HIN, BETT_LIEGT, BETT_ZURUECK };
+struct { BettPhase phase = BETT_NEIN; } bettZustand;
+
 // Der Ball, der beim Kippen über den Teppich rollt (Mitte x, Geschwindigkeit in Punkten pro Takt)
 struct { bool sichtbar = false; float x = 0, v = 0; int gerade = 0; } rollBall;
 struct {

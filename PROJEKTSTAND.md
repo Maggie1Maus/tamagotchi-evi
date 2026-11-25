@@ -15,6 +15,12 @@ Stand: 25. November 2026
 - Geprüft: drei betroffene PC-Prüfprogramme ohne Fehler, Syntaxprüfung ohne Warnungen, alle 51 Fensterzustände pixelgenau gegen aktuelle PNG-Referenzen; die 17 Tagesansichten bleiben unverändert. Eigene Prüfungen sichern Baumfüllung/-rand aller vier Jahreszeiten sowie den fehlenden Dämmerungsmond auch im älteren Zeichner.
 - Nach dem Zusammenführen mit den parallelen Stromspar-/Gassi-Änderungen zusätzlich alle elf PC-Prüfprogramme und den 51-Fenster-Vergleich erneut erfolgreich ausgeführt, ohne Warnungen.
 
+## Großer Weihnachtsbaum, Evi schläft im Tierbett (25. November 2026)
+
+- Laut Nutzerin funktionieren Einrichten und der Gang zum Sideboard am Board gut. Neue Wünsche, umgesetzt (nur Waveshare): Weihnachtsbaum vom Boden bis an den oberen Zimmerrand; Evi geht zum Schlafen ins Tierbett (vorhandenes Schlafbild, deckend, vorderer Korbrand davor, keine neue Zeichnung, keine Spielwirkung). Einzelheiten in `software/schritt-10/README.md`. Alle elf PC-Prüfprogramme ohne Fehler. **Am Board noch nicht ausprobiert.**
+- Evis Größe gemessen: Erwachsene 68 von 240 Punkten (28 %), Baby 22 %, Teenager und Oma 27 %. Ob sie größer werden soll, entscheidet die Nutzerin.
+- Wunsch für später: mehr Gegenstände im Zimmer, auch an der Wand (z. B. kleine Bilder). Funde ins Regal geht zu Weihnachten nicht, weil dann statt des Regals der Baum steht.
+
 ## Schaltplan ausgewertet: Verstärker läuft immer, Akku-Schalter aus (25. November 2026)
 
 - Die Nutzerin hat den Waveshare-Schaltplan geschickt. Ergebnis in [Stromverbrauch laut Schaltplan](Tamagotchi_Hardware_Cube.md#stromverbrauch-laut-schaltplan-25-november-2026): Der größte bekannte Dauerverbraucher ist vermutlich der **Lautsprecher-Verstärker APA2068**, der fest eingeschaltet ist (kein GPIO). Dazu Lade-Chip, Betriebs-LED und der Chip selbst.

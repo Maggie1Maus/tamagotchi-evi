@@ -123,7 +123,7 @@ MomentArt momentWaehlen(Stimmung s, bool istMuede, int laune, Gedanke& gedanke) 
 }
 
 bool momentErlaubt() {
-  return !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen &&
+  return !spiel.aktiv && !ritual.aktiv && !menueOffen && !evi.schluepfen && bettZustand.phase == BETT_NEIN &&
          evi.takt >= evi.reaktionBisTakt && evi.takt >= moment.ruheBisTakt;
 }
 
