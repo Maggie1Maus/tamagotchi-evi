@@ -43,13 +43,17 @@ void zimmerNeuZeichnen(ms_t jetzt){
  const bool festlich=weihnachtsZeit(jetzt);
  if(!festlich)zimmerMoebelZeichnen(Z_REGAL);
  int a=Z_BETT,b=Z_SIDEBOARD;if(einrichtung.platz[a].fuss>einrichtung.platz[b].fuss){int t=a;a=b;b=t;}
- zimmerMoebelZeichnen(a);zimmerMoebelZeichnen(b);
+ // Das Kerzentablett gehört zum Sideboard: direkt danach zeichnen, damit Bett und Weihnachtsbaum davor bleiben,
+ // wenn sie weiter vorne stehen (am 25.11.2026 stand es sonst vor dem großen Baum).
+ auto kerzen=[&](int id){
+  const auto&p=einrichtung.platz[Z_SIDEBOARD];
+  if(festlich&&id==Z_SIDEBOARD&&p.aufgestellt&&zimmerAblagePasst(Z_SIDEBOARD,0,zimmerAblageBreite(true),0))zeichneBild(KERZEN,p.x+(EVI_SIDEBOARD.w-KERZEN.w)/2,p.fuss-EVI_SIDEBOARD.h+6-KERZEN.h);
+ };
+ zimmerMoebelZeichnen(a);kerzen(a);zimmerMoebelZeichnen(b);kerzen(b);
  if(festlich){
   raumRasterZeichnen(WEIHNACHTSBAUM,XBAUM_X,XBAUM_Y,XBAUM_W,XBAUM_H,false,false,false,XBAUM_FUSS);
   const int sw=95,sh=FENSTERSTERNE.h*sw/FENSTERSTERNE.w;
   raumRasterZeichnen(FENSTERSTERNE,64,29,sw,sh,false,false,false,0);
-  const auto&p=einrichtung.platz[Z_SIDEBOARD];
-  if(p.aufgestellt&&zimmerAblagePasst(Z_SIDEBOARD,0,zimmerAblageBreite(true),0))zeichneBild(KERZEN,p.x+(EVI_SIDEBOARD.w-KERZEN.w)/2,p.fuss-EVI_SIDEBOARD.h+6-KERZEN.h);
  }
 }
 bool zimmerNeuVerdeckt(int fuss,int x,int y){

@@ -17,7 +17,7 @@ Stand: 25. November 2026
 
 ## Großer Weihnachtsbaum, Evi schläft im Tierbett (25. November 2026)
 
-- Laut Nutzerin funktionieren Einrichten und der Gang zum Sideboard am Board gut. Neue Wünsche, umgesetzt (nur Waveshare): Weihnachtsbaum vom Boden bis an den oberen Zimmerrand; Evi geht zum Schlafen ins Tierbett (vorhandenes Schlafbild, deckend, vorderer Korbrand davor, keine neue Zeichnung, keine Spielwirkung). Einzelheiten in `software/schritt-10/README.md`. Alle elf PC-Prüfprogramme ohne Fehler. **Am Board noch nicht ausprobiert.**
+- Laut Nutzerin funktionieren Einrichten und der Gang zum Sideboard am Board gut. Neue Wünsche, umgesetzt (nur Waveshare): Weihnachtsbaum vom Boden bis an den oberen Zimmerrand; Evi geht zum Schlafen ins Tierbett (vorhandenes Schlafbild, deckend, vorderer Korbrand davor, keine neue Zeichnung, keine Spielwirkung). Das Kerzentablett liegt jetzt richtig hinter dem Baum (stand zuerst davor). Evis Größe bleibt, wie sie ist (Entscheidung der Nutzerin). Einzelheiten in `software/schritt-10/README.md`. Alle elf PC-Prüfprogramme ohne Fehler. **Am Board noch nicht ausprobiert.**
 - Evis Größe gemessen: Erwachsene 68 von 240 Punkten (28 %), Baby 22 %, Teenager und Oma 27 %. Ob sie größer werden soll, entscheidet die Nutzerin.
 - Wunsch für später: mehr Gegenstände im Zimmer, auch an der Wand (z. B. kleine Bilder). Funde ins Regal geht zu Weihnachten nicht, weil dann statt des Regals der Baum steht.
 
