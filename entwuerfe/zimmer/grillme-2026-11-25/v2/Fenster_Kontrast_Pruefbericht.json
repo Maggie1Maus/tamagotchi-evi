@@ -1,7 +1,7 @@
 {
   "date": "2026-11-25",
-  "scope": "Fensterdarstellung Dämmerung / Nacht",
-  "base_commit": "b8d6f191e94fa94cd4bc22b7fe0b182021ef2bd0",
+  "scope": "Fenster: vollständig schwarzer Nachthimmel, weiße Himmelszeichen und Niederschlag",
+  "base_commit": "ef247f1edbc37eab05f7ee955e0460a3cdaa1c22",
   "checks": {
     "compiler_warnings": 0,
     "pc_programs_passed": [
@@ -11,14 +11,22 @@
     ],
     "window_combinations_pixel_exact": 51,
     "original_day_combinations_unchanged": 17,
+    "previous_twilight_combinations_unchanged": 17,
+    "solid_black_night_sky_combinations": 17,
+    "night_precipitation_animation_frames_per_weather": 16,
     "twilight_white_tree_dark_border_seasons": 4,
     "night_black_tree_white_border_seasons": 4,
     "moon_only_at_night": true,
     "legacy_twilight_moon_removed": true,
     "generator_reproducible": true,
-    "merged_pc_suite_programs": 11
+    "merged_pc_programs_passed": [
+      "einrichtung",
+      "umgebung",
+      "raumtiefe",
+      "schlaf"
+    ]
   },
   "hardware_compile_and_physical_test": "pending",
   "preview": "board/fenster-tag-daemmerung-nacht.png",
-  "merged_upstream_commit": "0fb24aef5b03676b2014697533b9498602826e7b"
+  "merged_upstream_commit": "38d35d3098ac2be8bf3d1636e4212b9bbad19382"
 }

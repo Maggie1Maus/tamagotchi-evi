@@ -42,6 +42,29 @@ void bereit(ms_t jetzt, ms_t alter = 4 * TAG) {
   bildschirmAn = true; himmel = himmelBei(jetzt);
   meldungBis=0;sagen.bis=0;
 }
+bool fensterEbeneDeckt(const EviGrafik& a,int x,int y){
+ return x>=0&&y>=0&&x<a.w&&y<a.h&&(!a.maske||zimmerBit(a.maske,a.w,x,y));
+}
+bool fensterHell(int x,int y){return bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));}
+void nachthimmelPruefen(Jahreszeit j,Wetter w){
+ int himmel=0;bool schwarz=true;
+ for(int y=0;y<40;y++)for(int x=0;x<66;x++){
+  if(!zimmerScheibe(79+x,46+y)||fensterEbeneDeckt(*Z_BAEUME_NACHT[j],x,y)||fensterEbeneDeckt(*Z_ZEICHEN[HIMMEL_NACHT][w],x,y)||fensterEbeneDeckt(*Z_WOLKEN[HIMMEL_NACHT][w],x,y)||fensterEbeneDeckt(EVI_LANDSCHAFT_HUEGEL_BODEN,x,y))continue;
+  if(j==JZ_HERBST&&(fensterEbeneDeckt(EVI_HERBSTLAUB_BODEN,x,y)||fensterEbeneDeckt(EVI_HERBSTBLATT,x-19,y-28)))continue;
+  if((w==WT_REGEN&&fensterEbeneDeckt(*Z_REGEN[0],x,y))||(w==WT_SCHNEE&&fensterEbeneDeckt(*Z_SCHNEE[0],x,y)))continue;
+  himmel++;schwarz&=!fensterHell(x,y);
+ }
+ PRUEFE(himmel>200&&schwarz,"Nachthimmel ist bei jeder Jahreszeit und jedem Wetter durchgehend schwarz");
+ if(w==WT_REGEN||w==WT_SCHNEE){
+  bool weiss=true;int punkte=0;
+  for(int f=0;f<16;f++){
+   zimmerFensterNeu(j,HIMMEL_NACHT,w,f);const EviGrafik& a=*(w==WT_REGEN?Z_REGEN[f]:Z_SCHNEE[f]);
+   for(int y=0;y<53;y++)for(int x=0;x<66;x++)if(zimmerScheibe(79+x,46+y)&&zimmerBit(a.linien,66,x,y)){punkte++;weiss&=fensterHell(x,y);}
+  }
+  PRUEFE(punkte>100&&weiss,"Regen und Schnee bleiben nachts in allen 16 Animationsphasen weiß sichtbar");
+  zimmerFensterNeu(j,HIMMEL_NACHT,w,0);
+ }
+}
 void fensterPalettenPruefen(){
  uint8_t abend[9600];
  for(int j=0;j<4;j++){
@@ -64,12 +87,12 @@ void fensterPalettenPruefen(){
   leererHimmel&=hell!=zimmerBit(Z_HIMMEL[HIMMEL_DAEMMERUNG][WT_SONNE]->linien,66,x,y);
  }
  PRUEFE(leererHimmel,"Dämmerung zeigt keinen Mond oder mondähnlichen Himmelskörper");
- bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,HIMMEL_NACHT,WT_SONNE,0);int mond=0;
+ bild.fillScreen(1);zimmerFensterNeu(JZ_SOMMER,HIMMEL_NACHT,WT_SONNE,0);int mond=0;bool weisserMond=true;
  for(int y=1;y<23;y++)for(int x=1;x<25;x++)if(zimmerScheibe(79+x,46+y)){
   const bool hell=bild.getBuffer()[(46+y)*40+(79+x)/8]&(128>>((79+x)%8));
-  if(hell==zimmerBit(Z_HIMMEL[HIMMEL_NACHT][WT_SONNE]->linien,66,x,y))mond++;
+  if(zimmerBit(Z_ZEICHEN[HIMMEL_NACHT][WT_SONNE]->linien,66,x,y)){mond++;weisserMond&=hell;}
  }
- PRUEFE(mond>10,"Der Mond ist erst nachts im klaren Himmel sichtbar");
+ PRUEFE(mond>10&&weisserMond,"Der Mond ist erst nachts weiß im schwarzen Himmel sichtbar");
  // The legacy renderer used h != DAY and accidentally drew a moon at twilight.
  ms_t zeit=0;for(int tag=0;tag<50&&!zeit;tag++){const ms_t t=sonnenzeiten(ausOrtszeit(2027,1,7,12,0)+tag*TAG).untergang+MINUTE;if(himmelBei(t)==HIMMEL_DAEMMERUNG&&wetterBei(t)==WT_SONNE)zeit=t;}
  bool keinMond=true;int himmelPunkte=0;
@@ -122,6 +145,7 @@ int main(){
   if(w==WT_SCHNEE&&j!=JZ_WINTER)continue;
   bild.fillScreen(1);zimmerFensterNeu((Jahreszeit)j,(Himmel)h,(Wetter)w,0);
   char name[50];snprintf(name,sizeof(name),"v2-window-%d-%d-%d",j,h,w);foto(name);kombinationen++;
+  if(h==HIMMEL_NACHT)nachthimmelPruefen((Jahreszeit)j,(Wetter)w);
   if(w==WT_REGEN||w==WT_SCHNEE){uint8_t vorher[9600];memcpy(vorher,bild.getBuffer(),9600);zimmerFensterNeu((Jahreszeit)j,(Himmel)h,(Wetter)w,4);int bewegt=0,ausserhalb=0;for(int y=0;y<240;y++)for(int x=0;x<320;x++)if((vorher[y*40+x/8]^bild.getBuffer()[y*40+x/8])&(0x80>>(x%8))){bewegt++;if(!zimmerScheibe(x,y))ausserhalb++;}PRUEFE(bewegt>0&&ausserhalb==0,"Niederschlag bewegt nur die tatsächlichen Fensterscheiben");}
  }
  PRUEFE(kombinationen==51,"Alle gültigen Jahreszeit-Wetter-Tageszeit-Kombinationen exportiert");

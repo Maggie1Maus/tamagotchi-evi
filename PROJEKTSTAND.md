@@ -2,6 +2,12 @@
 
 Stand: 25. November 2026
 
+## Nachthimmel vollständig schwarz (25. November 2026)
+
+- Weiterer ausdrücklicher Wunsch der Nutzerin: Der Nachthimmel ist jetzt bei allen Wetterlagen eine geschlossene schwarze Fläche. Mond, Sterne und Niederschlag werden nachts weiß gezeichnet; Wolken erhalten helle Konturen. Der Baum bleibt schwarz mit weißem Rand. Die 17 Tages- und 17 Dämmerungsansichten bleiben pixelgleich zum vorigen Stand; Dämmerung weiterhin mit weißem Baum und ohne Mond.
+- In der Waveshare-Firmware und im reproduzierbaren Grafikexport umgesetzt. Eigene Bildschirmprüfungen sichern alle 17 Nachtzustände auf durchgehend schwarzen freien Himmel sowie alle 16 Regen-/Schneephasen auf weiße sichtbare Striche/Flocken. Der aktuelle Vergleich liegt unter `entwuerfe/zimmer/grillme-2026-11-25/v2/board/fenster-tag-daemmerung-nacht.png`.
+- Syntaxprüfung ohne Warnungen, die PC-Prüfprogramme für Einrichtung, Umgebung und Raumtiefe sowie der unabhängige Vergleich aller 51 Fensteransichten erfolgreich. Nach dem Zusammenführen der parallelen Akku-/Pin-Änderung diese Prüfungen und zusätzlich den Schlafmodus erneut erfolgreich geprüft. Echte Pico-2-Übersetzung und physischer Boardtest für diese Änderung stehen aus.
+
 ## Fensterausblick: Dämmerung und Nacht konkretisiert (25. November 2026)
 
 - Ausdrücklicher Wunsch der Nutzerin: Dämmerung mit weißem Baum und dunkler Kontur, ohne Mond; nachts schwarzer Baum mit weißem Rand, Mond erst bei Nacht. Die vorhandene Baumform und die Tagdarstellung bleiben erhalten. Der ältere Fensterzeichner hatte den Mond auch bei Dämmerung eingeblendet; diese Bedingung ist ebenfalls korrigiert.

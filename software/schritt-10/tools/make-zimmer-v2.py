@@ -38,13 +38,17 @@ with zipfile.ZipFile(source) as z:
    meta=manifest['assets'][name]
    cache[name]={'w':meta['width'],'h':meta['height'],'ink':bitmap(meta['ink']),'mask':bitmap(meta['mask']) if meta['mask'] else None}
   return cache[name]
- def overlay(dst,a,ox=0,oy=0):
+ def overlay(dst,a,ox=0,oy=0,negative=False):
   for y in range(a['h']):
    for x in range(a['w']):
     i=y*a['w']+x;px=x+ox;py=y+oy
-    if 0<=px<66 and 0<=py<53 and (a['mask'] is None or a['mask'][i]):dst[py*66+px]=a['ink'][i]
+    if 0<=px<66 and 0<=py<53 and (a['mask'] is None or a['mask'][i]):dst[py*66+px]=not a['ink'][i] if negative else a['ink'][i]
 
  suffix=[];styled={}
+ black=pack([True]*(66*53),66,53)
+ suffix.append('static const uint8_t EVI_HIMMEL_NACHT_SCHWARZ_LINIEN[] = {')
+ for i in range(0,len(black),20):suffix.append('  '+','.join('0x%02x'%v for v in black[i:i+20])+',')
+ suffix.append('};\nstatic const EviGrafik EVI_HIMMEL_NACHT_SCHWARZ = {66,53,EVI_HIMMEL_NACHT_SCHWARZ_LINIEN,nullptr};')
  for season in seasons:
   original=asset('baum-'+season);ink=original['ink'];mask=original['mask']
   # Preserve the existing solid body and its one-pixel clearance as the contrasting rim.
@@ -63,7 +67,9 @@ with zipfile.ZipFile(source) as z:
    suffix.append(f'static const EviGrafik {identifier} = {{66,53,{identifier}_LINIEN,EVI_BAUM_{season.upper()}_MASKE}};')
  for name,prefix in [('Z_HIMMEL','HIMMEL'),('Z_ZEICHEN','HIMMELSZEICHEN'),('Z_WOLKEN','WOLKEN')]:
   suffix.append('static const EviGrafik* const '+name+'[3][5] = {')
-  for time in times:suffix.append('{'+','.join('&EVI_'+prefix+'_'+time.upper()+'_'+w.upper().replace('-','_') for w in weather)+'},')
+  for time in times:
+   if name=='Z_HIMMEL' and time=='nacht':suffix.append('{'+','.join(['&EVI_HIMMEL_NACHT_SCHWARZ']*5)+'},')
+   else:suffix.append('{'+','.join('&EVI_'+prefix+'_'+time.upper()+'_'+w.upper().replace('-','_') for w in weather)+'},')
   suffix.append('};')
  for name,ids in [
   ('Z_BAEUME',['BAUM_'+s.upper() for s in seasons]),
@@ -78,14 +84,15 @@ with zipfile.ZipFile(source) as z:
  atlas=[False]*(198*len(rows)*53);states=[]
  for row,(season,rain) in enumerate(rows):
   for col,time in enumerate(times):
-   dst=list(asset('himmel-'+time+'-'+rain)['ink'])
-   if time!='daemmerung':overlay(dst,asset('himmelszeichen-'+time+'-'+rain))
-   overlay(dst,asset('wolken-'+time+'-'+rain))
+   night=time=='nacht'
+   dst=[True]*(66*53) if night else list(asset('himmel-'+time+'-'+rain)['ink'])
+   if time!='daemmerung':overlay(dst,asset('himmelszeichen-'+time+'-'+rain),negative=night)
+   overlay(dst,asset('wolken-'+time+'-'+rain),negative=night and rain!='regen')
    if time=='daemmerung' and rain=='leicht-bewoelkt':overlay(dst,asset('wetter-wolke'),4,18)
    overlay(dst,asset('landschaft-huegel-boden'))
    overlay(dst,asset('baum-'+season) if time=='tag' else styled[season,time])
-   if season=='herbst':overlay(dst,asset('herbstlaub-boden'));overlay(dst,asset('herbstblatt'),19,28)
-   if rain in ['regen','schneefall']:overlay(dst,asset(rain+'-00'))
+   if season=='herbst':overlay(dst,asset('herbstlaub-boden'));overlay(dst,asset('herbstblatt'),19,28,negative=night)
+   if rain in ['regen','schneefall']:overlay(dst,asset(rain+'-00'),negative=night)
    for y in range(53):atlas[(row*53+y)*198+col*66:(row*53+y)*198+(col+1)*66]=dst[y*66:(y+1)*66]
    states.append({'id':f'{season}-{time}-{rain}','x':col*66,'y':row*53})
  png(folder/'Fenster_aktuell.png',atlas,198,len(rows)*53)
