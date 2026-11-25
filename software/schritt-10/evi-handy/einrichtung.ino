@@ -1,32 +1,41 @@
 // Approved v2 room layers and the first usable furniture editor (Waveshare only).
 bool zimmerBit(const uint8_t* p,int w,int x,int y){return p[y*((w+7)/8)+x/8]&(0x80>>(x%8));}
+const uint8_t* zimmerGrauDaten(const EviGrafik& a){
+ for(int i=0;i<ZIMMER_GRAU_ANZAHL;i++)if(ZIMMER_GRAU[i].alt==&a)return ZIMMER_GRAU[i].daten;
+ return nullptr;
+}
+void zimmerGrauEbene(const uint8_t* g,int w,int h,int x,int y){
+ for(int yy=0;yy<h;yy++)for(int xx=0;xx<w;xx++){const uint8_t st=grauStufe(g,w,xx,yy);if(st!=15)bild.drawPixel(x+xx,y+yy,grauWert(st));}
+}
+// Graustufen-Zeichnung (zimmergrau.h) wenn vorhanden, sonst die alte Schwarz-Weiß-Ebene.
 void zimmerEbene(const EviGrafik& a,int x,int y){
+ if(const uint8_t* g=zimmerGrauDaten(a)){zimmerGrauEbene(g,a.w,a.h,x,y);return;}
  for(int yy=0;yy<a.h;yy++)for(int xx=0;xx<a.w;xx++)if(!a.maske||zimmerBit(a.maske,a.w,xx,yy))bild.drawPixel(x+xx,y+yy,zimmerBit(a.linien,a.w,xx,yy)?0:1);
 }
-bool zimmerPunkt(const EviGrafik& a,int x,int y,bool vorher,bool negativ=false){
- if(x<0||y<0||x>=a.w||y>=a.h||(a.maske&&!zimmerBit(a.maske,a.w,x,y)))return vorher;
- return zimmerBit(a.linien,a.w,x,y)!=negativ;
-}
-// Original day artwork; white twilight tree, black night tree with white rim.
+// Fensterausblick in Graustufen: Ebenen von hinten nach vorn (Reihenfolge laut entwuerfe/zimmer/graustufen/spielgrafiken/liste.txt).
+// Himmel, Himmelszeichen, Wolken, Hügel, (Winter: Bodenschnee), Baum, (Herbst: Laub), (Winter: Astschnee), Niederschlag.
+// Die Scheibe ist der durchsichtige Teil des Fensterrahmens (ZIMMER_SCHEIBE).
 void zimmerFensterNeu(Jahreszeit j,Himmel h,Wetter w,int phase){
  if(j!=JZ_WINTER&&w==WT_SCHNEE)w=WT_BEWOELKT;
  const int f=phase%16;
- const bool nacht=h==HIMMEL_NACHT;
  const int lx=19+(int)lround(sin(f*2*M_PI/16)*2),ly=28+f*18/16;
- const EviGrafik& sky=*Z_HIMMEL[h][w],&zeichen=*Z_ZEICHEN[h][w],&wolken=*Z_WOLKEN[h][w];
- const EviGrafik& baum=*(h==HIMMEL_NACHT?Z_BAEUME_NACHT[j]:h==HIMMEL_DAEMMERUNG?Z_BAEUME_ABEND[j]:Z_BAEUME[j]);
+ const uint8_t* e[10];int n=0;
+ e[n++]=ZG_HIMMEL[h][w];
+ if(h!=HIMMEL_DAEMMERUNG&&(w==WT_SONNE||w==WT_SONNE_WOLKEN))e[n++]=ZG_ZEICHEN[h];
+ e[n++]=ZG_WOLKEN[h][w];
+ e[n++]=ZG_HUEGEL;
+ if(j==JZ_WINTER)e[n++]=ZG_SCHNEE_BODEN;
+ e[n++]=ZG_BAUM[h][j];
+ if(j==JZ_HERBST)e[n++]=ZG_LAUB;
+ if(j==JZ_WINTER)e[n++]=ZG_SCHNEE_AESTE;
+ if(w==WT_REGEN)e[n++]=ZG_REGEN[f];
+ if(w==WT_SCHNEE)e[n++]=ZG_SCHNEE[f];
  for(int y=0;y<53;y++)for(int x=0;x<66;x++){
-  if(!zimmerBit(EVI_FENSTER_SCHEIBENMASKE.linien,66,x,y))continue;
-  bool schwarz=zimmerPunkt(sky,x,y,false);
-  // No moon-like disc at twilight; keep its cloud when lightly overcast.
-  if(h!=HIMMEL_DAEMMERUNG)schwarz=zimmerPunkt(zeichen,x,y,schwarz,nacht);
-  schwarz=zimmerPunkt(wolken,x,y,schwarz,nacht&&w!=WT_REGEN);
-  if(h==HIMMEL_DAEMMERUNG&&w==WT_SONNE_WOLKEN)schwarz=zimmerPunkt(EVI_WETTER_WOLKE,x-4,y-18,schwarz);
-  schwarz=zimmerPunkt(EVI_LANDSCHAFT_HUEGEL_BODEN,x,y,schwarz);schwarz=zimmerPunkt(baum,x,y,schwarz);
-  if(j==JZ_HERBST){schwarz=zimmerPunkt(EVI_HERBSTLAUB_BODEN,x,y,schwarz);schwarz=zimmerPunkt(EVI_HERBSTBLATT,x-lx,y-ly,schwarz,nacht);}
-  if(w==WT_REGEN)schwarz=zimmerPunkt(*Z_REGEN[f],x,y,schwarz,nacht);
-  if(w==WT_SCHNEE)schwarz=zimmerPunkt(*Z_SCHNEE[f],x,y,schwarz,nacht);
-  bild.drawPixel(79+x,46+y,schwarz?0:1);
+  if(!zimmerBit(ZIMMER_SCHEIBE,66,x,y))continue;
+  uint16_t wert=255;
+  for(int i=0;i<n;i++){const uint8_t st=grauStufe(e[i],66,x,y);if(st!=15)wert=grauWert(st);}
+  if(j==JZ_HERBST){const int bx=x-lx,by=y-ly;if(bx>=0&&by>=0&&bx<5&&by<6){const uint8_t st=grauStufe(ZG_BLATT,5,bx,by);if(st!=15)wert=grauWert(st);}}
+  bild.drawPixel(ZF_X+x,ZF_Y+y,wert);
  }
 }
 // Weihnachtsbaum: steht rechts auf dem Boden (Fuß bei y = 173) und reicht bis unter die Balkenleiste oben
@@ -35,7 +44,7 @@ const int XBAUM_FUSS = 173, XBAUM_H = XBAUM_FUSS - 28, XBAUM_W = WEIHNACHTSBAUM.
 const int XBAUM_X = 317 - XBAUM_W, XBAUM_Y = XBAUM_FUSS - XBAUM_H;
 void zimmerMoebelZeichnen(int id){const auto&p=einrichtung.platz[id];if(p.aufgestellt)zimmerEbene(*Z_MOEBEL[id].grafik,p.x,p.fuss-Z_MOEBEL[id].grafik->h);}
 void zimmerNeuZeichnen(ms_t jetzt){
- bild.fillScreen(1);zimmerEbene(EVI_RAUMSTRUKTUR,0,27);
+ bild.fillScreen(1);zimmerGrauEbene(ZG_RAUM[himmelBei(jetzt)],320,174,0,27);
  const Wetter w=wetterBei(jetzt);const int dauer=w==WT_REGEN?110:w==WT_SCHNEE?190:220;
  zimmerFensterNeu(jahreszeitBei(jetzt),himmelBei(jetzt),w,(millis()/dauer)%16);
  zimmerEbene(EVI_FENSTER_RAHMEN,71,38);

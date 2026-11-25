@@ -34,7 +34,7 @@ void foto(const char* name) {
 }
 void warten(uint32_t ms) { for (uint32_t t = 0; t < ms; t += 10) { simMillis += 10; loop(); } }
 void bereit(ms_t jetzt, ms_t alter = 4 * TAG) {
-  gartenSchliessen(); sideboardSofortZu(); uhrSetzen(jetzt);
+  sideboardSofortZu(); uhrSetzen(jetzt);
   pet = neuesTier(jetzt - alter); pet.aktualisiert = jetzt;
   pet.satt = pet.laune = pet.sauber = 90;
   moment.naechster = jetzt + STUNDE; moment.letzterBesonderer = jetzt;
@@ -95,19 +95,9 @@ int main() {
   moment.bild=MB_FENSTER;zeichneAlles();foto("tiefe-am-fenster");
   gangBeginnen(0);schritte=0;while(!gangSchritt() && schritte++<500){}
   PRUEFE(geher.x==0 && geher.fuss==RAUM_HEIM_Y,"Rückweg endet am vorderen Teppich");
-  // Garten: erst auf der freien Wiese entlang, dann kleiner ins Beet; danach nach vorn kommen.
-  bereit(jetzt);momentStoppen(true);sammlung=Sammlung();gartenOeffnen();garten.stelle=2;gartenWeiter();
-  warten(450);const int vorne=raumSkala(garten.y,true);
-  PRUEFE(garten.y==RAUM_HEIM_Y,"Seitlicher Gartenweg bleibt zunächst vor den Pflanzen");
-  warten(750);PRUEFE(garten.y==139 && raumSkala(garten.y,true)<vorne,"Evi geht zum Beet in die Tiefe und wird kleiner");
-  zeichneAlles();foto("tiefe-garten-im-beet");
-  PRUEFE(raumVerdeckt(true,139,205,136),"Vordere Beetkante liegt vor Evis Pfoten");
-  warten(1000);gartenWeiter();warten(1100);
-  PRUEFE(garten.phase==GA_HERAUS,"Nach dem Untersuchen kommt Evi aus dem Beet hervor");
-  warten(800);PRUEFE(garten.y==184 && (garten.phase==GA_ZEIGEN || garten.phase==GA_LEER),"Ergebnis wird weiter vorn und größer gezeigt");
-  zeichneAlles();foto("tiefe-garten-wieder-vorne");
-  gartenWeiter();warten(800);PRUEFE(garten.phase==GA_WAHL && garten.y==RAUM_HEIM_Y,"A führt vollständig zurück auf die freie Wiese");
-  knopf(K_RESET);PRUEFE(!bildschirmAn && garten.phase==GA_ZU && geher.fuss==RAUM_HEIM_Y,"RESET räumt alle Tiefenpositionen auf");
+  // Garten pausiert (25.11.2026): keine Garten-Tiefenprüfung.
+  bereit(jetzt);momentStoppen(true);
+  knopf(K_RESET);PRUEFE(!bildschirmAn && geher.fuss==RAUM_HEIM_Y,"RESET räumt alle Tiefenpositionen auf");
   // Tatsächlich gerendertes Fenster: Wetter bewegt ausschließlich die vier Scheiben.
   for(Wetter w : {WT_REGEN,WT_SCHNEE}) for(int stunde : {12,20}) {
     ms_t t=0;

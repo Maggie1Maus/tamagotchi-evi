@@ -115,15 +115,7 @@ int main() {
     for (int art = 0; art < FUNDARTEN; art++)
       PRUEFE(sammlung.fund[art].art == art && sammlung.fund[art].tag == 20261124, "Bildzuordnung und Fundtag bleiben erhalten");
     sammlung = Sammlung();
-    // Seit Gassi entfernt ist (25.11.2026), kommen neue Funde nur aus dem Garten: jede Art muss dort vorkommen
-    bool gesehen[FUNDARTEN] = {};
-    for (int tag = 0; tag < 365; tag++) for (uint8_t st = 0; st < 3; st++) {
-      sammlung = Sammlung(); garten.stelle = st; garten.fund = -1;
-      gartenErgebnis(jetzt + (ms_t)tag * TAG);
-      if (garten.fund >= 0) gesehen[sammlung.fund[garten.fund].art] = true;
-    }
-    garten = GartenZustand();
-    for (int art = 0; art < FUNDARTEN; art++) PRUEFE(gesehen[art], "jede Art ist im Garten erreichbar");
+    // Der Garten ist pausiert (25.11.2026); neue Funde gibt es derzeit nicht.
     sammlung = vorher;
   }
   for (int i = sammlung.anzahl; i < SAMMLUNG_MAX; i++) fundAufnehmen(FUND_STEIN, FUND_GASSI, 20261124, 1);

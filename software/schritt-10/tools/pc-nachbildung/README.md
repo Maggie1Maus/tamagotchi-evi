@@ -18,7 +18,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh
 
 Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit gibt es nur dort.
 
-- `garten.cpp`: Gartenmenü, Suche mit Hilfe per A/Touch, alle zwölf Lebensphasen-Posen, ältere Spaziergang-Funde behalten ihre Erinnerung, volle Sammlung, Version-2-Migration, Version-3-Metadaten, Jahreszeiten- und Wetterbilder, Heimkehr/RESET/Schlafenszeit. Version 1 wird zusätzlich in `sideboard.cpp` geprüft.
+- `garten.cpp`: (seit 25.11.2026 nicht mehr in `pruefen.sh`, Garten pausiert) Gartenmenü, Suche mit Hilfe per A/Touch, alle zwölf Lebensphasen-Posen, ältere Spaziergang-Funde behalten ihre Erinnerung, volle Sammlung, Version-2-Migration, Version-3-Metadaten, Jahreszeiten- und Wetterbilder, Heimkehr/RESET/Schlafenszeit. Version 1 wird zusätzlich in `sideboard.cpp` geprüft.
 
 - `raumtiefe.cpp`: alle Altersstufen nah/mittel/fern, Bodenanker und stetige Skalierung, Originalpixel-Verdeckung, Touch, begehbare Wege, Garten-Tiefengang/Rückkehr, aktueller Fensterausblick bei Regen/Schnee tags/nachts, RESET und Minispielkoordinaten.
 

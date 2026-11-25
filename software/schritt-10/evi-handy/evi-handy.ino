@@ -39,6 +39,7 @@
 #include "grau.h"
 #include "zimmerlandschaft.h"
 #include "zimmergrafiken.h"
+#include "zimmergrau.h"
 #include "einrichtung.h"
 #include "raumtiefe.h"
 

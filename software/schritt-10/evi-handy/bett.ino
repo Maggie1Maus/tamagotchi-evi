@@ -65,12 +65,13 @@ void bettEviZeichnen(const Bild& b, Phase ph, int atem) {
   raumFigurZeichnen(b, ph, bettMitteX(), p.fuss, false, EVI_TIERBETT.h - BETT_LIEGEN + atem, false, false);
   raumImBett = false;
   const int w = EVI_TIERBETT.w;
+  const uint8_t* g = zimmerGrauDaten(EVI_TIERBETT);   // Graustufen-Zeichnung des Korbs (zimmergrau.h)
   for (int y = BETT_RAND; y < (int)EVI_TIERBETT.h; y++)
     for (int x = 0; x < w; x++) {
-      const bool linie = zimmerBit(EVI_TIERBETT.linien, w, x, y);
-      if (!linie && !(EVI_TIERBETT.maske && zimmerBit(EVI_TIERBETT.maske, w, x, y))) continue;
+      const uint8_t st = grauStufe(g, w, x, y);
+      if (st == 15) continue;
       const int px = p.x + x, py = oben + y;
       if (raumVerdeckt(false, p.fuss, px, py)) continue;   // was vor dem Bett steht, bleibt davor
-      bild.drawPixel(px, py, linie ? 0 : 1);
+      bild.drawPixel(px, py, grauWert(st));
     }
 }
