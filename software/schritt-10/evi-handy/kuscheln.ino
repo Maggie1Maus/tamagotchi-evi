@@ -124,6 +124,7 @@ void kuschelnBeginnen() {
 
 // Ein Tipper auf den Bildschirm (nur wenn die Tasten da sind; sonst sind es die drei Drittel)
 void beruehrt(int x, int y) {
+  if (parkOffen()) { parkTouch(x, y); return; }
   if(zimmerEditor.offen){zimmerEditorTouch(x,y);return;}
   if (sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv) return;
   if (aufEvi(x, y)) kuschelnBeginnen();
@@ -131,6 +132,7 @@ void beruehrt(int x, int y) {
 
 // Der Finger bleibt auf dem Bildschirm: Streicht er über Evi, geht das Kuscheln weiter.
 void streicheln(int x, int y) {
+  if (parkOffen()) return;
   if(zimmerEditor.offen)return;
   if (sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv || !aufEvi(x, y)) return;
   if (!kuschelnLaeuft()) { kuschelnBeginnen(); return; }

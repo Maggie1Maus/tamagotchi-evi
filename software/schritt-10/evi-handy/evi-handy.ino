@@ -40,6 +40,8 @@
 #include "zimmerlandschaft.h"
 #include "einrichtung.h"
 #include "raumtiefe.h"
+#include "park.h"
+#include "parkbilder.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom
@@ -66,7 +68,7 @@ bool bildschirmAn = true;
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
                          E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD,
-                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN };   // Zimmergestaltung
+                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN, E_PARK };   // Zimmergestaltung
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
@@ -620,6 +622,7 @@ void menueBauen() {
     // Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft.
     punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
     punkt(E_EINRICHTEN, &SYM_M_HERZ, "Zimmer einrichten");
+    if (parkMoeglich(jetzt)) punkt(E_PARK, &SYM_M_SONNE, "In den Park");
   }
   gewaehlt = 0;
 }
@@ -694,6 +697,7 @@ void zeichneZeile(Phase ph, Stimmung s, ms_t jetzt) {
 }
 
 void zeichneAlles() {
+  if (parkOffen()) { parkZeichnen(jetztMs()); return; }
   if (zimmerEditor.offen) { zimmerEditorZeichnen(); return; }
   if (sideboard.phase == SB_OFFEN) { sammlungZeichnen(); zeigen(); return; }
   const ms_t jetzt = jetztMs();
@@ -760,6 +764,7 @@ void ritualWeiter() {
 void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
+  if (e == E_PARK) { parkOeffnen(jetzt); return; }
   if (e == E_EINRICHTEN) { zimmerEinrichten(); return; }
   if (e == E_PLAUDERN) { freundPlaudern(); return; }
   if (e >= E_ANTWORT0 && e <= E_ANTWORT3) { freundAntwort(e - E_ANTWORT0); return; }
@@ -820,6 +825,7 @@ void aktionAusfuehren(Eintrag e) {
 
 // Die drei Tasten der App
 void taste(Taste k) {
+  if (parkOffen()) { parkKnopf(k == LINKS ? K_DOWN : k == MITTE ? K_A : K_B); return; }
   if(zimmerEditor.offen){zimmerEditorTaste(k);return;}
   if (sideboard.phase != SB_ZU) { sideboardTaste(k); return; }
   const ms_t jetzt = jetztMs();
@@ -846,6 +852,7 @@ void taste(Taste k) {
 // RESET schaltet den Bildschirm aus. Ein laufendes Spiel wird dabei abgebrochen, Gute Nacht und
 // Momente enden. Wieder an geht er mit jeder Taste, jedem Tipper und bei wichtigen Ereignissen.
 void bildschirmAus() {
+  parkSchliessen();
   zimmerEditor=ZimmerEditor();
   if (sideboard.phase != SB_ZU) sideboardSofortZu();
   if (spiel.aktiv) spielEnde(true);
@@ -861,6 +868,7 @@ void bildschirmAus() {
 // Die echten Tasten des Retro Gamers
 void knopf(Knopf k) {
   if (k == K_RESET) { bildschirmAus(); return; }
+  if (parkOffen()) { parkKnopf(k); return; }
   if (zimmerEditor.offen) { zimmerEditorKnopf(k); return; }
   if (freundKnopf(k)) return;                       // Geburtstag einstellen (freunde.ino)
   // Offene Frage von Evi: A oder START zeigt die Antworten (freunde.ino)
@@ -1157,7 +1165,7 @@ void loop() {
     if (!bildschirmAn) { bildschirmEin(); aufgeweckt(); }   // der erste Tipper weckt nur den Bildschirm
     else {
       bildschirmEin();
-      if (tastenDa || zimmerEditor.offen) beruehrt(x, y);
+      if (parkOffen() || tastenDa || zimmerEditor.offen) beruehrt(x, y);
       else taste(tasteBei(x));
     }
   } else if (fingerUnten && bildschirmAn && tastenDa && !fingerHatGeweckt) {
@@ -1177,15 +1185,18 @@ void loop() {
 
   spielTakt();
   const uint32_t m = millis();
+  if (bildschirmAn && parkOffen()) parkTakt(jetztMs(), m);
   if (m - letzterTakt >= TAKT_MS) {
     letzterTakt = m;
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
     ritualWeiter();
-    launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
-    if (!zimmerEditor.offen && sideboard.phase == SB_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
-    bettTakt(jetzt);                // schläft Evi, geht sie ins Tierbett (bett.ino)
-    if (!zimmerEditor.offen && sideboard.phase == SB_ZU) momentTakt(jetzt);
+    if (!parkOffen()) {
+      launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)
+      if (!zimmerEditor.offen && sideboard.phase == SB_ZU) freundTakt(jetzt);   // Fragen, große Momente (freunde.ino)
+      bettTakt(jetzt);                // schläft Evi, geht sie ins Tierbett (bett.ino)
+      if (!zimmerEditor.offen && sideboard.phase == SB_ZU) momentTakt(jetzt);
+    }
     kuschelTakt();
     if (m - letzteRunde >= 10000) { letzteRunde = m; runde(); }
     // Von selbst dunkel nur, wenn DUNKEL_NACH_MS > 0 (und nie mitten in Gute Nacht, einem Spiel oder einem Moment)
@@ -1200,7 +1211,7 @@ void loop() {
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
   } else if (bildschirmAn && ((spiel.aktiv && m - letztesBild >= 12) ||
              (!spiel.aktiv && sideboard.phase != SB_OFFEN && m - letztesBild >= 40 &&
-              (sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
+              (parkOffen() || sideboard.phase != SB_ZU || wetterBei(jetztMs()) == WT_REGEN || wetterBei(jetztMs()) == WT_SCHNEE)))) {
     // Spiele etwa 80-mal, Regen und Schnee etwa 25-mal pro Sekunde zeichnen.
     // Spielregeln und Evis Momente behalten ihren bisherigen Takt; gesendet werden nur Änderungen.
     zeichneAlles();

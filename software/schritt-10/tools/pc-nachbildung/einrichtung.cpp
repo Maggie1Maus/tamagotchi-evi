@@ -141,6 +141,91 @@ void zimmerLichtPruefen() {
   PRUEFE(nebenDerUhrFrei, "Neben der Uhr wird kein Wettersymbol gezeichnet");
 }
 
+void parkPruefen() {
+  const ms_t ersterTag = ausOrtszeit(2027, 7, 12, 12, 0);
+  bereit(ersterTag);
+  parkHintergrund(JZ_SOMMER, HIMMEL_TAG, WT_SONNE_WOLKEN);
+  const int sommerwiese = bild.stufe(280, STATUS_H + 150);
+  parkHintergrund(JZ_WINTER, HIMMEL_TAG, WT_SONNE_WOLKEN);
+  const int winterwiese = bild.stufe(280, STATUS_H + 150);
+  parkHintergrund(JZ_WINTER, HIMMEL_NACHT, WT_SONNE_WOLKEN);
+  PRUEFE(winterwiese > sommerwiese && bild.stufe(280, STATUS_H + 150) < winterwiese,
+         "Der Park zeigt Winter und Nacht mit eigener Helligkeit");
+  bool bewegtSich = true;
+  static uint8_t vorher[BREITE * HOEHE];
+  for (Wetter wetter : {WT_REGEN, WT_SCHNEE}) {
+    bild.fillScreen(1);
+    parkHintergrund(JZ_WINTER, HIMMEL_TAG, wetter);
+    parkNiederschlag(wetter, HIMMEL_TAG, 100);
+    memcpy(vorher, bild.getBuffer(), sizeof(vorher));
+    parkHintergrund(JZ_WINTER, HIMMEL_TAG, wetter);
+    parkNiederschlag(wetter, HIMMEL_TAG, 300);
+    bewegtSich &= memcmp(vorher + STATUS_H * BREITE, bild.getBuffer() + STATUS_H * BREITE,
+                          (ZEILE_Y - STATUS_H) * BREITE) != 0;
+    bewegtSich &= !memcmp(vorher, bild.getBuffer(), STATUS_H * BREITE);
+    bewegtSich &= !memcmp(vorher + ZEILE_Y * BREITE, bild.getBuffer() + ZEILE_Y * BREITE,
+                           (HOEHE - ZEILE_Y) * BREITE);
+  }
+  PRUEFE(bewegtSich, "Regen und Schnee bewegen sich innerhalb der Parkszene");
+  sammlung = {};
+  PRUEFE(fundAufnehmen(FUND_FEDER, FUND_GASSI, 20260701, pet.generation), "Alter Fund vor Parkbesuch vorhanden");
+  menueZeigen(true);
+  int eintrag = -1;
+  for (int i = 0; i < menueAnzahl; i++) if (menue[i].e == E_PARK) eintrag = i;
+  PRUEFE(eintrag >= 0, "In den Park ist im normalen Menü erreichbar");
+  if (eintrag < 0) return;
+  for (int i = 0; i < eintrag; i++) knopf(K_DOWN);
+  knopf(K_A);
+  PRUEFE(park.phase == PARK_WAHL && park.fuesse.x == 62, "Evi kommt am linken Kiesweg an");
+  zeichneAlles();
+  fotoGrau("park-eingang-spiel", 0, 0, BREITE, HOEHE);
+
+  knopf(K_UP);
+  knopf(K_A);
+  warten(350);
+  PRUEFE(park.phase == PARK_LAEUFT && park.fuesse.x > 62, "Evi läuft zum gewählten Ziel selbstständig los");
+  warten(1800);
+  PRUEFE(park.phase == PARK_GRUSS && park.ziel == PARK_ZIEL_LOTTI, "Steuerkreuz und A führen zur Begrüßung bei Lotti");
+
+  beruehrt(179, STATUS_H + 149);
+  warten(2300);
+  PRUEFE(park.phase == PARK_HILFE && sammlung.anzahl == 1, "Antippen führt zur Fundstelle und Evi wartet auf Hilfe");
+  beruehrt(179, STATUS_H + 149);
+  warten(700);
+  PRUEFE(park.phase == PARK_FUND && park.fund == 1 && sammlung.fund[1].art == FUND_STEIN,
+         "Mit Hilfe beim Nachsehen findet Evi ihren ersten Stein");
+  zeichneAlles();
+  fotoGrau("park-erster-fund", 0, 0, BREITE, HOEHE);
+  knopf(K_B);
+  PRUEFE(!parkOffen(), "B führt aus dem Park ins Zimmer");
+  Tier geladen;
+  bool ton;
+  PRUEFE(spielstandLaden(geladen, ton) && sammlung.anzahl == 2 &&
+         sammlung.fund[0].ort == FUND_GASSI && sammlung.fund[1].ort == FUND_PARK &&
+         sammlung.fund[1].tag == tagKennung(ersterTag) && sammlung.fund[1].stelle == PARK_KIESWEG,
+         "Alter Fund und neuer Parkfund überstehen Neustart mit richtiger Herkunft und Datum");
+  PRUEFE(parkFundstelle(ersterTag) == -1, "Neustart gibt am selben Tag keinen weiteren Parkfund");
+  aktionAusfuehren(E_SIDEBOARD);
+  warten(3500);
+  PRUEFE(sideboard.phase == SB_OFFEN && sideboard.auswahl == 1, "Der Parkfund ist direkt im Sideboard zu sehen");
+  sideboardSofortZu();
+
+  const ms_t naechsterTag = ersterTag + TAG;
+  bereit(naechsterTag);
+  aktionAusfuehren(E_PARK);
+  const int stelle = parkFundstelle(naechsterTag);
+  PRUEFE(stelle == PARK_KIESWEG || stelle == PARK_WIESE, "Am nächsten Tag gibt es erneut eine Fundstelle");
+  if (stelle == PARK_WIESE) knopf(K_DOWN);
+  knopf(K_A);
+  warten(2300);
+  knopf(K_A);
+  warten(700);
+  PRUEFE(park.phase == PARK_FUND && sammlung.anzahl == 3 && sammlung.fund[2].art != FUND_STEIN &&
+         sammlung.fund[2].tag == tagKennung(naechsterTag), "Der nächste Parkfund ist ein anderer Gegenstand");
+  knopf(K_RESET);
+  PRUEFE(!parkOffen() && !bildschirmAn, "RESET schließt auch den Park");
+}
+
 int main(){
  bildschirmStarten();bild.cp437(true);bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);
  fensterPruefen();
@@ -224,6 +309,7 @@ int main(){
   bool zimmerGrau=false;for(int y=30;y<60;y++)for(int x=10;x<60;x++){const int l=bild.stufe(x,y);if(l!=0&&l!=15)zimmerGrau=true;}
   PRUEFE(zimmerGrau,"Zimmer zeigt Graustufen");
   PRUEFE(bild.stufe(0,239)==15&&GrauCanvas::wert(1)==255&&GrauCanvas::wert(0)==0,"altes Zeichnen: Farbe 1 ist weiß, 0 schwarz");}
- PRUEFE(simFalschePunkte==0,"Display bei neuem Zimmer und Einrichtung pixelgenau");
+ parkPruefen();
+ PRUEFE(simFalschePunkte==0,"Display bei Zimmer, Park und Einrichtung pixelgenau");
  printf("%s: %d Fehler\n",fehler?"FEHLER":"OK",fehler);return fehler?1:0;
 }

@@ -7,6 +7,12 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Öffentlicher Parkeingang
+
+- „In den Park“ steht im Zimmermenü, wenn Evi wach ist. Mit Touch oder Steuerkreuz und A wählt man Lotti, die Stelle am Kiesweg oder die Stelle am Wiesenrand. Evi läuft selbst dorthin. B, START oder „Nach Hause“ führen ins Zimmer.
+- Lotti begrüßt Evi. An einer Fundstelle schnuppert Evi zuerst. Mit A oder einem zweiten Tipper untersucht sie die Stelle und zeigt einen gefundenen Gegenstand. Pro Ortsdatum gibt es einen Fund. Fundort und Datum stehen im Sideboard. Wetter und Jahreszeit werden mitgespeichert.
+- Der Park verwendet `jahreszeitBei`, `himmelBei` und `wetterBei` wie das Zimmerfenster. `python software/schritt-10/tools/make-park-grau.py` erzeugt `evi-handy/parkbilder.h` aus den Park-PNGs unter `entwuerfe/park/entwurf-1/` und Evis Zeichnungen aus `Evi-Graustufen.zip`.
+
 ## Zimmer, Möbel und Fensterausblick in Graustufen (25. November 2026)
 
 - `tools/make-zimmer-grau.py` liest die PNGs aus `entwuerfe/zimmer/graustufen/spielgrafiken/` und erzeugt `evi-handy/zimmergrau.h`. Graustufen und Alpha bleiben getrennt gespeichert. Das nutzt alle 16 Stufen der Anzeige.

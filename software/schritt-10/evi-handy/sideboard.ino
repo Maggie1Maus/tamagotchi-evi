@@ -72,7 +72,7 @@ void sammlungZeichnen() {
   bild.drawFastHLine(20, 38, 280, 0);
   if (!sammlung.anzahl) {
     schreibe(bild, 42, 90, "Noch keine Fundstücke.", 0);
-    schreibe(bild, 42, 114, "Im Garten suchen wir", 0);
+    schreibe(bild, 42, 114, "Im Park suchen wir", 0);
     schreibe(bild, 42, 129, "zusammen welche!", 0);
   } else {
     if (sideboard.auswahl >= sammlung.anzahl) sideboard.auswahl = sammlung.anzahl - 1;
@@ -82,7 +82,9 @@ void sammlungZeichnen() {
     const char* name = FUND_NAME[f.art];
     schreibe(bild, (BREITE - textBreite(name, 2)) / 2, 123, name, 0, 2);
     char zeile[64];
-    snprintf(zeile, sizeof(zeile), "%s", f.ort == FUND_GARTEN ? GARTEN_STELLE[f.stelle] : "Beim echten Spaziergang");
+    const char* ort = f.ort == FUND_PARK ? PARK_STELLE[f.stelle] :
+                      f.ort == FUND_GARTEN ? GARTEN_STELLE[f.stelle] : "Beim echten Spaziergang";
+    snprintf(zeile, sizeof(zeile), "%s", ort);
     schreibe(bild, 35, 151, zeile, 0);
     snprintf(zeile, sizeof(zeile), "Am %02ld.%02ld.%04ld", (long)(f.tag % 100), (long)(f.tag / 100 % 100), (long)(f.tag / 10000));
     schreibe(bild, 35, 168, zeile, 0);
