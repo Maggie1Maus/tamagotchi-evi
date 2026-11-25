@@ -1,0 +1,125 @@
+Evi · Graustufen-Spielgrafiken
+
+Dateiname | Breite × Höhe | Beschreibung
+
+zimmer/wand-boden.png | 320 × 174 | Wand, Fußleiste und Dielenboden bei Tag.
+zimmer/wand-boden-nacht.png | 320 × 174 | Wand, Fußleiste und Dielenboden bei Nacht.
+zimmer/wand-boden-daemmerung.png | 320 × 174 | Wand, Fußleiste und Dielenboden bei Dämmerung.
+moebel/tierbett.png | 81 × 45 | Rundes Tierbett mit weichem Kissen und gepolstertem Korbrand.
+moebel/tierbett-vorderrand.png | 81 × 14 | Untere 14 Zeilen des Tierbetts, als Ebene vor Evi.
+moebel/sideboard.png | 102 × 51 | Niedriges Holz-Sideboard mit zwei Türen und runden Knäufen.
+moebel/regal.png | 93 × 20 | Hölzernes Wandregal mit zwei kurzen Haltern.
+moebel/teppich.png | 130 × 36 | Ovaler Webteppich mit geflochtenem Saum in leichter Schrägansicht.
+moebel/fensterrahmen.png | 81 × 69 | Holzrahmen, Kreuz und Fensterbank. 66 × 53 px Glasbereich ab (7, 7).
+fenster/himmel-tag-klar.png | 66 × 53 | Deckender Pixelraster-Himmel bei Tag · klar.
+fenster/himmel-tag-leicht-bewoelkt.png | 66 × 53 | Deckender Pixelraster-Himmel bei Tag · leicht bewölkt.
+fenster/himmel-tag-bedeckt.png | 66 × 53 | Deckender Pixelraster-Himmel bei Tag · bedeckt.
+fenster/himmel-tag-regen.png | 66 × 53 | Deckender Pixelraster-Himmel bei Tag · Regen.
+fenster/himmel-tag-schneefall.png | 66 × 53 | Deckender Pixelraster-Himmel bei Tag · Schneefall (nur Winter).
+fenster/himmel-daemmerung-klar.png | 66 × 53 | Deckender Pixelraster-Himmel bei Dämmerung · klar.
+fenster/himmel-daemmerung-leicht-bewoelkt.png | 66 × 53 | Deckender Pixelraster-Himmel bei Dämmerung · leicht bewölkt.
+fenster/himmel-daemmerung-bedeckt.png | 66 × 53 | Deckender Pixelraster-Himmel bei Dämmerung · bedeckt.
+fenster/himmel-daemmerung-regen.png | 66 × 53 | Deckender Pixelraster-Himmel bei Dämmerung · Regen.
+fenster/himmel-daemmerung-schneefall.png | 66 × 53 | Deckender Pixelraster-Himmel bei Dämmerung · Schneefall (nur Winter).
+fenster/himmel-nacht-klar.png | 66 × 53 | Deckender Pixelraster-Himmel bei Nacht · klar.
+fenster/himmel-nacht-leicht-bewoelkt.png | 66 × 53 | Deckender Pixelraster-Himmel bei Nacht · leicht bewölkt.
+fenster/himmel-nacht-bedeckt.png | 66 × 53 | Deckender Pixelraster-Himmel bei Nacht · bedeckt.
+fenster/himmel-nacht-regen.png | 66 × 53 | Deckender Pixelraster-Himmel bei Nacht · Regen.
+fenster/himmel-nacht-schneefall.png | 66 × 53 | Deckender Pixelraster-Himmel bei Nacht · Schneefall (nur Winter).
+fenster/himmelszeichen-tag.png | 66 × 53 | Sonne.
+fenster/himmelszeichen-daemmerung.png | 66 × 53 | Leere Ebene für Dämmerung.
+fenster/himmelszeichen-nacht.png | 66 × 53 | Mondsichel und Sterne.
+fenster/wolken-klar-tag.png | 66 × 53 | Leere Ebene · Tag · klar.
+fenster/wolken-klar-daemmerung.png | 66 × 53 | Leere Ebene · Dämmerung · klar.
+fenster/wolken-klar-nacht.png | 66 × 53 | Leere Ebene · Nacht · klar.
+fenster/wolken-leicht-bewoelkt-tag.png | 66 × 53 | Wolken · Tag · leicht bewölkt.
+fenster/wolken-leicht-bewoelkt-daemmerung.png | 66 × 53 | Wolken · Dämmerung · leicht bewölkt.
+fenster/wolken-leicht-bewoelkt-nacht.png | 66 × 53 | Wolken · Nacht · leicht bewölkt.
+fenster/wolken-bedeckt-tag.png | 66 × 53 | Wolken · Tag · bedeckt.
+fenster/wolken-bedeckt-daemmerung.png | 66 × 53 | Wolken · Dämmerung · bedeckt.
+fenster/wolken-bedeckt-nacht.png | 66 × 53 | Wolken · Nacht · bedeckt.
+fenster/wolken-regen-tag.png | 66 × 53 | Wolken · Tag · Regen.
+fenster/wolken-regen-daemmerung.png | 66 × 53 | Wolken · Dämmerung · Regen.
+fenster/wolken-regen-nacht.png | 66 × 53 | Wolken · Nacht · Regen.
+fenster/wolken-schneefall-tag.png | 66 × 53 | Wolken · Tag · Schneefall (nur Winter).
+fenster/wolken-schneefall-daemmerung.png | 66 × 53 | Wolken · Dämmerung · Schneefall (nur Winter).
+fenster/wolken-schneefall-nacht.png | 66 × 53 | Wolken · Nacht · Schneefall (nur Winter).
+fenster/huegel.png | 66 × 53 | Zwei flache Hügelzüge unten im Fenster.
+fenster/baum-fruehling.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Frühling · Tag.
+fenster/baum-fruehling-hell.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Frühling · Dämmerung.
+fenster/baum-fruehling-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Frühling · Nacht.
+fenster/baum-sommer.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Sommer · Tag.
+fenster/baum-sommer-hell.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Sommer · Dämmerung.
+fenster/baum-sommer-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Sommer · Nacht.
+fenster/baum-herbst.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Herbst · Tag.
+fenster/baum-herbst-hell.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Herbst · Dämmerung.
+fenster/baum-herbst-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Herbst · Nacht.
+fenster/baum-winter.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Winter · Tag.
+fenster/baum-winter-hell.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Winter · Dämmerung.
+fenster/baum-winter-dunkel.png | 66 × 53 | Baum mit Stamm und Bodenbezug · Winter · Nacht.
+fenster/laub-herbst.png | 66 × 53 | Verstreute Herbstblätter auf dem Boden.
+fenster/schnee-boden.png | 66 × 53 | Schneedecke hinter dem Baum.
+fenster/schnee-aeste.png | 66 × 53 | Kleine Schneekissen auf winterlichem Geäst.
+fenster/regen-0.png | 66 × 53 | Regen · Animationsphase 1/16.
+fenster/regen-1.png | 66 × 53 | Regen · Animationsphase 2/16.
+fenster/regen-2.png | 66 × 53 | Regen · Animationsphase 3/16.
+fenster/regen-3.png | 66 × 53 | Regen · Animationsphase 4/16.
+fenster/regen-4.png | 66 × 53 | Regen · Animationsphase 5/16.
+fenster/regen-5.png | 66 × 53 | Regen · Animationsphase 6/16.
+fenster/regen-6.png | 66 × 53 | Regen · Animationsphase 7/16.
+fenster/regen-7.png | 66 × 53 | Regen · Animationsphase 8/16.
+fenster/regen-8.png | 66 × 53 | Regen · Animationsphase 9/16.
+fenster/regen-9.png | 66 × 53 | Regen · Animationsphase 10/16.
+fenster/regen-10.png | 66 × 53 | Regen · Animationsphase 11/16.
+fenster/regen-11.png | 66 × 53 | Regen · Animationsphase 12/16.
+fenster/regen-12.png | 66 × 53 | Regen · Animationsphase 13/16.
+fenster/regen-13.png | 66 × 53 | Regen · Animationsphase 14/16.
+fenster/regen-14.png | 66 × 53 | Regen · Animationsphase 15/16.
+fenster/regen-15.png | 66 × 53 | Regen · Animationsphase 16/16.
+fenster/schnee-0.png | 66 × 53 | Schneefall · Animationsphase 1/16.
+fenster/schnee-1.png | 66 × 53 | Schneefall · Animationsphase 2/16.
+fenster/schnee-2.png | 66 × 53 | Schneefall · Animationsphase 3/16.
+fenster/schnee-3.png | 66 × 53 | Schneefall · Animationsphase 4/16.
+fenster/schnee-4.png | 66 × 53 | Schneefall · Animationsphase 5/16.
+fenster/schnee-5.png | 66 × 53 | Schneefall · Animationsphase 6/16.
+fenster/schnee-6.png | 66 × 53 | Schneefall · Animationsphase 7/16.
+fenster/schnee-7.png | 66 × 53 | Schneefall · Animationsphase 8/16.
+fenster/schnee-8.png | 66 × 53 | Schneefall · Animationsphase 9/16.
+fenster/schnee-9.png | 66 × 53 | Schneefall · Animationsphase 10/16.
+fenster/schnee-10.png | 66 × 53 | Schneefall · Animationsphase 11/16.
+fenster/schnee-11.png | 66 × 53 | Schneefall · Animationsphase 12/16.
+fenster/schnee-12.png | 66 × 53 | Schneefall · Animationsphase 13/16.
+fenster/schnee-13.png | 66 × 53 | Schneefall · Animationsphase 14/16.
+fenster/schnee-14.png | 66 × 53 | Schneefall · Animationsphase 15/16.
+fenster/schnee-15.png | 66 × 53 | Schneefall · Animationsphase 16/16.
+fenster/herbstblatt.png | 5 × 6 | Ein kleines Blatt zum Animieren.
+fenster/wetter-sonne.png | 22 × 22 | Sonnensymbol.
+fenster/wetter-sonne-wolke.png | 26 × 24 | Sonne hinter einer Wolke.
+fenster/wetter-wolke.png | 27 × 21 | Wolkensymbol.
+fenster/wetter-regenwolke.png | 27 × 17 | Wolke mit Regenspuren.
+fenster/mond.png | 16 × 17 | Mondsichel für die Anzeige.
+deko/weihnachtsbaum.png | 87 × 150 | Geschmückte Zimmertanne mit Stern, Kugeln, Girlande und Topf.
+deko/fenstersterne.png | 102 × 33 | Girlande mit fünf Sternen über dem Fensterrahmen.
+deko/kerzentablett.png | 57 × 41 | Tablett mit drei brennenden Kerzen, Tannenzweig und Beeren.
+funde/stein.png | 60 × 46 | Glatter Flusskiesel mit wenigen natürlichen Einschlüssen.
+funde/blatt.png | 54 × 60 | Einzelnes Blatt mit Mittelrippe und kurzem Stiel.
+funde/feder.png | 57 × 60 | Vogelfeder mit deutlichem Kiel und leichten Kerben.
+funde/zapfen.png | 44 × 60 | Kleiner Tannenzapfen mit überlappenden Schuppen.
+funde/micky.png | 59 × 60 | Runder Nähknopf mit erhabenem Mäusegesicht und zwei Nahtlöchern.
+funde/muschel.png | 58 × 60 | Fächerförmige Muschel mit Rillen und kleiner Öse.
+funde/drache.png | 49 × 60 | Eigenständiges Gartendrachen-Figürchen mit Blattflügeln.
+funde/triforce.png | 60 × 58 | Anhänger aus drei facettierten Dreiecken mit runder Öse.
+funde/fossil.png | 59 × 60 | Spiral-Fossil auf einem kleinen Stein.
+funde/junimo.png | 60 × 58 | Rundes, geschnitztes Waldwesen mit Füßchen und einem Blatt auf dem Kopf.
+
+Fensterebenen und Positionen (X/Y ab 0)
+Der 66 × 53 Pixel große Ausblick sitzt bei (7, 7) im Fensterrahmen.
+Reihenfolge von hinten nach vorn: Himmel, Himmelszeichen, Wolken, Hügel,
+ggf. Bodenschnee, Baum, ggf. Laub oder Astschnee, Niederschlag, Fensterrahmen.
+Himmel, Himmelszeichen und Wolken sind jahreszeitenübergreifend verwendbar.
+Himmelszeichen bei klarem oder leicht bewölktem Wetter einblenden.
+Dämmerung: Baum mit Endung -hell. Nacht: Baum mit Endung -dunkel.
+Bei Regen und Schnee die Phasen 0 bis 15 der Reihe nach abspielen und wiederholen.
+Bodenschnee und Astschnee sind Winterebenen. Schneefall ist auf Winter beschränkt.
+Den vorderen Tierbettrand bei (0, 31) relativ zum Tierbett positionieren.
+Graupalette: 0, 17, 34, …, 255. Alpha: 0 oder 255.
