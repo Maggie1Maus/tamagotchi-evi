@@ -7,6 +7,24 @@ Wunsch der Nutzerin vom 23. November 2026: **genau das Spiel der Handy-App**, al
 - **Uhrzeit nach dem Einschalten einstellen**, solange die Pufferbatterie der Uhr fehlt.
 - **In Etappen:** 1. Zimmer, Balken, Evi mit Lebensphasen, Menü, Tagesablauf → 2. die drei Spiele → 3. Name ändern und Hilfe → 4. Evis Momente, Begrüßung, Tageslaune.
 
+## Schlafmodus und Helligkeit 50 % (25. November 2026)
+
+Anlass: Vier neue AAA waren nach weniger als einem Tag leer, obwohl der Bildschirm meist mit RESET aus war. „Bildschirm aus“ schaltete bis dahin nur das Licht ab; der Chip lief ohne Pause mit vollem Takt weiter. Wunsch der Nutzerin: Schlafmodus einbauen, Helligkeit auf 50 %. Neue Datei `schlaf.h`, Anschlüsse in `evi-handy.ino`, `bildschirm.h`, `ton.h`.
+
+| Was | Wann | Abschalten, falls am Board etwas nicht stimmt |
+|---|---|---|
+| **Helligkeit 50 %** statt 80 % | immer | `HELL_PROZENT` in `evi-handy.ino` |
+| **Chip schläft zwischen den Abfragen** (`delay()` wartet beim RP2350 schlafend) | dunkel: bis zur nächsten Messung des Lagesensors, höchstens 20 ms; hell: 2 ms je Runde. Nicht in Spielen und nicht, solange ein Finger auf dem Bildschirm liegt | `SCHLAF_CHIP` in `schlaf.h` |
+| **Langsamer Takt** 48 statt 150 MHz | nach 3 s dunkel und still. Bildschirm an oder ein Ton: sofort wieder voll | `SCHLAF_TAKT` in `schlaf.h` |
+| **Bildschirm-Chip schläft** (ST7789: Anzeige aus 0x28, Schlafen 0x10; Aufwachen 0x11, 5 ms, Anzeige an 0x29) | solange der Bildschirm aus ist. Zwischen Schlafen und Aufwachen mindestens 120 ms (Datenblatt). Nach dem Aufwachen wird einmal das ganze Bild geschickt | `LCD_SCHLAF` in `bildschirm.h` |
+| **Ton-Chip nur bei Tönen an** (I²S läuft nur, solange ein Ton spielt, plus 2 s Nachlauf) | immer | `TON_PAUSE_AUS` in `ton.h` (falls es beim Piepen knackt oder der Anfang fehlt) |
+
+- Was weiter geht, auch im Dunkeln: Tasten (der MCP23017 merkt sich jeden Druck), Antippen, Lagesensor 50-mal pro Sekunde (Gassi zählt weiter), Evis Uhr und Spielregeln, Piepen bei Fragen und Besuch. Der erste Druck oder Tipper weckt wie bisher nur den Bildschirm.
+- **`P` im Seriellen Monitor** zeigt den Stand: `STROM bildschirm=aus licht=0% lcd=schlaeft ton=aus takt=48MHz geschlafen=… von … ms (…%)`. Der Anteil zählt seit der letzten Abfrage. Dunkel sollten es über 90 % sein, hell mehr als die Hälfte.
+- Grobe Schätzung, nicht gemessen: dunkel vorher etwa 50 mA, jetzt hoffentlich etwa 5–15 mA. Bildschirm an mit 50 % vielleicht 60–90 mA. Was die `PWR`-LED und die übrigen Bauteile des Boards brauchen, lässt sich per Programm nicht ändern. **Messen:** Multimeter im mA-Bereich in Reihe zwischen Batteriefach und Pololu, einmal hell, einmal dunkel (nach mindestens 5 s).
+- Geprüft in der PC-Nachbildung (`tools/pc-nachbildung/schlaf.cpp`, bei der dort beim Schlafen auch die Zeit vergeht): Helligkeit 127 von 255; hell 2-ms-Pausen und Lagesensor weiter 47-mal pro Sekunde; mit Finger und im Spiel keine Pausen; dunkel schläft der Chip 95 % der Zeit, Lagesensor weiter etwa 48-mal pro Sekunde, nach 3 s langsamer Takt; Ton im Dunkeln mit vollem Takt, Ton-Chip danach aus; Wecken mit Taste und Antippen (Takt, Bildschirm-Chip, Licht, Bild ohne falschen Punkt); zweimal RESET schnell hintereinander hält die 120 ms ein; Gassi im Dunkeln zählt 35 Schritte in 20 s. Alle zehn Prüfprogramme ohne Fehler und ohne Warnungen.
+- **Nicht geprüft:** Echte Pico-2-Übersetzung war in dieser Cloud-Sitzung nicht möglich (Arduino-Werkzeuge nicht ladbar). Benutzt werden `set_sys_clock_khz` und `clock_get_hz` aus dem Pico-SDK (`hardware/clocks.h`) und `i2s.end()`. Am Board ausprobieren: Startet Evi? Geht der Bildschirm mit RESET aus und wieder an, und ist das Bild danach richtig? Piept sie (ohne Knacken)? Läuft der Ball nach dem Aufwachen so flüssig wie vorher? Zählt Gassi bei dunklem Bildschirm?
+
 ## Freundschaft, Fragen und Plaudern (25. November 2026)
 
 Ergebnis der Fragerunde mit der Nutzerin. Neue Datei `freunde.ino`. Zustand in `extras.h` (`FreundStand freund`, `gespraech`), Anschlüsse in `evi-handy.ino`, `momente.ino`, `kuscheln.ino`, `launen.ino`, `spiele.ino`. Die Texte stehen alle oben in `freunde.ino`; die Nutzerin möchte sie **nicht vorher lesen**, sondern sich überraschen lassen.
@@ -133,7 +151,7 @@ Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrec
 
 Wunsch der Nutzerin: Der Bildschirm geht nicht mehr nach 1 Minute aus, sondern bleibt an; RESET (hatte noch keine Aufgabe) schaltet ihn aus. `DUNKEL_NACH_MS = 0` in `evi-handy.ino`, `bildschirmAus()` beendet dabei ein Spiel (abgebrochen), Gute Nacht und einen Moment. Wieder an: jede Taste oder jeder Tipper (der erste Druck macht nur an, nach mindestens 3 Minuten begrüßt Evi), ein Ereignis oder Besuch. In der Hilfe ergänzt. Geprüft in der Nachbildung (`ablauf.cpp`, mit nachgebildetem MCP23017): bleibt nach 5 Minuten an, RESET aus und wieder an, Begrüßung, RESET im Spiel, Besuch schaltet ein. **Am Board bestätigt (24. November 2026, laut Nutzerin): RESET funktioniert.**
 
-**Achtung Batterien:** Die Hintergrundbeleuchtung braucht den meisten Strom. Dauernd an leeren 4 × AAA deutlich schneller als mit Abschalten nach 1 Minute; wie lange sie halten, ist noch nicht gemessen. Mit Batterien also RESET zum Ausschalten nutzen, oder `DUNKEL_NACH_MS` wieder setzen.
+**Achtung Batterien:** Die Hintergrundbeleuchtung braucht den meisten Strom. Dauernd an leeren 4 × AAA deutlich schneller als mit Abschalten nach 1 Minute; wie lange sie halten, ist noch nicht gemessen. Mit Batterien also RESET zum Ausschalten nutzen, oder `DUNKEL_NACH_MS` wieder setzen. Am 25. November 2026 waren vier neue AAA nach weniger als einem Tag leer; seitdem gibt es den Schlafmodus (siehe oben).
 
 ## Momente in jeder Lebensphase (24. November 2026)
 
@@ -259,6 +277,7 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 - `umgebung.ino`, `umgebung.h`: neues Zimmer, Jahreszeiten, Wetter und Weihnachtsdeko (seit 24.11.2026; `tools/make-umgebung.py`).
 - `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js`.
 - `uhr.h`: Uhr PCF85063 (I²C 0x51). `speicher.h`: Spielstand mit Prüfsumme. `text.h`: Schrift mit Umlauten. `ton.h`: Töne der App.
+- `schlaf.h`: Schlafmodus, damit die Batterien länger halten (seit 25.11.2026).
 - `board.h`, `touch.h`, `bildschirm.h`: aus Schritt 8/9.
 
 ## Geprüft (23. November 2026)

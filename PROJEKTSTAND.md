@@ -2,11 +2,17 @@
 
 Stand: 25. November 2026
 
+## Schlafmodus eingebaut, Helligkeit 50 % (25. November 2026)
+
+- Auf Wunsch der Nutzerin („Ja bau den Schlafmodus ein, Helligkeit auf 50 %“), nur Waveshare. Neue Datei `software/schritt-10/evi-handy/schlaf.h`. Der Chip schläft zwischen den Abfragen (dunkel bis zur nächsten Messung des Lagesensors, höchstens 20 ms; hell 2 ms). Dunkel läuft er nach 3 s mit 48 statt 150 MHz, und der Bildschirm-Chip schläft. Der Ton-Chip bekommt nur bei Tönen Takt. Tasten, Antippen, Gassi und Piepen gehen weiter. Jede Stelle ist einzeln abschaltbar. `P` im Seriellen Monitor zeigt, wie viel der Chip geschlafen hat. Einzelheiten in `software/schritt-10/README.md`.
+- Geprüft in der PC-Nachbildung mit neuem `schlaf.cpp`: alle zehn Prüfprogramme ohne Fehler und Warnungen. Dabei wurde auch ein schon vorher fehlschlagender Launenwunsch-Test in `kuscheln.cpp` berichtigt (der Test hatte die offene Geburtstagsfrage und eine Zeitangabe falsch gesetzt, das Spiel selbst war richtig). **Echte Pico-2-Übersetzung in dieser Sitzung nicht möglich, am Board noch nicht ausprobiert.** Beim Aufspielen auf Fehlermeldungen achten (benutzt `set_sys_clock_khz`, `clock_get_hz`, `i2s.end()`).
+- Erwartung (nicht gemessen): dunkel vorher etwa 50 mA, jetzt hoffentlich etwa 5–15 mA, hell mit 50 % etwa 60–90 mA. Strom messen, sobald die Nutzerin kann.
+
 ## Batterien nach weniger als einem Tag leer (25. November 2026)
 
-- Laut Nutzerin ging der Bildschirm aus und flackerte danach an und aus: Die vier AAA waren leer, obwohl der Bildschirm seit dem Vorabend meist mit RESET ausgeschaltet war. Ob die Batterien neu waren, ist nicht bekannt.
+- Laut Nutzerin ging der Bildschirm aus und flackerte danach an und aus: Die vier AAA waren leer, obwohl der Bildschirm seit dem Vorabend meist mit RESET ausgeschaltet war. Die Batterien waren laut Nutzerin neu.
 - Ursache laut Code: „Bildschirm aus“ schaltet nur die Hintergrundbeleuchtung ab. Der Chip läuft ohne Pause mit vollem Takt weiter und fragt ständig Touch, Lagesensor und Tasten ab. Bildschirmsteuerung, Touch-Chip, Verstärker und `PWR`-LED bleiben ebenfalls an. Grob geschätzt (nicht gemessen) braucht das Board so etwa 40–60 mA, mit Licht etwa 100–150 mA. Vier AAA reichen damit für ungefähr 10–15 Stunden, mit Licht für etwa 6–10 Stunden.
-- Für eine Woche mit 4 × AAA dürfte das Gerät im Mittel nur etwa 5 mA brauchen. Dafür müsste der Chip bei dunklem Bildschirm wirklich schlafen und durch Taste, Touch oder Uhr geweckt werden. **Noch nicht eingebaut, Entscheidung der Nutzerin offen.** Vorher den echten Strom mit dem Multimeter messen: mA-Bereich, in Reihe zwischen Batteriefach und Pololu, einmal mit Licht und einmal ohne.
+- Für eine Woche mit 4 × AAA dürfte das Gerät im Mittel nur etwa 5 mA brauchen. Dafür muss der Chip bei dunklem Bildschirm wirklich schlafen und durch Taste, Touch oder Uhr geweckt werden. **Eingebaut am 25. November 2026, siehe oben.** Den echten Strom mit dem Multimeter messen: mA-Bereich, in Reihe zwischen Batteriefach und Pololu, einmal mit Licht und einmal ohne.
 - Flackern bei leeren Batterien: Das Board startet, die Spannung bricht ein, es startet neu. Sofort eine AAA herausnehmen, sonst kann der Spielstand beim Speichern beschädigt werden (nur eine Kopie mit Prüfsumme).
 
 ## Beschlossen: Freundschaft, Fragen und Plaudern (Fragerunde vom 25. November 2026)

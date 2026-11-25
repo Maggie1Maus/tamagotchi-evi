@@ -14,6 +14,7 @@
 // Gemeinsame Typen und Zustand dafür stehen in extras.h.
 // Seit 24.11.2026: Evi spürt Bewegung (lage.h, bewegung.ino): Gassi gehen, kippen, aufs Gesicht
 // legen (Schütteln seit 24.11.2026 wieder entfernt); dazu „Wie war dein Tag?“ und die Spiele Kekse fangen und Schnick, Schnack, Schnuck (nur auf dem Board).
+// Seit 25.11.2026: Schlafmodus (schlaf.h), damit die Batterien länger halten; Helligkeit 50 %.
 //
 // Board in der Arduino IDE: „Raspberry Pi Pico 2“. Bibliothek: „Adafruit GFX Library“.
 
@@ -22,6 +23,7 @@
 #include "touch.h"
 #include "tasten.h"
 #include "lage.h"
+#include "schlaf.h"
 #include "ton.h"
 #include "text.h"
 #include "zeit.h"
@@ -41,7 +43,7 @@
 #include "raumtiefe.h"
 
 // ---------- Einstellungen ----------
-const int HELL_PROZENT = 80;
+const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom
 // Wunsch der Nutzerin vom 24.11.2026: Der Bildschirm bleibt an; RESET schaltet ihn aus und wieder an.
 // Eine Zahl > 0 lässt ihn wieder von selbst ausgehen (z. B. 60000 = nach 1 Minute ohne Berührung).
 const uint32_t DUNKEL_NACH_MS = 0;
@@ -150,6 +152,8 @@ void speichern(ms_t jetzt) {
 // ---------- Bildschirm an/aus ----------
 void bildschirmEin() {
   letzteBeruehrung = millis();
+  taktVoll();                     // Schlafmodus (schlaf.h): erst wieder voller Takt, dann den Bildschirm-Chip wecken
+  lcdAufwachen();
   if (!bildschirmAn) bildschirmAn = true;
   helligkeit(HELL_PROZENT);
 }
@@ -847,6 +851,7 @@ void bildschirmAus() {
   menueZeigen(false);
   bildschirmAn = false;
   helligkeit(0);
+  lcdSchlafen();                  // Schlafmodus: auch der Bildschirm-Chip ruht (bildschirm.h)
   dunkelSeit = jetztMs();
 }
 
@@ -979,6 +984,7 @@ void uhrStellenBildschirm(ms_t vorschlag) {
     const char* hinweis = tastenDa ? "▲▼ ändern · A weiter · B zurück" : "Festhalten zählt schnell";
     schreibe(bild, (BREITE - textBreite(hinweis)) / 2, 172, hinweis, 0);
     zeigen();
+    schlafen(SCHLAF_HELL_MS);   // Schlafmodus: kurze Pause je Runde
   }
   const ms_t utc = ausOrtszeit(werte[2], werte[1], werte[0], werte[3], werte[4]);
   uhrStellen(utc);
@@ -986,6 +992,22 @@ void uhrStellenBildschirm(ms_t vorschlag) {
   fingerUnten = true;   // den letzten Tipper nicht als Taste werten
   letzteMeldung = millis();
   tastenVergessen();
+}
+
+// ---------- Schlafmodus (seit 25.11.2026, schlaf.h) ----------
+// Am Ende jeder Runde: Ist nichts zu tun, schläft der Chip bis zur nächsten Abfrage.
+void stromSparen() {
+  // Dunkel und still seit ein paar Sekunden: langsamer Takt. Ein Ton oder der Bildschirm holen ihn zurück.
+  if (!bildschirmAn && !tonSpielt() && jetztMs() - dunkelSeit >= (ms_t)TAKT_SENKEN_NACH) taktSenken();
+  if (!SCHLAF_CHIP || fingerUnten || (bildschirmAn && spiel.aktiv)) return;   // Finger auf Evi, Spiele: flüssig bleiben
+  // Höchstens bis zur nächsten Messung des Lagesensors (alle 20 ms), damit Gassi auch im Dunkeln Schritte zählt
+  uint32_t ms = bildschirmAn ? SCHLAF_HELL_MS : SCHLAF_DUNKEL_MS;
+  if (lage.da) {
+    const uint32_t seit = millis() - lage.letzteMessung;
+    if (seit >= L::ABTAST_MS) ms = 0;
+    else if (L::ABTAST_MS - seit < ms) ms = L::ABTAST_MS - seit;
+  }
+  if (ms > 0) schlafen(ms);
 }
 
 // Uhrzeit beim Übersetzen, als Vorschlag beim ersten Stellen
@@ -1018,6 +1040,18 @@ void seriellPruefen() {
                lage.da, lage.adresse, lage.grossEndian ? "gross" : "klein", lage.eins, lage.x, lage.y, lage.z,
                lage.nAchse, lage.nVz, lage.uAchse, lage.uVz, lage.unruhe, lageKippen(), lage.serie, (unsigned long)lage.gassiSchritte);
       Serial.println(z);
+    }
+    if (c == 'P') {
+      // Schlafmodus prüfen (schlaf.h): wie viel der Chip seit der letzten Abfrage geschlafen hat
+      const uint32_t m = millis(), dauer = m - schlafSeit;
+      char z[160];
+      snprintf(z, sizeof(z), "STROM bildschirm=%s licht=%d%% lcd=%s ton=%s takt=%luMHz geschlafen=%lu von %lu ms (%lu%%)",
+               bildschirmAn ? "an" : "aus", bildschirmAn ? HELL_PROZENT : 0, lcdSchlaeft ? "schlaeft" : "wach",
+               i2sLaeuft ? "an" : "aus", (unsigned long)taktMhz(), (unsigned long)schlafMs, (unsigned long)dauer,
+               (unsigned long)(dauer ? (uint64_t)schlafMs * 100 / dauer : 0));
+      Serial.println(z);
+      schlafMs = 0;
+      schlafSeit = m;
     }
     if (c == 'T') {
       // Touch prüfen: wo der letzte Tipper war und wo Evi gerade steht
@@ -1137,6 +1171,7 @@ void loop() {
       bildschirmAn = false;
       menueZeigen(false);
       helligkeit(0);
+      lcdSchlafen();
       dunkelSeit = jetzt;
     }
     if (bildschirmAn) { zeichneAlles(); letztesBild = millis(); }
@@ -1148,4 +1183,5 @@ void loop() {
     zeichneAlles();
     letztesBild = millis();
   }
+  stromSparen();
 }

@@ -164,7 +164,8 @@ int main() {
     if (momentWaehlen(S_GLUECKLICH, false, LAUNE_VERSCHMUST, g) == M_KUSCHELN) wuenscheNiemand++;
   }
   PRUEFE(wuenscheNiemand == 0, "ohne Bedienung in den letzten 10 Minuten keine Launenwünsche");
-  launen.letzteBedienung = millis() | 1;
+  launen.letzteBedienung = (millis() - 1) | 1;   // nicht 0 und nicht später als jetzt
+  gespraech.gebDialog = false;   // seit 25.11.2026: während Evi nach dem Geburtstag fragt, kommen keine Launenwünsche
   int wuensche = 0;
   for (int i = 0; i < 300; i++) {
     Gedanke g = GD_KEINER; moment.letzter = M_GEHEN;

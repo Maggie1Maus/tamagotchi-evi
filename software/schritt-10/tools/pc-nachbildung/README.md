@@ -21,3 +21,5 @@ Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit g
 - `garten.cpp`: Gartenmenü, Suche mit Hilfe per A/Touch, alle zwölf Lebensphasen-Posen, getrennte Garten-/Gassi-Limits, volle Sammlung, Version-2-Migration, Version-3-Metadaten, Jahreszeiten- und Wetterbilder, Heimkehr/RESET/Schlafenszeit. Version 1 wird zusätzlich in `sideboard.cpp` geprüft.
 
 - `raumtiefe.cpp`: alle Altersstufen nah/mittel/fern, Bodenanker und stetige Skalierung, Originalpixel-Verdeckung, Touch, begehbare Wege, Garten-Tiefengang/Rückkehr, aktueller Fensterausblick bei Regen/Schnee tags/nachts, RESET und Minispielkoordinaten.
+
+- `schlaf.cpp`: Schlafmodus (`schlaf.h`, seit 25.11.2026). Hier vergeht beim Schlafen auch die Zeit, wie am Board. Helligkeit 50 %, Pausen hell und dunkel, keine Pausen mit Finger oder im Spiel, langsamer Takt im Dunkeln, Bildschirm-Chip schläft und wacht (`ersatz/SPI.h` merkt sich 0x10/0x11/0x28/0x29), Ton-Chip nur bei Tönen an (`ersatz/I2S.h` spielt jetzt mit der Zeit ab), Wecken mit Taste und Antippen, Gassi im Dunkeln. `ersatz/Arduino.h` merkt sich die Helligkeit (`simLicht`).

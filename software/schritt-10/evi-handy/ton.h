@@ -2,6 +2,7 @@
 #pragma once
 #include <I2S.h>
 #include "board.h"
+#include "schlaf.h"
 
 const int ABTASTRATE = 22050;
 const int LAUTSTAERKE = 700;   // von 32767; 2000 war laut Nutzerin recht laut
@@ -26,20 +27,41 @@ const Note TON_ZWITSCHERN[] = {{1976, 50}, {0, 90}, {2349, 70}, {0, 180}, {1976,
 I2S i2s(OUTPUT);
 bool tonAn = true;
 
+// Schlafmodus (seit 25.11.2026, schlaf.h): Der Ton-Chip bekommt nur Takt, während ein Ton spielt. Ohne Takt
+// schaltet er sich selbst in Bereitschaft. Knackt es am Board beim Piepen, hier false eintragen.
+const bool TON_PAUSE_AUS = true;
+const uint32_t TON_NACHLAUF_MS = 2000;  // so lange läuft er nach dem letzten Ton weiter (nicht bei jedem Ton neu starten)
+bool i2sLaeuft = false;
+static uint32_t tonZuletzt = 0;
+
 static const Note* melodie = nullptr;
 static int melodieLaenge = 0, notenNummer = 0;
 static long probenUebrig = 0, halbePeriode = 0, probe = 0;
+
+static bool i2sAn() {
+  if (i2sLaeuft) return true;
+  taktVoll();                      // der Ton-Takt wird beim Start aus dem Chiptakt berechnet
+  if (!i2s.begin(ABTASTRATE)) return false;
+  i2sLaeuft = true;
+  tonZuletzt = millis();
+  return true;
+}
 
 void tonStarten() {
   i2s.setBCLK(I2S_BCK);
   i2s.setDATA(I2S_DIN);
   i2s.setBitsPerSample(16);
   i2s.setBuffers(6, 256);
-  i2s.begin(ABTASTRATE);
+  if (!TON_PAUSE_AUS) i2sAn();
 }
+
+// Spielt gerade ein Ton? Dann bleibt der volle Takt (sonst stimmt die Tonhöhe nicht).
+bool tonSpielt() { return melodie != nullptr; }
 
 void piep(const Note* noten, int laenge) {
   if (!tonAn) return;
+  taktVoll();
+  if (!i2sAn()) return;
   melodie = noten;
   melodieLaenge = laenge;
   notenNummer = 0;
@@ -64,6 +86,15 @@ static bool naechsteNote() {
 }
 
 void tonWeiter() {
+  if (melodie == nullptr) {
+    // Still: den Ton-Chip nach dem Nachlauf abschalten
+    if (TON_PAUSE_AUS && i2sLaeuft && millis() - tonZuletzt > TON_NACHLAUF_MS) {
+      i2s.end();
+      i2sLaeuft = false;
+    }
+    return;
+  }
+  tonZuletzt = millis();
   while (melodie != nullptr && i2s.availableForWrite() >= 4) {
     if (probenUebrig <= 0 && !naechsteNote()) return;
     int16_t wert = 0;

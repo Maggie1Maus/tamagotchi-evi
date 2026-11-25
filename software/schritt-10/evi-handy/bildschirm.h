@@ -38,9 +38,48 @@ static void lcdBefehlMitDaten(uint8_t befehl, const uint8_t* daten, int anzahl) 
   for (int i = 0; i < anzahl; i++) lcdDaten(daten[i]);
 }
 
+// Was zuletzt an den Bildschirm geschickt wurde. zeigen() vergleicht damit und sendet nur die
+// geänderten Stellen: Das ganze Bild braucht etwa 35 ms, ein kleiner Streifen (z. B. der Ball)
+// unter 1 ms. Darum läuft der Ball flüssig, und Menü und Momente reagieren schneller.
+static uint8_t gesendet[(BREITE / 8) * HOEHE];
+static bool gesendetGueltig = false, gesendetUmgekehrt = false;
+
 // Helligkeit 0-100 Prozent
 void helligkeit(int prozent) {
   analogWrite(LCD_BL, prozent * 255 / 100);
+}
+
+// Schlafmodus des Bildschirm-Chips (seit 25.11.2026, schlaf.h). Bei ausgeschaltetem Bildschirm braucht der
+// ST7789 sonst weiter Strom, auch ohne Licht. Das Bild in seinem Speicher bleibt im Schlaf erhalten.
+// Laut Datenblatt: nach dem Aufwachen 5 ms bis zum nächsten Befehl, zwischen Einschlafen und Aufwachen
+// (und umgekehrt) mindestens 120 ms.
+const bool LCD_SCHLAF = true;   // false = Bildschirm-Chip bleibt wach (falls am Board etwas nicht stimmt)
+bool lcdSchlaeft = false;
+static uint32_t lcdWechsel = 0;
+
+static void lcdWechselAbwarten() {
+  const uint32_t seit = millis() - lcdWechsel;
+  if (seit < 120) delay(120 - seit);
+}
+
+void lcdSchlafen() {
+  if (!LCD_SCHLAF || lcdSchlaeft) return;
+  lcdWechselAbwarten();
+  lcdBefehl(0x28);   // Anzeige aus
+  lcdBefehl(0x10);   // schlafen
+  lcdSchlaeft = true;
+  lcdWechsel = millis();
+}
+
+void lcdAufwachen() {
+  if (!lcdSchlaeft) return;
+  lcdWechselAbwarten();
+  lcdBefehl(0x11);   // aufwachen
+  delay(5);
+  lcdBefehl(0x29);   // Anzeige an
+  lcdSchlaeft = false;
+  lcdWechsel = millis();
+  gesendetGueltig = false;   // zur Sicherheit beim nächsten Mal das ganze Bild schicken
 }
 
 void bildschirmStarten() {
@@ -88,15 +127,11 @@ void bildschirmStarten() {
   lcdBefehlMitDaten(0xE1, e1, 14);
   lcdBefehl(0x21);  // Farben invertieren, braucht dieses Panel
   lcdBefehl(0x29);  // Anzeige an
+  lcdSchlaeft = false;
+  lcdWechsel = millis();
 
   bild.fillScreen(0);
 }
-
-// Was zuletzt an den Bildschirm geschickt wurde. zeigen() vergleicht damit und sendet nur die
-// geänderten Stellen: Das ganze Bild braucht etwa 35 ms, ein kleiner Streifen (z. B. der Ball)
-// unter 1 ms. Darum läuft der Ball flüssig, und Menü und Momente reagieren schneller.
-static uint8_t gesendet[(BREITE / 8) * HOEHE];
-static bool gesendetGueltig = false, gesendetUmgekehrt = false;
 
 // Schickt einen Ausschnitt (x0..x1, y0..y1, jeweils einschließlich) aus dem Bild an den Bildschirm.
 static void bereichSenden(int x0, int y0, int x1, int y1, bool umgekehrt) {
