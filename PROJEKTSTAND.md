@@ -9,6 +9,12 @@ Stand: 25. November 2026
 - Geprüft: drei betroffene PC-Prüfprogramme ohne Fehler, Syntaxprüfung ohne Warnungen, alle 51 Fensterzustände pixelgenau gegen aktuelle PNG-Referenzen; die 17 Tagesansichten bleiben unverändert. Eigene Prüfungen sichern Baumfüllung/-rand aller vier Jahreszeiten sowie den fehlenden Dämmerungsmond auch im älteren Zeichner.
 - Nach dem Zusammenführen mit den parallelen Stromspar-/Gassi-Änderungen zusätzlich alle elf PC-Prüfprogramme und den 51-Fenster-Vergleich erneut erfolgreich ausgeführt, ohne Warnungen.
 
+## Schaltplan ausgewertet: Verstärker läuft immer, Akku-Schalter aus (25. November 2026)
+
+- Die Nutzerin hat den Waveshare-Schaltplan geschickt. Ergebnis in [Stromverbrauch laut Schaltplan](Tamagotchi_Hardware_Cube.md#stromverbrauch-laut-schaltplan-25-november-2026): Der größte bekannte Dauerverbraucher ist vermutlich der **Lautsprecher-Verstärker APA2068**, der fest eingeschaltet ist (kein GPIO). Dazu Lade-Chip, Betriebs-LED und der Chip selbst.
+- Per Programm geändert (Waveshare, nur Firmware): `BAT_EN` jetzt LOW (spart etwa 2,9 mA, der Akku-Schalter wird mit VBUS-Versorgung nicht gebraucht; `BAT_HALTEN` in `board.h`), Pull-down an den SD-Karten-Leitungen und der Akku-Taste aus (etwa 0,4 mA). Alle elf PC-Prüfprogramme ohne Fehler. **Am Board noch nicht ausprobiert.**
+- Offen, Entscheidung der Nutzerin: Verstärker per Umlöten abschaltbar machen (Draht von R24/`SD` zu GP0).
+
 ## Tieferer Schlaf, Touch im Dunkeln aus, Gassi entfernt (25. November 2026, zweite Fassung)
 
 - Nach der Messung (hell etwa 120 mA, dunkel 30–47 mA, schwankend) Wunsch der Nutzerin: Gassi gehen ganz entfernen, den Chip tiefer schlafen lassen, im Dunkeln Touch grundsätzlich aus. Umgesetzt, nur Waveshare:

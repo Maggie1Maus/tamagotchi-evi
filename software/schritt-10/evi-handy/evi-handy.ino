@@ -1094,7 +1094,8 @@ void seriellPruefen() {
 void setup() {
   Serial.begin(115200);
   pinMode(BAT_EN, OUTPUT);
-  digitalWrite(BAT_EN, HIGH);
+  digitalWrite(BAT_EN, BAT_HALTEN ? HIGH : LOW);   // Schlafmodus: Akku-Schalter wird nicht gebraucht (board.h)
+  for (int p : OHNE_PULL) pinMode(p, INPUT);        // ohne Pull-down, die Pull-ups sitzen auf dem Board
   bild.cp437(true);
   speicherStarten();
   bildschirmStarten();

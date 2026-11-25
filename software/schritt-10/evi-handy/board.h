@@ -22,6 +22,14 @@ const int TOUCH_INT = 18;
 const int I2S_BCK  = 2;
 const int I2S_DIN  = 4;
 
-// Stromversorgung: Waveshare setzt diesen Pin beim Start auf HIGH
+// Stromversorgung (Schaltplan RP2350-Touch-LCD-2.8, von der Nutzerin am 25.11.2026 geschickt):
+// BAT_EN hält den Akku am eigenen Akku-Anschluss J1 eingeschaltet (über den Transistor T1 und Q1/Q2).
+// Evi bekommt ihren Strom aber über VBUS (Pololu am Stecker J4); solange VBUS da ist, sperrt Q2 den Akku-Weg
+// ohnehin. HIGH kostet nur Strom: etwa 2,6 mA Basisstrom durch R15 (1 kΩ) und 0,3 mA über R8/D1/D2.
+// Waveshare setzt den Pin beim Start auf HIGH. Läuft das Board einmal von einem Akku an J1, hier true eintragen.
 const int BAT_EN  = 26;
 const int BAT_ADC = 27;
+const bool BAT_HALTEN = false;
+// Leitungen mit 10-kΩ-Pull-up auf dem Board, die Evi nicht braucht: SD-Karte (GP19–24) und die Akku-Taste (GP25).
+// Nach dem Start ist im Chip ein Pull-down an; gegen den Pull-up fließen sonst je etwa 55 µA.
+const int OHNE_PULL[] = {19, 20, 21, 22, 23, 24, 25};

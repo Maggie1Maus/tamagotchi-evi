@@ -434,6 +434,25 @@ Evi startet und läuft laut Nutzerin mit vier AAA im originalen Batteriefach. Vo
 
 Der zwölfpolige Stecker und die USB-C-Buchse teilen dieselbe `VBUS`-Leitung. **Vor dem Anschluss an den PC eine AAA herausnehmen** und warten, bis die `PWR`-LED ausgeht. Beim Wechsel zurück zuerst USB-C abziehen und dann die AAA wieder einsetzen. [Waveshare-Schaltplan](https://files.waveshare.com/wiki/RP2350-Touch-LCD-2.8/RP2350-Touch-LCD-2.8-Schematic.pdf)
 
+#### Stromverbrauch laut Schaltplan (25. November 2026)
+
+Die Nutzerin hat den Schaltplan „RP2350-Touch-LCD-2.8-Schematic.pdf“ von Waveshare geschickt (aus der Cloud-Sitzung nicht abrufbar). Gemessen wurde bei dunklem Bildschirm trotz Schlafmodus 30–50 mA an drei AAA, obwohl der Chip 97 % der Zeit schläft. Was auf dem Board dauernd Strom braucht:
+
+| Teil | Schaltung | Etwa | Per Programm abschaltbar? |
+|---|---|---|---|
+| **Lautsprecher-Verstärker U8 APA2068** (Klasse AB, Stereo) | Versorgung `PA_VCC` direkt aus `VSYS` (R39 0 Ω). `SD` (Abschalten) fest über R24 10 kΩ auf „an“, `MUTE` über R28 auf „aus“. Kein GPIO. Dazu Lautstärketeiler R37/R36 (etwa 0,4 mA) | geschätzt 5–15 mA (Ruhestrom solcher Verstärker; Datenblatt nicht eingesehen) | **nein**, nur mit Umlöten |
+| **`BAT_EN` (GP26)** | über R15 1 kΩ auf die Basis von T1 (8050); dazu R8/D1/D2 aus 3,3 V | etwa 2,9 mA | **ja**: seit 25.11.2026 LOW (`BAT_HALTEN` in `board.h`). Nur für einen Akku an J1 nötig; mit VBUS sperrt Q2 den Akku-Weg ohnehin |
+| Pull-ups der SD-Karte (GP19–24, R25–R32 10 kΩ) und der Akku-Taste (GP25, R8) | gegen den Pull-down des Chips nach dem Start | etwa 0,4 mA | **ja**: seit 25.11.2026 ohne Pull (`OHNE_PULL`) |
+| Lade-Chip U3 ETA6098 | `VIN` an VBUS, lädt den leeren Akku-Anschluss; Lade-LED1 über R10 4,7 kΩ | etwa 1 mA (geschätzt) | nein |
+| Betriebs-LED2 | R23 3 kΩ an `VSYS` | etwa 0,9 mA | nein (nur Auslöten) |
+| Spannungsregler U7 ME6217 (LDO, 3,3 V aus VSYS) | linear: Strom auf 3,3 V = Strom aus VSYS | – | – |
+| Ton-Chip U6 PCM5101A | an 3,3 V; ohne I²S-Takt in Bereitschaft | wenig | ja (Schlafmodus, `TON_PAUSE_AUS`) |
+| Hintergrundbeleuchtung | aus 3,3 V über 4 × 10 Ω, geschaltet mit Q3 an `LCD_BL` (GP16) | im Dunkeln 0 | ja |
+
+- Versorgung: VBUS (USB-C oder J4 Pin 2) → Schottky-Diode D3 (MBR230) → `VSYS`. Mit dem Pololu und der eigenen 1N5819 davor liegen also zwei Dioden im Weg.
+- Freie GPIOs am Stecker J4: GP0/GP1 (TXD/RXD) und GP28/GP29. GP28/29 sind ADC-Pins und laut Datenblatt des RP2350 nicht 5-V-fest; für eine Leitung, die über R24 an `PA_VCC` (≈ 4,4 V) hängt, käme also eher GP0 in Frage.
+- **Möglicher Umbau (nicht beschlossen):** Den Verstärker per GPIO abschaltbar machen (Draht von der `SD`-Seite von R24 zu GP0), damit er nur bei Tönen läuft. Feine SMD-Lötarbeit; vorher Foto der Stelle ansehen.
+
 #### Eingänge für die Spieltasten
 
 - Für drei bis vier Taster kommen **GP28 und GP29** sowie **GP0 und GP1** bei freiem UART infrage. Touch kann parallel Spielbefehle auslösen. [Waveshare-Schaltplan](https://files.waveshare.com/wiki/RP2350-Touch-LCD-2.8/RP2350-Touch-LCD-2.8-Schematic.pdf) · [Pinbelegung am 12-poligen Stecker](https://github.com/subtilitas/DshotDisplay/blob/main/src/board_rp2350_touch_lcd_2_8.h)
