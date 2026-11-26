@@ -36,6 +36,13 @@ Stand 26. November 2026. Diese Zusammenfassung hält die Beschlüsse aus der Gri
 - Die Persönlichkeit lässt sich zuerst aus dem Verhalten erahnen. Beim **Erwachsenwerden nach drei Lebenstagen** wird sie mit einer kleinen Nachricht enthüllt. Danach ist sie dauerhaft im Steckbrief und im Stammbaum sichtbar.
 - **Energie und Geselligkeit** bekommen eigene Bedürfnisanzeigen. Die Verantwortung für diese Bedürfnisse soll gemeinsam getragen werden. Welche Aktionen und Werte dafür gelten und wie die Verantwortung im Spiel aufgeteilt wird, ist noch offen.
 
+## Nachtrag 26. November 2026 (abends): Kinder als Verwandte von Evi
+
+- Die Bildarbeit mit freigestellten Teilen aus Ganzfiguren war zu schwer. Neuer Weg: **Kinder sehen aus wie Verwandte von Evi.** Kopf, Gesicht und Körper kommen immer von Evi (Mädchen) oder der **männlichen Evi** (Jungen). Vererbt werden Ohren, Schwanz, eine Besonderheit (z. B. Flügel, Mähne, Panzer), Fellton, Fellmuster und Zubehör.
+- Evis Familie lässt sich mit **allen 20 Parkfiguren** kreuzen, aber **nur Männchen mit Weibchen**.
+- Alle Bauteile werden als **deckungsgleiche Ebenen** in Basisgröße gezeichnet (keine Ankerpunkte nötig). Fellton und Muster werden gerechnet, die Umrisslinie bleibt.
+- Prompt für den Baukasten-Prototyp: [PROMPT-baukasten.md](PROMPT-baukasten.md). Bildauftrag für die männliche Evi (80 Bilder, in drei Runden): [bildauftrag-maennlich.md](../evi/bildauftrag-maennlich.md).
+
 ## Stand und offene Entscheidungen
 
 - Der [Browserprototyp](gemeinsame-kopfform/index.html) dient der optischen Prüfung von vier Figuren. Die Browserprüfung umfasste die sechs Elternpaare und Kombinationen in den Posen. Eine optische Freigabe für alle 21 Figuren oder ein Test auf dem Gerät steht aus.
