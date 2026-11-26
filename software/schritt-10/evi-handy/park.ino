@@ -151,10 +151,10 @@ void parkSchliessen() {
 }
 
 void parkOeffnen(ms_t jetzt) {
-  if (!parkMoeglich(jetzt)) { zeigeMeldung("Evi ruht gerade."); return; }
+  if (!parkMoeglich(jetzt)) { tamaRuht(); return; }
   if (parkZuNass(jetzt)) {
     static char nass[64];
-    snprintf(nass, sizeof(nass), "%s mag bei Regen nicht raus.", pet.name[0] ? pet.name : "Evi");
+    snprintf(nass, sizeof(nass), "%s mag bei Regen nicht raus.", tamaName());
     zeigeMeldung(nass, 3500);
     return;
   }
@@ -230,11 +230,12 @@ static void parkHelfen() {
 
 void parkTakt(ms_t jetzt, uint32_t m) {
   if (!parkOffen()) return;
+  if (park.phase == PARK_NAME) return;     // die Namenseingabe bleibt offen, bis ein Name da ist
   if (park.phase == PARK_STAMM) { if (!stammMoeglich(jetzt)) parkSchliessen(); return; }   // geht auch für Ei und verstorbene Evi
   if (!parkMoeglich(jetzt)) { parkSchliessen(); return; }
   if (park.phase != PARK_ALBUM && parkZuNass(jetzt)) {
     static char nass[64];
-    snprintf(nass, sizeof(nass), "%s will heim, es regnet!", pet.name[0] ? pet.name : "Evi");
+    snprintf(nass, sizeof(nass), "%s will heim, es regnet!", tamaName());
     parkSchliessen();
     zeigeMeldung(nass, 4000);
     return;
@@ -262,6 +263,7 @@ void parkTakt(ms_t jetzt, uint32_t m) {
 }
 
 void parkKnopf(Knopf k) {
+  if (park.phase == PARK_NAME) { nameKnopf(k); return; }   // Namenseingabe: B löscht, START ist Fertig
   if (k == K_B || k == K_START) { parkSchliessen(); return; }
   if (park.phase == PARK_ALBUM) { albumKnopf(k); return; }
   if (park.phase == PARK_STAMM) { stammKnopf(k); return; }
@@ -279,6 +281,7 @@ void parkKnopf(Knopf k) {
 }
 
 void parkTouch(int x, int y) {
+  if (park.phase == PARK_NAME) { nameTouch(x, y); return; }
   if (park.phase == PARK_ALBUM) { albumTouch(x, y); return; }
   if (park.phase == PARK_STAMM) { stammTouch(x, y); return; }
   if (y >= ZEILE_Y) { parkKnopf(x >= 240 ? K_B : K_A); return; }
@@ -488,6 +491,7 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
 }
 
 void parkZeichnen(ms_t jetzt) {
+  if (park.phase == PARK_NAME) { nameZeichnen(jetzt); return; }
   if (park.phase == PARK_ALBUM) { albumZeichnen(jetzt); return; }
   if (park.phase == PARK_STAMM) { stammZeichnen(jetzt); return; }
   const Phase ph = phaseBei(pet, jetzt);
@@ -518,15 +522,15 @@ void parkZeichnen(ms_t jetzt) {
   zeichneStatus(ph);
   bild.fillRect(0, ZEILE_Y, BREITE, HOEHE - ZEILE_Y, 1);
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
-  const char* zieltext = park.ziel == PARK_ZIEL_BESUCH ? BESUCH_NAME[park.besuch] : PARK_STELLE[park.ziel];
+  const char* zieltext = park.ziel == PARK_ZIEL_BESUCH ? besuchName(park.besuch) : PARK_STELLE[park.ziel];
   char grusstext[64];
   const char* text = zieltext;
   const char* aktion = tastenDa ? "A Losgehen" : "Ziel antippen";
   switch (park.phase) {
-    case PARK_LAEUFT: text = "Evi läuft los …"; aktion = ""; break;
-    case PARK_SCHNUPPERT: text = "Evi schnuppert …"; aktion = ""; break;
+    case PARK_LAEUFT: snprintf(grusstext, sizeof(grusstext), "%s läuft los …", tamaName()); text = grusstext; aktion = ""; break;
+    case PARK_SCHNUPPERT: snprintf(grusstext, sizeof(grusstext), "%s schnuppert …", tamaName()); text = grusstext; aktion = ""; break;
     case PARK_HILFE: text = "Was ist da?"; aktion = tastenDa ? "A Nachsehen" : "Nachsehen"; break;
-    case PARK_SUCHT: text = "Evi schaut nach …"; aktion = ""; break;
+    case PARK_SUCHT: snprintf(grusstext, sizeof(grusstext), "%s schaut nach …", tamaName()); text = grusstext; aktion = ""; break;
     case PARK_GRUSS: parkGrussText(grusstext, sizeof(grusstext)); text = grusstext; aktion = tastenDa ? "A Weiter" : "Weiter"; break;
     case PARK_FUND:
       text = park.fund >= 0 ? FUND_NAME[sammlung.fund[park.fund].art] :

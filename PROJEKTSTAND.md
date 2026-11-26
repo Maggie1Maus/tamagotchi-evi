@@ -1,5 +1,16 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Namen: Tamagotchis benennen, wechselnde Namen der Parkfreunde – 26. November 2026
+
+Auf Wunsch der Nutzerin, nur Waveshare. Neu: `evi-handy/namen.h`, `namen.ino`. Geändert: `stammbaum.h/.ino`, `park.h/.ino`, `parkfreunde.ino`, `pet.h`, `freunde.ino`, `evi-handy.ino`.
+
+- **Die Tiere heißen allgemein „Tamagotchi“**, das allererste hieß Evi und behält den Namen. Texte ohne Namen sagen „Tamagotchi“ (z. B. „Tamagotchi ruht gerade.“).
+- **Jedes neue Baby bekommt von der Nutzerin einen Namen.** „Neues Ei“ erzeugt ein Tamagotchi ohne Namen. Sobald es geschlüpft ist, öffnet sich die Namenseingabe (Park-Phase `PARK_NAME`): Buchstabenfeld A–Z, Ä Ö Ü ß mit Tasten (Steuerkreuz, A tippt, B löscht, START fertig) oder Touch, dazu Knöpfe „Löschen“, „Vorschlag“ (zufälliger Name aus der Liste), „Mädchen/Junge“ und „Fertig“. Höchstens 11 Buchstaben (und 19 Bytes wegen der Umlaute), erster Buchstabe groß, der Rest klein. Ohne Namen geht „Fertig“ nicht; schaltet man den Bildschirm aus, kommt die Eingabe wieder, bis ein Name da ist.
+- **Tamagotchis haben ein Geschlecht** (Mädchen/Junge), das beim Benennen gewählt wird; Evi ist ein Mädchen. Es steht im Stammbaum.
+- **50 Jungen- und 50 Mädchennamen** (`NAMEN_M`, `NAMEN_W`, u. a. Alf, Paula). Die 20 Parkfiguren sind je 10 weiblich/männlich (Maske in `namen.h`). **Ab dem ersten benannten Baby** (`stamm.neueNamenAb`) heißen die Figuren neu, innerhalb eines Tamagotchi-Lebens fest (alle Lebensphasen gleich), alle verschieden, nie wie das Tamagotchi selbst. Beim nächsten Tamagotchi wandert jede Figur in ein anderes Zehnerfenster der Liste, nach 5 Leben sind alle 50+50 Namen einmal dran. **Das jetzige Tamagotchi behält die alten Namen** (Lotti, Mampf …). Keine Tierart im Album/Park angezeigt (Wunsch der Nutzerin: man sieht ja das Bild).
+- **Stammbaum:** Das Tamagotchi davor ist Mutter oder Vater (je nach Geschlecht), der andere Elternteil ist die Parkfreund-Figur des anderen Geschlechts mit den meisten Treffen. **Ihr Name wird mitgespeichert**, weil er sich ändert (`StammEintrag.elternName`, Namenscode). Mutter steht links, Vater rechts. Speicher: Version 2 (Version 1 wird verworfen; der Stammbaum war erst kurz vorher entstanden).
+- Prüfungen: `tools/pc-nachbildung/namen.cpp` (in `pruefen.sh`): Listen, Eingabe per Touch und Tasten, Grenzen, Vorschlag, Geschlecht, Rotation über 5 Tamagotchis, keine Figur heißt wie das Tamagotchi, Stammbaum mit Junge und Mädchen. Alle Prüfungen fehlerfrei. Am Board noch nicht ausprobiert.
+
 ## Stammbaum, 20 Wesen-Folgen und Geschenke der Parkfreunde – 26. November 2026
 
 Auf Wunsch der Nutzerin, nur Waveshare, ohne neue Bilder. Neu: `evi-handy/stammbaum.h`, `stammbaum.ino`. Geändert: `pet.h`, `park.ino`, `park.h`, `parkfreunde.ino/.h`, `freunde.ino`, `momente.ino`, `launen.ino`, `evi-handy.ino`.

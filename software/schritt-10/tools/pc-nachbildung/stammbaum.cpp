@@ -213,13 +213,13 @@ int main() {
       gefunden = true;
       meldung[0] = 0; meldungBis = 0;
       parkSchliessen();
-      PRUEFE(meldung[0] && strstr(meldung, "Klecksi") == nullptr && strstr(meldung, BESUCH_NAME[8]), "Park zu: Geschenk wird trotzdem gemeldet");
+      PRUEFE(meldung[0] && strstr(meldung, "Klecksi") == nullptr && strstr(meldung, besuchName(8)), "Park zu: Geschenk wird trotzdem gemeldet");
     }
   }
 
   // ======== Stammbaum ========
   parkFreundLaden(); stammLaden();
-  memset(&stamm, 0, sizeof(stamm)); stamm.kennung = STAMM_KENNUNG; stamm.version = STAMM_VERSION; stamm.groesse = sizeof(StammStand); stamm.vaterAktuell = 255;
+  memset(&stamm, 0, sizeof(stamm)); stamm.kennung = STAMM_KENNUNG; stamm.version = STAMM_VERSION; stamm.groesse = sizeof(StammStand); stamm.elternAktuell = 255; stamm.elternNameAktuell = 255;
   memset(&parkFreund, 0, sizeof(parkFreund));
   pet = neuesTier(HEUTE - 12 * TAG, ERSTES_EI); pet.generation = 1;
   pet.schluepft = HEUTE - 12 * TAG; pet.geboren = pet.schluepft - 1000; pet.aktualisiert = HEUTE;
@@ -257,8 +257,8 @@ int main() {
     const StammEintrag& e = stamm.eintrag[gen - 1];
     char kontrolle[16]; strncpy(kontrolle, e.name, sizeof(kontrolle));
     PRUEFE(e.alterStd == 9 * 24 && e.phase == OMA, "Alter 9 Tage, Bild als Oma");
-    PRUEFE(e.vater == (gen == 1 ? 255 : 13) && e.generation == gen, "Vater: bester männlicher Freund der Mutter (davor)");
-    PRUEFE(stamm.vaterAktuell == 13 || (gen == 3 && stamm.vaterAktuell == 3), "Vater der neuen Evi bestimmt");
+    PRUEFE(e.eltern == (gen == 1 ? 255 : 13) && e.generation == gen, "Vater: bester männlicher Freund der Mutter (davor)");
+    PRUEFE(stamm.elternAktuell == 13 || (gen == 3 && stamm.elternAktuell == 3), "Vater der neuen Evi bestimmt");
     PRUEFE(parkFreundGetroffen() == 0 || parkFreund.evi != pet.geboren || true, "Treffen werden mit der neuen Evi zurückgesetzt");
     freundRunde(t0 + 20 * MINUTE);
     PRUEFE(parkFreundGetroffen() == 0, "neue Evi: Treffen wieder bei null");
@@ -266,15 +266,15 @@ int main() {
     pet.name[0] = 0;
   }
   PRUEFE(!strcmp(stamm.eintrag[1].name, "Mägdalena") || zeichenAnzahl(stamm.eintrag[1].name) <= 11, "Name nicht mitten im Umlaut gekürzt");
-  PRUEFE(stamm.vaterAktuell == 3, "dritte Evi: Blubber (Vater) war ihr bester männlicher Freund");
+  PRUEFE(stamm.elternAktuell == 3, "dritte Evi: Blubber (Vater) war ihr bester männlicher Freund");
   {
     // Speichern und Laden
     stammSpeichern(); StammStand merk = stamm;
     memset(&stamm, 0, sizeof(stamm)); stammLaden();
-    PRUEFE(stamm.anzahl == merk.anzahl && !memcmp(&stamm.eintrag, &merk.eintrag, sizeof(merk.eintrag)) && stamm.vaterAktuell == merk.vaterAktuell, "Stammbaum bleibt nach Neustart erhalten");
+    PRUEFE(stamm.anzahl == merk.anzahl && !memcmp(&stamm.eintrag, &merk.eintrag, sizeof(merk.eintrag)) && stamm.elternAktuell == merk.elternAktuell, "Stammbaum bleibt nach Neustart erhalten");
     EEPROM.write(STAMM_ADRESSE + 9, EEPROM.read(STAMM_ADRESSE + 9) ^ 0x33);
     stammLaden();
-    PRUEFE(stamm.anzahl == 0 && stamm.vaterAktuell == 255, "kaputter Speicher: leerer Stammbaum");
+    PRUEFE(stamm.anzahl == 0 && stamm.elternAktuell == 255, "kaputter Speicher: leerer Stammbaum");
     // Neu aufbauen
     memcpy(&stamm, &merk, sizeof(stamm)); stammGeaendert = true; stammSpeichern();
   }

@@ -17,6 +17,7 @@ Alles Wichtige muss deshalb **im Repository** stehen, nicht nur im lokalen Gedä
 - **Die Handy-App nicht mehr mitändern** (Wunsch der Nutzerin vom 24.11.2026). Neues wird nur noch auf dem Waveshare (`software/schritt-10/`) gebaut. Die App nur anfassen, wenn die Nutzerin ausdrücklich danach fragt.
 - Darstellung auf dem Waveshare seit 25.11.2026 in **Graustufen** (16 Stufen, Wunsch der Nutzerin), keine Farben. Vorher strikt schwarz-weiß. Bilder ohne Graustufen-Gegenstück (Zimmer, Fundstücke, Symbole) bleiben vorerst schwarz-weiß. Die Handy-App bleibt wie sie ist.
 - Evis Graustufen-Bilder: `entwuerfe/evi/graustufen-vorschau/Evi-Graustufen.zip` → `software/schritt-10/tools/make-evi-grau.py` → `evi-handy/evigrau.h`. Wieder 1:1, nie neu zeichnen.
+- Seit 26.11.2026 heißen die Tiere allgemein **Tamagotchis**; Evi war das erste. Jedes Baby bekommt von der Nutzerin einen Namen, die Parkfreunde heißen bei jedem Tamagotchi anders (50 + 50 Namen, `namen.h`).
 - Kommunikation auf Deutsch, einfach erklärt.
 
 ## Technik

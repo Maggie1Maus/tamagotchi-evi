@@ -27,6 +27,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-zimmer --zimme
 - `zeitzurueck.cpp`: Uhr vor- und zurückgestellt ergibt keine Dauer-Entwicklungsmeldung, Evi rechnet danach normal weiter; Geburtstag wird über den Merker einmal neu gefragt.
 - `parkfreunde.cpp`: Treffer der Parkfreunde, Stufen, zweiter Satz, Wesen und ihre Folgen, Speichern/Laden, Album.
 - `stammbaum.cpp`: Folgen des Wesens in den Regeln, Geschenke der Parkfreunde, Stammbaum.
+- `namen.cpp`: Namenseingabe beim Schlüpfen, wechselnde Figurennamen, Stammbaum mit Geschlecht.
 
 Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit gibt es nur dort.
 

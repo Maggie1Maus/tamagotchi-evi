@@ -45,6 +45,7 @@
 #include "besucherbilder.h"
 #include "parkfreunde.h"
 #include "stammbaum.h"
+#include "namen.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom
@@ -188,8 +189,10 @@ void eviTakt(ms_t jetzt) {
     reagiere(R_SCHLUEPFEN, 25);
     piep(TON(TON_SCHLUEPFEN));
     char text[64];
-    snprintf(text, sizeof(text), "%s ist geschlüpft! Willkommen!", pet.name);
-    zeigeMeldung(text, 6000);
+    if (pet.name[0]) {                // sonst fragt die Namenseingabe (namen.ino) und begrüßt danach
+      snprintf(text, sizeof(text), "%s ist geschlüpft! Willkommen!", pet.name);
+      zeigeMeldung(text, 6000);
+    }
   }
   if (s == S_SCHLAEFT && t % 8 == 0) evi.zStufe = (t / 8) % 3;
   // Pünktlich schlüpfen, während jemand zuschaut
@@ -1144,7 +1147,7 @@ void setup() {
     const Phase von = phaseBei(vorher, bisher), zu = phaseBei(pet, jetzt);
     char text[90] = "";
     if (zu == TOT && von != TOT) snprintf(text, sizeof(text), pet.ursache == ALTER ? "%s ist friedlich eingeschlafen, während du weg warst." : "%s ist gestorben, während du weg warst.", pet.name);
-    else if (von == EI && zu != EI) snprintf(text, sizeof(text), "%s ist geschlüpft, während du weg warst.", pet.name);
+    else if (von == EI && zu != EI) snprintf(text, sizeof(text), "%s ist geschlüpft, während du weg warst.", tamaName());
     else if (von != zu && zu == TEEN) snprintf(text, sizeof(text), "%s ist jetzt ein Teenager!", pet.name);
     else if (von != zu && zu == ERWACHSEN) snprintf(text, sizeof(text), "%s ist erwachsen geworden!", pet.name);
     else if (von != zu && zu == OMA) snprintf(text, sizeof(text), "%s ist jetzt eine Oma!", pet.name);
@@ -1207,6 +1210,7 @@ void loop() {
     letzterTakt = m;
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
+    namenPruefen(jetzt);              // neues Baby ohne Namen: Namenseingabe (namen.ino)
     ritualWeiter();
     if (!parkOffen()) {
       launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)

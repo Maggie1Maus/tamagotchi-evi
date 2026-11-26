@@ -125,7 +125,7 @@ void parkGeschenkText(char* ziel, size_t platz) {
   static const char* const TEXT[WESEN_ZAHL] = {"%s bringt %s Kekse mit! ♥", "%s tobt mit %s herum! ♥", "%s putzt %s liebevoll sauber!",
                                                "%s bringt %s ein weiches Kissen!", "%s umarmt %s ganz fest! ♥", "%s schenkt %s %d Münzen ♥"};
   const int w = park.geschenk - 1;
-  snprintf(ziel, platz, TEXT[w], BESUCH_NAME[park.besuch], pet.name[0] ? pet.name : "Evi", (int)park.geschenkZahl);
+  snprintf(ziel, platz, TEXT[w], besuchName(park.besuch), tamaName(), (int)park.geschenkZahl);
 }
 
 // ---------- Begrüßung nach Stufe ----------
@@ -218,9 +218,9 @@ const char* parkNachsatz() {
 
 // „Name: Satz“ mit Evis Namen für das *
 void parkBesuchSatz(char* ziel, size_t platz, const char* satz) {
-  size_t n = snprintf(ziel, platz, "%s: ", BESUCH_NAME[park.besuch]);
+  size_t n = snprintf(ziel, platz, "%s: ", besuchName(park.besuch));
   for (const char* s = satz; *s && n + 1 < platz; s++) {
-    if (*s == '*') n += snprintf(ziel + n, platz - n, "%s", pet.name[0] ? pet.name : "Evi");
+    if (*s == '*') n += snprintf(ziel + n, platz - n, "%s", tamaName());
     else ziel[n++] = *s;
     if (n >= platz) n = platz - 1;
   }
@@ -232,7 +232,7 @@ static const int ALBUM_KOPF_Y = STATUS_H + 4, ALBUM_GITTER_Y = STATUS_H + 18;
 static const int ALBUM_ZELLE_B = 64, ALBUM_ZELLE_H = 39;
 
 void albumOeffnen(ms_t jetzt) {
-  if (!parkMoeglich(jetzt)) { zeigeMeldung("Evi ruht gerade."); return; }
+  if (!parkMoeglich(jetzt)) { tamaRuht(); return; }
   parkFreundPruefen();
   momentStoppen(true);
   menueZeigen(false);
@@ -287,7 +287,7 @@ void albumZeichnen(ms_t jetzt) {
   char kopf[40];
   snprintf(kopf, sizeof(kopf), "Parkfreunde %d von %d", parkFreundGetroffen(), BESUCHER);
   schreibe(bild, RAND_LINKS, ALBUM_KOPF_Y, kopf, 0);
-  snprintf(kopf, sizeof(kopf), "%s: %s", pet.name[0] ? pet.name : "Evi", WESEN_NAME[eviWesen()]);
+  snprintf(kopf, sizeof(kopf), "%s: %s", tamaName(), WESEN_NAME[eviWesen()]);
   schreibe(bild, BREITE - RAND_LINKS - textBreite(kopf), ALBUM_KOPF_Y, kopf, 0);
   for (int i = 0; i < BESUCHER; i++) {
     const int sp = i % ALBUM_SPALTEN, ze = i / ALBUM_SPALTEN;
@@ -309,7 +309,7 @@ void albumZeichnen(ms_t jetzt) {
   const int treffer = parkFreund.treffer[albumWahl], stufe = parkFreundStufe(treffer);
   char zeile1[64], zeile2[64];
   if (treffer) {
-    snprintf(zeile1, sizeof(zeile1), "%s: %s", BESUCH_NAME[albumWahl], FIGUR_ART[albumWahl]);
+    snprintf(zeile1, sizeof(zeile1), "%s: %s", besuchName(albumWahl), FIGUR_ART[albumWahl]);
     snprintf(zeile2, sizeof(zeile2), "%dx getroffen · %s", treffer, FIGUR_STUFE_NAME[stufe]);
   } else {
     snprintf(zeile1, sizeof(zeile1), "???");

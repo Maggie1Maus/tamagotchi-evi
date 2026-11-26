@@ -364,7 +364,7 @@ const Meinung MEINUNGEN[] = {
   {5, "Ich schreib mal ein Buch über uns.", "Ich mal mal ein Bild von uns beiden."},
   {5, "Ich träum davon, das Meer zu sehen.", "Ich träum vom Rutschen auf dem Regenbogen."},
   {5, "Für immer beste Freunde, %s?", "Versprich mir, dass du bleibst, %s."},
-  {5, "Ich bin die glücklichste Evi der Welt!", "Mit dir hab ich das schönste Leben."},
+  {5, "Ich bin das glücklichste Tamagotchi der Welt!", "Mit dir hab ich das schönste Leben."},
 };
 const int MEINUNGEN_ANZAHL = sizeof(MEINUNGEN) / sizeof(MEINUNGEN[0]);
 static_assert(sizeof(FRAGEN) / sizeof(FRAGEN[0]) == 100, "Es sollen 100 Fragen sein");

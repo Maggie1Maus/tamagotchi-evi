@@ -1,9 +1,5 @@
 // Stammbaum (26.11.2026). Siehe stammbaum.h.
 
-// Nur männliche Figuren kommen als Vater in Frage.
-// Bit je Figur (Reihenfolge BESUCH_NAME): Bit, Blip, Blubber, Funke, Groschen, Leo, Linus, Mampf, Rolli, Tetro
-const uint32_t STAMM_VAETER = (1UL << 1) | (1UL << 2) | (1UL << 3) | (1UL << 5) | (1UL << 7) | (1UL << 10) | (1UL << 11) |
-                              (1UL << 13) | (1UL << 17) | (1UL << 19);
 
 void stammLaden() {
   uint8_t* b = (uint8_t*)&stamm;
@@ -15,7 +11,8 @@ void stammLaden() {
     stamm.kennung = STAMM_KENNUNG;
     stamm.version = STAMM_VERSION;
     stamm.groesse = sizeof(StammStand);
-    stamm.vaterAktuell = 255;
+    stamm.elternAktuell = 255;
+    stamm.elternNameAktuell = 255;
   }
   stammGeaendert = false;
   stammSeite = stamm.anzahl;
@@ -51,27 +48,29 @@ Phase stammPhaseNachAlter(ms_t alter) {
   return OMA;
 }
 
-// Männliche Figur mit den meisten Treffen, 255 ohne Treffen
-int stammBesterVater(ms_t evi) {
-  if (parkFreund.evi != evi) return 255;     // die Treffen gehören zu einer anderen Evi
+// Figur aus der Maske (Bit je Figur) mit den meisten Treffen, 255 ohne Treffen
+int stammBesterElter(ms_t evi, uint32_t maske) {
+  if (parkFreund.evi != evi) return 255;     // die Treffen gehören zu einem anderen Tamagotchi
   int best = 255, meist = 0;
   for (int i = 0; i < BESUCHER; i++)
-    if ((STAMM_VAETER >> i & 1) && parkFreund.treffer[i] > meist) { meist = parkFreund.treffer[i]; best = i; }
+    if ((maske >> i & 1) && parkFreund.treffer[i] > meist) { meist = parkFreund.treffer[i]; best = i; }
   return best;
 }
 
-// Die verstorbene Evi kommt in den Stammbaum, und ihr bester männlicher Parkfreund wird Vater der neuen Evi.
-// Muss aufgerufen werden, solange die Treffen der alten Evi noch gespeichert sind (aktionAusfuehren, NEUES_EI).
+// Das verstorbene Tamagotchi kommt in den Stammbaum. Es wird Elternteil des neuen; der andere Elternteil ist die
+// Parkfreund-Figur des anderen Geschlechts, die es am häufigsten getroffen hat (Name wird gespeichert, weil er sich ändert).
+// Muss aufgerufen werden, solange die Treffen des alten Tamagotchis noch gespeichert sind (aktionAusfuehren, NEUES_EI).
 void stammEintragen(const Tier& alt, ms_t jetzt) {
-  // Achtung: Die Treffen der alten Evi dürfen hier noch nicht zurückgesetzt sein (parkFreundPruefen erst später).
+  // Achtung: Die Treffen des alten Tamagotchis dürfen hier noch nicht zurückgesetzt sein (parkFreundPruefen erst später).
   StammEintrag e;
   memset(&e, 0, sizeof(e));
-  stammNameKuerzen(alt.name, e.name, sizeof(e.name));
-  if (!e.name[0]) strcpy(e.name, "Evi");
+  stammNameKuerzen(alt.name[0] ? alt.name : "Tamagotchi", e.name, sizeof(e.name));
   const ms_t ende = alt.tot && alt.gestorben > alt.schluepft ? alt.gestorben : jetzt;
   const ms_t gelebt = ende > alt.schluepft ? ende - alt.schluepft : 0;
   e.wesen = (uint8_t)wesenVon(alt.geboren);
-  e.vater = stamm.vaterAktuell;
+  e.geschlecht = stamm.geschlechtAktuell;
+  e.eltern = stamm.elternAktuell;
+  e.elternName = stamm.elternNameAktuell;
   e.phase = (uint8_t)stammPhaseNachAlter(gelebt);
   e.generation = (uint8_t)min((int)alt.generation, 255);
   e.alterStd = (uint16_t)min((long long)(gelebt / STUNDE), 65535LL);
@@ -80,7 +79,10 @@ void stammEintragen(const Tier& alt, ms_t jetzt) {
     stamm.anzahl = STAMM_MAX - 1;
   }
   stamm.eintrag[stamm.anzahl++] = e;
-  stamm.vaterAktuell = (uint8_t)stammBesterVater(alt.geboren);
+  const int elter = stammBesterElter(alt.geboren, e.geschlecht ? FIGUR_WEIBLICH_MASKE : FIGUR_MAENNLICH_MASKE);
+  stamm.elternAktuell = (uint8_t)elter;
+  stamm.elternNameAktuell = elter == 255 ? 255 : besuchNameCode(elter, alt);
+  stamm.geschlechtAktuell = 0;               // das Baby bekommt sein Geschlecht beim Benennen
   stammGeaendert = true;
   stammSeite = stamm.anzahl;
   speichern(jetzt);
@@ -94,7 +96,7 @@ bool stammMoeglich(ms_t jetzt) {
 }
 
 void stammOeffnen(ms_t jetzt) {
-  if (!stammMoeglich(jetzt)) { zeigeMeldung("Evi ruht gerade."); return; }
+  if (!stammMoeglich(jetzt)) { tamaRuht(); return; }
   momentStoppen(true);
   menueZeigen(false);
   kuschel = {};
@@ -140,6 +142,24 @@ void stammAlterText(int std, bool lebt, char* aus, size_t n) {
   else snprintf(aus, n, "%s %d Std. alt", lebt ? "ist" : "wurde", std);
 }
 
+// Ein Elternteil auf seiner Seite: Tamagotchi (Bild der Lebensphase bei seinem Tod), Parkfreund (Figur) oder unbekannt
+static void stammElter(int cx, const char* titel, const StammEintrag* evi, int figur, uint8_t nameCode) {
+  schreibe(bild, cx - textBreite(titel) / 2, STATUS_H + 3, titel, 0);
+  if (evi) {
+    const Phase mp = (Phase)(evi->phase >= BABY && evi->phase <= OMA ? (int)evi->phase : (int)OMA);
+    stammEviBild(mp, cx, STATUS_H + 51, 44, 38);
+    stammMittig(cx, STATUS_H + 54, evi->name);
+    stammMittig(cx, STATUS_H + 64, WESEN_NAME[evi->wesen < WESEN_ZAHL ? evi->wesen : 0]);
+  } else if (figur >= 0 && figur < BESUCHER) {
+    albumFigur(figur, ERWACHSEN, cx - BESUCH_BREITE / 4, STATUS_H + 15, true);
+    stammMittig(cx, STATUS_H + 54, nameVonCode(nameCode));
+    stammMittig(cx, STATUS_H + 64, WESEN_NAME[FIGUR_WESEN[figur]]);
+  } else {
+    stammFragezeichen(cx, STATUS_H + 15);
+    stammMittig(cx, STATUS_H + 54, "unbekannt");
+  }
+}
+
 void stammZeichnen(ms_t jetzt) {
   const Phase jetzt_ph = phaseBei(pet, jetzt);
   bild.fillScreen(1);
@@ -147,16 +167,18 @@ void stammZeichnen(ms_t jetzt) {
   const int n = stamm.anzahl + 1;
   if (stammSeite >= n) stammSeite = stamm.anzahl;
   const bool aktuell = stammSeite == stamm.anzahl;
-  // Die angezeigte Evi: gespeichert (verstorben) oder die jetzige (lebt, ist Ei oder ist gerade gegangen)
+  // Das angezeigte Tamagotchi: gespeichert (verstorben) oder das jetzige (lebt, ist Ei oder ist gerade gegangen)
   char name[24] = "";
-  int wesen, vater, alterStd, generation;
+  int wesen, eltern, alterStd, geschlecht;
+  uint8_t elternName;
   Phase phase;
   bool lebt;
   if (aktuell) {
-    stammNameKuerzen(pet.name[0] ? pet.name : "Evi", name, 12);
+    stammNameKuerzen(pet.name[0] ? pet.name : "Neues Ei", name, 12);
     wesen = wesenVon(pet.geboren);
-    vater = stamm.vaterAktuell;
-    generation = pet.generation;
+    eltern = stamm.elternAktuell;
+    elternName = stamm.elternNameAktuell;
+    geschlecht = stamm.geschlechtAktuell;
     lebt = !pet.tot;
     const ms_t ende = pet.tot && pet.gestorben > pet.schluepft ? pet.gestorben : jetzt;
     const ms_t gelebt = ende > pet.schluepft ? ende - pet.schluepft : 0;
@@ -166,51 +188,39 @@ void stammZeichnen(ms_t jetzt) {
     const StammEintrag& e = stamm.eintrag[stammSeite];
     snprintf(name, sizeof(name), "%s", e.name);
     wesen = e.wesen < WESEN_ZAHL ? e.wesen : 0;
-    vater = e.vater;
-    generation = e.generation;
+    eltern = e.eltern;
+    elternName = e.elternName;
+    geschlecht = e.geschlecht ? 1 : 0;
     alterStd = e.alterStd;
     phase = (Phase)(e.phase >= BABY && e.phase <= OMA ? (int)e.phase : (int)OMA);
     lebt = false;
   }
-  // Mutter: die Evi davor (gespeichert), sonst unbekannt
-  const bool hatMutter = stammSeite > 0;
-  const StammEintrag* mutter = hatMutter ? &stamm.eintrag[stammSeite - 1] : nullptr;
-  const int mx = 90, vx = 230, kx = 160;
-  schreibe(bild, mx - textBreite("Mutter") / 2, STATUS_H + 3, "Mutter", 0);
-  schreibe(bild, vx - textBreite("Vater") / 2, STATUS_H + 3, "Vater", 0);
-  if (mutter) {
-    const Phase mp = (Phase)(mutter->phase >= BABY && mutter->phase <= OMA ? (int)mutter->phase : (int)OMA);
-    stammEviBild(mp, mx, STATUS_H + 51, 44, 38);
-    stammMittig(mx, STATUS_H + 54, mutter->name);
-    stammMittig(mx, STATUS_H + 64, WESEN_NAME[mutter->wesen < WESEN_ZAHL ? mutter->wesen : 0]);
-  } else {
-    stammFragezeichen(mx, STATUS_H + 15);
-    stammMittig(mx, STATUS_H + 54, "unbekannt");
-  }
-  if (vater >= 0 && vater < BESUCHER) {
-    albumFigur(vater, ERWACHSEN, vx - BESUCH_BREITE / 4, STATUS_H + 15, true);
-    stammMittig(vx, STATUS_H + 54, BESUCH_NAME[vater]);
-    stammMittig(vx, STATUS_H + 64, WESEN_NAME[FIGUR_WESEN[vater]]);
-  } else {
-    stammFragezeichen(vx, STATUS_H + 15);
-    stammMittig(vx, STATUS_H + 54, "unbekannt");
-  }
+  // Elternteil 1: das Tamagotchi davor (gespeichert); Elternteil 2: die Parkfreund-Figur des anderen Geschlechts.
+  // Mutter steht links, Vater rechts: das Geschlecht des Tamagotchis davor bestimmt die Seite.
+  const StammEintrag* davor = stammSeite > 0 ? &stamm.eintrag[stammSeite - 1] : nullptr;
+  bool davorLinks;                                   // true: das Tamagotchi davor ist die Mutter
+  if (davor) davorLinks = davor->geschlecht == 0;
+  else if (eltern >= 0 && eltern < BESUCHER) davorLinks = !figurWeiblich(eltern);   // Figur weiblich = Mutter links
+  else davorLinks = true;
+  const int links = 90, rechts = 230, kx = 160;
+  const bool figurLinks = davor ? !davorLinks : (eltern >= 0 && eltern < BESUCHER ? figurWeiblich(eltern) : false);
+  stammElter(links, "Mutter", davorLinks ? davor : nullptr, figurLinks ? eltern : -1, elternName);
+  stammElter(rechts, "Vater", davorLinks ? nullptr : davor, !figurLinks ? eltern : -1, elternName);
   // Verbindungslinien Eltern → Kind
   const int ly = STATUS_H + 76;
-  bild.drawFastVLine(mx, ly, 6, 0); bild.drawFastVLine(vx, ly, 6, 0);
-  bild.drawFastHLine(mx, ly + 6, vx - mx + 1, 0);
+  bild.drawFastVLine(links, ly, 6, 0); bild.drawFastVLine(rechts, ly, 6, 0);
+  bild.drawFastHLine(links, ly + 6, rechts - links + 1, 0);
   bild.drawFastVLine(kx, ly + 6, 7, 0);
   stammEviBild(phase, kx, STATUS_H + 148, 90, 64);
-  // Unten: Name, Wesen, Alter
+  // Unten: Name, Geschlecht, Wesen, Alter
   bild.fillRect(0, ZEILE_Y, BREITE, HOEHE - ZEILE_Y, 1);
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
   char alter[32], zeile1[64], zeile2[64];
   stammAlterText(alterStd, lebt, alter, sizeof(alter));
-  snprintf(zeile1, sizeof(zeile1), "%s · %s · %s", name, WESEN_NAME[wesen], alter);
-  snprintf(zeile2, sizeof(zeile2), "%d von %d · %s", stammSeite + 1, n, tastenDa ? "◀ Mutter  Kind ▶" : "Links Mutter, rechts Kind");
+  snprintf(zeile1, sizeof(zeile1), "%s · %s · %s", name, geschlecht ? "Junge" : "Mädchen", WESEN_NAME[wesen]);
+  snprintf(zeile2, sizeof(zeile2), "%s · %d von %d%s", alter, stammSeite + 1, n, tastenDa ? " ◀▶" : "");
   schreibe(bild, RAND_LINKS + 3, ZEILE_Y + 6, zeile1, 0);
   schreibe(bild, RAND_LINKS + 3, ZEILE_Y + 22, zeile2, 0);
   schreibe(bild, 242, ZEILE_Y + 22, tastenDa ? "B Zurück" : "Zurück", 0);
-  (void)generation;
   zeigen();
 }

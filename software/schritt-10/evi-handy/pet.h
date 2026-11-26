@@ -321,7 +321,7 @@ static inline Ergebnis pflegen(Tier& p, Aktion a, ms_t jetzt) {
   if (e.grund != OK) return e;
   e.geaendert = true;
   if (a == NEUES_EI) {
-    p = neuesTier(jetzt, R::EI_DAUER, p.name, p.eigenerName, p.muenzen, p.generation + 1);
+    p = neuesTier(jetzt, R::EI_DAUER, "", false, p.muenzen, p.generation + 1);   // ohne Namen: das Baby bekommt ihn beim Schlüpfen (namen.ino)
     return e;
   }
   auto lichtAusmachen = [&]() {
