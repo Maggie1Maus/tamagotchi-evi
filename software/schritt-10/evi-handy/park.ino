@@ -231,7 +231,7 @@ static void parkHelfen() {
 void parkTakt(ms_t jetzt, uint32_t m) {
   if (!parkOffen()) return;
   if (park.phase == PARK_NAME) return;     // die Namenseingabe bleibt offen, bis ein Name da ist
-  if (park.phase == PARK_STAMM) { if (!stammMoeglich(jetzt)) parkSchliessen(); return; }   // geht auch für Ei und verstorbene Evi
+  if (park.phase == PARK_STAMM) { if (!stammMoeglich(jetzt)) parkSchliessen(); else stammTakt(); return; }   // geht auch für Ei und verstorbene Evi
   if (!parkMoeglich(jetzt)) { parkSchliessen(); return; }
   if (park.phase != PARK_ALBUM && parkZuNass(jetzt)) {
     static char nass[64];

@@ -232,7 +232,7 @@ int main() {
     PRUEFE(parkOffen() && park.phase == PARK_STAMM, "Stammbaum öffnet");
     zeichneAlles();
     knopf(K_R); knopf(K_L); zeichneAlles();
-    PRUEFE(stammSeite == 0 && stamm.anzahl == 0, "erste Evi: nur sie selbst, ohne Eltern");
+    PRUEFE(stammScroll == 0 && stamm.anzahl == 0, "erste Evi: nur sie selbst, ohne Eltern");
     knopf(K_B);
     PRUEFE(!parkOffen(), "B schließt den Stammbaum");
   }
@@ -282,23 +282,43 @@ int main() {
     // Seiten durchblättern und alle zeichnen (Ei, jetzige Evi, alle verstorbenen)
     uhrSetzen(t0); pet.tot = false; pet.schluepft = t0 + 20 * MINUTE; pet.aktualisiert = t0;
     stammOeffnen(t0); zeichneAlles();
-    PRUEFE(park.phase == PARK_STAMM && stammSeite == stamm.anzahl, "Stammbaum startet bei der jetzigen Evi (Ei)");
+    PRUEFE(park.phase == PARK_STAMM && stammScroll == stammScrollMax() && stammScrollMax() > 0, "Stammbaum startet ganz unten, bei dem jetzigen Tamagotchi (Ei)");
     for (int i = 0; i < stamm.anzahl + 2; i++) { knopf(K_L); zeichneAlles(); }
-    PRUEFE(stammSeite < stamm.anzahl + 1, "Blättern bleibt im Bereich");
+    PRUEFE(stammScroll >= 0 && stammScroll <= stammScrollMax(), "Scrollen bleibt im Bereich");
     int dunkel = 0; for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++) if (bild.stufe(x, y) < 6) dunkel++;
     PRUEFE(dunkel > 400, "Stammbaum zeichnet etwas");
     { FILE* f = fopen("stamm.pgm", "wb"); fprintf(f, "P5\n320 240\n255\n"); for (int y = 0; y < 240; y++) for (int x = 0; x < 320; x++) fputc(bild.stufe(x, y) * (bild.stufe(x, y) <= 15 ? 17 : 1), f); fclose(f); }
-    beruehrt(250, 100); PRUEFE(stammSeite >= 0, "Antippen rechts blättert");
+    beruehrt(70, ZEILE_Y + 10); PRUEFE(stammScroll >= 0, "Antippen von ▲ scrollt");
     beruehrt(10, 100);
     beruehrt(280, ZEILE_Y + 10);
     PRUEFE(!parkOffen(), "Tipper unten rechts schließt");
     // Älteste verdrängen: mehr als 8 Evis
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 60; i++) {
       pet.tot = true; pet.schluepft = t0 - 9 * TAG; pet.gestorben = t0; pet.generation = 10 + i; pet.geboren = t0 + i;
       parkFreund.evi = pet.geboren;
       stammEintragen(pet, t0);
     }
-    PRUEFE(stamm.anzahl == STAMM_MAX && stamm.eintrag[STAMM_MAX - 1].generation == 19 && stamm.eintrag[0].generation > 3, "höchstens 8 gespeichert, die ältesten fallen heraus");
+    PRUEFE(stamm.anzahl == STAMM_MAX && stamm.eintrag[STAMM_MAX - 1].generation == 69 && stamm.eintrag[0].generation > 3, "höchstens 50 gespeichert, die ältesten fallen heraus");
+    // Scrollen mit Tasten, Seitenknöpfen und Finger
+    pet.tot = false; pet.schluepft = t0 + 20 * MINUTE; pet.aktualisiert = t0;
+    stammOeffnen(t0); zeichneAlles();
+    const int unten = stammScroll;
+    PRUEFE(unten == stammScrollMax() && unten > 49 * 150, "50 Familien: die Fläche ist lang, geöffnet ganz unten");
+    knopf(K_UP); PRUEFE(stammScroll == unten - 40, "Hoch scrollt");
+    knopf(K_DOWN); knopf(K_DOWN); PRUEFE(stammScroll == unten, "nicht über das Ende hinaus");
+    knopf(K_A); PRUEFE(stammScroll == unten, "A am Ende bleibt unten");
+    for (int i = 0; i < 400; i++) knopf(K_UP);
+    PRUEFE(stammScroll == 0, "ganz nach oben (älteste Familie)");
+    zeichneAlles();
+    knopf(K_A); PRUEFE(stammScroll == 176, "A springt eine Familie weiter");
+    beruehrt(70, ZEILE_Y + 10); PRUEFE(stammScroll == 88, "▲ unten links: halbe Familie hoch");
+    beruehrt(120, ZEILE_Y + 10); PRUEFE(stammScroll == 176, "▼: halbe Familie runter");
+    // Finger ziehen: von y=150 nach y=100 = 50 Pixel weiter nach unten
+    beruehrt(160, 150); fingerUnten = true; fingerY = 100; stammTakt(); fingerUnten = false; stammTakt();
+    PRUEFE(stammScroll == 226, "Finger nach oben ziehen scrollt nach unten");
+    for (int y = 0; y < 3; y++) { stammScroll = y * 2000 % (stammScrollMax() + 1); zeichneAlles(); }
+    PRUEFE(true, "Ansicht an verschiedenen Stellen gezeichnet");
+    parkSchliessen();
   }
   // Ei: Stammbaum geht auch beim Ei, nicht aber bei schlafender Evi
   {

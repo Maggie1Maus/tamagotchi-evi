@@ -7,7 +7,7 @@
 #include "sammlung.h"
 
 const uint32_t SPEICHER_KENNUNG = 0x45564931;   // "EVI1"
-const uint16_t SPEICHER_VERSION = 3;
+const uint16_t SPEICHER_VERSION = 4;   // 4: höchstens 50 Funde (Version 3 hatte 256 und wird übernommen)
 
 // Version 1 zum verlustfreien Übernehmen vorhandener Spielstände aufheben.
 struct SpielstandV1 {
@@ -20,10 +20,28 @@ struct SpielstandV1 {
 
 // Exakte Version-2-Strukturen erhalten: neue Felder dürfen alte Einträge nicht verschieben.
 struct FundstueckV2 { uint8_t art, ort; uint16_t generation; int32_t tag; };
-struct SammlungV2 { uint32_t ausfluege; int32_t letzterFundTag; uint16_t anzahl; FundstueckV2 fund[SAMMLUNG_MAX]; };
+struct SammlungV2 { uint32_t ausfluege; int32_t letzterFundTag; uint16_t anzahl; FundstueckV2 fund[SAMMLUNG_MAX_ALT]; };
 struct SpielstandV2 {
   uint32_t kennung; uint16_t version, groesse; Tier tier; bool tonAn;
   SammlungV2 sammlung; uint32_t pruefsumme;
+};
+
+// Version 3 (256 Funde), nur zum Übernehmen. Nicht verändern.
+struct SammlungV3 {
+  uint32_t ausfluege;
+  int32_t letzterFundTag;
+  uint16_t anzahl;
+  Fundstueck fund[SAMMLUNG_MAX_ALT];
+  int32_t gartenTag;
+  uint8_t gartenVersucht;
+};
+struct SpielstandV3 {
+  uint32_t kennung;
+  uint16_t version, groesse;
+  Tier tier;
+  bool tonAn;
+  SammlungV3 sammlung;
+  uint32_t pruefsumme;
 };
 
 struct Spielstand {
@@ -69,16 +87,36 @@ bool spielstandLaden(Tier& tier, bool& ton) {
     SpielstandV2 v2;
     uint8_t* b2 = (uint8_t*)&v2;
     for (size_t i = 0; i < sizeof(v2); i++) b2[i] = EEPROM.read(i);
-    if (v2.pruefsumme != pruefsumme(b2, offsetof(SpielstandV2, pruefsumme)) || v2.sammlung.anzahl > SAMMLUNG_MAX) return false;
+    if (v2.pruefsumme != pruefsumme(b2, offsetof(SpielstandV2, pruefsumme)) || v2.sammlung.anzahl > SAMMLUNG_MAX_ALT) return false;
     if (!(v2.tier.satt >= 0 && v2.tier.satt <= 100 && v2.tier.laune >= 0 && v2.tier.laune <= 100 &&
           v2.tier.sauber >= 0 && v2.tier.sauber <= 100)) return false;
-    for (int i = 0; i < v2.sammlung.anzahl; i++) {
+    for (int i = max(0, (int)v2.sammlung.anzahl - (int)SAMMLUNG_MAX); i < v2.sammlung.anzahl; i++) {   // die letzten 50
       const FundstueckV2& f = v2.sammlung.fund[i];
       if (f.ort != FUND_GASSI || !fundAufnehmen((Fundart)f.art, FUND_GASSI, f.tag, f.generation)) { sammlung = Sammlung(); return false; }
     }
     sammlung.ausfluege = v2.sammlung.ausfluege;
     sammlung.letzterFundTag = v2.sammlung.letzterFundTag;
     v2.tier.name[20] = 0; tier = v2.tier; ton = v2.tonAn;
+    return true;
+  }
+  if (alt.kennung == SPEICHER_KENNUNG && alt.version == 3 && alt.groesse == sizeof(SpielstandV3)) {
+    SpielstandV3 v3;
+    uint8_t* b3 = (uint8_t*)&v3;
+    for (size_t i = 0; i < sizeof(v3); i++) b3[i] = EEPROM.read(i);
+    if (v3.pruefsumme != pruefsumme(b3, offsetof(SpielstandV3, pruefsumme)) || v3.sammlung.anzahl > SAMMLUNG_MAX_ALT) return false;
+    if (!(v3.tier.satt >= 0 && v3.tier.satt <= 100 && v3.tier.laune >= 0 && v3.tier.laune <= 100 &&
+          v3.tier.sauber >= 0 && v3.tier.sauber <= 100)) return false;
+    for (int i = 0; i < v3.sammlung.anzahl; i++) if (!fundGueltig(v3.sammlung.fund[i])) return false;
+    // Nur die letzten 50 Funde bleiben
+    const int ab = max(0, (int)v3.sammlung.anzahl - (int)SAMMLUNG_MAX);
+    sammlung.ausfluege = v3.sammlung.ausfluege;
+    sammlung.letzterFundTag = v3.sammlung.letzterFundTag;
+    sammlung.anzahl = v3.sammlung.anzahl - ab;
+    for (int i = 0; i < sammlung.anzahl; i++) sammlung.fund[i] = v3.sammlung.fund[ab + i];
+    sammlung.gartenTag = v3.sammlung.gartenTag;
+    sammlung.gartenVersucht = v3.sammlung.gartenVersucht;
+    v3.tier.name[20] = 0;
+    tier = v3.tier; ton = v3.tonAn;
     return true;
   }
   Spielstand s;

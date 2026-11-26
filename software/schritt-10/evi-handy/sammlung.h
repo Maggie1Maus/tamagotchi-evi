@@ -9,7 +9,9 @@ enum Fundort : uint8_t { FUND_GASSI, FUND_GARTEN, FUND_PARK };
 const char* const GARTEN_STELLE[3] = {"Am Baum", "Beim Busch", "Am Blumenbeet"};   // alte Garten-Funde
 const char* const PARK_STELLE[2] = {"Am Kiesweg im Park", "An der Wiese im Park"};
 const uint8_t FUND_UNBEKANNT = 255;
-const uint16_t SAMMLUNG_MAX = 256;
+// Seit 26.11.2026 höchstens 50 Funde (vorher 256): Jedes neue Tamagotchi beginnt mit leerer Sammlung.
+// Die alte Größe bleibt für das Übernehmen alter Spielstände (speicher.h).
+const uint16_t SAMMLUNG_MAX = 50, SAMMLUNG_MAX_ALT = 256;
 struct Fundstueck {
   uint8_t art, ort;
   uint16_t generation;

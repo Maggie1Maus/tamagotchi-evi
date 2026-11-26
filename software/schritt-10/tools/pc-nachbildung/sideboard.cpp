@@ -94,7 +94,7 @@ int main() {
   spielstandSpeichern(pet, ton); sammlung = Sammlung();
   PRUEFE(spielstandLaden(geladen, ton) && sammlung.anzahl == 1 && sammlung.fund[0].art == FUND_FEDER, "Sammlung übersteht Neustart");
   pet.tot = true; aktionAusfuehren(E_NEUES_EI);
-  PRUEFE(pet.generation == generation + 1 && sammlung.anzahl == 1 && sammlung.fund[0].generation == generation, "nächstes Ei behält Erbstücke und ihre Herkunft");
+  PRUEFE(pet.generation == generation + 1 && sammlung.anzahl == 0, "nächstes Tamagotchi beginnt mit leerer Sammlung (seit 26.11.2026)");
   sideboardOeffnen(); zeichneAlles(); foto("sideboard-erbstueck");
   // Neue Arten erweitern den Katalog; die IDs alter Spielstände bleiben unverändert.
   PRUEFE(FUND_STEIN == 0 && FUND_BLATT == 1 && FUND_FEDER == 2 && FUND_ZAPFEN == 3, "bestehende Fund-IDs bleiben gleich");

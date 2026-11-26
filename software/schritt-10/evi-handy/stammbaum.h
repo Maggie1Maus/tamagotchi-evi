@@ -4,7 +4,8 @@
 //  - Ein Elternteil ist das Tamagotchi davor (Mutter oder Vater, je nach seinem Geschlecht), der andere die Parkfreund-
 //    Figur des anderen Geschlechts, die es am häufigsten getroffen hat (ohne Treffen: unbekannt). Der Name dieser Figur
 //    wird mitgespeichert, denn die Figuren heißen bei jedem Tamagotchi anders (namen.h).
-//  - Gespeichert werden die letzten 8 Tamagotchis; das aktuelle steht immer am Ende.
+//  - Gespeichert werden bis zu 50 Tamagotchis; das aktuelle steht immer am Ende.
+//  - Die Ansicht ist eine lange Fläche von oben (älteste Familie) nach unten, die man verschiebt (Tasten oder Finger).
 #pragma once
 
 struct StammEintrag {
@@ -14,7 +15,7 @@ struct StammEintrag {
   uint8_t phase, generation;     // phase: bei ihrem Tod
   uint16_t alterStd;             // so viele Stunden hat sie gelebt
 };
-const int STAMM_MAX = 8;
+const int STAMM_MAX = 50;   // seit 26.11.2026 (vorher 8)
 struct StammStand {
   uint32_t kennung;
   uint16_t version, groesse;
@@ -28,10 +29,31 @@ struct StammStand {
   uint32_t pruefsumme;
 };
 const uint32_t STAMM_KENNUNG = 0x53544D4D;   // "STMM"
-const uint16_t STAMM_VERSION = 2;   // 2: Geschlecht, Elternnamen, neue Namen (Version 1 wird verworfen)
-const int STAMM_ADRESSE = 3904;              // hinter den Parkfreunden (3856 + 48), vor dem Geburtstags-Merker (4095)
-static_assert(PARKFREUND_ADRESSE + sizeof(ParkFreundStand) <= STAMM_ADRESSE, "Stammbaum überschneidet die Parkfreunde");
-static_assert(STAMM_ADRESSE + sizeof(StammStand) <= EEPROM_GROESSE - 1, "Stammbaum überschneidet den Merker am Ende");
+const uint16_t STAMM_VERSION = 3;   // 3: 50 Einträge, neuer Platz (Version 2 mit 8 Einträgen bei 3904 wird übernommen)
+// Neuer Platz im Bereich, den der verkleinerte Spielstand freigegeben hat; der alte Platz (Version 2) wird nur noch gelesen.
+const int STAMM_ADRESSE = 1100, STAMM_ADRESSE_V2 = 3904;
+static_assert(sizeof(Spielstand) + 16 <= STAMM_ADRESSE, "Stammbaum überschneidet den Spielstand");
+static_assert(STAMM_ADRESSE + sizeof(StammStand) <= ZIMMER_ADRESSE, "Stammbaum überschneidet das Zimmer");
+// Version 2 (8 Einträge), nur zum Übernehmen. Nicht verändern.
+struct StammStandV2 {
+  uint32_t kennung;
+  uint16_t version, groesse;
+  uint8_t anzahl, elternAktuell, elternNameAktuell, geschlechtAktuell, neueNamenAb, reserviert[3];
+  StammEintrag eintrag[8];
+  uint32_t pruefsumme;
+};
+static_assert(STAMM_ADRESSE_V2 + sizeof(StammStandV2) <= EEPROM_GROESSE - 1, "Stammbaum Version 2 überschneidet den Merker");
 StammStand stamm;
 bool stammGeaendert = false;
-uint8_t stammSeite = 0;            // angezeigte Evi: 0 = älteste gespeicherte, stamm.anzahl = jetzige
+int stammScroll = 0;               // Verschiebung der Ansicht in Pixeln (0 = ganz oben, älteste Familie)
+int stammZiehY = -1;               // letzte Fingerhöhe beim Ziehen, -1 = kein Finger
+
+// Alle Angaben zu einer Familie (steht hier, weil die Arduino IDE Typen vor den Funktionsköpfen braucht): das Kind und seine Eltern
+struct StammAnsicht {
+  char name[24];
+  int wesen, eltern, alterStd, geschlecht, generation;
+  uint8_t elternName;
+  Phase phase;
+  bool lebt;
+  const StammEintrag* davor;   // das Tamagotchi davor (Elternteil), sonst nullptr
+};

@@ -813,6 +813,7 @@ void aktionAusfuehren(Eintrag e) {
   const Tier vorher = pet;
   const Ergebnis r = pflegen(pet, a, jetzt);
   if (r.geaendert && a == NEUES_EI) stammEintragen(vorher, jetzt);   // die verstorbene Evi kommt in den Stammbaum
+  if (r.geaendert && a == NEUES_EI) sammlung = Sammlung();            // jedes neue Tamagotchi beginnt mit leerer Sammlung
   melde(vorher, jetzt);
   if (!r.geaendert) {
     grundText(r.grund, a, text, sizeof(text));

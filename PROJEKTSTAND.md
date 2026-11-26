@@ -1,5 +1,11 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Schritt 1 (26.11.2026): Speicher umgebaut, Stammbaum scrollt
+
+- **Fundstücke höchstens 50** (vorher 256), `SAMMLUNG_MAX` in `sammlung.h`. Jedes neue Tamagotchi beginnt mit leerer Sammlung (bei „Neues Ei“ und später beim Übernehmen des Babys). Spielstand Version 4 (816 Byte); Version 3 (256 Funde) und 2 werden beim Start übernommen, die letzten 50 Funde bleiben (Test `speicher.cpp`).
+- **Stammbaum bis zu 50 Tamagotchis** (`STAMM_MAX`), neuer Platz im EEPROM ab 1100; Version 2 vom alten Platz 3904 wird übernommen. **Ansicht als lange Fläche von oben (älteste Familie) nach unten:** je Familie Mutter, Vater, darunter das Kind mit Name, Geschlecht, **Generation**, Wesen und Alter; Linien verbinden das Kind mit seiner Seite in der nächsten Familie. Scrollen mit Pfeiltasten (A = eine Familie), Finger ziehen oder ▲/▼ unten; Schieber am Rand; B schließt. Öffnet ganz unten beim jetzigen Tamagotchi.
+- Frei im EEPROM: 816–1100, 2120–3328 (für Partner, Ei, Oma).
+
 ## Geplant: Verlieben, Partner, Ei und Generationenwechsel (Wunsch der Nutzerin vom 26. November 2026, noch nicht gebaut)
 
 Erster Teil schon umgesetzt: **Das Geschlecht eines Babys wird ausgewürfelt** (nicht gewählt); die Namenseingabe zeigt „Es ist ein Mädchen/Junge!“.
