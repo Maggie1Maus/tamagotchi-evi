@@ -25,7 +25,7 @@ public static class BuildParts {
   static bool Ear(int x,int y,int w,int h){return y<h*.44 && (x<w*.44 || x>w*.56);}
   static bool EarPart(int x,int y,int w,int h){return y<h*.34||(y<h*.48&&(x<w*.38||x>w*.62));}
   static bool Tail(int x,int y,int w,int h){return y>h*.34 && y<h*.98 && x>w*(y<h*.68?.72:.68);}
-  static bool Mane(int x,int y,int w,int h){return y>h*.12&&y<h*.72&&(x<w*.37||x>w*.63||y<h*.30||y>h*.60);}
+  static bool Mane(int x,int y,int w,int h){return y<h*.74&&(x<w*.40||x>w*.60||y<h*.40);}
   static bool Bow(int x,int y,int w,int h){return x>w*.52&&x<w*.85&&y>h*.23&&y<h*.47;}
   static bool Bell(int x,int y,int w,int h){return x>w*.38&&x<w*.62&&y>h*.59&&y<h*.78;}
   static bool Allowed(string kind,int x,int y,int w,int h){switch(kind){case "ohren":return EarPart(x,y,w,h);case "schwanz":return Tail(x,y,w,h);case "maehne":return Mane(x,y,w,h);case "schleife":return Bow(x,y,w,h);case "gloeckchen":return Bell(x,y,w,h);default:return false;}}
@@ -56,8 +56,12 @@ public static class BuildParts {
     var map=Blank(w,h);
     for(int y=0;y<h;y++)for(int x=0;x<w;x++){
       Color c=src.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c),r;
-      bool inRuff=ruff[x,y]&&(female?y>=72&&y<=96:(y>=68||(y>=56&&(x<31||x>88)))&&y<=90);
-      if(inRuff||tip[x,y])r=68;
+      double jaw=Math.Min(1.0,Math.Abs(x-60)/40.0);
+      int ruffTop=(int)Math.Round(56+14*(1-Math.Pow(jaw,1.45)));
+      if(x<26||x>94)ruffTop=53;
+      bool inRuff=ruff[x,y]&&(female?y>=72&&y<=96:y>=ruffTop&&y<=90);
+      bool inTip=tip[x,y]||(female?x>=84&&x<=111&&y>=43&&y<=76&&v>=170&&(x>=88||y>=52):x>=99&&y>=47&&y<=78&&v>=170);
+      if(inRuff||inTip)r=68;
       else if(y>h*.88&&v>=190)r=102;
       else if(v<=85){
         bool face=female?(x>24&&x<73&&y>43&&y<68):(x>32&&x<83&&y>42&&y<64);
@@ -82,13 +86,18 @@ public static class BuildParts {
       Save(points,Path.Combine(sd,"punkte.png"));SaveMap(points,Path.Combine(sd,"punkte.bereiche.png"),"struktur");
       using(var empty=Blank(w,h)){Save(empty,Path.Combine(sd,"glatt.png"));SaveMap(empty,Path.Combine(sd,"glatt.bereiche.png"),"struktur");}
       foreach(string type in new[]{"gesprenkelt","gestrichelt","wuschelig"})using(var tex=Blank(w,h)){
-        for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Fur(map,x,y)&&(y<44||y>70)){
+        for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Fur(map,x,y)){
           int v=Gray(basis.GetPixel(x,y));bool mark=false;
-          if(type=="gesprenkelt")mark=(x%7<3&&y%6<3)||((x+4)%13<2&&(y+3)%11<2);
-          if(type=="gestrichelt")mark=y%7<2&&x%10<6;
+          bool forehead=y<48&&x>w*.40&&x<w*.60;
+          if(forehead)continue;
+          int cell=type=="gesprenkelt"?6:8,gx=x/cell,gy=y/cell;
+          int seed=Math.Abs((gx*73+gy*131+gx*gy*17)%997);
+          int px=gx*cell+1+seed%(cell-2),py=gy*cell+1+(seed/7)%(cell-2);
+          if(type=="gesprenkelt")mark=x==px&&y==py;
+          if(type=="gestrichelt")mark=(x==px&&y==py)||(y==py+1&&x==px+(x<w/2?-1:1));
           bool edge=!Fur(map,x-1,y)||!Fur(map,x+1,y)||!Fur(map,x,y-1)||!Fur(map,x,y+1);
           if(type=="wuschelig")mark=(edge&&(x+y)%6<4)||(y%8<2&&(x+y)%12<4);
-          if(mark){int delta=type=="wuschelig"?(edge?-68:68):type=="gestrichelt"?-102:-85;int nv=Math.Max(0,Math.Min(255,(int)Math.Round((v+delta)/17.0)*17));tex.SetPixel(x,y,Color.FromArgb(255,nv,nv,nv));}
+          if(mark){int delta=type=="wuschelig"?(edge?-68:68):type=="gestrichelt"?-51:-34;int nv=Math.Max(0,Math.Min(255,(int)Math.Round((v+delta)/17.0)*17));tex.SetPixel(x,y,Color.FromArgb(255,nv,nv,nv));}
         }
         Save(tex,Path.Combine(sd,type+".png"));SaveMap(tex,Path.Combine(sd,type+".bereiche.png"),"struktur");
       }
@@ -98,15 +107,18 @@ public static class BuildParts {
     int w=basis.Width,h=basis.Height;string folder=Path.Combine(dir,"muster");
     foreach(string type in new[]{"flecken","ringe","helle-brust","maske","punkte"})using(var mask=Blank(w,h)){
       bool female=sex=="weiblich";double cx=w*.50,cy=female?103:96;
-      for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Fur(map,x,y)&&y>(female?93:86)){
-        bool mark=false;
-        double dx=x-cx,dy=y-cy;
-        if(type=="flecken")mark=Ellipse(x,y,w*.29,cy-3,5.4,4.0)||Ellipse(x,y,w*.70,cy+1,6.2,4.5)||Ellipse(x,y,w*.52,cy-5,3.6,2.8);
-        if(type=="ringe")mark=(EllipseRing(x,y,w*.27,cy,8,6)||EllipseRing(x,y,w*.75,cy,8,6))&&Math.Abs(dx)>w*.15;
-        if(type=="helle-brust")mark=Ellipse(x,y,cx,cy-1,w*.18,9);
-        if(type=="maske")mark=Ellipse(x,y,w*.29,cy-3,w*.13,7)||Ellipse(x,y,w*.71,cy-3,w*.13,7);
-        if(type=="punkte")mark=((x%8<2)&&(y%7<2));
-        if(mark)mask.SetPixel(x,y,Color.FromArgb(255,255,255,255));
+      for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Fur(map,x,y)){
+        bool mark=false;int strength=255;
+        if(type=="flecken"&&y>(female?78:73)&&y<(female?101:99)){
+          double[] xs=female?new[]{27.0,33.0,80.0,76.0}:new[]{29.0,35.0,91.0,85.0};
+          double[] ys=female?new[]{86.0,94.0,87.0,96.0}:new[]{82.0,91.0,83.0,93.0};
+          for(int k=0;k<4;k++){double dx=(x-xs[k])/(k%2==0?5.6:3.5),dy=(y-ys[k])/(k%2==0?5.0:3.4);double warp=.13*Math.Sin(x*.71+y*.37+k*2.1);double d=dx*dx+dy*dy+warp;if(d<1){mark=true;strength=d>.7?170:255;break;}}
+        }
+        if(type=="ringe"&&y>(female?91:85))mark=(EllipseRing(x,y,w*.27,cy,8,6)||EllipseRing(x,y,w*.75,cy,8,6));
+        if(type=="helle-brust"&&y>(female?89:84))mark=Ellipse(x,y,cx,cy-1,w*.18,9);
+        if(type=="maske"&&y>38&&y<66){double left=female?37:43,right=female?64:77,ey=female?52:50;mark=Ellipse(x,y,left,ey,12,8)||Ellipse(x,y,right,ey,12,8);strength=170;}
+        if(type=="punkte"&&y>(female?88:83))mark=((x%8<2)&&(y%7<2));
+        if(mark)mask.SetPixel(x,y,Color.FromArgb(255,strength,strength,strength));
       }
       Save(mask,Path.Combine(folder,type+".png"));
       SaveMap(mask,Path.Combine(folder,type+".bereiche.png"),"muster");
@@ -133,7 +145,7 @@ public static class BuildParts {
   }
   static void SaveTailMap(Bitmap tail,bool[,] tip,string path){using(var map=Blank(tail.Width,tail.Height)){
     for(int y=0;y<tail.Height;y++)for(int x=0;x<tail.Width;x++){
-      Color c=tail.GetPixel(x,y);if(c.A==0)continue;int r=tip[x,y]?(Gray(c)<=70?17:68):Region(c,x,y,tail.Width,tail.Height,"schwanz");
+      Color c=tail.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c);bool inTip=tip[x,y]||(x>=84&&y>=43&&y<=78&&v>=170);int r=inTip?(v<=70?17:68):Region(c,x,y,tail.Width,tail.Height,"schwanz");
       map.SetPixel(x,y,Color.FromArgb(255,r,r,r));
     }Save(map,path);
   }}
@@ -176,6 +188,9 @@ public static class BuildParts {
         if(!Equal(o,b)&&o.A>0){if(e)ownEars.SetPixel(x,y,o);else if(t)ownTail.SetPixel(x,y,o);}
       }
       bool[,] tip=FloodLight(orig,sex=="weiblich"?95:107,sex=="weiblich"?53:57);
+      if(sex=="weiblich")for(int y=42;y<=69;y++)for(int x=84;x<=111;x++){
+        Color c=orig.GetPixel(x,y);if(c.A>0&&Gray(c)>=190&&x>=84+(69-y)*.16)tip[x,y]=true;
+      }
       using(var region=BaseMap(basis,sex,tip)){
         Textures(basis,region,dir);
         Patterns(basis,region,sex,dir);
@@ -185,29 +200,45 @@ public static class BuildParts {
       Save(ownEars,Path.Combine(dir,"ohren",own+".png"));SaveMap(ownEars,Path.Combine(dir,"ohren",own+".bereiche.png"),"ohren");
       Save(ownTail,Path.Combine(dir,"schwanz",own+".png"));SaveTailMap(ownTail,tip,Path.Combine(dir,"schwanz",own+".bereiche.png"));
       foreach(string fig in new[]{"leo","linus","groschen"})foreach(string kind in new[]{"ohren","schwanz"}){
-        using(var variant=Down(Path.Combine(ki,sex+"-"+kind+"-"+fig+".png"),w,h))using(var part=Blank(w,h)){
+        string source=sex+"-"+kind+"-"+fig+(kind=="schwanz"&&fig=="linus"?"-v2":"")+".png";
+        using(var variant=Down(Path.Combine(ki,source),w,h))using(var part=Blank(w,h)){
           for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Allowed(kind,x,y,w,h)){
             Color v=variant.GetPixel(x,y),a=ai.GetPixel(x,y);if(v.A>0&&(a.A==0||Math.Abs(v.R-a.R)>=34))part.SetPixel(x,y,v);
           }
           string p=Path.Combine(dir,kind,fig+".png");Save(part,p);SaveMap(part,Path.Combine(dir,kind,fig+".bereiche.png"),kind);
         }
       }
-      foreach(string kind in new[]{"maehne","schleife","gloeckchen"}){
-        string source=kind=="maehne"?sex+"-maehne-leo-v2":sex+"-zubehoer-"+kind+"-v2";
-        string folder=kind=="maehne"?"besonderheit":"zubehoer";
-        string filename=kind=="maehne"?"leo-vorn":kind;
+      foreach(string kind in new[]{"schleife","gloeckchen"}){
+        string source=sex+"-zubehoer-"+kind+"-v2";
+        string folder="zubehoer";
+        string filename=kind;
         using(var variant=Down(Path.Combine(ki,source+".png"),w,h))using(var part=Blank(w,h)){
           for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Allowed(kind,x,y,w,h)){
             if(kind=="schleife"&&!(sex=="weiblich"?x>=62&&x<=83&&y>=30&&y<=49:x>=76&&x<=98&&y>=32&&y<=52))continue;
             if(kind=="gloeckchen"&&!(sex=="weiblich"?x>=43&&x<=67&&y>=70&&y<=89:x>=48&&x<=72&&y>=65&&y<=89))continue;
-            Color v=variant.GetPixel(x,y),a=kind=="maehne"?ai.GetPixel(x,y):orig.GetPixel(x,y);
+            Color v=variant.GetPixel(x,y),a=orig.GetPixel(x,y);
             if(v.A>0&&v.R<235&&(a.A==0||Math.Abs(v.R-a.R)>=34)){
-              if(kind!="maehne"||a.A==0||(y>h*.60&&y<h*.72&&x>w*.30&&x<w*.70))part.SetPixel(x,y,v);
+              part.SetPixel(x,y,v);
             }
           }
-          if(kind!="maehne")CleanAccessory(part,sex,kind);
-          else {RemoveSpecks(part,8);if(sex=="maennlich")AddMaleManeChin(part,orig);}
+          CleanAccessory(part,sex,kind);
           Save(part,Path.Combine(dir,folder,filename+".png"));SaveMap(part,Path.Combine(dir,folder,filename+".bereiche.png"),folder);
+        }
+      }
+      if(sex=="maennlich")foreach(string variantId in new[]{"a","b"}){
+        using(var variant=Down(Path.Combine(ki,"maennlich-maehne-leo-v3-"+variantId+".png"),w,h))using(var part=Blank(w,h)){
+          for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Mane(x,y,w,h)){
+            Color v=variant.GetPixel(x,y),a=ai.GetPixel(x,y);
+            bool outside=a.A==0&&y<85;
+            bool bangs=y<43&&x>w*.2&&x<w*.8&&v.R<187;
+            if(v.A>0&&v.R<235&&(outside||bangs)&& (a.A==0||Math.Abs(v.R-a.R)>=17))part.SetPixel(x,y,v);
+          }
+          RemoveSpecks(part,8);
+          string name="leo-vorn-"+variantId;
+          Save(part,Path.Combine(dir,"besonderheit",name+".png"));SaveMap(part,Path.Combine(dir,"besonderheit",name+".bereiche.png"),"besonderheit");
+          if(variantId=="a"){
+            Save(part,Path.Combine(dir,"besonderheit","leo-vorn.png"));SaveMap(part,Path.Combine(dir,"besonderheit","leo-vorn.bereiche.png"),"besonderheit");
+          }
         }
       }
     }

@@ -8,9 +8,11 @@ const traits = Object.keys(labels), layers = ['schwanz','besonderheit-hinten','b
 const size = {baby:[94,89],teenager:[81,107],erwachsen:[114,116],senior:[115,110]};
 const state = {family:byId.evi,partner:byId.bit,child:null,locked:new Set(),history:[],visible:new Set(layers),missing:new Set(),all:false};
 const images = {};
+function effectiveKranzton(ton,wanted){const fur=187+(2-ton)*17,palette=[255,136,119,102];let best=wanted,score=Infinity;for(let k=0;k<=3;k++){const gap=Math.abs(palette[k]-fur);if(gap<51)continue;const s=Math.abs(k-wanted)*100-gap;if(s<score){score=s;best=k}}return best}
 function url(key){return (window.TEILE_DATEN||{})[key]||null}
 function getImage(key){if(!url(key))return Promise.resolve(null);if(!images[key])images[key]=new Promise(resolve=>{let im=new Image();im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=url(key)});return images[key]}
 async function colored(im,key,creature){
+  const kranz=effectiveKranzton(creature.ton,creature.kranzton||0);
   const map=await getImage(key.replace(/\.png$/,'.bereiche.png'));
   if(!map||map.width!==im.width||map.height!==im.height)return im;
   const c=document.createElement('canvas');c.width=im.width;c.height=im.height;
@@ -23,7 +25,7 @@ async function colored(im,key,creature){
     if(d.data[i+3]===0)continue;
     const region=md[i],v=d.data[i];let next=v;
     if(region===51||region===119||region===85)next=v+(2-creature.ton)*17;
-    if(region===68)next=v-(creature.kranzton||0)*34;
+    if(region===68)next=v-(255-[255,136,119,102][kranz]);
     if(region===85)next=Math.min(next,204);
     if(next!==v){next=Math.max(0,Math.min(255,Math.round(next/17)*17));d.data[i]=d.data[i+1]=d.data[i+2]=next}
   }
@@ -110,13 +112,14 @@ async function paint(wrap,creature,age,opts){
         const rc=document.createElement('canvas');rc.width=w;rc.height=h;
         const rx=rc.getContext('2d',{willReadFrequently:true});if(region)rx.drawImage(region,0,0);
         const rd=rx.getImageData(0,0,w,h).data;
-        const shift=creature.muster==='helle-brust'?68:creature.muster==='punkte'?-34:-68;
-        for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&md[i]>127&&ba[i+3]>0&&rd[i]===51){let g=Math.max(0,Math.min(255,Math.round((bd.data[i]+shift)/17)*17));bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
+        const shift=creature.muster==='helle-brust'?68:creature.muster==='punkte'?-34:creature.muster==='maske'?-51:-68;
+        for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&ba[i+3]>0&&rd[i]===51){let g=Math.max(0,Math.min(255,Math.round((bd.data[i]+shift*md[i]/255)/17)*17));bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
         ctx.putImageData(bd,0,0);
       }else missing.push(`Größe passt nicht: ${key}`);
     }
+    if(creature.besonderheit==='maehne'&&sex==='maennlich')await draw('besonderheit-vorn',path('besonderheit','leo-vorn'));
     await draw('ohren',path('ohren',creature.ohren));
-    if(creature.besonderheit!=='keins')await draw('besonderheit-vorn',path('besonderheit',creature.besonderheit==='maehne'?'leo-vorn':creature.besonderheit+'-vorn'));
+    if(creature.besonderheit!=='keins'&&creature.besonderheit!=='maehne')await draw('besonderheit-vorn',path('besonderheit',creature.besonderheit+'-vorn'));
     if(creature.zubehoer!=='keins')await draw('zubehoer',path('zubehoer',creature.zubehoer),false);
   }else if(creature.ohren!==baseId||creature.schwanz!==baseId||creature.besonderheit!=='keins'||creature.muster!=='keins'||creature.zubehoer!=='keins'){
     missing.push('Merkmale noch nicht als Bauteile darstellbar');

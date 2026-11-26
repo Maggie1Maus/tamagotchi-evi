@@ -9,7 +9,14 @@ public static class ProofSheet {
   static string Dir(string sex){return Path.Combine(root,"teile",sex,"erwachsen");}
   static Bitmap Load(string path){return File.Exists(path)?new Bitmap(path):null;}
   static Bitmap Layer(string sex,string key){return Load(Path.Combine(Dir(sex),key.Replace('/',Path.DirectorySeparatorChar)));}
+  static int EffectiveKranzton(int ton,int wanted){
+    int fur=187+(2-ton)*17,best=wanted,dist=int.MaxValue;
+    int[] palette={255,136,119,102};
+    for(int k=0;k<=3;k++){int gap=Math.Abs(palette[k]-fur);if(gap<51)continue;int score=Math.Abs(k-wanted)*100-gap;if(score<dist){dist=score;best=k;}}
+    return best;
+  }
   static Bitmap Colorize(Bitmap image,string path,int ton,int kranz){
+    kranz=EffectiveKranzton(ton,kranz);
     var outp=new Bitmap(image.Width,image.Height,PixelFormat.Format32bppArgb);
     using(var g=Graphics.FromImage(outp))g.DrawImage(image,0,0);
     string mapPath=path.Replace(".png",".bereiche.png");
@@ -17,7 +24,7 @@ public static class ProofSheet {
       for(int y=0;y<outp.Height;y++)for(int x=0;x<outp.Width;x++){
         Color c=outp.GetPixel(x,y);if(c.A==0)continue;int r=map.GetPixel(x,y).R,v=c.R;
         if(r==51||r==119||r==85)v+=(2-ton)*17;
-        if(r==68)v-=kranz*34;
+        if(r==68)v-=255-new[]{255,136,119,102}[kranz];
         if(r==85)v=Math.Min(v,204);
         if(v!=c.R){v=Math.Max(0,Math.Min(255,(int)Math.Round(v/17.0)*17));outp.SetPixel(x,y,Color.FromArgb(255,v,v,v));}
       }
@@ -28,7 +35,7 @@ public static class ProofSheet {
     string path=Path.Combine(Dir(sex),key.Replace('/',Path.DirectorySeparatorChar));
     using(var src=Load(path))if(src!=null)using(var c=Colorize(src,path,ton,kranz))g.DrawImage(c,0,0);
   }
-  static Bitmap Compose(string sex,string ears,string tail,bool mane,int ton,int kranz,string structure,string accessory,string pattern){
+  static Bitmap Compose(string sex,string ears,string tail,bool mane,int ton,int kranz,string structure,string accessory,string pattern,string maneVariant="a"){
     using(var basis=Layer(sex,"basis.png")){
       var outp=new Bitmap(basis.Width,basis.Height,PixelFormat.Format32bppArgb);
       using(var g=Graphics.FromImage(outp)){
@@ -37,13 +44,13 @@ public static class ProofSheet {
         Draw(g,sex,"basis.png",ton,kranz);
         Draw(g,sex,"struktur/"+(structure??"punkte")+".png",ton,kranz);
         if(tail==null)Draw(g,sex,"schwanz/"+own+".png",ton,kranz);
+        if(mane&&sex=="maennlich")Draw(g,sex,"besonderheit/leo-vorn-"+maneVariant+".png",ton,kranz);
         Draw(g,sex,"ohren/"+(ears??own)+".png",ton,kranz);
-        if(mane)Draw(g,sex,"besonderheit/leo-vorn.png",ton,kranz);
         if(accessory!=null)Draw(g,sex,"zubehoer/"+accessory+".png",ton,kranz);
       }
       if(pattern!=null)using(var mask=Layer(sex,"muster/"+pattern+".png"))using(var region=Layer(sex,"basis.bereiche.png"))if(mask!=null&&region!=null){
-        int shift=pattern=="helle-brust"?68:pattern=="punkte"?-34:-68;
-        for(int y=0;y<outp.Height;y++)for(int x=0;x<outp.Width;x++)if(mask.GetPixel(x,y).A>0&&region.GetPixel(x,y).R==51){Color c=outp.GetPixel(x,y);if(c.A>0){int v=Math.Max(0,Math.Min(255,(int)Math.Round((c.R+shift)/17.0)*17));outp.SetPixel(x,y,Color.FromArgb(255,v,v,v));}}
+        int shift=pattern=="helle-brust"?68:pattern=="punkte"?-34:pattern=="maske"?-51:-68;
+        for(int y=0;y<outp.Height;y++)for(int x=0;x<outp.Width;x++)if(mask.GetPixel(x,y).A>0&&region.GetPixel(x,y).R==51){Color c=outp.GetPixel(x,y);if(c.A>0){int strength=mask.GetPixel(x,y).R;int v=Math.Max(0,Math.Min(255,(int)Math.Round((c.R+shift*strength/255.0)/17.0)*17));outp.SetPixel(x,y,Color.FromArgb(255,v,v,v));}}
       }
       return outp;
     }
@@ -93,7 +100,7 @@ public static class ProofSheet {
   }
   public static void Run(string directory){
     root=directory;
-    using(var sheet=new Bitmap(1950,385*14,PixelFormat.Format24bppRgb))using(var g=Graphics.FromImage(sheet)){
+    using(var sheet=new Bitmap(1950,385*15,PixelFormat.Format24bppRgb))using(var g=Graphics.FromImage(sheet)){
       g.Clear(Color.FromArgb(230,230,230));
       Row(g,0,"weiblich",false);Row(g,1,"weiblich",true);Row(g,2,"maennlich",false);Row(g,3,"maennlich",true);
       for(int i=0;i<5;i++)using(var x=Compose("weiblich",null,null,false,i,0,"punkte",null,null))Panel(g,x,"Fellton "+i,i,4,Color.White);
@@ -113,7 +120,7 @@ public static class ProofSheet {
       using(var x=Load(Path.Combine(root,"werkzeug","evi-weiblich-original.png")))Panel(g,x,"Original Evi",1,9,Color.White);
       using(var x=Compose("maennlich",null,null,false,2,0,"punkte",null,null))Panel(g,x,"Originalvergleich Junge",2,9,Color.White);
       using(var x=Load(Path.Combine(root,"werkzeug","evi-maennlich-original.png")))Panel(g,x,"Original Junge",3,9,Color.White);
-      using(var x=Compose("weiblich","leo","leo",true,2,0,"punkte",null,null))Panel(g,x,"Leo + Mähne (Detail)",0,10,Color.FromArgb(75,75,75));
+      using(var x=Compose("weiblich","leo","leo",false,2,0,"punkte",null,null))Panel(g,x,"Leo Mädchen ohne Mähne",0,10,Color.FromArgb(75,75,75));
       using(var x=Compose("maennlich","groschen","groschen",false,2,0,"punkte",null,"ringe"))Panel(g,x,"Groschen (Detail)",1,10,Color.FromArgb(75,75,75));
       foreach(var pair in new[]{new[]{"leo","2"},new[]{"linus","3"},new[]{"groschen","4"}}){
         string path=Path.GetFullPath(Path.Combine(root,"..","..","neue-tamagotchis","graustufen",pair[0],"erwachsen-gluecklich.png"));
@@ -124,6 +131,9 @@ public static class ProofSheet {
       for(int i=0;i<4;i++)using(var x=Compose("maennlich",null,null,false,2,i,"punkte",null,null))Panel(g,x,"Junge: Kranzton "+i,i,12,Color.White);
       using(var x=RegionPreview("maennlich"))Panel(g,x,"Junge: ganze Bereichskarte",4,12,Color.White);
       for(int i=0;i<structures.Length;i++)using(var x=Compose("weiblich",null,null,false,2,0,structures[i],null,null))Panel(g,x,"Originalgröße: "+structures[i],i,13,Color.White,1);
+      using(var x=Compose("maennlich","leo","leo",true,2,0,"punkte",null,null,"a"))Panel(g,x,"Leo Junge: Mähne A",0,14,Color.White);
+      using(var x=Compose("maennlich","leo","leo",true,2,0,"punkte",null,null,"b"))Panel(g,x,"Leo Junge: Mähne B",1,14,Color.White);
+      using(var x=Compose("weiblich","leo","leo",false,2,0,"punkte",null,null))Panel(g,x,"Leo Mädchen: ohne Mähne",2,14,Color.White);
       sheet.Save(Path.Combine(root,"werkzeug","pruefbogen-erwachsen.png"),ImageFormat.Png);
     }
     File.WriteAllText(Path.Combine(root,"werkzeug","pixelvergleich.txt"),Check("weiblich")+Check("maennlich"));
