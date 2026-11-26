@@ -6,15 +6,15 @@
   <title>Tamagotchi · Kreuzungen ausprobieren</title>
   <style>
     :root { color-scheme: light; color: #232323; background: #eeedeb; font: 16px/1.5 system-ui, sans-serif; }
-    body { max-width: 860px; margin: 32px auto; padding: 0 18px; }
+    body { max-width: 880px; margin: 26px auto; padding: 0 18px; }
     h1 { font-size: clamp(1.65rem, 4vw, 2.25rem); line-height: 1.1; margin: 0 0 8px; }
     p { margin: 0; }
     .hinweis { color: #515151; }
     fieldset { border: 1px solid #ccc; border-radius: 10px; background: #fafafa; margin: 16px 0; padding: 12px 16px 16px; }
     legend, label { font-weight: 600; }
-    .merkmale, .tasten, .eltern { display: flex; flex-wrap: wrap; gap: 10px; }
+    .merkmale, .tasten, .eltern, .zustand { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
     .merkmale > div { flex: 1 1 110px; min-width: 0; }
-    .eltern > div { flex: 1 1 120px; }
+    .eltern > div, .zustand > div { flex: 1 1 120px; }
     label { display: block; margin-bottom: 3px; font-size: .88rem; }
     button, select { font: inherit; color: inherit; background: white; border: 1px solid #8a8a8a; border-radius: 5px; padding: 6px 10px; }
     select { width: 100%; }
@@ -26,13 +26,15 @@
     .phase { font-size: .87rem; font-weight: 650; }
     .bild { display: grid; place-items: center; min-width: 0; background: #fff; border: 1px solid #dadada; border-radius: 8px; }
     .kind { border-color: #717171; }
-    canvas { display: block; width: 100%; max-width: 170px; height: auto; image-rendering: pixelated; }
+    canvas { display: block; width: 100%; max-width: 134px; height: auto; image-rendering: pixelated; }
     #herkunft { margin-top: 12px; font-size: .89rem; }
     h2 { font-size: 1rem; margin: 18px 0 8px; }
     #figuren { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
     #figuren .bild { padding: 4px 0; }
-    #figuren canvas { max-width: 90px; }
+    #figuren canvas { max-width: 86px; }
     #figuren .titel { font-size: .85rem; }
+    .bewegung { display: flex; align-items: center; gap: 6px; min-height: 37px; margin: 0; }
+    .bewegung input { margin: 0; }
     @media (max-width: 450px) {
       body { padding: 0 10px; margin-top: 18px; }
       #tafel { grid-template-columns: 72px repeat(3, minmax(0, 1fr)); gap: 3px; }
@@ -40,11 +42,12 @@
     }
   </style>
   <script defer src="sprites.js"></script>
+  <script defer src="posen.js"></script>
   <script defer src="vorschau.js"></script>
 </head>
 <body>
   <h1>Kreuzungen ausprobieren</h1>
-  <p class="hinweis">Wähle zwei Figuren und kombiniere ihre Merkmale. Die schlankere Kopfform ist bei allen gleich.</p>
+  <p class="hinweis">Wähle zwei Figuren und wechsle Merkmale, Emotionen und Posen in vier Altersstufen.</p>
   <section aria-labelledby="figuren-titel">
     <h2 id="figuren-titel">Vier Figuren</h2>
     <div id="figuren"></div>
@@ -54,6 +57,12 @@
     <div><label for="eltern-a">Elternteil A</label><select id="eltern-a"></select></div>
     <div><label for="eltern-b">Elternteil B</label><select id="eltern-b"></select></div>
   </fieldset>
+  <fieldset class="zustand">
+    <legend>Emotion und Pose</legend>
+    <div><label for="emotion">Emotion</label><select id="emotion"></select></div>
+    <div><label for="pose">Pose</label><select id="pose"></select></div>
+    <label class="bewegung"><input type="checkbox" id="animation"> Animation abspielen</label>
+  </fieldset>
   <fieldset>
     <legend>Merkmale des Kindes</legend>
     <div class="merkmale" id="merkmale"></div>
@@ -62,7 +71,7 @@
       <button type="button" id="umkehren">Merkmale umkehren</button>
     </div>
   </fieldset>
-  <div id="tafel" aria-label="Eltern und Kind als Baby und erwachsen"></div>
+  <div id="tafel" aria-label="Eltern und Kind in vier Altersstufen"></div>
   <p id="herkunft" class="hinweis" role="status"></p>
   <noscript>Zum Kombinieren bitte JavaScript im Browser aktivieren.</noscript>
 </body>

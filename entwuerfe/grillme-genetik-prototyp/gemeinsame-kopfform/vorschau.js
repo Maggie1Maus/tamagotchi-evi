@@ -2,11 +2,16 @@ const liste = document.getElementById('merkmale');
 const tafel = document.getElementById('tafel');
 const galerie = document.getElementById('figuren');
 const herkunft = document.getElementById('herkunft');
+const emotion = document.getElementById('emotion');
+const pose = document.getElementById('pose');
+const animation = document.getElementById('animation');
 const eltern = [document.getElementById('eltern-a'), document.getElementById('eltern-b')];
 const merkmaleIds = Object.keys(merkmale);
 const auswahl = {};
 const reihen = {};
 const rollen = ['a', 'kind', 'b'];
+let frame = 0;
+let kreuzung;
 
 function elternMerkmale(figur) {
   return Object.fromEntries(merkmaleIds.map(merkmal => [merkmal, figur]));
@@ -23,8 +28,8 @@ function bild(istKind = false) {
   const feld = document.createElement('div');
   feld.className = istKind ? 'bild kind' : 'bild';
   const canvas = document.createElement('canvas');
-  canvas.width = 72;
-  canvas.height = 64;
+  canvas.width = bilderBreite;
+  canvas.height = bilderHoehe;
   canvas.setAttribute('role', 'img');
   feld.append(canvas);
   return { feld, canvas };
@@ -39,7 +44,19 @@ for (const [id, figur] of Object.entries(figuren)) {
   bezeichne(canvas, figur, 'erwachsen');
   feld.append(caption(figur, 'titel'));
   galerie.append(feld);
-  zeichneFigur(canvas, 'erwachsen', elternMerkmale(id));
+  zeichneFigur(canvas, 'erwachsen', elternMerkmale(id), 'gluecklich');
+}
+
+for (const [id,label] of Object.entries(emotionen)) emotion.add(new Option(label,id));
+for (const [id,haltung] of Object.entries(posen)) pose.add(new Option(haltung.label,id));
+animation.checked = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+animation.disabled = true;
+for (const select of [emotion,pose]) {
+  select.addEventListener('change', () => {
+    frame = 0;
+    animation.disabled = !posen[pose.value].frames;
+    zeichneVergleich();
+  });
 }
 
 for (const [merkmal, name] of Object.entries(merkmale)) {
@@ -77,9 +94,22 @@ function setzeKombination(merkmalsWahl) {
 }
 
 function aktualisiereKind() {
-  const kombination = Object.fromEntries(merkmaleIds.map(id => [id, auswahl[id].value]));
-  for (const [phase, reihe] of Object.entries(reihen)) zeichneFigur(reihe.kind, phase, kombination);
-  herkunft.textContent = merkmaleIds.map(id => `${merkmale[id]} von ${figuren[kombination[id]]}`).join(' · ');
+  kreuzung = Object.fromEntries(merkmaleIds.map(id => [id, auswahl[id].value]));
+  for (const [phase,reihe] of Object.entries(reihen)) male(reihe.kind,phase,kreuzung);
+  herkunft.textContent = merkmaleIds.map(id => `${merkmale[id]} von ${figuren[kreuzung[id]]}`).join(' · ');
+}
+
+function male(canvas, phase, merkmale) {
+  zeichneFigur(canvas,phase,merkmale,emotion.value,pose.value,frame);
+}
+
+function zeichneVergleich() {
+  const [a,b] = eltern.map(select => elternMerkmale(select.value));
+  for (const [phase,reihe] of Object.entries(reihen)) {
+    male(reihe.a,phase,a);
+    male(reihe.kind,phase,kreuzung);
+    male(reihe.b,phase,b);
+  }
 }
 
 function aktualisiereEltern() {
@@ -96,7 +126,7 @@ function aktualisiereEltern() {
     titel[rolle].textContent = figuren[id];
     for (const [phase, reihe] of Object.entries(reihen)) {
       bezeichne(reihe[rolle], figuren[id], phase);
-      zeichneFigur(reihe[rolle], phase, elternMerkmale(id));
+      male(reihe[rolle], phase, elternMerkmale(id));
     }
   }
   setzeKombination(vorher[0] < 0 ? [1, 0, 1, 0, 1] : vorher);
@@ -106,8 +136,8 @@ for (const select of eltern) {
   for (const [id, figur] of Object.entries(figuren)) select.add(new Option(figur, id));
   select.addEventListener('change', aktualisiereEltern);
 }
-eltern[0].value = 'flocke';
-eltern[1].value = 'komet';
+eltern[0].value = 'evi';
+eltern[1].value = 'lotti';
 aktualisiereEltern();
 
 document.getElementById('zufall').addEventListener('click', () => {
@@ -122,3 +152,9 @@ document.getElementById('zufall').addEventListener('click', () => {
 document.getElementById('umkehren').addEventListener('click', () => {
   setzeKombination(variante().map(index => 1 - index));
 });
+setInterval(() => {
+  const frames = posen[pose.value].frames;
+  if (document.hidden || !frames || !animation.checked) return;
+  frame = (frame + 1) % frames;
+  zeichneVergleich();
+}, 155);

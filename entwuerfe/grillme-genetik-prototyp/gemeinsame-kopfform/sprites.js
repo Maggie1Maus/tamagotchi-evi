@@ -1,248 +1,208 @@
-const figuren = {
-  mohn: 'Mohn',
-  flocke: 'Flocke',
-  komet: 'Komet',
-  pippa: 'Pippa',
-};
-
-const merkmale = {
-  ohren: 'Ohren / Hörner',
-  augen: 'Augen',
-  schnauze: 'Mundpartie',
-  koerper: 'Körper',
-  schwanz: 'Schwanz',
-};
-
+const figuren = { evi: 'Evi-Entwurf', lotti: 'Lotti', gloeckchen: 'Glöckchen', mia: 'Mia' };
+const merkmale = { ohren: 'Ohren', augen: 'Augen', schnauze: 'Mundpartie', koerper: 'Körper', schwanz: 'Schwanz' };
 const altersstufen = {
-  baby: { label: 'Baby', kopfY: 38, kopf: .83, koerper: .62, schwanz: .72 },
-  erwachsen: { label: 'Erwachsen', kopfY: 30, kopf: 1, koerper: 1, schwanz: 1 },
+  baby: { label: 'Baby', y: 37, kopf: .85, rund: 1.04, breit: .72, hoch: .74, bein: .69, ohr: .80, schwanz: .70, haube: 'baby' },
+  teenager: { label: 'Teenager', y: 29, kopf: .91, rund: .95, breit: .80, hoch: .97, bein: 1.14, ohr: 1.03, schwanz: .88, haube: 'teenager' },
+  erwachsen: { label: 'Erwachsen', y: 30, kopf: 1, rund: 1, breit: 1, hoch: 1, bein: 1, ohr: 1, schwanz: 1, haube: 'erwachsen' },
+  senior: { label: 'Senior', y: 33, kopf: 1.01, rund: 1.01, breit: 1.04, hoch: .91, bein: .87, ohr: .91, schwanz: .98, haube: 'senior' },
 };
 
 const grau = {
-  kontur: '#222',
-  dunkel: '#555',
-  schatten: '#888',
-  mittel: '#aaa',
-  hell: '#ccc',
-  licht: '#eee',
-  weiss: '#fff',
+  rand:'#222', dunkel:'#444', tief:'#555', schatten:'#777', mittel:'#999',
+  fell:'#bbb', hell:'#ccc', licht:'#ddd', creme:'#eee', weiss:'#fff',
 };
 
 function form(ctx, pfad, farbe, rand = false) {
-  const silhouette = new Path2D(pfad);
+  const linie = new Path2D(pfad);
   ctx.fillStyle = farbe;
-  ctx.fill(silhouette);
-  if (rand) {
-    ctx.strokeStyle = grau.kontur;
-    ctx.lineWidth = 1.55;
-    ctx.lineJoin = 'round';
-    ctx.stroke(silhouette);
-  }
+  ctx.fill(linie);
+  if (rand) strich(ctx, linie, grau.rand, 1.18);
 }
-
-function linie(ctx, pfad, farbe = grau.kontur, breite = 1.35) {
+function strich(ctx, pfad, farbe = grau.rand, breite = 1.06) {
   ctx.strokeStyle = farbe;
   ctx.lineWidth = breite;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.stroke(new Path2D(pfad));
+  ctx.stroke(typeof pfad === 'string' ? new Path2D(pfad) : pfad);
+}
+function punkte(ctx, positionen, farbe = grau.mittel) {
+  ctx.fillStyle = farbe;
+  for (const [x,y,s = .7] of positionen) ctx.fillRect(x,y,s,s);
+}
+function spiegel(ctx, zeichnen) {
+  for (const seite of [-1,1]) {
+    ctx.save();
+    ctx.scale(seite,1);
+    zeichnen(ctx);
+    ctx.restore();
+  }
 }
 
-function punkte(ctx, positionen, farbe = grau.schatten) {
-  ctx.fillStyle = farbe;
-  for (const [x, y, ecke = 1] of positionen) ctx.fillRect(x, y, ecke, ecke);
+const ohren = {
+  evi(ctx) {
+    spiegel(ctx, c => {
+      form(c, 'M6 -10 Q11 -18 18 -23 L24 -25 L23 -19 Q22 -10 17 -4 L13 -2 Z', grau.hell, true);
+      form(c, 'M11 -10 Q15 -18 22 -23 Q21 -10 16 -6 L13 -4 Z', grau.dunkel);
+      form(c, 'M12 -9 L16 -15 L19 -17 L20 -17 Q19 -10 16 -6 Z', grau.tief);
+      strich(c, 'M8 -10 Q13 -18 21 -23', grau.creme, 1);
+      punkte(c, [[18,-19],[17,-16],[16,-13],[22,-20],[20,-14]], grau.mittel);
+    });
+  },
+  lotti(ctx) {
+    spiegel(ctx, c => {
+      form(c, 'M8 -10 Q15 -23 26 -19 Q27 -16 23 -11 Q19 -5 13 -5 L10 -6 Z', grau.fell, true);
+      form(c, 'M12 -9 Q16 -18 24 -18 Q22 -11 15 -7 Z', grau.schatten);
+      form(c, 'M15 -8 Q17 -13 22 -15 Q20 -10 15 -8 Z', grau.licht);
+      strich(c, 'M14 -16 Q19 -21 24 -19', grau.creme, .8);
+      punkte(c, [[19,-17],[21,-17],[16,-13],[18,-10]], grau.mittel);
+    });
+  },
+  gloeckchen(ctx) {
+    spiegel(ctx, c => {
+      form(c, 'M11 -11 Q18 -13 21 -7 Q23 -3 25 3 L26 9 Q26 15 22 16 Q18 16 16 13 L13 6 L11 -4 Z', grau.fell, true);
+      form(c, 'M17 -10 Q19 -8 21 -3 L24 5 Q25 12 22 14 Q19 14 17 10 Q21 11 21 7 L18 -3 Z', grau.schatten);
+      strich(c, 'M13 -9 Q18 -8 19 -1 M20 15 l-1 -3', grau.licht, .9);
+      punkte(c, [[19,-2,1],[21,0],[17,3],[22,4,1.2],[20,7],[23,9],[19,10]], grau.dunkel);
+    });
+  },
+  mia(ctx) {
+    spiegel(ctx, c => {
+      form(c, 'M8 -10 L13 -21 Q14 -23 16 -20 Q21 -17 21 -7 L18 -4 L13 -7 Z', grau.hell, true);
+      form(c, 'M12 -11 L15 -19 Q19 -17 19 -9 L16 -8 Z', grau.schatten);
+      form(c, 'M14 -12 L15 -17 L18 -12 L17 -10 Z', grau.creme);
+      strich(c, 'M15 -20 l-4 8', grau.creme, .8);
+    });
+  },
+};
+
+const kopfKontur = 'M-17 0 Q-17 -7 -10 -10 Q-7 -13 -3 -12 L0 -14 L3 -12 Q8 -13 11 -10 Q17 -8 17 0 Q18 6 14 10 Q10 15 0 15 Q-10 15 -14 11 Q-18 8 -17 0 Z';
+
+function kopf(ctx, alter, ruecken) {
+  form(ctx, kopfKontur, grau.hell, true);
+  if (ruecken) {
+    form(ctx,'M-16 2 Q-14 -10 -5 -10 Q2 -14 9 -10 Q14 -8 16 -2 L16 6 Q11 12 0 13 Q-9 13 -14 10 Z',grau.fell);
+    strich(ctx,'M-8 -8 q7 -4 13 -2 M-5 -5 q4 -3 8 -2 M5 -5 l3 -1 M-1 7 q5 1 9 -1',grau.licht,1.1);
+    punkte(ctx,[[-11,2],[-8,7],[4,6],[10,3],[10,-4],[5,1],[-5,-1]],grau.schatten);
+    return;
+  }
+  form(ctx, 'M-16 -1 Q-14 -9 -6 -10 Q-1 -12 7 -11 Q15 -9 16 -2 L15 6 Q10 12 0 13 Q-12 13 -16 6 Z', grau.licht);
+  form(ctx, 'M-15 0 Q-11 -5 -7 -4 Q-2 -4 0 -1 Q4 -5 9 -4 Q13 -4 16 0 Q16 7 12 9 Q6 13 0 13 Q-10 13 -14 9 Q-17 5 -15 0 Z', grau.creme);
+  form(ctx, 'M-16 5 Q-11 11 -5 12 Q2 14 9 11 Q14 10 16 6 Q14 12 8 13 Q-1 16 -11 12 Q-15 10 -16 7 Z', grau.fell);
+  strich(ctx, 'M-13 -5 Q-11 -8 -8 -8 M10 -8 l3 2', grau.creme, .85);
+  punkte(ctx, [[-12,-6],[-10,-7],[-8,-9],[9,-8],[13,-5],[-15,5],[-13,7],[12,7],[14,5],[13,9]], grau.mittel);
+  if (alter.haube === 'baby') {
+    form(ctx, 'M-5 -10 Q-2 -13 0 -13 Q4 -13 6 -9 Q1 -10 -1 -8 Q-3 -9 -5 -10 Z', grau.creme);
+  } else if (alter.haube === 'teenager') {
+    strich(ctx, 'M-6 -9 l2 -2 l1 1 M-2 -9 l3 -3 l2 2 M4 -9 l2 -1', grau.schatten, .9);
+  } else if (alter.haube === 'erwachsen') {
+    strich(ctx, 'M-4 -9 l1 -2 M0 -8 v-3 M3 -9 l1 -1', grau.mittel, .85);
+  } else {
+    form(ctx, 'M-15 5 Q-11 8 -9 8 Q-6 8 -4 11 Q-9 13 -13 10 Z M15 5 Q11 8 9 8 Q6 8 4 11 Q9 13 13 10 Z', grau.weiss);
+    strich(ctx, 'M-6 -9 q2 -3 4 -2 M-2 -8 q2 -4 5 -3 M2 -8 q2 -2 4 -2 M-14 4 l2 2 M14 4 l-2 2', grau.schatten, .85);
+  }
 }
 
 const schwanz = {
-  mohn(ctx) {
-    form(ctx, 'M-3 2 Q-4 -2 0 -5 L1 -7 L4 -7 L5 -9 L8 -8 Q12 -8 13 -4 Q16 -2 14 1 Q13 5 8 6 L1 5 Z', grau.licht, true);
-    form(ctx, 'M-2 2 Q5 4 11 1 L14 -1 Q14 4 9 5 L2 5 Z', grau.hell);
-    punkte(ctx, [[5,-4],[8,-6],[10,-3],[3,1]]);
+  evi(ctx) {
+    form(ctx,'M-4 3 Q2 3 4 -3 Q3 -13 7 -19 Q9 -24 17 -25 Q20 -25 22 -27 Q22 -21 21 -17 Q25 -13 23 -8 Q24 -2 19 2 Q16 6 10 7 L1 7 Z', grau.fell, true);
+    form(ctx,'M4 -9 Q4 -21 13 -24 L22 -26 L21 -18 L22 -13 L19 -14 L16 -12 L14 -14 L10 -12 L8 -15 Z', grau.creme);
+    strich(ctx,'M5 -7 Q6 -18 11 -21 M6 5 Q17 4 21 -5',grau.licht,1.1);
+    strich(ctx,'M8 -15 l2 3 l4 -2 l2 2 l3 -2 l3 1',grau.mittel,.9);
+    punkte(ctx, [[8,-8],[12,-10],[15,-8],[19,-9],[11,-4],[16,-5],[20,-4],[9,0],[14,1],[17,-1],[12,4]], grau.schatten);
   },
-  flocke(ctx) {
-    form(ctx, 'M-3 2 Q2 -1 3 -8 Q3 -16 9 -22 Q14 -26 19 -22 L21 -18 Q17 -19 16 -14 Q22 -9 19 -2 Q17 4 8 5 L-1 6 Z', grau.hell, true);
-    form(ctx, 'M6 -12 Q8 -22 14 -23 Q19 -24 20 -19 Q16 -20 15 -14 L12 -15 L10 -12 L8 -14 Z', grau.licht);
-    form(ctx, 'M0 3 Q11 3 16 -5 Q17 -10 15 -14 Q22 -7 18 -1 Q15 4 8 5 L0 5 Z', grau.schatten);
-    punkte(ctx, [[8,-9],[10,-6],[12,-9],[12,-3],[15,-6],[7,-2]]);
+  lotti(ctx) {
+    form(ctx,'M-3 1 Q1 -2 0 -6 Q2 -11 9 -12 L11 -15 Q15 -12 15 -8 Q15 -1 8 2 L1 4 Z', grau.schatten, true);
+    form(ctx,'M1 -4 Q0 -9 8 -11 L11 -14 Q14 -11 14 -8 L10 -6 L7 -6 L6 -4 Z', grau.creme);
+    strich(ctx,'M3 -3 Q8 -3 12 -6',grau.fell,1);
+    punkte(ctx, [[4,-8],[8,-9],[8,-1],[4,0]], grau.mittel);
   },
-  komet(ctx) {
-    form(ctx, 'M-3 1 Q6 2 10 -5 Q12 -8 13 -13 L11 -14 L18 -21 L20 -12 L17 -12 Q15 1 8 5 L-3 5 Z', grau.mittel, true);
-    form(ctx, 'M13 -14 L18 -19 L19 -13 L16 -13 L13 -6 Q9 2 2 4 L0 2 Q9 0 13 -14 Z', grau.licht);
-    linie(ctx, 'M8 0 l2 1 M11 -4 l2 1', grau.dunkel, 1);
+  gloeckchen(ctx) {
+    form(ctx,'M-4 1 Q2 1 4 -7 Q6 -11 9 -8 Q11 -6 10 -3 Q15 -5 15 -10 Q17 -12 19 -9 Q21 -1 14 3 Q10 6 1 5 Z', grau.hell, true);
+    form(ctx,'M0 2 Q9 3 14 0 Q18 -3 19 -7 Q20 -2 15 2 Q10 5 2 5 Z', grau.schatten);
+    strich(ctx,'M4 -3 q2 -5 4 -4 M12 -2 q4 -2 5 -6',grau.creme,1);
+    punkte(ctx, [[8,-2],[6,0],[11,1],[15,-1]], grau.mittel);
   },
-  pippa(ctx) {
-    form(ctx, 'M-3 2 Q6 4 9 -4 Q12 -11 9 -15 Q7 -17 7 -19 Q8 -22 12 -21 Q20 -17 18 -9 Q18 4 7 6 L-3 6 Z', grau.dunkel, true);
-    form(ctx, 'M8 -19 Q9 -21 12 -20 L15 -18 L12 -15 L10 -15 Z M12 -13 L17 -15 L18 -11 L13 -8 L11 -8 Z M10 -5 L17 -8 L16 -3 L9 0 Z', grau.hell);
-    linie(ctx, 'M13 -2 Q10 3 6 4', grau.schatten, 1.1);
+  mia(ctx) {
+    form(ctx,'M-4 2 Q4 4 7 -1 Q8 -5 6 -11 Q3 -17 7 -22 Q11 -27 18 -24 Q23 -22 22 -18 L20 -16 Q18 -20 15 -18 Q12 -16 14 -13 L18 -7 Q20 1 14 5 Q8 9 -2 7 Z', grau.hell, true);
+    form(ctx,'M4 5 Q10 6 14 2 Q17 -1 16 -5 L12 -12 Q10 -16 12 -18 Q15 -21 18 -19 Q15 -19 14 -16 Q14 -14 17 -9 Q20 -3 17 2 Q13 8 3 7 Z', grau.schatten);
+    form(ctx,'M6 -17 Q6 -23 12 -24 Q18 -25 21 -21 L21 -18 Q17 -23 12 -20 L10 -16 Z', grau.creme);
+    strich(ctx,'M8 -11 l2 5 M10 2 q3 -2 3 -5',grau.licht,1);
+    punkte(ctx, [[8,-14],[10,-10],[14,-9],[12,-4],[15,-4],[11,1],[14,1],[6,4]], grau.mittel);
   },
 };
 
 const koerper = {
-  mohn: {
-    ansatz: [10, -11],
-    zeichnen(ctx) {
-      form(ctx, 'M-9 -26 Q-15 -18 -12 -8 L-15 -4 Q-16 0 -11 0 L-6 0 L-4 -1 L5 -1 L7 0 L13 0 Q16 -1 14 -4 L12 -7 Q13 -15 8 -24 L4 -29 Z', grau.mittel, true);
-      form(ctx, 'M-8 -19 L-5 -21 L-3 -19 L0 -21 L2 -19 L5 -20 L8 -17 Q10 -10 6 -6 Q0 -3 -6 -7 Q-10 -11 -8 -19 Z', grau.licht);
-      form(ctx, 'M-12 -8 Q-11 -5 -8 -4 L-5 -4 L-6 -1 L-12 -1 Q-16 -2 -12 -5 Z M8 -7 L12 -7 L14 -3 L13 -1 L8 -1 L6 -3 Z', grau.schatten);
-      linie(ctx, 'M-9 -16 Q-12 -11 -7 -8 L-4 -9 M8 -16 Q11 -12 7 -8 L4 -9');
-      linie(ctx, 'M-12 -2 v1 M10 -2 v1', grau.dunkel, 1);
-      punkte(ctx, [[-11,-18],[-12,-15],[10,-15],[11,-12],[7,-5],[-11,-6]], grau.dunkel);
+  evi: {
+    achse: 0, ansatz: [10,-11], form: 'M-8 -28 Q0 -31 8 -28 L9 -19 Q15 -15 14 -8 Q10 -4 4 -5 L-6 -5 Q-14 -4 -14 -10 Q-13 -18 -9 -22 Z',
+    pfoten: [-11,-6,6,11], ton: grau.fell,
+    details(ctx) {
+      form(ctx,'M-10 -23 Q0 -25 10 -23 L13 -18 L11 -16 L12 -13 L8 -13 L7 -10 L3 -12 L0 -9 L-4 -12 L-8 -10 L-8 -13 L-12 -13 L-11 -16 L-13 -18 Z',grau.creme,true);
+      strich(ctx,'M-10 -19 l2 3 M-6 -16 l2 2 M6 -17 l-2 3 M10 -19 l-1 2',grau.fell,.85);
+      punkte(ctx, [[-10,-10],[-8,-8],[8,-9],[10,-11],[11,-7],[-6,-7],[4,-7]],grau.schatten);
     },
   },
-  flocke: {
-    ansatz: [12, -7],
-    zeichnen(ctx) {
-      form(ctx, 'M-8 -26 Q0 -30 8 -26 Q11 -21 10 -14 L14 -8 Q16 -2 13 0 L6 0 L4 -1 L-4 -1 L-6 0 L-13 0 Q-16 -2 -14 -8 L-10 -14 Q-11 -21 -8 -26 Z', grau.hell, true);
-      form(ctx, 'M-14 -6 Q-12 -11 -9 -11 L-6 -5 L-6 -1 L-12 -1 Q-15 -1 -14 -6 Z M14 -6 Q12 -11 9 -11 L6 -5 L6 -1 L12 -1 Q15 -1 14 -6 Z', grau.schatten);
-      form(ctx, 'M-7 -22 Q0 -24 7 -22 L8 -17 Q6 -12 4 -9 L-4 -9 Q-6 -12 -8 -17 Z', grau.licht);
-      form(ctx, 'M-8 -16 Q-5 -17 -5 -13 L-3 -6 L-3 -2 Q-5 0 -9 -1 L-10 -3 Z M8 -16 Q5 -17 5 -13 L3 -6 L3 -2 Q5 0 9 -1 L10 -3 Z', grau.licht);
-      linie(ctx, 'M-7 -14 Q-6 -8 -7 -5 Q-10 -3 -9 -1 M7 -14 Q6 -8 7 -5 Q10 -3 9 -1 M-3 -7 L-3 -2 M3 -7 L3 -2', grau.dunkel, 1.05);
-      linie(ctx, 'M-8 -19 Q0 -16 8 -19', grau.dunkel, 1.75);
-      form(ctx, 'M-2 -17 Q0 -19 2 -17 L3 -13 L-3 -13 Z', grau.weiss, true);
-      punkte(ctx, [[-11,-9],[-12,-7],[10,-9],[11,-6],[0,-14]], grau.dunkel);
+  lotti: {
+    achse: -6, ansatz: [16,-12], form: 'M-11 -29 Q-6 -29 -5 -23 Q-4 -18 1 -18 Q10 -21 16 -15 Q20 -11 15 -7 Q8 -6 1 -8 L-6 -8 Q-12 -9 -12 -16 L-14 -24 Z',
+    pfoten: [-10,-6,9,15], ton: grau.mittel,
+    details(ctx) {
+      form(ctx,'M-12 -24 Q-11 -17 -6 -14 L-4 -9 Q-11 -9 -11 -15 L-13 -20 Z',grau.creme);
+      form(ctx,'M-5 -10 Q-2 -13 2 -11 Q7 -8 15 -11 L15 -8 Q10 -6 4 -8 L-6 -8 Z',grau.schatten);
+      punkte(ctx, [[0,-16,1.4],[4,-17,1.3],[8,-17,1.5],[12,-15,1.6],[15,-13,1.3],[2,-13,1.2],[6,-14,1.2],[10,-13,1.4],[13,-11]], grau.creme);
+      strich(ctx,'M-9 -22 q0 5 3 7 M5 -18 q5 -1 8 2',grau.hell,.9);
     },
   },
-  komet: {
-    ansatz: [11, -8],
-    zeichnen(ctx) {
-      form(ctx, 'M-8 -22 Q-14 -28 -21 -23 Q-17 -17 -19 -11 Q-14 -14 -13 -9 L-7 -13 Z M8 -22 Q14 -28 21 -23 Q17 -17 19 -11 Q14 -14 13 -9 L7 -13 Z', grau.schatten, true);
-      form(ctx, 'M-19 -23 Q-14 -25 -9 -21 L-12 -12 Q-14 -16 -17 -14 Q-16 -19 -19 -23 Z M19 -23 Q14 -25 9 -21 L12 -12 Q14 -16 17 -14 Q16 -19 19 -23 Z', grau.hell);
-      linie(ctx, 'M-19 -23 Q-13 -21 -13 -16 M19 -23 Q13 -21 13 -16', grau.dunkel, 1);
-      form(ctx, 'M-8 -28 Q0 -30 8 -28 L9 -18 Q15 -9 14 -4 Q14 0 9 0 L5 0 L3 -2 L-3 -2 L-5 0 L-9 0 Q-14 0 -14 -4 Q-15 -9 -9 -18 Z', grau.schatten, true);
-      form(ctx, 'M-5 -22 Q0 -24 5 -22 Q8 -14 7 -8 Q6 -4 0 -4 Q-6 -4 -7 -8 Q-8 -14 -5 -22 Z', grau.licht);
-      linie(ctx, 'M-6 -15 Q0 -13 6 -15 M-6 -11 Q0 -9 6 -11 M-4 -7 Q0 -6 4 -7', grau.mittel, 1.2);
-      linie(ctx, 'M-11 -8 l4 3 M11 -8 l-4 3 M-10 -3 v2 M10 -3 v2', grau.kontur, 1.1);
-      punkte(ctx, [[-10,-13],[-12,-10],[9,-13],[11,-10]]);
+  gloeckchen: {
+    achse: 0, ansatz: [12,-8], form: 'M-8 -26 Q0 -30 8 -26 L10 -18 L10 -14 Q15 -14 16 -9 Q16 -5 9 -5 L-9 -5 Q-16 -5 -16 -9 Q-15 -14 -10 -14 L-10 -18 Z',
+    pfoten: [-12,-6,6,12], ton: grau.hell,
+    details(ctx) {
+      form(ctx,'M-8 -23 Q0 -25 8 -23 L7 -16 Q6 -10 0 -7 Q-6 -10 -7 -16 Z',grau.creme);
+      form(ctx,'M-14 -10 Q-12 -13 -10 -12 L-8 -9 L-9 -6 L-12 -6 Z M14 -10 Q12 -13 10 -12 L8 -9 L9 -6 L12 -6 Z',grau.schatten);
+      strich(ctx,'M-8 -20 Q0 -17 8 -20',grau.tief,1.75);
+      form(ctx,'M0 -18 Q2 -19 2.5 -16.5 L3 -15 L-3 -15 L-2.5 -16.5 Q-2 -19 0 -18 Z',grau.licht,true);
+      strich(ctx,'M-.6 -14 h1.2',grau.dunkel,.85);
+      punkte(ctx,[[-12,-9],[-10,-8],[11,-9],[12,-7],[-8,-16],[7,-15]],grau.mittel);
     },
   },
-  pippa: {
-    ansatz: [11, -7],
-    zeichnen(ctx) {
-      form(ctx, 'M-8 -27 Q0 -29 8 -27 L10 -17 Q13 -11 13 -5 L15 -2 Q15 0 11 0 L4 0 L2 -1 L-2 -1 L-4 0 L-11 0 Q-15 0 -15 -2 L-13 -5 Q-13 -11 -10 -17 Z', grau.mittel, true);
-      form(ctx, 'M-8 -21 L-6 -18 L-4 -19 L-2 -15 L0 -17 L2 -15 L4 -19 L6 -18 L8 -21 Q10 -15 5 -11 L0 -9 L-5 -11 Q-10 -15 -8 -21 Z', grau.weiss);
-      form(ctx, 'M-12 -8 L-7 -6 L-6 -3 L-4 -2 L-5 -1 L-12 -1 Q-15 -1 -13 -4 Z M12 -8 L7 -6 L6 -3 L4 -2 L5 -1 L12 -1 Q15 -1 13 -4 Z', grau.dunkel);
-      linie(ctx, 'M-5 -10 Q-1 -7 -3 -2 M5 -10 Q1 -7 3 -2', grau.dunkel, 1.25);
-      punkte(ctx, [[-10,-14],[-11,-11],[10,-14],[11,-11],[-2,-6],[1,-6]], grau.schatten);
+  mia: {
+    achse: -2, ansatz: [12,-9], form: 'M-9 -27 Q-2 -31 7 -27 L9 -21 Q9 -15 14 -12 Q18 -7 13 -5 L3 -4 L-9 -5 Q-15 -6 -14 -11 L-11 -18 Z',
+    pfoten: [-10,-5,6,12], ton: grau.fell,
+    details(ctx) {
+      form(ctx,'M-9 -23 L-6 -22 L-4 -18 L-1 -20 L1 -18 L4 -20 L7 -19 Q6 -12 1 -9 L-2 -7 L-7 -10 Q-10 -14 -9 -23 Z',grau.creme);
+      form(ctx,'M1 -21 L6 -23 L8 -22 L8 -17 L4 -18 L1 -19 L-2 -17 L-5 -17 L-5 -22 L-3 -23 Z',grau.hell,true);
+      form(ctx,'M-1 -21 L2 -21 L2 -18 L-1 -18 Z',grau.schatten,true);
+      strich(ctx,'M8 -13 Q15 -11 13 -7 M-11 -10 l3 3 M4 -7 l2 -1',grau.licht,1);
+      punkte(ctx, [[7,-12],[9,-10],[11,-10],[12,-7],[8,-7],[-11,-12],[-10,-9]],grau.schatten);
     },
   },
 };
 
-const ohren = {
-  mohn(ctx) {
-    form(ctx, 'M-13 -6 Q-18 -13 -18 -21 Q-18 -26 -15 -27 Q-11 -28 -9 -23 Q-6 -16 -6 -9 Z', grau.hell, true);
-    form(ctx, 'M5 -10 Q6 -20 11 -25 Q14 -27 16 -25 Q20 -22 17 -15 L12 -6 Z', grau.hell, true);
-    form(ctx, 'M-13 -9 Q-17 -18 -16 -23 Q-15 -25 -13 -23 Q-10 -20 -9 -10 Z M8 -9 Q9 -19 13 -23 Q15 -24 16 -21 Q16 -16 12 -10 Z', grau.schatten);
-    linie(ctx, 'M-16 -19 L-14 -14 M16 -19 L13 -14', grau.mittel, 1);
-  },
-  flocke(ctx) {
-    form(ctx, 'M-13 -9 Q-18 -12 -22 -6 Q-25 -2 -26 6 Q-26 12 -22 13 Q-17 14 -16 9 L-11 -5 Z', grau.mittel, true);
-    form(ctx, 'M13 -9 Q18 -11 22 -6 Q25 -1 25 7 Q24 13 20 13 Q16 12 15 6 L11 -5 Z', grau.mittel, true);
-    form(ctx, 'M-21 -6 Q-25 0 -25 6 Q-25 10 -22 12 Q-19 12 -18 9 L-16 3 Q-21 8 -22 5 Q-23 2 -21 -6 Z M16 1 L18 9 Q20 13 23 10 Q25 7 24 3 Q23 9 21 7 Z', grau.schatten);
-    punkte(ctx, [[-22,0],[-23,3],[-21,5],[-20,8],[-19,-3],[20,-3],[21,0],[22,3],[19,5],[22,8]], grau.dunkel);
-  },
-  komet(ctx) {
-    form(ctx, 'M-13 -6 Q-19 -18 -15 -25 Q-14 -27 -13 -24 Q-12 -17 -5 -11 L-5 -7 Z M13 -6 Q19 -18 15 -25 Q14 -27 13 -24 Q12 -17 5 -11 L5 -7 Z', grau.licht, true);
-    form(ctx, 'M-15 -10 L-23 -11 L-20 -6 L-24 -4 L-18 -2 L-20 2 L-13 0 Z M15 -10 L23 -11 L20 -6 L24 -4 L18 -2 L20 2 L13 0 Z', grau.schatten, true);
-    linie(ctx, 'M-15 -10 l-1 -4 M15 -10 l1 -4 M-20 -5 l4 1 M20 -5 l-4 1', grau.mittel, 1.15);
-  },
-  pippa(ctx) {
-    form(ctx, 'M-15 -4 Q-21 -6 -21 -12 Q-21 -18 -16 -19 Q-12 -19 -7 -11 L-9 -6 Z M15 -4 Q21 -6 21 -12 Q21 -18 16 -19 Q12 -19 7 -11 L9 -6 Z', grau.dunkel, true);
-    form(ctx, 'M-16 -8 Q-20 -11 -18 -15 Q-16 -18 -11 -11 Z M16 -8 Q20 -11 18 -15 Q16 -18 11 -11 Z', grau.licht);
-    linie(ctx, 'M-17 -13 l2 2 M17 -13 l-2 2', grau.mittel, 1);
-  },
-};
-
-// Alle Figuren und Kinder verwenden dieselbe Kontur und Schattierung.
-function kopf(ctx) {
-  form(ctx, 'M-17 0 Q-17 -7 -10 -10 L-6 -12 L-3 -11 L0 -14 L2 -11 L6 -12 L9 -10 Q17 -8 17 1 Q18 7 13 11 Q9 15 0 15 Q-9 15 -14 11 Q-18 7 -17 0 Z', grau.hell, true);
-  form(ctx, 'M-15 -1 Q-12 -6 -8 -7 Q-4 -8 0 -5 Q5 -8 9 -6 Q14 -5 15 0 L16 5 Q14 10 10 11 Q0 14 -11 11 Q-16 9 -16 4 Z', grau.licht);
-  form(ctx, 'M-16 3 Q-13 9 -8 10 Q1 14 10 10 Q14 9 16 5 Q15 10 11 12 Q2 16 -9 13 Q-15 11 -16 7 Z', grau.mittel);
-  punkte(ctx, [[-13,-4],[-11,-7],[-10,-5],[10,-6],[13,-3],[-14,7],[13,7]], grau.mittel);
+function malePfote(ctx, figur, x, tiefe, boden, laenge, schu, oben, laeuft) {
+  ctx.save();
+  ctx.translate(x + schu,boden);
+  const y = -laenge + oben;
+  if (figur === 'lotti') {
+    form(ctx,`M${-2-schu} ${y} L${1-schu} ${y-1} Q1 -6 1 -3 L2 0 L-2 0 L-2 -3 Z`,tiefe ? grau.schatten : grau.fell,true);
+    form(ctx,'M-2 -3 L1.5 -3 L2 0 L-2 0 Z',grau.dunkel);
+    strich(ctx,'M-1 0 v-1',grau.mittel,.65);
+  } else {
+    const breit = laeuft ? 3.3 : 4.1;
+    form(ctx,`M${-3-schu} ${y} L${2.5-schu} ${y} Q3 -4 ${breit} -2 Q${breit+1} .6 1 .3 L-2 .3 Q${-breit-1} 0 ${-breit} -2 Z`,tiefe ? grau.mittel : grau.hell,true);
+    form(ctx,`M${-breit+1} -2 Q-1 -3 2 -2 L3 -1 L-3 -1 Z`,tiefe ? grau.fell : grau.creme);
+    strich(ctx,'M-1 .1 v-1.4 M1 .1 v-1.4',grau.schatten,.7);
+  }
+  ctx.restore();
 }
 
-const augen = {
-  mohn(ctx) {
-    form(ctx, 'M-11 -1 Q-11 -5 -8 -5 Q-5 -5 -5 -1 Q-5 3 -8 3 Q-11 3 -11 -1 Z M5 -1 Q5 -5 8 -5 Q11 -5 11 -1 Q11 3 8 3 Q5 3 5 -1 Z', grau.kontur);
-    punkte(ctx, [[-10,-4,2],[6,-4,2]], grau.weiss);
-    punkte(ctx, [[-7,1],[9,1]], grau.mittel);
-    punkte(ctx, [[-14,4],[-12,5],[11,5],[13,4]]);
-  },
-  flocke(ctx) {
-    linie(ctx, 'M-12 1 Q-9 -4 -6 0 M6 0 Q9 -4 12 1', grau.kontur, 1.9);
-    linie(ctx, 'M-12 1 l-1 -1 M12 1 l1 -1', grau.kontur, 1);
-    punkte(ctx, [[-13,4],[-11,4],[10,4],[12,4]], grau.schatten);
-  },
-  komet(ctx) {
-    form(ctx, 'M-12 -3 Q-9 -6 -4 -3 Q-5 3 -9 3 Q-12 3 -12 -3 Z M12 -3 Q9 -6 4 -3 Q5 3 9 3 Q12 3 12 -3 Z', grau.kontur);
-    form(ctx, 'M-10 -3 Q-9 -4 -8 -2 L-8 1 Q-10 1 -10 -3 Z M10 -3 Q9 -4 8 -2 L8 1 Q10 1 10 -3 Z', grau.weiss);
-    linie(ctx, 'M-12 -6 l6 1 M12 -6 l-6 1', grau.dunkel, 1);
-  },
-  pippa(ctx) {
-    form(ctx, 'M-15 0 Q-11 -7 -5 -3 Q-6 2 -10 4 Q-13 4 -15 0 Z M15 0 Q11 -7 5 -3 Q6 2 10 4 Q13 4 15 0 Z', grau.mittel);
-    form(ctx, 'M-12 -1 Q-9 -4 -6 -2 Q-7 2 -9 2 Q-11 2 -12 -1 Z M12 -1 Q9 -4 6 -2 Q7 2 9 2 Q11 2 12 -1 Z', grau.kontur);
-    punkte(ctx, [[-10,-2],[9,-2],[-7,-1],[6,-1]], grau.weiss);
-  },
-};
-
-const schnauze = {
-  mohn(ctx) {
-    form(ctx, 'M-2 4 Q0 3 2 4 Q2 6 0 7 Q-2 6 -2 4 Z', grau.dunkel);
-    linie(ctx, 'M0 7 v1 Q-2 10 -4 8 M0 8 Q2 10 4 8');
-  },
-  flocke(ctx) {
-    form(ctx, 'M-5 6 Q-1 3 0 5 Q2 3 5 6 Q7 10 3 12 Q-2 13 -5 10 Q-7 8 -5 6 Z', grau.weiss);
-    form(ctx, 'M-2 5 Q0 4 2 5 Q2 7 0 7.5 Q-2 7 -2 5 Z', grau.kontur);
-    form(ctx, 'M-4 8 Q0 10 4 8 Q3 12 0 12 Q-3 12 -4 8 Z', grau.kontur);
-    punkte(ctx, [[-1,10,2]], grau.mittel);
-  },
-  komet(ctx) {
-    form(ctx, 'M-7 7 Q-7 4 -4 4 L4 4 Q7 4 7 7 Q6 11 0 12 Q-6 11 -7 7 Z', grau.mittel, true);
-    linie(ctx, 'M-4 6 h1 M3 6 h1 M-4 8 Q0 11 4 8', grau.kontur, 1.2);
-    form(ctx, 'M4 9 l-2 3 l-2 -2 Z', grau.weiss);
-  },
-  pippa(ctx) {
-    form(ctx, 'M-6 7 Q-5 4 0 6 Q5 4 6 7 Q6 10 0 12 Q-6 10 -6 7 Z', grau.weiss);
-    form(ctx, 'M-2 6 L2 6 L0 8 Z', grau.kontur);
-    linie(ctx, 'M-3 9 Q-1 11 0 9 Q1 11 3 9 M-7 7 l-4 -1 M7 7 l4 -1 M-8 9 h-3 M8 9 h3', grau.dunkel, 1);
-  },
-};
-
-function zeichneFigur(canvas, phase, auswahl) {
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  const alter = altersstufen[phase];
-  const basis = koerper[auswahl.koerper];
-  const x = 33;
-  const boden = 62;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const [schwanzX, schwanzY] = basis.ansatz;
-  ctx.save();
-  ctx.translate(x + alter.koerper * schwanzX, boden + alter.koerper * schwanzY);
-  ctx.scale(alter.schwanz, alter.schwanz);
-  schwanz[auswahl.schwanz](ctx);
-  ctx.restore();
-
-  ctx.save();
-  ctx.translate(x, boden);
-  ctx.scale(alter.koerper, alter.koerper);
-  basis.zeichnen(ctx);
-  ctx.restore();
-
-  ctx.save();
-  ctx.translate(x, alter.kopfY);
-  ctx.scale(alter.kopf * .86, alter.kopf);
-  ohren[auswahl.ohren](ctx);
-  kopf(ctx);
-  augen[auswahl.augen](ctx);
-  schnauze[auswahl.schnauze](ctx);
-  ctx.restore();
-
-  // Auf 16 neutrale Graustufen und ganze sichtbare Pixel begrenzen.
-  const bild = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < bild.data.length; i += 4) {
-    const alpha = bild.data[i + 3] >= 128 ? 255 : 0;
-    const ton = alpha ? Math.round(bild.data[i] / 17) * 17 : 0;
-    bild.data.set([ton, ton, ton, alpha], i);
-  }
-  ctx.putImageData(bild, 0, 0);
+function maleSchlafkoerper(ctx, figur) {
+  const basis = koerper[figur];
+  const formen = {
+    evi:'M-15 -7 Q-16 -15 -10 -20 Q-3 -28 6 -24 Q15 -22 17 -14 Q20 -8 14 -3 Q6 0 -9 -1 Q-14 -1 -15 -7 Z',
+    lotti:'M-18 -8 Q-19 -13 -14 -17 Q-10 -22 -5 -17 Q-1 -16 3 -20 Q14 -26 19 -16 Q23 -8 17 -4 Q12 0 -3 -1 L-12 -1 Q-18 -2 -18 -8 Z',
+    gloeckchen:'M-17 -7 Q-18 -12 -14 -17 Q-5 -28 8 -24 Q18 -23 18 -14 Q21 -6 14 -3 Q3 0 -10 -1 Q-16 -1 -17 -7 Z',
+    mia:'M-15 -7 Q-16 -13 -10 -19 Q-5 -28 7 -27 Q17 -25 18 -17 Q22 -9 16 -4 Q8 0 -8 -1 Q-14 -1 -15 -7 Z',
+  };
+  form(ctx,formen[figur],basis.ton,true);
+  basis.details(ctx);
+  form(ctx,'M5 -5 Q7 -10 12 -9 Q16 -8 14 -4 Q12 -1 5 -2 Q2 -3 5 -5 Z',grau.hell,true);
+  strich(ctx,'M8 -3 l-1 -2 M10 -3 l-1 -2 M-2 -10 Q0 -13 4 -14',grau.schatten,.9);
 }

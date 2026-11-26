@@ -9,7 +9,7 @@
 
 ## Neue Genetikvorschau mit gemeinsamer Kopfform (26. November 2026)
 
-- [Mohn, Flocke, Komet und Pippa](entwuerfe/grillme-genetik-prototyp/gemeinsame-kopfform/README.md) sind vier Graustufenfiguren mit schlankerer gemeinsamer Kopfform. Flocke sitzt gerade unter ihrem Kopf. In der lokalen Vorschau lassen sich zwei Eltern und die Herkunft von fünf sichtbaren Merkmalen wählen. Das Ergebnis erscheint als Baby und erwachsen.
+- Der [interaktive Prototyp](entwuerfe/grillme-genetik-prototyp/gemeinsame-kopfform/README.md) verwendet jetzt einen Evi-Entwurf, Lotti, Glöckchen und Mia als Ausgangsfiguren. Die gemeinsame Kopfform ist wieder runder. Die fünf Merkmale lassen sich in allen vier Altersstufen mit acht Emotionen und 13 Posen anschauen.
 
 ## Schritt 3 (26.11.2026): Verlieben, Klopfen, Partner, Ei, Baby, Oma im Zimmer
 
