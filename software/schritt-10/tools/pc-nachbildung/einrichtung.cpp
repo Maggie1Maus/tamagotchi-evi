@@ -104,6 +104,13 @@ void fensterHelligkeitPruefen() {
   }
   PRUEFE(sonnigHell, "Sonniger Tageshimmel ist in allen Jahreszeiten fast weiß");
   PRUEFE(baeumeHell, "Alle vier Tagesbäume sind freundlich hell statt dunkler Silhouetten");
+  bool nachtOhneLeuchten = true;
+  for (int j = 0; j < 4; j++) {
+    const ZimmerBild& b = *ZG_BAEUME[HIMMEL_NACHT][j];
+    for (int y = 0; y < b.h; y++) for (int x = 0; x < b.w; x++)
+      if (b.deckt(x, y)) nachtOhneLeuchten &= b.wert(x, y) <= (j == JZ_WINTER ? 85 : 51);
+  }
+  PRUEFE(nachtOhneLeuchten, "Nachtbäume und Winterschnee haben keine helle Leuchtkontur");
   zimmerFensterNeu(JZ_WINTER, HIMMEL_TAG, WT_SONNE, 0);
   long schnee = 0;
   for (int y = 48; y < 52; y++) for (int x = 2; x < 29; x++)

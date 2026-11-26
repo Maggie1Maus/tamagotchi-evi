@@ -7,7 +7,7 @@ Stand: 26. November 2026. Von der Nutzerin nach der Tageslicht-Vorschau zum Umse
 - Sonne: fast weißer Himmel, heller Boden und hellere Bäume in allen vier Jahreszeiten. Die Sonne besitzt eine feine graue Kontur.
 - Wolken und Regen: abgestufte, insgesamt freundlichere Helligkeiten; Regen ist dunkler als Sonne.
 - Dämmerung: eigener grauer Himmel, heller Baum, kein Mond.
-- Nacht: schwarzer freier Himmel, schwarzer Baum mit hellem Rand; Mond und Sterne bei klarem Himmel. Landschaft und Schneeboden werden zur Nacht dunkler.
+- Nacht: schwarzer freier Himmel und matter, dunkelgrauer Baum ohne aufgehellten Umriss. Baumtöne höchstens 51/255, gedimmter Winterschnee höchstens 85/255. Mond und Sterne bei klarem Himmel. Landschaft und Schneeboden werden zur Nacht dunkler.
 - Winter: Schnee auf Ästen und am Baumfuß auch bei Sonnenschein, unabhängig von fallendem Schnee. Schneefall nur im Winter.
 - Bestehende Regen-, Schnee- und Herbstblattanimationen sowie Fensterrahmen und Scheibengrenzen bleiben erhalten.
 
@@ -20,13 +20,17 @@ Die Grafiken sind in `software/schritt-10/evi-handy/zimmergrau.h` gepackt und in
 Der Grafikexport `tools/make-zimmer-grau.py` liest die neuen Fensterebenen und verwendet für übrige Zimmergrafiken weiterhin die bisherigen Quellen. Zum Regenerieren und Prüfen:
 
 ```sh
+python3 software/schritt-10/tools/make-fenster-nacht.py
 python3 software/schritt-10/tools/make-zimmer-grau.py
 bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-fenster --zimmer
+python3 software/schritt-10/tools/make-fenster-hell-ansichten.py /tmp/evi-fenster/bilder
 ```
 
 ## Prüfstand und Wiederherstellung
 
-Vor der Unterbrechung der Arbeitsumgebung bestanden die native PC-Übersetzung, die bisherigen Zimmer-/Parkprüfungen sowie der Vergleich von 51 Fensterkombinationen mit insgesamt 411 Animationsansichten. Nach dem Ausfall wurden die Daten aus den noch verfügbaren Originalgrafiken und dem Repository wiederhergestellt. Die mittleren Helligkeiten der vier standardisierten Baumzeichnungen stimmen mit dem zuvor geprüften Stand überein. Alle 98 gepackten Zimmergrafiken wurden wieder aus dem Header gelesen; die 51 Kombinationen und 411 Animationsansichten stimmen zwischen den PNG-Ebenen und den gepackten Daten überein und verwenden ausschließlich 16 Graustufen. Eine erneute native C++-Übersetzung nach der Wiederherstellung war ohne Arbeitsumgebung nicht möglich. Ein Test auf dem physischen Waveshare-Board steht aus.
+Vor der Unterbrechung der Arbeitsumgebung bestanden die native PC-Übersetzung, die bisherigen Zimmer-/Parkprüfungen sowie der Vergleich von 51 Fensterkombinationen mit insgesamt 411 Animationsansichten. Nach dem Ausfall wurden die Daten aus den noch verfügbaren Originalgrafiken und dem Repository wiederhergestellt. Die mittleren Helligkeiten der vier standardisierten Baumzeichnungen stimmen mit dem zuvor geprüften Stand überein. Alle 98 gepackten Zimmergrafiken wurden wieder aus dem Header gelesen und mit den PNG-Ebenen verglichen.
+
+Die Nutzerin hat anschließend die weiße Nachtkontur als unnatürlich leuchtend abgelehnt. Die vier Nachtbäume werden jetzt mit einer gedämpften Palette aus den Tagesbäumen abgeleitet, ohne Kantenaufhellung. Auch Schnee wird nachts gedimmt. Nach dieser Korrektur war die Arbeitsumgebung wieder verfügbar: native C++-Übersetzung mit Warnungen, vorhandene Zimmer-/Parkprüfungen, neue Helligkeitsgrenzen für Nachtbäume sowie alle 51 Kombinationen und 411 Animationsansichten erneut erfolgreich geprüft. Der Test dieser Nachtkorrektur auf dem physischen Waveshare-Board steht aus.
 
 ![Jahreszeiten und Tageszeiten](fenster-jahreszeiten-tageszeiten.png)
 
