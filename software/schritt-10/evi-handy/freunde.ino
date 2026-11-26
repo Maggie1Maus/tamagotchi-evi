@@ -857,6 +857,7 @@ void freundZeichnen() {
 // ---------- Jede Runde (10 s, aus runde): lange niedrige Balken ----------
 void freundRunde(ms_t jetzt) {
   if (freund.evi != pet.geboren) freundNeueEvi();
+  parkFreundPruefen();                // neue Evi: Treffen mit den Parkfreunden von vorne (parkfreunde.ino)
   if (wach(pet, jetzt) && (pet.satt <= R::NIEDRIG || pet.laune <= R::NIEDRIG || pet.sauber <= R::NIEDRIG)) {
     gespraech.niedrigMs += 10000;
     if (gespraech.niedrigMs >= 60UL * 60 * 1000) { gespraech.niedrigMs = 0; freundMinus(MINUS_NIEDRIG_JE_STUNDE); }

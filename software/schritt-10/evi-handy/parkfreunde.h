@@ -1,5 +1,6 @@
 // Freunde im Park, Album und Evis Wesen (26.11.2026, nur Waveshare). Logik in parkfreunde.ino.
 //  - Jede der 20 Figuren merkt sich, wie oft Evi sie getroffen hat (höchstens einmal pro Tag und Figur).
+//    Eine neue Evi fängt wieder bei null an.
 //    Danach ändert sich die Begrüßung: Fremde, Bekannte, Vertraute, Beste Freunde.
 //  - Nach der Begrüßung sagt der Besuch noch einen zweiten Satz (A): zum Wetter, zur Jahreszeit, zu Funden,
 //    über sich selbst oder, wenn er zum Wesen von Evi passt, dass sie ähnlich sind.
@@ -24,17 +25,18 @@ const char* const FIGUR_ART[BESUCHER] = {"verträumt", "neugierig, schlau", "fre
 const char* const FIGUR_STUFE_NAME[4] = {"Fremd", "Bekannt", "Vertraut", "Beste Freunde"};
 const uint8_t TREFFEN_VERTRAUT = 3, TREFFEN_BESTE = 7;
 
-// Dauerhaft gespeichert (EEPROM), getrennt von Evi: die Freunde bleiben auch bei einer neuen Evi
+// Dauerhaft gespeichert (EEPROM). Die Treffen gehören zu einer Evi: Bei einer neuen Evi fängt alles von vorne an.
 struct ParkFreundStand {
   uint32_t kennung;
   uint16_t version, groesse;
+  ms_t evi;                      // zu welcher Evi die Treffen gehören (pet.geboren); neue Evi = von vorne
   uint8_t treffer[BESUCHER];     // wie oft getroffen (höchstens 255)
   int32_t heuteTag;              // Tag (tagKennung) zu heuteMaske
   uint32_t heuteMaske;           // Bit je Figur: heute schon begrüßt
   uint32_t pruefsumme;
 };
 const uint32_t PARKFREUND_KENNUNG = 0x50524B46;   // "PRKF"
-const uint16_t PARKFREUND_VERSION = 1;
+const uint16_t PARKFREUND_VERSION = 2;   // 2: Treffen gehören zu einer Evi (Version 1 wird verworfen)
 const int PARKFREUND_ADRESSE = 3856;              // hinter Freundschaft (3584 + 216), vor dem Geburtstags-Merker (4095)
 static_assert(FREUND_ADRESSE + sizeof(FreundStand) <= PARKFREUND_ADRESSE, "Parkfreunde überschneiden die Freundschaft");
 static_assert(PARKFREUND_ADRESSE + sizeof(ParkFreundStand) <= EEPROM_GROESSE - 1, "Parkfreunde überschneiden den Merker am Ende");

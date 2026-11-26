@@ -40,6 +40,21 @@ int parkFreundGetroffen() {
   return n;
 }
 
+// Neue Evi (anderer Zeitpunkt „geboren“): alle Treffen von vorne
+void parkFreundPruefen() {
+  if (parkFreund.evi == pet.geboren) return;
+  const uint32_t k = parkFreund.kennung;
+  memset(&parkFreund, 0, sizeof(parkFreund));
+  parkFreund.kennung = k ? k : PARKFREUND_KENNUNG;
+  parkFreund.version = PARKFREUND_VERSION;
+  parkFreund.groesse = sizeof(ParkFreundStand);
+  parkFreund.evi = pet.geboren;
+  parkFreundGeaendert = true;
+}
+
+// Wasserscheue Evis gehen bei Regen nicht in den Park (und gehen heim, wenn es dort anfängt zu regnen)
+bool parkZuNass(ms_t jetzt) { return eviWesen() == W_WASSER && wetterBei(jetzt) == WT_REGEN; }
+
 void parkFreundLaden() {
   uint8_t* b = (uint8_t*)&parkFreund;
   for (size_t i = 0; i < sizeof(parkFreund); i++) b[i] = EEPROM.read(PARKFREUND_ADRESSE + i);
@@ -51,8 +66,9 @@ void parkFreundLaden() {
     parkFreund.kennung = PARKFREUND_KENNUNG;
     parkFreund.version = PARKFREUND_VERSION;
     parkFreund.groesse = sizeof(ParkFreundStand);
+    parkFreund.evi = pet.geboren;
   }
-  parkFreundGeaendert = false;
+  parkFreundPruefen();
 }
 
 void parkFreundSpeichern() {
@@ -71,6 +87,7 @@ void parkFreundSpeichern() {
 // Wird beim Begrüßen aufgerufen (parkGrussWaehlen). Zählt das Treffen (einmal am Tag je Figur), merkt sich
 // in park.stufe, wie gut Evi die Figur vorher kannte, und in park.passt, ob das Wesen übereinstimmt.
 void parkFreundBegegnung(ms_t jetzt) {
+  parkFreundPruefen();
   const int f = park.besuch;
   const int32_t heute = tagKennung(jetzt);
   if (parkFreund.heuteTag != heute) { parkFreund.heuteTag = heute; parkFreund.heuteMaske = 0; parkFreundGeaendert = true; }
@@ -192,6 +209,7 @@ static const int ALBUM_ZELLE_B = 64, ALBUM_ZELLE_H = 39;
 
 void albumOeffnen(ms_t jetzt) {
   if (!parkMoeglich(jetzt)) { zeigeMeldung("Evi ruht gerade."); return; }
+  parkFreundPruefen();
   momentStoppen(true);
   menueZeigen(false);
   kuschel = {};
@@ -239,6 +257,7 @@ void albumFigur(int i, Phase ph, int x0, int y0, bool bekannt) {
 void albumZeichnen(ms_t jetzt) {
   const Phase ph = phaseBei(pet, jetzt);
   if (ph < BABY || ph > OMA) { parkSchliessen(); return; }
+  parkFreundPruefen();
   bild.fillScreen(1);
   zeichneStatus(ph);
   char kopf[40];

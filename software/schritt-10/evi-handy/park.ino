@@ -145,6 +145,12 @@ void parkSchliessen() {
 
 void parkOeffnen(ms_t jetzt) {
   if (!parkMoeglich(jetzt)) { zeigeMeldung("Evi ruht gerade."); return; }
+  if (parkZuNass(jetzt)) {
+    static char nass[64];
+    snprintf(nass, sizeof(nass), "%s mag bei Regen nicht raus.", pet.name[0] ? pet.name : "Evi");
+    zeigeMeldung(nass, 3500);
+    return;
+  }
   momentStoppen(true);
   menueZeigen(false);
   kuschel = {};
@@ -218,6 +224,13 @@ static void parkHelfen() {
 void parkTakt(ms_t jetzt, uint32_t m) {
   if (!parkOffen()) return;
   if (!parkMoeglich(jetzt)) { parkSchliessen(); return; }
+  if (park.phase != PARK_ALBUM && parkZuNass(jetzt)) {
+    static char nass[64];
+    snprintf(nass, sizeof(nass), "%s will heim, es regnet!", pet.name[0] ? pet.name : "Evi");
+    parkSchliessen();
+    zeigeMeldung(nass, 4000);
+    return;
+  }
   const uint32_t seit = m - park.seit;
   if (park.phase == PARK_LAEUFT) {
     const int fortschritt = (int)min(seit, park.dauer);

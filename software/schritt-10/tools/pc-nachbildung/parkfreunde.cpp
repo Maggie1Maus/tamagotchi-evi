@@ -133,6 +133,67 @@ int main() {
   bool alle = true; for (int k = 0; k < WESEN_ZAHL; k++) if (!alleWesen[k]) alle = false;
   PRUEFE(alle, "alle sechs Wesen kommen vor");
 
+  // --- Neue Evi: Treffen von vorne ---
+  parkFreund.treffer[4] = 6; parkFreund.heuteMaske = 5; parkFreund.heuteTag = tagKennung(heute); parkFreundGeaendert = true;
+  parkFreund.evi = pet.geboren;
+  parkFreundSpeichern();
+  parkFreundLaden();
+  PRUEFE(parkFreund.treffer[4] == 6, "dieselbe Evi: Treffen bleiben");
+  const ms_t alteGeburt = pet.geboren;
+  pet.geboren = alteGeburt + 5 * TAG;     // neue Evi
+  freundRunde(heute);
+  PRUEFE(parkFreund.treffer[4] == 0 && parkFreund.heuteMaske == 0 && parkFreundGetroffen() == 0, "neue Evi: alle Treffen wieder bei null");
+  parkFreundSpeichern(); parkFreundLaden();
+  PRUEFE(parkFreund.treffer[4] == 0 && parkFreund.evi == pet.geboren, "neue Evi: bleibt zurückgesetzt nach Neustart");
+  pet.geboren = alteGeburt;
+  parkFreund.treffer[4] = 6; parkFreund.evi = alteGeburt; parkFreundGeaendert = true; parkFreundSpeichern();
+  pet.geboren = alteGeburt + 9 * TAG; parkFreundLaden();     // Neustart mit neuer Evi
+  PRUEFE(parkFreundGetroffen() == 0, "Neustart mit neuer Evi: von vorne");
+  pet.geboren = alteGeburt;
+  parkFreundLaden(); parkFreund.treffer[1] = 1; parkFreund.treffer[2] = 4; parkFreund.treffer[3] = 12; parkFreundGeaendert = true;
+
+  // --- Wasserscheu: nicht in den Park bei Regen ---
+  {
+    ms_t regen = 0, trocken = 0;
+    for (int t = 0; t < 400 && !(regen && trocken); t++) {
+      const ms_t z = heute + t * 7 * STUNDE;
+      if (wetterBei(z) == WT_REGEN && !regen && himmelBei(z) == HIMMEL_TAG) regen = z;
+      if (wetterBei(z) != WT_REGEN && !trocken && himmelBei(z) == HIMMEL_TAG) trocken = z;
+    }
+    PRUEFE(regen && trocken, "Testtage mit und ohne Regen gefunden");
+    const ms_t geb0 = pet.geboren;
+    int wasserscheu = 0, andere = 0;
+    for (int i = 0; i < 60; i++) {
+      pet.geboren = geb0 + i * 1111;
+      const bool ws = eviWesen() == W_WASSER;
+      pet.schluepft = regen - 3 * TAG; pet.aktualisiert = regen;
+      uhrSetzen(regen);
+      park = ParkZustand();
+      parkOeffnen(regen);
+      if (ws) { wasserscheu++; if (parkOffen()) { printf("  wasserscheu geht bei Regen in den Park\n"); fehler++; } }
+      else { andere++; if (!parkOffen()) { printf("  andere Evi darf bei Regen nicht\n"); fehler++; } }
+      parkSchliessen();
+      uhrSetzen(trocken); pet.schluepft = trocken - 3 * TAG; pet.aktualisiert = trocken;
+      parkOeffnen(trocken);
+      if (!parkOffen()) { printf("  bei trockenem Wetter geht der Park nicht\n"); fehler++; }
+      parkSchliessen();
+    }
+    PRUEFE(wasserscheu > 0 && andere > 0, "Wasserscheue und andere Evis getestet");
+    // Regen beginnt, während Evi im Park ist
+    for (int i = 0; i < 60; i++) {
+      pet.geboren = geb0 + i * 1111;
+      if (eviWesen() != W_WASSER) continue;
+      uhrSetzen(trocken); pet.schluepft = trocken - 3 * TAG; pet.aktualisiert = trocken;
+      parkOeffnen(trocken);
+      uhrSetzen(regen); pet.schluepft = regen - 3 * TAG; pet.aktualisiert = regen;
+      parkTakt(regen, millis());
+      PRUEFE(!parkOffen(), "Regen im Park: wasserscheue Evi geht heim");
+      break;
+    }
+    pet.geboren = geb0;
+  }
+  uhrSetzen(heute); pet.schluepft = heute - 4 * TAG; pet.aktualisiert = heute;
+
   // --- Album ---
   parkFreund.treffer[1] = 1; parkFreund.treffer[2] = 4; parkFreund.treffer[3] = 12;
   uhrSetzen(heute); pet.aktualisiert = heute;
