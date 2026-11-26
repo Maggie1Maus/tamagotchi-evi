@@ -1,5 +1,10 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Bauteil-Probelauf: Korrekturrunde (27. November 2026)
+
+- Der [neue Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) zeigt die korrigierte Leo-Mähne, vollständige farbige Bereichskarten, Kranzton für beide Geschlechter, Körpermuster ohne Rechtecke, stärkere Fellstrukturen sowie größere Schleife und Glöckchen. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.
+- **Noch nicht freigegeben.** Leos Mähne hat beim Jungen einen grauen Saum an Wangen und Kinn; Groschens Schwanzansatz bleibt unruhig. Körpermuster und Fellpunkte sind bei Originalgröße fein. Keine weiteren Figuren oder Altersstufen ergänzen, bis die Nutzerin den Probelauf freigibt.
+
 ## Männliche Evi und neuer Familien-Baukasten (26. November 2026)
 
 - Die Nutzerin hat das männliche Evi-Charakterblatt freigegeben. Unter [maennlich/README.md](entwuerfe/evi/maennlich/README.md) liegen 80 Graustufen-Sprites für Baby, Teenager, Erwachsener und Opa. Der beleidigte Opa wurde auf vier Pfoten korrigiert. Die Fenster- und Gartenposen zeigen nur die Figur.

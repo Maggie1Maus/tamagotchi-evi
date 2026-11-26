@@ -18,11 +18,13 @@ Nach dem Einlegen `teile-aktualisieren.ps1` per Rechtsklick → „Mit PowerShel
 
 ## Probelauf für Erwachsene
 
-Der [Prüfbogen](werkzeug/pruefbogen-erwachsen.png) zeigt beide Evis mit eigenen und fremden Teilen, hellem und dunklem Hintergrund, Fell- und Kranztöne, Fellstrukturen, Zubehör, Bereichskarten und drei Beispielkinder. Die Parkvorlagen stehen unten daneben. `werkzeug/pixelvergleich.txt` prüft die Rückmontage von Evis eigenen Teilen: bei beiden Geschlechtern 0 abweichende Pixel zum Original.
+Der [Prüfbogen](werkzeug/pruefbogen-erwachsen.png) zeigt beide Evis mit eigenen und fremden Teilen, hellem und dunklem Hintergrund, Fell- und Kranztöne für beide Geschlechter, Fellstrukturen auch in Originalgröße, runde Körpermuster, Zubehör, farbige Gesamtkarten und drei Beispielkinder. Die Parkvorlagen stehen unten daneben. `werkzeug/pixelvergleich.txt` prüft die Rückmontage von Evis eigenen Teilen: bei beiden Geschlechtern 0 abweichende Pixel zum Original.
 
 Zum Wiederholen: `werkzeug/bauteile-bauen.ps1`, danach `werkzeug/pruefbogen-bauen.ps1` und `teile-aktualisieren.ps1` ausführen. Die ersten beiden Skripte nutzen .NET/System.Drawing; ihre Bild-KI-Quellen und die 8-fach vergrößerten Vorlagen liegen unter `werkzeug/`. Alle Teile bleiben Entwürfe bis zur optischen Freigabe.
 
-Sichtbare Schwächen: Leos Mähne hat an Wangen und Hals doppelte Konturen, besonders bei Evi. Groschens Schwanzansatz rechts ist noch unruhig. Bei hellen und dunklen Kombinationen können die automatisch ermittelten Bereichsgrenzen einzelne fremd gefärbte Pixel ergeben. Der ursprüngliche weibliche Sprite enthält 40 Graustufen. Um ihn Pixel für Pixel zu bewahren, werden Originalpixel nicht gerundet; neu gezeichnete Teile und Varianten verwenden 16 Stufen.
+Korrekturrunde vom 27. November: Leos Mähne schließt jetzt unter dem Gesicht; die weißen Querbalken wurden entfernt. Farbflächen für Kranz und helle Schwanzspitze folgen den Konturen. Die beiden ursprünglichen Kartenfehler („Gesicht“ an der Schwanzspitze und als Brustband) sind korrigiert. Flecken, Ringe, helle Brust und „Maske“ liegen nur auf dem Körperfell, nicht auf Gesicht oder Kranz; die „Maske“ ist deshalb eine seitliche Körperzeichnung. Groschens helle schräge Bauchstreifen sind entfernt. Schleife und Glöckchen sind größer und neu positioniert. Die gezeichneten KI-Vorlagen (`werkzeug/ki/*-v2.png`) dienen als Vorlage; das Skript bereinigt die pixelgenauen Ebenen und zeichnet das kleine Zubehör im Raster nach.
+
+Sichtbare Restpunkte: Leos Mähne wirkt beim Jungen an den Wangen und unter dem Kinn noch wie ein zusätzlicher grauer Saum. Groschens Schwanzansatz rechts ist weiterhin etwas unruhig. Die Körpermuster sind in Originalgröße aufgrund der kleinen freien Fellfläche nur schwach erkennbar; auch Evis ursprüngliche Fellpunkte sind dort sehr fein. Der ursprüngliche weibliche Sprite enthält 40 Graustufen. Um ihn Pixel für Pixel zu bewahren, werden Originalpixel nicht gerundet; neu gezeichnete Teile und Varianten verwenden 16 Stufen. Der Probelauf ist weiterhin **nicht freigegeben**.
 
 ## Stand und Grenzen
 

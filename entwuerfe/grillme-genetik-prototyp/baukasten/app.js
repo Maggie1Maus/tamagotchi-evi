@@ -110,7 +110,8 @@ async function paint(wrap,creature,age,opts){
         const rc=document.createElement('canvas');rc.width=w;rc.height=h;
         const rx=rc.getContext('2d',{willReadFrequently:true});if(region)rx.drawImage(region,0,0);
         const rd=rx.getImageData(0,0,w,h).data;
-        for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&md[i]>127&&ba[i+3]>0&&rd[i]===51){let g=Math.min(255,Math.round((bd.data[i]+34)/17)*17);bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
+        const shift=creature.muster==='helle-brust'?68:creature.muster==='punkte'?-34:-68;
+        for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&md[i]>127&&ba[i+3]>0&&rd[i]===51){let g=Math.max(0,Math.min(255,Math.round((bd.data[i]+shift)/17)*17));bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
         ctx.putImageData(bd,0,0);
       }else missing.push(`Größe passt nicht: ${key}`);
     }

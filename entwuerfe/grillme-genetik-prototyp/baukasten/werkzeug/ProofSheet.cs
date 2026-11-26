@@ -42,27 +42,34 @@ public static class ProofSheet {
         if(accessory!=null)Draw(g,sex,"zubehoer/"+accessory+".png",ton,kranz);
       }
       if(pattern!=null)using(var mask=Layer(sex,"muster/"+pattern+".png"))using(var region=Layer(sex,"basis.bereiche.png"))if(mask!=null&&region!=null){
-        for(int y=0;y<outp.Height;y++)for(int x=0;x<outp.Width;x++)if(mask.GetPixel(x,y).A>0&&region.GetPixel(x,y).R==51){Color c=outp.GetPixel(x,y);if(c.A>0){int v=Math.Min(255,(int)Math.Round((c.R+34)/17.0)*17);outp.SetPixel(x,y,Color.FromArgb(255,v,v,v));}}
+        int shift=pattern=="helle-brust"?68:pattern=="punkte"?-34:-68;
+        for(int y=0;y<outp.Height;y++)for(int x=0;x<outp.Width;x++)if(mask.GetPixel(x,y).A>0&&region.GetPixel(x,y).R==51){Color c=outp.GetPixel(x,y);if(c.A>0){int v=Math.Max(0,Math.Min(255,(int)Math.Round((c.R+shift)/17.0)*17));outp.SetPixel(x,y,Color.FromArgb(255,v,v,v));}}
       }
       return outp;
     }
   }
-  static Bitmap RegionPreview(string sex){using(var src=Layer(sex,"basis.bereiche.png")){
-    var dst=new Bitmap(src.Width,src.Height,PixelFormat.Format32bppArgb);
+  static void RegionLayer(Bitmap dst,Bitmap src){if(src==null)return;
     for(int y=0;y<src.Height;y++)for(int x=0;x<src.Width;x++){
       Color c=src.GetPixel(x,y);if(c.A==0)continue;
       Color p=c.R==17?Color.Black:c.R==34?Color.Crimson:c.R==51?Color.SteelBlue:c.R==68?Color.Gold:c.R==85?Color.MediumPurple:c.R==102?Color.LimeGreen:Color.Orange;
       dst.SetPixel(x,y,p);
     }
+  }
+  static Bitmap RegionPreview(string sex){using(var src=Layer(sex,"basis.bereiche.png")){
+    var dst=new Bitmap(src.Width,src.Height,PixelFormat.Format32bppArgb);
+    RegionLayer(dst,src);
+    string own=sex=="weiblich"?"evi":"evi-m";
+    using(var tail=Layer(sex,"schwanz/"+own+".bereiche.png"))RegionLayer(dst,tail);
+    using(var ears=Layer(sex,"ohren/"+own+".bereiche.png"))RegionLayer(dst,ears);
     return dst;
   }}
-  static void Panel(Graphics g,Bitmap image,string label,int col,int row,Color back){
+  static void Panel(Graphics g,Bitmap image,string label,int col,int row,Color back,int scale=3){
     int pw=390,ph=385,x=col*pw,y=row*ph;
     using(var b=new SolidBrush(back))g.FillRectangle(b,x+4,y+32,pw-8,ph-37);
     using(var f=new Font("Arial",15,FontStyle.Bold))using(var brush=new SolidBrush(Color.Black))g.DrawString(label,f,brush,x+8,y+4);
     g.InterpolationMode=InterpolationMode.NearestNeighbor;g.PixelOffsetMode=PixelOffsetMode.Half;
-    int dx=x+(pw-image.Width*3)/2,dy=y+38+(ph-50-image.Height*3)/2;
-    g.DrawImage(image,new Rectangle(dx,dy,image.Width*3,image.Height*3),new Rectangle(0,0,image.Width,image.Height),GraphicsUnit.Pixel);
+    int dx=x+(pw-image.Width*scale)/2,dy=y+38+(ph-50-image.Height*scale)/2;
+    g.DrawImage(image,new Rectangle(dx,dy,image.Width*scale,image.Height*scale),new Rectangle(0,0,image.Width,image.Height),GraphicsUnit.Pixel);
   }
   static void Row(Graphics g,int row,string sex,bool dark){
     string title=sex=="weiblich"?"Evi":"Männliche Evi";Color bg=dark?Color.FromArgb(75,75,75):Color.White;
@@ -86,7 +93,7 @@ public static class ProofSheet {
   }
   public static void Run(string directory){
     root=directory;
-    using(var sheet=new Bitmap(1950,385*11,PixelFormat.Format24bppRgb))using(var g=Graphics.FromImage(sheet)){
+    using(var sheet=new Bitmap(1950,385*14,PixelFormat.Format24bppRgb))using(var g=Graphics.FromImage(sheet)){
       g.Clear(Color.FromArgb(230,230,230));
       Row(g,0,"weiblich",false);Row(g,1,"weiblich",true);Row(g,2,"maennlich",false);Row(g,3,"maennlich",true);
       for(int i=0;i<5;i++)using(var x=Compose("weiblich",null,null,false,i,0,"punkte",null,null))Panel(g,x,"Fellton "+i,i,4,Color.White);
@@ -112,6 +119,11 @@ public static class ProofSheet {
         string path=Path.GetFullPath(Path.Combine(root,"..","..","neue-tamagotchis","graustufen",pair[0],"erwachsen-gluecklich.png"));
         using(var original=Load(path))if(original!=null)Panel(g,original,"Parkvorlage "+pair[0],int.Parse(pair[1]),10,Color.White);
       }
+      string[] patterns={"flecken","ringe","helle-brust","maske","punkte"};
+      for(int i=0;i<patterns.Length;i++)using(var x=Compose("maennlich",null,null,false,2,0,"glatt",null,patterns[i]))Panel(g,x,"Muster: "+patterns[i],i,11,Color.White);
+      for(int i=0;i<4;i++)using(var x=Compose("maennlich",null,null,false,2,i,"punkte",null,null))Panel(g,x,"Junge: Kranzton "+i,i,12,Color.White);
+      using(var x=RegionPreview("maennlich"))Panel(g,x,"Junge: ganze Bereichskarte",4,12,Color.White);
+      for(int i=0;i<structures.Length;i++)using(var x=Compose("weiblich",null,null,false,2,0,structures[i],null,null))Panel(g,x,"Originalgröße: "+structures[i],i,13,Color.White,1);
       sheet.Save(Path.Combine(root,"werkzeug","pruefbogen-erwachsen.png"),ImageFormat.Png);
     }
     File.WriteAllText(Path.Combine(root,"werkzeug","pixelvergleich.txt"),Check("weiblich")+Check("maennlich"));
