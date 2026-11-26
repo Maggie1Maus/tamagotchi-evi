@@ -1,0 +1,20 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><title>Grillme Kreuzungen</title>
+<style>body{font:16px system-ui;max-width:850px;margin:25px auto;background:#eee;padding:15px}section{background:white;padding:15px;margin:15px 0}canvas{image-rendering:pixelated;width:144px;height:128px;background:white}#cards{display:flex;flex-wrap:wrap;gap:25px}label{display:inline-block;margin:8px}</style>
+<h1>Grillme · Kreuzungsvorschau</h1><p>Isolierter Prototyp mit aktuellen Graustufen-Originalen. Schnittkanten sind bewusst sichtbar und brauchen vor einer Übernahme künstlerische Prüfung.</p>
+<section id="controls"></section><section id="cards"></section><p id="status"></p>
+<script>
+const names=['evi','lotti','gloeckchen','mia'],ages=['baby','teenager','erwachsen','senior'], labels={evi:'Evi',lotti:'Lotti',gloeckchen:'Glöckchen',mia:'Mia'};
+const parts=['body','ears','face','tail'], partLabels={body:'Grundform',ears:'Ohren',face:'Augen und Schnauze',tail:'Schwanz'};
+const controls=document.getElementById('controls'),select={};
+for(const p of parts){const l=document.createElement('label');l.textContent=partLabels[p]+' ';select[p]=document.createElement('select');for(const n of names)select[p].add(new Option(labels[n],n));l.append(select[p]);controls.append(l);select[p].onchange=drawAll;}
+Object.assign(select.body,{value:'evi'});select.ears.value='lotti';select.face.value='gloeckchen';select.tail.value='mia';
+const random=document.createElement('button');random.textContent='Neue Kreuzung';controls.append(random);random.onclick=()=>{for(const p of parts)select[p].value=names[Math.floor(Math.random()*4)];if(parts.every(p=>select[p].value===select.body.value))select.tail.value=names[(names.indexOf(select.body.value)+1)%4];drawAll();};
+const boxes={evi:{ears:[[8,0,24,27],[40,0,24,27]],face:[[23,24,27,18]],tail:[[48,30,24,30]]},lotti:{ears:[[9,1,21,26],[35,1,22,26]],face:[[20,22,27,18]],tail:[[48,31,24,28]]},gloeckchen:{ears:[[5,4,23,31],[44,4,23,31]],face:[[21,21,30,20]],tail:[[48,31,24,29]]},mia:{ears:[[9,2,22,25],[38,2,22,25]],face:[[19,20,31,20]],tail:[[47,26,25,36]]}};
+const imgs={},card={};for(const a of ages){const div=document.createElement('div');div.innerHTML=`<canvas width="72" height="64"></canvas><div>${a}</div>`;document.getElementById('cards').append(div);card[a]=div.querySelector('canvas');}
+const url=(n,a)=>n==='evi'?`evi-${a}.png`:`../neue-tamagotchis/graustufen/${n}/${a}-gluecklich.png`;
+function source(ctx,n,a){const img=imgs[n+'-'+a],s=Math.min(72/img.width,60/img.height);ctx.drawImage(img,(72-img.width*s)/2,62-img.height*s,img.width*s,img.height*s);}
+function draw(a,dy=0){const ctx=card[a].getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,72,64);ctx.save();ctx.translate(0,dy);source(ctx,select.body.value,a);for(const p of ['tail','ears','face']){const n=select[p].value;if(n===select.body.value)continue;ctx.save();ctx.beginPath();const scale=a==='baby'?.82:a==='teenager'?.92:1;for(const [x,y,w,h] of boxes[n][p])ctx.rect((x-36)*scale+36,(y-62)*scale+62,w*scale,h*scale);ctx.clip();source(ctx,n,a);ctx.restore();}ctx.restore();}
+function drawAll(){if(Object.keys(imgs).length<16)return;for(const a of ages)draw(a);document.getElementById('status').textContent=parts.map(p=>`${partLabels[p]}: ${labels[select[p].value]}`).join(' · ');}
+Promise.all(names.flatMap(n=>ages.map(a=>new Promise((ok,fail)=>{const i=new Image();i.onload=()=>{imgs[n+'-'+a]=i;ok();};i.onerror=()=>fail(url(n,a));i.src=url(n,a);})))) .then(drawAll).catch(e=>document.getElementById('status').textContent='Bild konnte nicht geladen werden: '+e);
+let t=0;setInterval(()=>{if(Object.keys(imgs).length===16){t++;for(const a of ages)draw(a,t%2);}},350);
+</script></html>
