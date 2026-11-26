@@ -8,6 +8,7 @@ from PIL import Image
 
 STEP = Path(__file__).resolve().parents[1]
 SOURCE = STEP.parents[1] / "entwuerfe/zimmer/graustufen/spielgrafiken"
+FENSTER = STEP.parents[1] / "entwuerfe/zimmer/fenster-hell-2026-11-26/ebenen"
 OUTPUT = STEP / "evi-handy/zimmergrau.h"
 ZEIT = ("tag", "daemmerung", "nacht")
 WETTER = ("klar", "leicht-bewoelkt", "regen", "bedeckt", "schneefall")
@@ -16,7 +17,10 @@ GLAS = (66, 53)
 
 
 def lesen(pfad, groesse):
-    with Image.open(SOURCE / (pfad + ".png")) as bild:
+    datei = SOURCE / (pfad + ".png")
+    if pfad.startswith("fenster/") and (FENSTER / (pfad[8:] + ".png")).exists():
+        datei = FENSTER / (pfad[8:] + ".png")
+    with Image.open(datei) as bild:
         if bild.format != "PNG" or bild.size != groesse:
             raise ValueError(f"{pfad}: {bild.format} {bild.size}, erwartet PNG {groesse}")
         rgba = bild.convert("RGBA")
@@ -86,6 +90,11 @@ def erzeugen():
               for ende in ("", "-hell", "-dunkel")]
     for name in ("huegel", "laub-herbst", "schnee-boden", "schnee-aeste"):
         export("fenster/" + name, GLAS)
+    for name, symbol in (("huegel", "ZG_LANDSCHAFT"), ("schnee-boden", "ZG_SCHNEEBODEN"),
+                         ("laub-herbst", "ZG_BODENLAUB")):
+        namen = [export(f"fenster/{name}-{zeit}", GLAS) for zeit in ZEIT]
+        ausgabe.append(f"static constexpr const ZimmerBild* {symbol}[] = {{"
+                       + ", ".join("&" + eintrag for eintrag in namen) + "};")
     regen = [export(f"fenster/regen-{i}", GLAS) for i in range(16)]
     schnee = [export(f"fenster/schnee-{i}", GLAS) for i in range(16)]
     export("fenster/herbstblatt", (5, 6))

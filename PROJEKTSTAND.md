@@ -1,5 +1,12 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Heller Fensterausblick – 26. November 2026
+
+- Die Nutzerin hat nach dem Test am Board einen freundlicheren Fensterausblick und einen helleren Tagesbaum gewünscht, die Tageslicht-Vorschau bestätigt und das vollständige Grafikpaket samt Codeanbindung zum Hochladen freigegeben.
+- Neue Fensterebenen und alle 51 Kombinationen unter `entwuerfe/zimmer/fenster-hell-2026-11-26/`. Sonne fast weiß, Landschaft und Baum heller; Wolken/Regen abgestuft dunkler; Dämmerung ohne Mond und mit hellem Baum; Nachthimmel schwarz. Schnee ist fest im Winterbaum enthalten, auch bei Sonne; Schneefall nur im Winter.
+- In `zimmergrau.h` und `einrichtung.ino` eingebunden; Generator und unabhängiger PNG-Vergleich angepasst. Der komplette aktuelle Ordner `software/schritt-10/evi-handy` bleibt der aufzuspielende Stand.
+- Native PC-Prüfungen bestanden vor dem Umgebungsausfall. Nach Wiederherstellung Datenvergleich aller 51 Kombinationen und 411 Animationsansichten zwischen PNG-Ebenen und gepacktem Header erfolgreich. Neue native Übersetzung nach der Wiederherstellung sowie physischer Boardtest stehen noch aus. Details und reproduzierbare Prüfkommandos in der README des Grafikpakets.
+
 ## Parkhorizont mit Häusern – Gestaltung vom 26. November 2026
 
 - Die bestehende Parkansicht wird um **genau drei kleine Häuschen am fernen Ende des Kieswegs** ergänzt: eines links, zwei rechts. Die zwei rechten Häuser stehen leicht hintereinander und dürfen sich überlappen; keines schwebt, alle stehen sichtbar auf dem Boden. Sie stehen nah am Weg und ersetzen weder den Weg noch die bestehenden Bäume und Sträucher am Horizont.

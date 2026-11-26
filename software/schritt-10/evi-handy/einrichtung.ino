@@ -11,12 +11,12 @@ void zimmerFensterNeu(Jahreszeit j, Himmel h, Wetter w, int phase) {
  zimmerEbene(*ZG_HIMMEL[h][w], ZF_X, ZF_Y);
  if (w == WT_SONNE || w == WT_SONNE_WOLKEN) zimmerEbene(*ZG_ZEICHEN[h], ZF_X, ZF_Y);
  zimmerEbene(*ZG_WOLKEN[h][w], ZF_X, ZF_Y);
- zimmerEbene(ZG_HUEGEL, ZF_X, ZF_Y);
- if (j == JZ_WINTER) zimmerEbene(ZG_SCHNEE_BODEN, ZF_X, ZF_Y);
+ zimmerEbene(*ZG_LANDSCHAFT[h], ZF_X, ZF_Y);
+ if (j == JZ_WINTER) zimmerEbene(*ZG_SCHNEEBODEN[h], ZF_X, ZF_Y);
  zimmerEbene(*ZG_BAEUME[h][j], ZF_X, ZF_Y);
- if (w == WT_SCHNEE) zimmerEbene(ZG_SCHNEE_AESTE, ZF_X, ZF_Y);
+ // Schnee gehört fest zum neuen Winterbaum, auch bei Sonne.
  if (j == JZ_HERBST) {
-  zimmerEbene(ZG_LAUB_HERBST, ZF_X, ZF_Y);
+  zimmerEbene(*ZG_BODENLAUB[h], ZF_X, ZF_Y);
   const int lx = 19 + (int)lround(sin(f * 2 * M_PI / 16) * 2);
   zimmerEbene(ZG_HERBSTBLATT, ZF_X + lx, ZF_Y + 28 + f * 18 / 16);
  }

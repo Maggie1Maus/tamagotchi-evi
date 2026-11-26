@@ -8,6 +8,7 @@ from PIL import Image, ImageChops
 
 
 QUELLE = Path(__file__).resolve().parents[3] / "entwuerfe/zimmer/graustufen/spielgrafiken"
+FENSTER = Path(__file__).resolve().parents[3] / "entwuerfe/zimmer/fenster-hell-2026-11-26/ebenen"
 JAHRESZEITEN = ("fruehling", "sommer", "herbst", "winter")
 TAGESZEITEN = ("tag", "daemmerung", "nacht")
 WETTER = ("klar", "leicht-bewoelkt", "regen", "bedeckt", "schneefall")
@@ -18,7 +19,10 @@ def pruefen(fotos):
 
     def png(pfad):
         if pfad not in ebenen:
-            with Image.open(QUELLE / (pfad + ".png")) as bild:
+            datei = QUELLE / (pfad + ".png")
+            if pfad.startswith("fenster/") and (FENSTER / (pfad[8:] + ".png")).exists():
+                datei = FENSTER / (pfad[8:] + ".png")
+            with Image.open(datei) as bild:
                 ebenen[pfad] = bild.convert("RGBA")
         return ebenen[pfad]
 
@@ -37,14 +41,12 @@ def pruefen(fotos):
                     voreinander = []
                     if wetter in ("klar", "leicht-bewoelkt"):
                         voreinander.append(f"himmelszeichen-{zeit}")
-                    voreinander.extend((f"wolken-{wetter}-{zeit}", "huegel"))
+                    voreinander.extend((f"wolken-{wetter}-{zeit}", f"huegel-{zeit}"))
                     if saison == "winter":
-                        voreinander.append("schnee-boden")
+                        voreinander.append(f"schnee-boden-{zeit}")
                     voreinander.append(f"baum-{saison}" + ("", "-hell", "-dunkel")[h])
-                    if wetter == "schneefall":
-                        voreinander.append("schnee-aeste")
                     if saison == "herbst":
-                        voreinander.append("laub-herbst")
+                        voreinander.append(f"laub-herbst-{zeit}")
                     for name in voreinander:
                         glas.alpha_composite(png("fenster/" + name))
                     if saison == "herbst":

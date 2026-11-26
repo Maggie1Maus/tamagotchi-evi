@@ -91,6 +91,36 @@ void fensterPruefen() {
   PRUEFE(animationPasst, "Regen, Schnee und Herbstblatt bewegen nur die Fensterscheiben");
 }
 
+void fensterHelligkeitPruefen() {
+  bool sonnigHell = true, baeumeHell = true;
+  for (int j = 0; j < 4; j++) {
+    zimmerFensterNeu((Jahreszeit)j, HIMMEL_TAG, WT_SONNE, 0);
+    sonnigHell &= bild.stufe(ZF_X + 29, ZF_Y + 24) >= 14;
+    const ZimmerBild& b = *ZG_BAEUME[HIMMEL_TAG][j];
+    long summe = 0, n = 0;
+    for (int y = 0; y < b.h; y++) for (int x = 0; x < b.w; x++)
+      if (b.deckt(x, y)) { summe += b.wert(x, y); n++; }
+    baeumeHell &= n > 0 && summe / n >= 153;
+  }
+  PRUEFE(sonnigHell, "Sonniger Tageshimmel ist in allen Jahreszeiten fast weiß");
+  PRUEFE(baeumeHell, "Alle vier Tagesbäume sind freundlich hell statt dunkler Silhouetten");
+  zimmerFensterNeu(JZ_WINTER, HIMMEL_TAG, WT_SONNE, 0);
+  long schnee = 0;
+  for (int y = 48; y < 52; y++) for (int x = 2; x < 29; x++)
+    schnee += bild.getBuffer()[(ZF_Y + y) * BREITE + ZF_X + x];
+  PRUEFE(schnee / (4 * 27) >= 238, "Winterboden bleibt auch bei Sonne hell und freundlich");
+  const int klar = ZG_HIMMEL[HIMMEL_TAG][WT_SONNE]->wert(0, 0);
+  const int regen = ZG_HIMMEL[HIMMEL_TAG][WT_REGEN]->wert(0, 0);
+  const int abend = ZG_HIMMEL[HIMMEL_DAEMMERUNG][WT_REGEN]->wert(0, 0);
+  const int nacht = ZG_HIMMEL[HIMMEL_NACHT][WT_REGEN]->wert(0, 0);
+  PRUEFE(klar > regen && regen > abend && abend > nacht,
+         "Sonne, Regen, Dämmerung und Nacht haben schlüssige Helligkeiten");
+  bool schwarz = true;
+  for (int w = 0; w < 5; w++) for (int y = 0; y < 53; y++) for (int x = 0; x < 66; x++)
+    schwarz &= ZG_HIMMEL[HIMMEL_NACHT][w]->wert(x, y) == 0;
+  PRUEFE(schwarz, "Freier Nachthimmel bleibt bei allen Wetterlagen vollständig schwarz");
+}
+
 void zimmerLichtPruefen() {
   const ms_t mittag = ausOrtszeit(2027, 7, 12, 12, 0);
   const ms_t zeiten[] = {mittag, sonnenzeiten(mittag).untergang + MINUTE,
@@ -229,6 +259,7 @@ void parkPruefen() {
 int main(){
  bildschirmStarten();bild.cp437(true);bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);
  fensterPruefen();
+ fensterHelligkeitPruefen();
  zimmerLichtPruefen();
  bereit(ausOrtszeit(2027,7,12,12,0));momentStoppen(true);
  PRUEFE(zimmerGueltig(einrichtung),"Starterzimmer mit freien Interaktionswegen gültig");
