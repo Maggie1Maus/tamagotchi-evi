@@ -75,6 +75,43 @@ Same canvas size and position, white background, no color, no text.
 
 **B4 – Leos Mähne** (Besonderheit vorn, gleiche Art): eine Löwenmähne, die **um das Gesicht** liegt und es nicht verdeckt.
 
+### Fellfarbe, Kranzfarbe, Fellstruktur und Zubehör
+Kinder sollen sich auch in **Fellfarbe**, **Farbe des Kranzes** (Halskrause), **Fellstruktur** und **Zubehör** unterscheiden. Das wird **gerechnet bzw. als Ebene aufgelegt**, nicht für jede Kombination neu gezeichnet. Dafür brauchen Basis und Teile genaue Bereiche.
+
+**Schritt G – Bereichskarte:** Zu jeder Basis und jedem Teil entsteht eine gleich große Karte `<name>.bereiche.png`, in der jeder Pixel einem Bereich zugeordnet ist (feste Graustufe je Bereich, in `werkzeug/bereiche.md` erklärt):
+- `linie` – Umrisslinie und Binnenlinien: **wird nie verändert**
+- `gesicht` – Augen, Glanzpunkte, Nase, Mund, Zunge, Wangen, Brille: **wird nie verändert**
+- `fell` – Fellfläche von Kopf, Körper, Ohren außen, Schwanz
+- `kranz` – Halskrause und helle Schwanzspitze
+- `ohr-innen` – dunkles Ohrinneres
+- `pfoten` – helle Pfoten
+- `punkte` – die Fellpunkte
+
+Die Karte erstellt das Skript (Graustufe, Lage, Nachbarschaft) und du korrigierst sie von Hand, wo es falsch liegt. Sie wird im Prüfbogen farbig gezeigt, damit ich sie kontrollieren kann.
+
+**Schritt H – Fellpunkte als eigene Ebene:** Das Skript nimmt die Punkte aus dem Fell heraus (Punkt-Pixel durch den umgebenden Fellton ersetzen) und legt sie als Ebene `struktur/punkte.png` ab. Damit hat die Basis glattes Fell, und die Struktur wird zum vererbbaren Merkmal.
+
+**Neue und geänderte Merkmale im Baukasten** (`figuren.js`, `app.js`, Oberfläche, Kennungsliste erweitern):
+| Merkmal | Werte | Wirkung |
+|---|---|---|
+| Fellton | 0–4, sehr hell bis sehr dunkel | verschiebt nur `fell` (und `ohr-innen` mit, damit es dunkler als das Fell bleibt) |
+| Kranzton | 0–3: weiß, hellgrau, mittelgrau, dunkelgrau | verschiebt nur `kranz`; muss sich sichtbar vom Fell abheben, sonst eine Stufe weiter weg |
+| Fellstruktur | punkte (Evi), glatt, gesprenkelt (viele kleine Punkte), gestrichelt (kurze Fellstriche), wuschelig (helle Spitzen am Rand) | Ebene unter `struktur/`, nur innerhalb von `fell` |
+| Fellmuster | keins, flecken, ringe, helle-brust, maske | wie bisher, nur innerhalb von `fell` |
+| Zubehör | keins, schleife, gloeckchen, halstuch … | eigene Ebene, gezeichnet auf der Basis |
+
+Jede Parkfigur bekommt in `figuren.js` Werte für Kranzton und Fellstruktur (aus ihrem Bild geschätzt und markiert). Vererbung wie die anderen Merkmale: von A oder von B. Der Fellton liegt weiter zwischen den Eltern ± 1. Die bisherige grobe Tonverschiebung über alle Graustufen 50–235 wird durch die Bereichskarte ersetzt.
+
+**Zusätzlich im Probelauf liefern:**
+```
+teile/<geschlecht>/erwachsen/basis.bereiche.png  (und je Teil <teil>.bereiche.png)
+teile/<geschlecht>/erwachsen/struktur/punkte.png, glatt (leer), gesprenkelt.png, gestrichelt.png, wuschelig.png
+teile/<geschlecht>/erwachsen/zubehoer/schleife.png, gloeckchen.png
+```
+Strukturen werden **im Evi-Stil** gemacht (gleiche weichen grauen Punkte/Striche wie Evis Fellpunkte, nur anders verteilt). Schleife und Glöckchen nach Mias bzw. Glöckchens Vorbild, im Evi-Stil, über Bildauftrag wie B2: nur das Zubehör hinzufügen, nichts sonst ändern.
+
+**Prüfbogen ergänzen:** eine Zeile mit Evi in allen 5 Felltönen, eine mit allen 4 Kranztönen, eine mit allen Strukturen, eine mit den Zubehören, und drei zufällige Kinder mit allem zusammen. Ich will sehen, ob Evi dabei Evi bleibt.
+
 ### Was du am Ende sagst
 - Welche Dateien entstanden sind und den Prüfbogen.
 - Wo Nähte, doppelte Linien, Lücken oder Stilbrüche zu sehen sind (ehrlich, mit Figur und Stelle).
@@ -86,5 +123,5 @@ Same canvas size and position, white background, no color, no text.
 ## Danach (wenn der Probelauf gut ist)
 1. Die übrigen 17 Figuren für Erwachsen, beide Geschlechter. Für Mimi und Spuki gibt es keine Ohren und Schwänze, nur ihre Besonderheit (Fühler, Geisterschweif?).
 2. Dieselben Teile für Baby, Teenager und Senior. Die Teile werden je Alter neu auf die jeweilige Basis gezeichnet, nicht nur verkleinert.
-3. Muster (Flecken, Ringe, helle Brust, Punkte) als weiß/schwarze Masken je Basis und Zubehör (Schleife, Glöckchen).
+3. Muster, Strukturen, Bereichskarten und Zubehör für die übrigen Altersstufen.
 4. Später: Emotionen und Posen. Dafür bräuchten die Teile je Pose angepasste Fassungen. Erst entscheiden, wenn die Grundpose überzeugt.
