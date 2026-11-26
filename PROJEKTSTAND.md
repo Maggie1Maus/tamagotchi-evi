@@ -7,6 +7,10 @@
 - **Außerhalb der Weihnachtszeit (18.11.–5.1.)** gibt es noch kein Dorfbild; dort dient der Park (Evi am Dorfeingang) als Hintergrund. **Für die anderen Jahreszeiten fehlen noch Dorfbilder** (Frühling, Sommer, Herbst, Winter ohne Weihnachtsschmuck): bei Bedarf bei der Nutzerin anfragen und über das Skript einbauen.
 - Test `dorf.cpp` prüft u. a. Pixel für Pixel alle Dorfbilder zur Weihnachtszeit.
 
+## Neue Genetikvorschau mit gemeinsamer Kopfform (26. November 2026)
+
+- [Mohn und Flocke](entwuerfe/grillme-genetik-prototyp/gemeinsame-kopfform/README.md) sind zwei neue Graustufenfiguren. Die Kopfform ist gemeinsam, fünf sichtbare Merkmale kommen wahlweise von einem der beiden Eltern. Die lokale Browserseite zeigt das Ergebnis als Baby und erwachsen.
+
 ## Schritt 3 (26.11.2026): Verlieben, Klopfen, Partner, Ei, Baby, Oma im Zimmer
 
 Neue Dateien `evi-handy/haushalt.h`, `haushalt.ino`. Gespeichert im EEPROM ab 2200 (`HaushaltStand`, mit Prüfsumme). Geändert: `park.h/.ino`, `dorf.ino`, `stammbaum.ino` (`stammEintragenKern`), `kuscheln.ino`, `evi-handy.ino`.
