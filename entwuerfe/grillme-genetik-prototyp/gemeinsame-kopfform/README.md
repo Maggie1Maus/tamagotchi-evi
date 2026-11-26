@@ -1,11 +1,14 @@
-# Mohn und Flocke
+# Vier Tamagotchis mit gemeinsamer Kopfform
 
-[Die Vorschau](index.html) lässt sich aus dem lokalen Repo direkt im Browser öffnen. Die beiden Eltern stehen neben dem Kind. Für jedes der fünf Merkmale kann man einen Elternteil wählen. Die Auswahl gilt für beide gezeigten Altersstufen.
+[Die Vorschau](index.html) lässt sich aus dem lokalen Repo direkt im Browser öffnen. Oben stehen alle vier Figuren zur Ansicht. Darunter wählt man zwei Eltern und stellt für jedes der fünf Merkmale ein, von wem es kommt. Die Auswahl gilt für beide gezeigten Altersstufen.
 
-![Interaktive Vorschau mit Mohn, Flocke und einer Kreuzung](uebersicht.png)
+![Interaktive Graustufen-Vorschau mit vier Figuren zur Auswahl](uebersicht.png)
 
-Die beiden Figuren sind eigens für diesen Versuch gezeichnet. Mohn hat Stehohren, offene Augen, eine kleine Schnauze, einen aufrecht sitzenden Körper und einen Stummelschwanz. Flocke hat Schlappohren, lächelnde Augen, eine breitere Mundpartie, einen gebeugten Sitz und einen buschigen Schwanz. Die gemeinsame Kopffläche ist bei allen Kombinationen gleich, bei Babys etwas kleiner. Augen und Mundpartie haben getrennte Zeichenebenen. Jeder Körper bringt seinen eigenen Schwanzansatz mit.
+- **Mohn** hat Stehohren, offene Augen, einen aufrechten Sitz und einen Stummelschwanz.
+- **Flocke** hat Schlappohren, lächelnde Augen, einen gerade sitzenden Hundekörper mit Glöckchen und einen buschigen Schwanz.
+- **Komet** ist ein kleiner Drache mit Hörnern, gezackten Ohren, Flügeln und einer Pfeilspitze am Schwanz. Die Flügel gehören zum Körper.
+- **Pippa** ist eine Waldkatze mit dunklen Ohren, Schnurrhaaren, hellem Brustfell und einem geringelten Schwanz.
 
-Die Motive werden im selben 72 × 64 Raster wie die Parkfiguren gezeichnet. Die fertigen Pixel sind neutralgrau mit 16 möglichen Helligkeitsstufen und binärer Transparenz.
+Die gemeinsame Kopfform ist schmaler als im ersten Entwurf und bleibt pro Altersstufe bei allen Kombinationen gleich. Ohren und Hörner belegen denselben Platz in der Auswahl. Augen und Mundpartie haben getrennte Zeichenebenen, und jeder Körper bringt seinen eigenen Schwanzansatz mit. Die Motive verwenden wie die Parkfiguren ein 72 × 64 Raster mit 16 möglichen Graustufen.
 
-Die Vorschau enthält Baby und Erwachsen. In Edge wurden alle 32 Kombinationen in beiden Altersstufen geprüft, einschließlich Elternvergleich, Zufallsauswahl und zusammenhängender Silhouette. Teenager, Senior und die Animationen stehen noch aus.
+In Edge wurden alle sechs Elternpaare mit je 32 Merkmalswahlen als Baby und erwachsen geprüft. Der Test prüfte die Auswahl, den Elternvergleich, die Graustufen und zusammenhängende Silhouetten. Teenager, Senior und die Animationen stehen noch aus.
