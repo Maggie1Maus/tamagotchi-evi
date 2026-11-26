@@ -70,16 +70,14 @@ int stammBesterElter(ms_t evi, uint32_t maske) {
   return best;
 }
 
-// Das verstorbene Tamagotchi kommt in den Stammbaum. Es wird Elternteil des neuen; der andere Elternteil ist die
-// Parkfreund-Figur des anderen Geschlechts, die es am häufigsten getroffen hat (Name wird gespeichert, weil er sich ändert).
-// Muss aufgerufen werden, solange die Treffen des alten Tamagotchis noch gespeichert sind (aktionAusfuehren, NEUES_EI).
-void stammEintragen(const Tier& alt, ms_t jetzt) {
-  // Achtung: Die Treffen des alten Tamagotchis dürfen hier noch nicht zurückgesetzt sein (parkFreundPruefen erst später).
+// Das Tamagotchi kommt in den Stammbaum. Es wird Elternteil des neuen; der andere Elternteil (neuerElter, mit Namenscode)
+// ist bei einem Baby aus einer Partnerschaft der Partner; sonst (-2, Notlösung „Neues Ei“) die Parkfreund-Figur des anderen
+// Geschlechts, die es am häufigsten getroffen hat. Der Name wird gespeichert, weil er sich ändert.
+// Muss aufgerufen werden, solange die Treffen des alten Tamagotchis noch gespeichert sind.
+void stammEintragenKern(const Tier& alt, ms_t gelebt, ms_t jetzt, int neuerElter, uint8_t neuerElterName) {
   StammEintrag e;
   memset(&e, 0, sizeof(e));
   stammNameKuerzen(alt.name[0] ? alt.name : "Tamagotchi", e.name, sizeof(e.name));
-  const ms_t ende = alt.tot && alt.gestorben > alt.schluepft ? alt.gestorben : jetzt;
-  const ms_t gelebt = ende > alt.schluepft ? ende - alt.schluepft : 0;
   e.wesen = (uint8_t)wesenVon(alt.geboren);
   e.geschlecht = stamm.geschlechtAktuell;
   e.eltern = stamm.elternAktuell;
@@ -92,12 +90,23 @@ void stammEintragen(const Tier& alt, ms_t jetzt) {
     stamm.anzahl = STAMM_MAX - 1;
   }
   stamm.eintrag[stamm.anzahl++] = e;
-  const int elter = stammBesterElter(alt.geboren, e.geschlecht ? FIGUR_WEIBLICH_MASKE : FIGUR_MAENNLICH_MASKE);
+  int elter = neuerElter;
+  uint8_t code = neuerElterName;
+  if (neuerElter == -2) {
+    elter = stammBesterElter(alt.geboren, e.geschlecht ? FIGUR_WEIBLICH_MASKE : FIGUR_MAENNLICH_MASKE);
+    code = elter == 255 ? 255 : besuchNameCode(elter, alt);
+  }
   stamm.elternAktuell = (uint8_t)elter;
-  stamm.elternNameAktuell = elter == 255 ? 255 : besuchNameCode(elter, alt);
+  stamm.elternNameAktuell = code;
   stamm.geschlechtAktuell = 0;               // das Baby bekommt sein Geschlecht beim Benennen
   stammGeaendert = true;
   speichern(jetzt);
+}
+
+// Notlösung „Neues Ei“ nach dem Tod: das Tamagotchi kam mit seinem tatsächlichen Alter in den Stammbaum
+void stammEintragen(const Tier& alt, ms_t jetzt) {
+  const ms_t ende = alt.tot && alt.gestorben > alt.schluepft ? alt.gestorben : jetzt;
+  stammEintragenKern(alt, ende > alt.schluepft ? ende - alt.schluepft : 0, jetzt, -2, 255);
 }
 
 // Der Stammbaum geht auch bei Ei und verstorbener Evi, sonst nur wenn Evi wach und nicht beschäftigt ist.

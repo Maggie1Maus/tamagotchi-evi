@@ -127,6 +127,7 @@ void beruehrt(int x, int y) {
   if (parkOffen()) { parkTouch(x, y); return; }
   if(zimmerEditor.offen){zimmerEditorTouch(x,y);return;}
   if (sideboard.phase != SB_ZU || spiel.aktiv || menueOffen || ritual.aktiv) return;
+  if (haushaltTippen(x, y, jetztMs())) return;                  // Partner / Tamagotchi davor antippen (haushalt.ino)
   if (aufEvi(x, y)) kuschelnBeginnen();
 }
 

@@ -12,7 +12,7 @@ const char* const KENN_ICH_NICHT[3] = {"Das Haus kennst du noch nicht.", "Dort w
                                        "Erst im Park treffen, dann besuchen!"};
 
 // Wer gerade im Park steht, ist nicht zu Hause
-bool dorfZuHause(int f, ms_t jetzt) { return f != parkBesucher(jetzt); }
+bool dorfZuHause(int f, ms_t jetzt) { return f != parkBesucher(jetzt) && f != haushalt.partner; }
 
 // Angekommen am Dorf: Auswahl öffnen
 void dorfOeffnen(ms_t jetzt) {
@@ -34,6 +34,7 @@ void dorfMeldung(uint8_t art, int nr, uint32_t ms) {
 void dorfBesuchen(ms_t jetzt) {
   const int f = albumWahl;
   if (!parkFreund.treffer[f]) { dorfMeldung(2, random(0, 3), 3500); piep(TON(TON_DANEBEN)); return; }
+  if (f == haushalt.partner) { dorfMeldung(3, 0, 4000); piep(TON(TON_DANEBEN)); return; }
   if (!dorfZuHause(f, jetzt)) { dorfMeldung(1, random(0, 8), 4000); piep(TON(TON_DANEBEN)); return; }
   park.besuch = f;
   park.phase = PARK_BESUCHT;
@@ -86,8 +87,10 @@ void dorfBesuchEnde() {
   }
   park.geschenk = 0;
   park.zweiter = 0;
+  const int f = park.besuch;
   park.phase = PARK_DORF;
   park.meldung = 0;
+  liebeAngebot(f, PARK_DORF, jetztMs());                  // beste Freunde des anderen Geschlechts: „Partner?“ (haushalt.ino)
 }
 
 void dorfKnopf(Knopf k) {
@@ -165,9 +168,10 @@ void dorfZeichnen(ms_t jetzt) {
   const int treffer = parkFreund.treffer[albumWahl];
   if (park.meldung && millis() < park.meldungBis) {
     if (park.meldung == 1) snprintf(zeile1, sizeof(zeile1), NICHT_ZUHAUSE[park.meldungNr % 8], besuchName(albumWahl));
+    else if (park.meldung == 3) snprintf(zeile1, sizeof(zeile1), "%s wohnt jetzt bei dir! ♥", besuchName(albumWahl));
     else snprintf(zeile1, sizeof(zeile1), "%s", KENN_ICH_NICHT[park.meldungNr % 3]);
   } else if (treffer) {
-    snprintf(zeile1, sizeof(zeile1), "%s: %s", besuchName(albumWahl), dorfZuHause(albumWahl, jetzt) ? "zu Hause" : "gerade im Park");
+    snprintf(zeile1, sizeof(zeile1), "%s: %s", besuchName(albumWahl), albumWahl == haushalt.partner ? "wohnt bei dir" : dorfZuHause(albumWahl, jetzt) ? "zu Hause" : "gerade im Park");
   } else {
     snprintf(zeile1, sizeof(zeile1), "???");
   }

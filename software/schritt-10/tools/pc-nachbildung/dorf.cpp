@@ -31,7 +31,8 @@ int main() {
   bildschirmStarten(); bild.cp437(true);
   uhrSetzen(HEUTE);
   pet = neuesTier(HEUTE - 3 * TAG, ERSTES_EI);
-  pet.geboren = geburtFuer(W_NASCH); pet.schluepft = HEUTE - 3 * TAG; pet.aktualisiert = HEUTE; pet.satt = pet.laune = pet.sauber = 90;
+  pet.geboren = geburtFuer(W_NASCH); pet.schluepft = HEUTE - 2 * TAG;   // Teenager: noch keine Frage „Partner?“
+  pet.aktualisiert = HEUTE; pet.satt = pet.laune = pet.sauber = 90;
   himmel = himmelBei(HEUTE); moment.naechster = HEUTE + 10 * MINUTE; moment.letzterBesonderer = HEUTE;
   freundLaden(); parkFreundLaden(); stammLaden(); parkFreund.evi = pet.geboren;
   tastenStarten();

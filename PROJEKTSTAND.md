@@ -1,5 +1,19 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Schritt 3 (26.11.2026): Verlieben, Klopfen, Partner, Ei, Baby, Oma im Zimmer
+
+Neue Dateien `evi-handy/haushalt.h`, `haushalt.ino`. Gespeichert im EEPROM ab 2200 (`HaushaltStand`, mit Prüfsumme). Geändert: `park.h/.ino`, `dorf.ino`, `stammbaum.ino` (`stammEintragenKern`), `kuscheln.ino`, `evi-handy.ino`.
+
+- **Verlieben** nur zwischen Mädchen und Junge (`gegengeschlecht`). Ein **erwachsenes Tamagotchi ohne Partner** wird nach einem Treffen im Park oder einem Besuch im Dorf gefragt „Soll X dein Partner werden?“, wenn die Figur das andere Geschlecht hat und **beste Freunde (Stufe 7)** sind. „Nein“ gilt für den Tag. Gleiche Geschlechter bleiben nur Freunde.
+- **Klopfen:** In den letzten 24 Stunden des Erwachsenenlebens klopft es ohne Partner **alle zwei Stunden tagsüber (9, 11 … 19 Uhr)**: Klopf-Piepton, Bildschirm geht an, Frage „Soll X dein Partner werden?“ (weißer Hintergrund, beide Figuren). Bei „Nein“ kommt im nächsten Zeitfenster ein neuer Kandidat des anderen Geschlechts (alle sechs verschieden); letzte Klopfzeit eine Stunde vor Schluss.
+- **Partner** zieht ein, lebt frei im Zimmer (Originalgröße, läuft, schaut aus dem Fenster, schläft nachts auf dem Teppich, Antippen = kurzer Satz), versorgt sich selbst. Er steht nie mehr im Park; im Dorf: „wohnt bei dir“. Sein Name (Namenscode) wird gespeichert.
+- **Ei:** am **Morgen/Vormittag (8–11 Uhr) des letzten Erwachsenentags**; zieht der Partner später ein, 20 Minuten danach; bleibt weniger als 10 Minuten bis zum Ende, gibt es kein Ei und der Partner zieht wieder aus. Das Ei hüpft **eine Minute** im Zimmer, dann schlüpft es.
+- **Schlüpfen:** Der Partner geht. Das **Baby ist das neue Tamagotchi** (Generation +1, Münzen bleiben, Sammlung leer, danach die Namenseingabe, Geschlecht zufällig). Das bisherige Tamagotchi kommt **mit seinen vollen 10 Lebenstagen in den Stammbaum** (Eltern des Babys: es und der Partner) und **lebt als Oma/Opa im Zimmer weiter** (ohne Balken, ohne Pflege; läuft herum, Antippen = Satz, schläft nachts auf dem Teppich).
+- **Tod der Oma:** Meldung „ist friedlich eingeschlafen“, sie liegt **15 Minuten** im Zimmer (Schlaf-Pose). Antippen fragt „Begraben?“; „Begraben“ lässt sie sofort verschwinden, sonst ist sie nach 15 Minuten von selbst weg.
+- **Notlösung:** Stirbt ein Tamagotchi früher (Vernachlässigung) oder findet sich kein Partner, bleibt **„Neues Ei“** im Menü (neues Ei ohne Namen, Elternteil nach Freundschaft). Dann zieht ein Partner wieder aus.
+- Test `tools/pc-nachbildung/haushalt.cpp` (in `pruefen.sh`): Klopfzeiten, Kandidaten, Ja/Nein, Eizeit, Schlüpfen, Stammbaum, Oma, Begraben, Speichern, Junge/Mädchen, Notlösung. Alle Prüfungen fehlerfrei. **Am Board noch nicht ausprobiert:** besonders Klopfen (Zeitfenster), Laufen der Bewohner im Zimmer, Lage der Schaltflächen.
+- Offen/Ideen: Partner und Oma interagieren mit weiteren Aktionen; Partner im Park nicht sichtbar, sein Haus im Dorf leer; Oma-Bild beim Tod unabhängig vom Wesen.
+
 ## Schritt 2 (26.11.2026): Das Dorf
 
 - Neue Datei `evi-handy/dorf.ino`. Im Park gibt es ein viertes Ziel **„Zum Dorf“** (die Häuser am Ende des Kieswegs antippen oder mit dem Steuerkreuz wählen). Das Tamagotchi läuft bis zu den Häusern, dann öffnet sich die Auswahl: das Raster aller 20 Figuren (wie das Album); darunter steht, ob die gewählte Figur **zu Hause oder gerade im Park** ist. A (oder zweimal antippen) besucht.

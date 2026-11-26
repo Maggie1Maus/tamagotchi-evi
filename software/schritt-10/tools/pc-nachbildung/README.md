@@ -29,6 +29,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-zimmer --zimme
 - `stammbaum.cpp`: Folgen des Wesens in den Regeln, Geschenke der Parkfreunde, Stammbaum.
 - `namen.cpp`: Namenseingabe beim Schlüpfen, wechselnde Figurennamen, Stammbaum mit Geschlecht.
 - `speicher.cpp`: Spielstand Version 3/2 → 4 mit 50 Funden, Stammbaum zieht um. `dorf.cpp`: Weg zum Dorf, Besuche, nicht zu Hause.
+- `haushalt.cpp`: Verlieben, Klopfen, Partner, Ei, Baby, Oma im Zimmer, Begraben.
 
 Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit gibt es nur dort.
 

@@ -46,6 +46,7 @@
 #include "parkfreunde.h"
 #include "stammbaum.h"
 #include "namen.h"
+#include "haushalt.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom
@@ -153,6 +154,7 @@ void speichern(ms_t jetzt) {
   freundSpeichern();                // Freundschaft, Antworten, Geburtstag (freunde.ino)
   parkFreundSpeichern();            // Treffen mit den Parkfreunden (parkfreunde.ino)
   stammSpeichern();                 // Stammbaum (stammbaum.ino)
+  haushaltSpeichern();              // Partner, Ei, das Tamagotchi davor (haushalt.ino)
   zimmerSpeichern();
   letztesSpeichern = jetzt;
 }
@@ -256,6 +258,7 @@ void runde() {
   weiterrechnen(pet, jetzt);
   melde(vorher, jetzt);
   freundRunde(jetzt);               // lange niedrige Balken, speichern (freunde.ino)
+  haushaltTakt(jetzt);              // Ei, Partner, Klopfen, das Tamagotchi davor (haushalt.ino)
   himmel = himmelBei(jetzt);
   // Neuer Wunsch: kurzer Ton und Bildschirm an
   Wunsch w;
@@ -726,6 +729,7 @@ void zeichneAlles() {
   }
   bild.fillRect(0, 224, BREITE, HOEHE - 224, 1);
   if (!spiel.aktiv) zeichneUhrzeit(jetzt);         // nach dem Abdunkeln: bleibt hell
+  if (!spiel.aktiv) haushaltZeichnen(jetzt);       // Ei, Partner und das Tamagotchi davor (haushalt.ino)
   zeichneEvi(jetzt, s, ph);
   zeichneReaktion();
   if (!spiel.aktiv) kuschelHerzenZeichnen();     // aufsteigende Herzen beim Kuscheln (kuscheln.ino)
@@ -1161,6 +1165,7 @@ void setup() {
   freundLaden();                  // Freundschaft und Geburtstag, vor dem ersten Speichern (freunde.ino)
   parkFreundLaden();              // Treffen mit den Parkfreunden (parkfreunde.ino)
   stammLaden();                   // Stammbaum (stammbaum.ino)
+  haushaltLaden();                // Partner, Ei, das Tamagotchi davor (haushalt.ino)
   zimmerLaden();
   speichern(jetzt);
   letzteRunde = millis();
@@ -1212,6 +1217,7 @@ void loop() {
     const ms_t jetzt = jetztMs();
     eviTakt(jetzt);
     namenPruefen(jetzt);              // neues Baby ohne Namen: Namenseingabe (namen.ino)
+    haushaltBewegen(jetzt);           // Partner und das Tamagotchi davor laufen im Zimmer (haushalt.ino)
     ritualWeiter();
     if (!parkOffen()) {
       launenTakt(jetzt);              // Launenwünsche: Wartezeit, Beleidigtsein (launen.ino)

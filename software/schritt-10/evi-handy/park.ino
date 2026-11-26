@@ -76,14 +76,16 @@ int parkBesucher(ms_t jetzt) {
   snprintf(schluessel, sizeof(schluessel), "%ld:park:besuch:%d", (long)tagKennung(jetzt),
            stundeVon(jetzt) / PARK_BESUCH_STUNDEN);
   const uint32_t h = streuwert(schluessel);
-  if (h % 3 == 0) return 0;
+  int wer;
   const uint32_t r = h / 3;
-  if (r % 3 == 0) {
+  if (h % 3 == 0) wer = 0;
+  else {
     int passend[BESUCHER], n = 0;
     for (int i = 1; i < BESUCHER; i++) if (FIGUR_WESEN[i] == eviWesen()) passend[n++] = i;
-    if (n) return passend[(r / 3) % n];
+    wer = (r % 3 == 0 && n) ? passend[(r / 3) % n] : 1 + (int)(r % (BESUCHER - 1));
   }
-  return 1 + (int)(r % (BESUCHER - 1));
+  for (int i = 0; i < BESUCHER && wer == haushalt.partner; i++) wer = (wer + 1) % BESUCHER;   // der Partner wohnt bei uns, nicht im Park
+  return wer;
 }
 
 // Der Besuch hat dieselbe Lebensphase wie Evi.
@@ -234,7 +236,7 @@ static void parkHelfen() {
 
 void parkTakt(ms_t jetzt, uint32_t m) {
   if (!parkOffen()) return;
-  if (park.phase == PARK_NAME) return;     // die Namenseingabe bleibt offen, bis ein Name da ist
+  if (park.phase == PARK_NAME || park.phase == PARK_LIEBE) return;     // Namenseingabe und Frage „Partner?“ bleiben offen
   if (park.phase == PARK_STAMM) { if (!stammMoeglich(jetzt)) parkSchliessen(); else stammTakt(); return; }   // geht auch für Ei und verstorbene Evi
   if (!parkMoeglich(jetzt)) { parkSchliessen(); return; }
   if (park.phase != PARK_ALBUM && parkZuNass(jetzt)) {
@@ -269,7 +271,8 @@ void parkTakt(ms_t jetzt, uint32_t m) {
 
 void parkKnopf(Knopf k) {
   if (park.phase == PARK_NAME) { nameKnopf(k); return; }
-  if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfKnopf(k); return; }   // Namenseingabe: B löscht, START ist Fertig
+  if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfKnopf(k); return; }
+  if (park.phase == PARK_LIEBE) { liebeKnopf(k); return; }   // Namenseingabe: B löscht, START ist Fertig
   if (k == K_B || k == K_START) { parkSchliessen(); return; }
   if (park.phase == PARK_ALBUM) { albumKnopf(k); return; }
   if (park.phase == PARK_STAMM) { stammKnopf(k); return; }
@@ -278,7 +281,12 @@ void parkKnopf(Knopf k) {
     else if (park.phase == PARK_HILFE) parkHelfen();
     else if (park.phase == PARK_GRUSS && park.zweiter == 0) park.zweiter = 1;   // erst der zweite Satz, dann ein Geschenk, dann weiter
     else if (park.phase == PARK_GRUSS && park.zweiter == 1 && park.geschenk) { park.zweiter = 2; piep(TON(TON_MUENZE)); }
-    else if (park.phase == PARK_GRUSS || park.phase == PARK_FUND) { park.zweiter = 0; park.geschenk = 0; park.phase = PARK_WAHL; }
+    else if (park.phase == PARK_GRUSS || park.phase == PARK_FUND) {
+      const bool gruss = park.phase == PARK_GRUSS;
+      const int f = park.besuch;
+      park.zweiter = 0; park.geschenk = 0; park.phase = PARK_WAHL;
+      if (gruss) liebeAngebot(f, PARK_WAHL, jetztMs());      // beste Freunde des anderen Geschlechts: „Partner?“ (haushalt.ino)
+    }
     return;
   }
   if (park.phase != PARK_WAHL) return;
@@ -289,6 +297,7 @@ void parkKnopf(Knopf k) {
 void parkTouch(int x, int y) {
   if (park.phase == PARK_NAME) { nameTouch(x, y); return; }
   if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfTouch(x, y); return; }
+  if (park.phase == PARK_LIEBE) { liebeTouch(x, y); return; }
   if (park.phase == PARK_ALBUM) { albumTouch(x, y); return; }
   if (park.phase == PARK_STAMM) { stammTouch(x, y); return; }
   if (y >= ZEILE_Y) { parkKnopf(x >= 240 ? K_B : K_A); return; }
@@ -501,6 +510,7 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
 void parkZeichnen(ms_t jetzt) {
   if (park.phase == PARK_NAME) { nameZeichnen(jetzt); return; }
   if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfZeichnen(jetzt); return; }
+  if (park.phase == PARK_LIEBE) { liebeZeichnen(jetzt); return; }
   if (park.phase == PARK_ALBUM) { albumZeichnen(jetzt); return; }
   if (park.phase == PARK_STAMM) { stammZeichnen(jetzt); return; }
   const Phase ph = phaseBei(pet, jetzt);
