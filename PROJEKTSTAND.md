@@ -8,6 +8,13 @@
 - **Geburtstag neu fragen** (Nutzerin hatte sich vertippt): Merker-Byte ganz hinten im EEPROM (`GEB_NEU_ADRESSE`, `GEB_NEU_FRAGEN` in `freunde.ino`). Ist er nicht gleich `GEB_NEU_FRAGEN`, vergisst Evi einmal den Geburtstag (Freundschaft und Antworten bleiben) und fragt bei nächster Gelegenheit neu. Für ein weiteres Neufragen `GEB_NEU_FRAGEN` um eins erhöhen.
 - Neues PC-Prüfprogramm `tools/pc-nachbildung/zeitzurueck.cpp` (in `pruefen.sh`): ohne Fix 3 Fehler, mit Fix alles in Ordnung; alle übrigen Prüfungen und der 51-Fenster-Vergleich ebenfalls fehlerfrei. Am Board noch nicht geprüft.
 
+## Aktuelle Korrektur: Fensterbaum nachts ohne Leuchtkontur (26. November 2026)
+
+- Nach dem Aufspielen störte die Nutzerin die weiße Umrandung des Nachtbaums. Diese Gestaltung ist durch eine matte dunkelgraue Nachtpalette ersetzt; die frühere Regel mit weißem Rand gilt nicht mehr.
+- Alle vier Nachtbäume werden mit `tools/make-fenster-nacht.py` aus den vorhandenen Tagesbäumen erzeugt. Keine Kantenaufhellung, Baum höchstens 51/255, winterlicher Schnee höchstens 85/255. Schwarzer Nachthimmel sowie die Tages- und Dämmerungsansichten bleiben erhalten.
+- Die vier PNG-Nachtebenen, `zimmergrau.h`, sämtliche Nachtvorschauen, Übersichten und das ZIP-Paket werden gemeinsam aktualisiert. Die Firmware verwendet die korrigierten Grafiken direkt.
+- Arbeitsumgebung wieder verfügbar: native C++-Übersetzung mit Warnungen, vorhandene Zimmer-/Parkprüfungen, neue Prüfung gegen leuchtende Nachtkonturen sowie 51 Kombinationen und 411 Animationsansichten erfolgreich. Physischer Boardtest der neuen Nachtkorrektur steht aus.
+
 ## Heller Fensterausblick – 26. November 2026
 
 - Die Nutzerin hat nach dem Test am Board einen freundlicheren Fensterausblick und einen helleren Tagesbaum gewünscht, die Tageslicht-Vorschau bestätigt und das vollständige Grafikpaket samt Codeanbindung zum Hochladen freigegeben.
