@@ -1,6 +1,8 @@
 # Grillme: Genetik, Schritte 1–5
 
-Stand: 26. November 2026. Dieser Ordner ist eine isolierte Vorschau. Die Firmware und die Handy-App bleiben unverändert. `index.html` im Browser über einen lokalen Webserver öffnen (vom Repo-Wurzelordner z. B. `npx serve .`). Die vier Altersstufen und die Herkunft jedes sichtbaren Teils lassen sich wechseln; „Neue Kreuzung“ erzeugt weitere Kombinationen. Die kleine Auf-und-ab-Bewegung verwendet dieselbe Logik für alle vier Grundformen und Altersstufen. Sie ersetzt noch keine Lauf- oder Schlafanimation.
+Stand 26. November 2026. Im lokalen Repo lässt sich [index.html](index.html) direkt im Browser öffnen. Oben erscheint die Kreuzung, darunter stehen die beiden Graustufen-Originale zum Vergleich. Die Vorschau zeigt Evis Ohren auf Mia, Lotti und Glöckchen in allen vier Altersstufen. „Andere Kreuzung zeigen“ wechselt zur nächsten zufällig gewählten Grundform aus diesen drei Varianten.
+
+![Mia, Lotti und Glöckchen mit Evis Ohren vom Baby bis zum Senior](kreuzungen.png)
 
 ## Beschlossene Anforderungen
 
@@ -25,24 +27,24 @@ Stand: 26. November 2026. Dieser Ordner ist eine isolierte Vorschau. Die Firmwar
 | `software/schritt-10/` | Waveshare/Pico-2-Renderer, 320 × 240 Display, Graustufen. Zimmer und Park skalieren die Figur aus der Fußposition; Parkfiguren werden altersgleich zu Evi gezeigt. |
 | `PROJEKTSTAND.md` | Spielstand im 4096-Byte-EEPROM weitgehend belegt, etwa 330 Byte Lücken. Flash und RAM müssen vor einer Integration gemessen werden. |
 
-Die 84 Bilder sind Altersentwürfe in **einer glücklichen Pose**, keine 84 vollständigen Animationssätze. Die bisherigen Bilder sind flach gezeichnet; vollständige saubere Trennung von überlappenden Ohren, Gesicht und Schwanz erfordert neue Freistellmasken oder zeichnerische Korrekturen. Die Vorschau schneidet sie nur technisch aus den Originalen.
+Die 84 Bilder zeigen die Altersstufen in einer glücklichen Pose. Die Merkmale sind Teil der flachen Zeichnungen. Für die Ohrvorschau wurden eigene Freistellkonturen in den Originalen markiert. Gesicht, Schwanz und weitere Posen brauchen eigene Konturen und Ansatzpunkte.
 
 ## Modularer Vertrag
 
-Koordinaten beziehen sich auf eine 72 × 64 Entwurfsfläche, Fußlinie `y=61`. Für Evi wird die aktuelle Vorlage proportional eingepasst. Teilbilder behalten 16 Graustufen und Alpha. Das eigentliche Laufzeitschema soll pro Figur und Alter `grundform`, `ohren`, `augen`, `schnauze`, `schwanz` sowie optional `fluegel`, `hoerner`, `geweih` referenzieren. Die Vorschau koppelt Augen und Schnauze vorläufig zur Gesichtszone, damit keine übermalten Pixel als fertige Trennung missverstanden werden.
+Koordinaten beziehen sich auf eine 72 × 64 Entwurfsfläche mit Fußlinie `y=61`. Evis aktuelle Graustufen-Vorlage wird proportional eingepasst, die drei Parkfiguren liegen schon in diesem Raster. Die Masken arbeiten auf ganzen Pixeln und erhalten die Zeichnung in Graustufen. Das geplante Laufzeitschema referenziert pro Figur und Alter `grundform`, `ohren`, `augen`, `schnauze`, `schwanz` sowie optional `fluegel`, `hoerner`, `geweih`.
 
 | Anker je Altersstufe | Bedeutung | Vorschauwert/Herleitung |
 |---|---|---|
 | `fuss` | Skalierung und Platzierung | `(36,61)`; Evi-Sprite an Fußlinie eingepasst |
-| `ohr_links`, `ohr_rechts` | Ansatz oben am Kopf | aus je zwei Quellrechtecken; bei Baby 82 %, Teenager 92 %, Erwachsene/Senior 100 % um Fußlinie skaliert |
-| `augen`, `schnauze` | Gesichtsmitte und Überdeckung | vorläufig gemeinsame Gesichtszone; pro Figur in `index.html` definiert |
-| `schwanz` | hinterer Rumpfansatz | Quellrechteck pro Figur, hinter der Grundform zu zeichnen, wenn eine saubere Maske vorliegt |
+| `ohr_links`, `ohr_rechts` | Ansatz am Kopf | Je eine handgesetzte Kontur und ein Ansatzpunkt pro Ohr, Figur und Alter in [ohren.js](ohren.js) |
+| `augen`, `schnauze` | Gesichtsmitte und Überdeckung | In der aktuellen Vorschau Teil der Grundform |
+| `schwanz` | hinterer Rumpfansatz | In der aktuellen Vorschau Teil der Grundform |
 | `fluegel`, `hoerner`, `geweih` | optionale Ansatzpunkte | in diesen vier Quellen nicht vorhanden; erst mit geeigneten Basisfiguren kalibrieren |
 
-Die in `index.html` hinterlegten Rechtecke sind **Prototyp-Anker**, keine freigegebenen Pixelmasken. Die endgültigen Anker müssen pro Figur und Alter anhand der tatsächlichen Kontur vermessen und optisch abgenommen werden. Für den Renderer gilt künftig eine feste Zeichenreihenfolge: hintere Teile → Grundform → Ohren/Gesicht → vordere Teile. Gemeinsame Bewegungszustände transformieren Anker und Teile zusammen.
+Ein Ohrtausch entfernt zuerst die Originalohren aus der Grundform. Dann richtet [vorschau.js](vorschau.js) die beiden freigestellten Ohren am linken und rechten Kopfansatz aus. Die Grundform wird davor gezeichnet und deckt den Ansatz ab. So bleibt auch Mias Schleife sichtbar. Gemeinsame Bewegungszustände sollen später Anker und Teile zusammen transformieren.
 
 ## Kompatibilität und Vorschautest
 
-Für diese vier Figuren sind Ohren, Gesicht und Schwanz auf den vier vierbeinigen Grundformen grundsätzlich erlaubt. Fehlende optionale Merkmale bleiben leer. Die spätere Matrix für alle 21 Figuren muss Körperklassen unterscheiden: vierbeinig, sitzend/aufrecht, Schnecke (Mimi), schwebend (Spuki) und besondere Grundformen. Eine Schnecke bekommt nicht automatisch klassische Beine oder Ohren; ein schwebender Körper benötigt keinen Beinanker. Die Übertragung ist nur erlaubt, wenn für die Altersstufe ein gültiger Anker und eine geprüfte Überdeckung existieren. Bei fehlendem kompatiblem Spenderteil bleibt das entsprechende Teil des Grundkörpers.
+Die Auswahl lässt die Originale und die drei gerichteten Ohrübertragungen von Evi zu Mia, Lotti und Glöckchen zu. Jede erlaubte Übertragung hat für alle vier Lebensphasen eigene Platzierungswerte. Für weitere Figuren müssen Körperklassen wie vierbeinig, sitzend/aufrecht, Schnecke (Mimi) und schwebend (Spuki) berücksichtigt werden. Die Übertragung setzt einen gültigen Anker und eine geprüfte Überdeckung voraus. Wo ein passender Tausch fehlt, bleibt das Teil der Grundform sichtbar.
 
-Vorgeprüfte Paarungen: Evi × Lotti, Evi × Glöckchen, Evi × Mia sowie Lotti × Mia; in der interaktiven Vorschau sind alle vier Quellen für jede der drei vererbbaren Zonen wählbar. Die Vorschau zeigt, dass die vier Lebensphasen gemeinsam anzeigbar sind. Besonders Gesichts- und Schwanzüberlappungen können sichtbare doppelte Konturen erzeugen; deshalb sind die Bilder **noch nicht freigegeben**. Vor Massengenerierung: jedes Teil freistellen, Nähte und Konturen in allen vier Altern prüfen, Schlafen/Laufen testen und am echten Bildschirm beurteilen.
+In Edge wurden die zwölf Kreuzungsbilder am Original und auf lose Pixel geprüft. Laufen, Schlafen und die getrennte Vererbung von Augen, Schnauze und Schwanz stehen noch aus. Die Übernahme weiterer Figuren hängt von der optischen Freigabe ab.

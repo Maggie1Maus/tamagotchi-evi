@@ -1,5 +1,16 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Männliche Evi und neuer Familien-Baukasten (26. November 2026)
+
+- Die Nutzerin hat das männliche Evi-Charakterblatt freigegeben. Unter [maennlich/README.md](entwuerfe/evi/maennlich/README.md) liegen 80 Graustufen-Sprites für Baby, Teenager, Erwachsener und Opa. Der beleidigte Opa wurde auf vier Pfoten korrigiert. Die Fenster- und Gartenposen zeigen nur die Figur.
+- Der neue [Familien-Baukasten](entwuerfe/grillme-genetik-prototyp/baukasten/README.md) läuft als eigenständige `index.html` mit eingebetteten Bildern, Elternwahl nach Geschlecht, Merkmalsauswahl, Generationen und Liste der noch fehlenden deckungsgleichen Teile. Die vorhandenen Kreuzungsvorschauen bleiben bestehen.
+- Für Erwachsene gibt es jetzt einen [Bauteil-Probelauf](entwuerfe/grillme-genetik-prototyp/baukasten/README.md) für beide Geschlechter mit Leo-, Linus- und Groschen-Ohren und -Schwänzen, Mähne, Bereichskarten, Fell- und Kranztönen, Strukturen und Zubehör. Der [Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) zeigt die Ergebnisse; Evis eigene Teile ergeben wieder exakt das Original (0 abweichende Pixel). Leos Mähne und Groschens Schwanzansatz brauchen optische Korrektur und Freigabe. Weitere Figuren und Altersstufen bleiben bis dahin offen. Der interaktive Browsertest von `file://` wurde durch die Browser-Sicherheitsrichtlinie verweigert.
+
+## Grillme-Genetik: korrigierte Ohrvorschau (26. November 2026)
+
+- Die [isolierte Vorschau](entwuerfe/grillme-genetik-prototyp/README.md) zeigt Evis aktuelle Graustufen-Ohren auf Mia, Lotti und Glöckchen. Jede Altersstufe hat eigene Konturen und Ansatzpunkte. Die Originale stehen direkt darunter.
+- Augen, Schnauze, Schwanz und Bewegungsposen brauchen noch eigene Freistellungen. Vor der Ausweitung auf weitere Figuren steht die optische Freigabe der Vorschau.
+
 ## Dorfbild eingebaut (26. November 2026)
 
 - Die Nutzerin hat die **Weihnachts-Dorfbilder** hochgeladen (`entwuerfe/dorf/weihnachten/dorf-weihnachten.zip`, 15 PNGs 320 × 174: Tag/Dämmerung/Nacht × Sonne, Sonne+Wolken, bewölkt, Regen, Schnee). `tools/make-dorf-grau.py` packt sie 1:1 nach `evi-handy/dorfbilder.h` (`DORF_WEIHNACHT[Himmel][Wetter]`, 16 Graustufen, rund 420 KB Programmspeicher).

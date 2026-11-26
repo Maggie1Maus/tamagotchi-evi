@@ -1,7 +1,7 @@
 // Geschätzte Merkmale sind mit ~ markiert. Alle Einträge können hier geändert werden.
 window.FIGUREN = [
-  ['evi','Evi','weiblich','Evi-Art','evi','evi','keins',2,'punkte','keins'],
-  ['evi-m','Männliche Evi','maennlich','Evi-Art','evi-m','evi-m','maehne',2,'punkte','keins'],
+  ['evi','Evi','weiblich','Evi-Art','evi','evi','keins',2,'keins','keins'],
+  ['evi-m','Männliche Evi','maennlich','Evi-Art','evi-m','evi-m','keins',2,'keins','keins'],
   ['lotti','Lotti','weiblich','Rehkitz','lotti','lotti','keins',2,'flecken','keins'],
   ['ella','Ella','weiblich','Elefantenbaby','ella','ella','ruessel',2,'keins','keins'],
   ['gloeckchen','Glöckchen','weiblich','Hündin','gloeckchen','gloeckchen','keins',2,'keins','gloeckchen'],
@@ -26,3 +26,19 @@ window.FIGUREN = [
   id,name,geschlecht,tierart,ohren,schwanz,besonderheit,ton,muster,zubehoer,
   geschaetzt: id === 'evi' ? [] : ['ohren','schwanz','besonderheit','ton','muster','zubehoer']
 }));
+
+// Kranzton 0=weiß, 1=hellgrau, 2=mittelgrau, 3=dunkelgrau.
+// Bei allen Parkfiguren sind Kranzton und Struktur vorläufig geschätzt (~).
+const KRANZ_UND_STRUKTUR = {
+  evi:[0,'punkte'], 'evi-m':[0,'punkte'],
+  lotti:[1,'gesprenkelt'], ella:[1,'glatt'], gloeckchen:[0,'glatt'],
+  kiwi:[1,'gesprenkelt'], klecksi:[0,'gesprenkelt'], lumi:[0,'glatt'],
+  mia:[0,'glatt'], mimi:[1,'glatt'], moosi:[2,'wuschelig'], spuki:[0,'glatt'],
+  bit:[2,'glatt'], blip:[1,'glatt'], blubber:[2,'glatt'], funke:[1,'gestrichelt'],
+  groschen:[1,'gesprenkelt'], leo:[2,'wuschelig'], linus:[0,'glatt'],
+  mampf:[1,'glatt'], rolli:[2,'gestrichelt'], tetro:[2,'glatt']
+};
+for (const figur of window.FIGUREN) {
+  [figur.kranzton,figur.struktur] = KRANZ_UND_STRUKTUR[figur.id];
+  if (figur.id !== 'evi' && figur.id !== 'evi-m') figur.geschaetzt.push('kranzton','struktur');
+}

@@ -3,13 +3,32 @@
 const $ = id => document.getElementById(id);
 const figs = window.FIGUREN, byId = Object.fromEntries(figs.map(f => [f.id,f]));
 const ages = ['baby','teenager','erwachsen','senior'];
-const labels = {ohren:'Ohren',schwanz:'Schwanz',besonderheit:'Besonderheit',ton:'Fellton',muster:'Fellmuster',zubehoer:'Zubehör'};
-const traits = Object.keys(labels), layers = ['schwanz','besonderheit-hinten','basis','muster','ohren','besonderheit-vorn','zubehoer'];
+const labels = {ohren:'Ohren',schwanz:'Schwanz',besonderheit:'Besonderheit',ton:'Fellton',kranzton:'Kranzton',struktur:'Fellstruktur',muster:'Fellmuster',zubehoer:'Zubehör'};
+const traits = Object.keys(labels), layers = ['schwanz','besonderheit-hinten','basis','struktur','muster','ohren','besonderheit-vorn','zubehoer'];
 const size = {baby:[94,89],teenager:[81,107],erwachsen:[114,116],senior:[115,110]};
 const state = {family:byId.evi,partner:byId.bit,child:null,locked:new Set(),history:[],visible:new Set(layers),missing:new Set(),all:false};
 const images = {};
 function url(key){return (window.TEILE_DATEN||{})[key]||null}
 function getImage(key){if(!url(key))return Promise.resolve(null);if(!images[key])images[key]=new Promise(resolve=>{let im=new Image();im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=url(key)});return images[key]}
+async function colored(im,key,creature){
+  const map=await getImage(key.replace(/\.png$/,'.bereiche.png'));
+  if(!map||map.width!==im.width||map.height!==im.height)return im;
+  const c=document.createElement('canvas');c.width=im.width;c.height=im.height;
+  const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0);
+  const d=x.getImageData(0,0,c.width,c.height);
+  const m=document.createElement('canvas');m.width=im.width;m.height=im.height;
+  const mx=m.getContext('2d',{willReadFrequently:true});mx.drawImage(map,0,0);
+  const md=mx.getImageData(0,0,c.width,c.height).data;
+  for(let i=0;i<md.length;i+=4){
+    if(d.data[i+3]===0)continue;
+    const region=md[i],v=d.data[i];let next=v;
+    if(region===51||region===119||region===85)next=v+(2-creature.ton)*17;
+    if(region===68)next=v-(creature.kranzton||0)*34;
+    if(region===85)next=Math.min(next,204);
+    if(next!==v){next=Math.max(0,Math.min(255,Math.round(next/17)*17));d.data[i]=d.data[i+1]=d.data[i+2]=next}
+  }
+  x.putImageData(d,0,0);return c;
+}
 function familyBase(sex){return sex==='weiblich'?'evi':'evi-m'}
 function value(f,t){return f[t]}
 function random(max){return Math.floor(Math.random()*max)}
@@ -68,13 +87,15 @@ async function paint(wrap,creature,age,opts){
     const im=await getImage(key);
     if(!im){missing.push(`${layer}: ${key}`);markMissing(sex,age,layer,key);return}
     if(im.width!==w||im.height!==h){missing.push(`Größe passt nicht: ${key}`);return}
-    if(tinted&&creature.ton!==2){let tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;let tc=tmp.getContext('2d',{willReadFrequently:true});tc.drawImage(im,0,0);let data=tc.getImageData(0,0,w,h);for(let i=0;i<data.data.length;i+=4){let g=data.data[i];if(g>50&&g<235){g=Math.max(0,Math.min(255,Math.round((g+(creature.ton-2)*17)/17)*17));data.data[i]=data.data[i+1]=data.data[i+2]=g}}tc.putImageData(data,0,0);ctx.drawImage(tmp,0,0)}else ctx.drawImage(im,0,0);
+    ctx.drawImage(tinted?await colored(im,key,creature):im,0,0);
     seam(im,layer==='basis'?'#00bcd4':'#e40085');
   };
-  if(base!==original){await draw('schwanz',path('schwanz',creature.schwanz));await draw('besonderheit-hinten',path('besonderheit',creature.besonderheit+'-hinten'))}
-  if(state.visible.has('basis')){if(creature.ton===2)ctx.drawImage(base,0,0);else{let tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;let tc=tmp.getContext('2d',{willReadFrequently:true});tc.drawImage(base,0,0);let d=tc.getImageData(0,0,w,h);for(let i=0;i<d.data.length;i+=4){let g=d.data[i];if(g>50&&g<235){g=Math.max(0,Math.min(255,Math.round((g+(creature.ton-2)*17)/17)*17));d.data[i]=d.data[i+1]=d.data[i+2]=g}}tc.putImageData(d,0,0);ctx.drawImage(tmp,0,0)}}
+  if(base!==original){if(creature.schwanz!==baseId)await draw('schwanz',path('schwanz',creature.schwanz));if(creature.besonderheit!=='keins'&&creature.besonderheit!=='maehne')await draw('besonderheit-hinten',path('besonderheit',creature.besonderheit+'-hinten'))}
+  if(state.visible.has('basis'))ctx.drawImage(base!==original?await colored(base,basisKey,creature):base,0,0);
   if(state.visible.has('basis'))seam(base,'#00bcd4');
   if(base!==original){
+    await draw('struktur',path('struktur',creature.struktur||'punkte'));
+    if(creature.schwanz===baseId)await draw('schwanz',path('schwanz',creature.schwanz));
     if(creature.muster!=='keins'&&state.visible.has('muster')){
       const key=path('muster',creature.muster),mask=await getImage(key);
       if(!mask){missing.push(`muster: ${key}`);markMissing(sex,age,'muster',key)}
@@ -85,12 +106,16 @@ async function paint(wrap,creature,age,opts){
         const bc=document.createElement('canvas');bc.width=w;bc.height=h;
         const bx=bc.getContext('2d',{willReadFrequently:true});bx.drawImage(base,0,0);
         const ba=bx.getImageData(0,0,w,h).data;
-        for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&md[i]>127&&ba[i+3]>0&&bd.data[i]>50&&bd.data[i]<235){let g=Math.min(255,Math.round((bd.data[i]+34)/17)*17);bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
+        const region=await getImage(basisKey.replace(/\.png$/,'.bereiche.png'));
+        const rc=document.createElement('canvas');rc.width=w;rc.height=h;
+        const rx=rc.getContext('2d',{willReadFrequently:true});if(region)rx.drawImage(region,0,0);
+        const rd=rx.getImageData(0,0,w,h).data;
+        for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&md[i]>127&&ba[i+3]>0&&rd[i]===51){let g=Math.min(255,Math.round((bd.data[i]+34)/17)*17);bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
         ctx.putImageData(bd,0,0);
       }else missing.push(`Größe passt nicht: ${key}`);
     }
     await draw('ohren',path('ohren',creature.ohren));
-    if(creature.besonderheit!=='keins')await draw('besonderheit-vorn',path('besonderheit',creature.besonderheit+'-vorn'));
+    if(creature.besonderheit!=='keins')await draw('besonderheit-vorn',path('besonderheit',creature.besonderheit==='maehne'?'leo-vorn':creature.besonderheit+'-vorn'));
     if(creature.zubehoer!=='keins')await draw('zubehoer',path('zubehoer',creature.zubehoer),false);
   }else if(creature.ohren!==baseId||creature.schwanz!==baseId||creature.besonderheit!=='keins'||creature.muster!=='keins'||creature.zubehoer!=='keins'){
     missing.push('Merkmale noch nicht als Bauteile darstellbar');
@@ -114,14 +139,18 @@ function renderTraits(){
     box.append(buttons);
     let sel=document.createElement('select');
     if(t==='ton')for(let v=0;v<=4;v++)sel.add(new Option(`${v} – ${['sehr hell','hell','mittel','dunkel','sehr dunkel'][v]}`,String(v)));
-    else{sel.add(new Option('keins','keins'));for(const f of figs)sel.add(new Option(`${f.name} (${f[t]})`,f.id))}
-    sel.value=t==='ton'?String(state.child[t]):(state.child[t]==='keins'?'keins':figs.find(f=>f[t]===state.child[t])?.id||'keins');
-    sel.onchange=()=>{state.child[t]=t==='ton'?+sel.value:(byId[sel.value]?.[t]||'keins');render()};box.append(sel);
+    else if(t==='kranzton')for(let v=0;v<=3;v++)sel.add(new Option(`${v} – ${['weiß','hellgrau','mittelgrau','dunkelgrau'][v]}`,String(v)));
+    else{sel.add(new Option('keins','keins'));for(const f of figs)sel.add(new Option(`${f.name} (${f[t]})`,f.id));
+      const extras=t==='struktur'?['punkte','glatt','gesprenkelt','gestrichelt','wuschelig']:t==='muster'?['flecken','ringe','helle-brust','maske','punkte']:t==='zubehoer'?['halstuch']:[];
+      for(const extra of extras)sel.add(new Option(`Direkt: ${extra}`,`direkt:${extra}`));
+    }
+    sel.value=t==='ton'||t==='kranzton'?String(state.child[t]):(state.child[t]==='keins'?'keins':figs.find(f=>f[t]===state.child[t])?.id||`direkt:${state.child[t]}`);
+    sel.onchange=()=>{state.child[t]=t==='ton'||t==='kranzton'?+sel.value:(sel.value.startsWith('direkt:')?sel.value.slice(7):(byId[sel.value]?.[t]||'keins'));render()};box.append(sel);
     let src=document.createElement('div');src.className='muted';src.textContent=`A: ${state.family[t]} · B: ${state.partner[t]}`;box.append(src);
     let lock=document.createElement('label');lock.className='check';let check=document.createElement('input');check.type='checkbox';check.checked=state.locked.has(t);check.onchange=()=>check.checked?state.locked.add(t):state.locked.delete(t);lock.append(check,document.createTextNode('Sperren'));box.append(lock);host.append(box)
   }
 }
-function renderCode(){const c=state.child;$('code').value=`geschlecht=${c.geschlecht}, ohren=${c.ohren}, schwanz=${c.schwanz}, besonderheit=${c.besonderheit}, ton=${c.ton}, muster=${c.muster}, zubehoer=${c.zubehoer}`}
+function renderCode(){const c=state.child;$('code').value=`geschlecht=${c.geschlecht}, ohren=${c.ohren}, schwanz=${c.schwanz}, besonderheit=${c.besonderheit}, ton=${c.ton}, kranzton=${c.kranzton}, struktur=${c.struktur}, muster=${c.muster}, zubehoer=${c.zubehoer}`}
 function updateTodo(){$('todo').textContent=[...state.missing].sort().join('\n')||'Für diese Ansicht sind alle benötigten Bilder vorhanden.'}
 function render(){if(!state.child)state.child=drawChild(state.family,state.partner);state.missing.clear();renderFamily();$('geschlecht').value=state.child.geschlecht;renderTraits();renderCode();$('trio').replaceChildren(card('Elternteil A',state.family,'erwachsen',{note:state.family.name}),card('Kind',state.child,'erwachsen',{note:state.child.geschlecht==='weiblich'?'Mädchen':'Junge'}),card('Elternteil B',state.partner,'erwachsen',{note:state.partner.name}));$('alter').replaceChildren(...ages.map(a=>card(a[0].toUpperCase()+a.slice(1),state.child,a)));$('stammbaum').replaceChildren(...state.history.map((x,i)=>card('Generation '+(i+2),x,'erwachsen',{small:true})));
   if(state.all){$('kombinationen').replaceChildren(...partners().map(p=>card(p.name,drawChild(state.family,p),'erwachsen',{small:true})))}else $('kombinationen').replaceChildren();updateTodo()}
@@ -133,7 +162,7 @@ $('alle').onclick=()=>{state.all=!state.all;$('alle').textContent=state.all?'Kom
 for(const id of ['zoom','hintergrund','naehte','raster','vergleich'])$(id).addEventListener('change',render);
 for(const layer of layers){let label=document.createElement('label');label.className='check';let c=document.createElement('input');c.type='checkbox';c.checked=true;c.onchange=()=>{c.checked?state.visible.add(layer):state.visible.delete(layer);render()};label.append(c,document.createTextNode(layer));$('ebenen').append(label)}
 $('kopieren').onclick=()=>navigator.clipboard.writeText($('code').value);
-$('einfuegen').onclick=()=>{try{let obj=Object.fromEntries($('code').value.split(',').map(s=>s.trim().split('=')));if(!['maennlich','weiblich'].includes(obj.geschlecht))throw Error('Geschlecht fehlt');for(const t of traits)if(obj[t]===undefined)throw Error(labels[t]+' fehlt');obj.ton=+obj.ton;if(!Number.isInteger(obj.ton)||obj.ton<0||obj.ton>4)throw Error('Fellton muss 0–4 sein');state.child=obj;$('meldung').textContent='Merkmalliste wiederhergestellt.';render()}catch(e){$('meldung').textContent='Liste nicht lesbar: '+e.message}};
+$('einfuegen').onclick=()=>{try{let obj=Object.fromEntries($('code').value.split(',').map(s=>s.trim().split('=')));if(!['maennlich','weiblich'].includes(obj.geschlecht))throw Error('Geschlecht fehlt');for(const t of traits)if(obj[t]===undefined)throw Error(labels[t]+' fehlt');obj.ton=+obj.ton;obj.kranzton=+obj.kranzton;if(!Number.isInteger(obj.ton)||obj.ton<0||obj.ton>4)throw Error('Fellton muss 0–4 sein');if(!Number.isInteger(obj.kranzton)||obj.kranzton<0||obj.kranzton>3)throw Error('Kranzton muss 0–3 sein');state.child=obj;$('meldung').textContent='Merkmalliste wiederhergestellt.';render()}catch(e){$('meldung').textContent='Liste nicht lesbar: '+e.message}};
 $('todo-kopieren').onclick=()=>navigator.clipboard.writeText($('todo').textContent);
 $('export').onclick=async()=>{let sex=$('schablone-geschlecht').value,age=$('schablone-alter').value,base=await getImage(`teile/${sex}/${age}/basis.png`)||await getImage(`original/${familyBase(sex)}/${age}`);if(!base){$('meldung').textContent='Für diese Schablone fehlt die Basis.';return}let c=document.createElement('canvas');c.width=base.width;c.height=base.height;let x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.globalAlpha=.25;x.drawImage(base,0,0);x.globalAlpha=1;x.strokeStyle='rgba(100,100,100,.25)';x.lineWidth=.1;for(let px=0;px<c.width;px++){x.beginPath();x.moveTo(px+.5,0);x.lineTo(px+.5,c.height);x.stroke()}for(let py=0;py<c.height;py++){x.beginPath();x.moveTo(0,py+.5);x.lineTo(c.width,py+.5);x.stroke()}let a=document.createElement('a');a.download=`schablone-${sex}-${age}.png`;a.href=c.toDataURL('image/png');a.click()};
 render();

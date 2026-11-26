@@ -1,0 +1,2 @@
+weiblich: eigene Teile gegen Original: 0 abweichende Pixel (davon 0 im Schwanzbereich, 0 sonst) von 13224.
+maennlich: eigene Teile gegen Original: 0 abweichende Pixel (davon 0 im Schwanzbereich, 0 sonst) von 13920.
