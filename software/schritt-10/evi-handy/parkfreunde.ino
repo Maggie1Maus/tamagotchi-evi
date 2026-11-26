@@ -84,13 +84,23 @@ void parkFreundSpeichern() {
 }
 
 // ---------- Treffen ----------
+// Neuer Tag: wer heute schon begrüßt wurde oder etwas geschenkt hat, wird vergessen
+void parkFreundTag(ms_t jetzt) {
+  const int32_t heute = tagKennung(jetzt);
+  if (parkFreund.heuteTag == heute) return;
+  parkFreund.heuteTag = heute;
+  parkFreund.heuteMaske = 0;
+  parkFreundGeaendert = true;
+  memset(stamm.geschenkMaske, 0, sizeof(stamm.geschenkMaske));
+  stammGeaendert = true;
+}
+
 // Wird beim Begrüßen aufgerufen (parkGrussWaehlen). Zählt das Treffen (einmal am Tag je Figur), merkt sich
 // in park.stufe, wie gut Evi die Figur vorher kannte, und in park.passt, ob das Wesen übereinstimmt.
 void parkFreundBegegnung(ms_t jetzt) {
   parkFreundPruefen();
   const int f = park.besuch;
-  const int32_t heute = tagKennung(jetzt);
-  if (parkFreund.heuteTag != heute) { parkFreund.heuteTag = heute; parkFreund.heuteMaske = 0; parkFreundGeaendert = true; }
+  parkFreundTag(jetzt);
   park.stufe = parkFreundStufe(parkFreund.treffer[f]);
   park.passt = FIGUR_WESEN[f] == eviWesen();
   if (parkFreund.heuteMaske >> f & 1) return;
@@ -228,8 +238,6 @@ void parkBesuchSatz(char* ziel, size_t platz, const char* satz) {
 }
 
 // ---------- Album ----------
-static const int ALBUM_KOPF_Y = STATUS_H + 4, ALBUM_GITTER_Y = STATUS_H + 18;
-static const int ALBUM_ZELLE_B = 64, ALBUM_ZELLE_H = 39;
 
 void albumOeffnen(ms_t jetzt) {
   if (!parkMoeglich(jetzt)) { tamaRuht(); return; }
@@ -278,14 +286,15 @@ void albumFigur(int i, Phase ph, int x0, int y0, bool bekannt) {
   }
 }
 
-void albumZeichnen(ms_t jetzt) {
+// Kopfzeile und Raster aller 20 Figuren (Album und Dorf); danach zeichnet der Aufrufer die untere Zeile
+void albumRaster(ms_t jetzt, const char* titel) {
   const Phase ph = phaseBei(pet, jetzt);
   if (ph < BABY || ph > OMA) { parkSchliessen(); return; }
   parkFreundPruefen();
   bild.fillScreen(1);
   zeichneStatus(ph);
   char kopf[40];
-  snprintf(kopf, sizeof(kopf), "Parkfreunde %d von %d", parkFreundGetroffen(), BESUCHER);
+  snprintf(kopf, sizeof(kopf), "%s %d von %d", titel, parkFreundGetroffen(), BESUCHER);
   schreibe(bild, RAND_LINKS, ALBUM_KOPF_Y, kopf, 0);
   snprintf(kopf, sizeof(kopf), "%s: %s", tamaName(), WESEN_NAME[eviWesen()]);
   schreibe(bild, BREITE - RAND_LINKS - textBreite(kopf), ALBUM_KOPF_Y, kopf, 0);
@@ -304,6 +313,10 @@ void albumZeichnen(ms_t jetzt) {
       bild.drawRect(x + 3, y + 1, ALBUM_ZELLE_B - 6, ALBUM_ZELLE_H - 3, 0);
     }
   }
+}
+
+void albumZeichnen(ms_t jetzt) {
+  albumRaster(jetzt, "Parkfreunde");
   bild.fillRect(0, ZEILE_Y, BREITE, HOEHE - ZEILE_Y, 1);
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
   const int treffer = parkFreund.treffer[albumWahl], stufe = parkFreundStufe(treffer);

@@ -1,5 +1,13 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Schritt 2 (26.11.2026): Das Dorf
+
+- Neue Datei `evi-handy/dorf.ino`. Im Park gibt es ein viertes Ziel **„Zum Dorf“** (die Häuser am Ende des Kieswegs antippen oder mit dem Steuerkreuz wählen). Das Tamagotchi läuft bis zu den Häusern, dann öffnet sich die Auswahl: das Raster aller 20 Figuren (wie das Album); darunter steht, ob die gewählte Figur **zu Hause oder gerade im Park** ist. A (oder zweimal antippen) besucht.
+- **Nur Bekannte** (mindestens ein Treffen im Park) lassen sich besuchen („Das Haus kennst du noch nicht.“, 3 Varianten). **Steht die Figur gerade im Park** (`parkBesucher`), ist sie nicht zu Hause: 8 Varianten wie „Klopf, klopf … Mampf ist unterwegs.“
+- **Der Besuch** spielt im eigenen Zimmer **ohne Weihnachtsdeko** (`dorfHaus`-Schalter in `weihnachtsZeit`), Tamagotchi links, Besucher rechts in Originalgröße, hinter Möbeln verdeckt. Ablauf mit A: Begrüßung (Hausgruß oder Satz der Stufe) → zweiter Satz → Geschenk (nur beste Freunde, höchstens einmal am Tag je Figur, 1/3 Chance) → danach immer neue Sätze zum Plaudern; B zurück ins Dorf, B im Dorf zurück in den Park.
+- **Jeder Besuch zählt als Treffen**, auch mehrmals am Tag (Wunsch der Nutzerin): so wächst die Stufe „beste Freunde“ (ab 7). Das Geschenk, das man beim Verlassen noch nicht gesehen hat, wird als Meldung gesagt.
+- Test `tools/pc-nachbildung/dorf.cpp` (in `pruefen.sh`); alle Prüfungen fehlerfrei. Am Board noch nicht ausprobiert (Lage der antippbaren Fläche über den Häusern ansehen!).
+
 ## Schritt 1 (26.11.2026): Speicher umgebaut, Stammbaum scrollt
 
 - **Fundstücke höchstens 50** (vorher 256), `SAMMLUNG_MAX` in `sammlung.h`. Jedes neue Tamagotchi beginnt mit leerer Sammlung (bei „Neues Ei“ und später beim Übernehmen des Babys). Spielstand Version 4 (816 Byte); Version 3 (256 Funde) und 2 werden beim Start übernommen, die letzten 50 Funde bleiben (Test `speicher.cpp`).

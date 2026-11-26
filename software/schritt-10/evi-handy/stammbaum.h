@@ -24,7 +24,7 @@ struct StammStand {
   uint8_t elternNameAktuell;     // sein Namenscode
   uint8_t geschlechtAktuell;     // Geschlecht des jetzigen Tamagotchis (0 Mädchen, 1 Junge), gesetzt beim Benennen
   uint8_t neueNamenAb;           // ab dieser Generation heißen die Figuren neu (0 = noch nie ein Baby benannt)
-  uint8_t reserviert[3];
+  uint8_t geschenkMaske[3];      // Bit je Figur: hat beim Besuch im Dorf heute schon etwas geschenkt (24 Bit, Tag wie parkFreund.heuteTag)
   StammEintrag eintrag[STAMM_MAX];   // älteste zuerst
   uint32_t pruefsumme;
 };

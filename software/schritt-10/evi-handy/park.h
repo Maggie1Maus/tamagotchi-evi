@@ -1,7 +1,7 @@
 #pragma once
 
-enum ParkPhase : uint8_t { PARK_ZU, PARK_WAHL, PARK_LAEUFT, PARK_SCHNUPPERT, PARK_HILFE, PARK_SUCHT, PARK_GRUSS, PARK_FUND, PARK_ALBUM, PARK_STAMM, PARK_NAME };
-enum ParkZiel : uint8_t { PARK_KIESWEG, PARK_WIESE, PARK_ZIEL_BESUCH, PARK_ZIELE };
+enum ParkPhase : uint8_t { PARK_ZU, PARK_WAHL, PARK_LAEUFT, PARK_SCHNUPPERT, PARK_HILFE, PARK_SUCHT, PARK_GRUSS, PARK_FUND, PARK_ALBUM, PARK_STAMM, PARK_NAME, PARK_DORF, PARK_BESUCHT };
+enum ParkZiel : uint8_t { PARK_KIESWEG, PARK_WIESE, PARK_ZIEL_DORF, PARK_ZIEL_BESUCH, PARK_ZIELE };   // Besuch zuletzt: „zurück“ vom Kiesweg landet bei Lotti wie bisher
 
 struct ParkPunkt { int x, y; };
 // Lage des Besuchs auf dem Bildschirm (siehe parkBesuchRahmen in park.ino).
@@ -22,6 +22,12 @@ struct ParkZustand {
   uint8_t zweiter = 0;  // 0 Begrüßung, 1 zweiter Satz (nach A), 2 Geschenk (nach A)
   uint8_t geschenk = 0, geschenkZahl = 0;   // Geschenk des Besuchs: 0 keins, sonst 1 + Wesen (parkfreunde.ino)
   uint8_t nachArt = 0, nachSatz = 0;
+  uint32_t meldungBis = 0;   // Dorf: bis dahin steht eine Meldung („nicht zu Hause“)
+  uint8_t meldung = 0;       // Dorf: welche Meldung: 0 keine, 1 nicht zu Hause, 2 kenne ich nicht
+  uint8_t meldungNr = 0;
 };
 
 ParkZustand park;
+
+// Im Haus eines Freundes (Dorf): das Zimmer ohne Weihnachtsdeko, solange die Szene gezeichnet wird
+bool dorfHaus = false;

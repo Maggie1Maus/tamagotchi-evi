@@ -1,6 +1,9 @@
 // Öffentlicher Parkeingang. Evi läuft selbst zu den drei antippbaren Zielen.
 static constexpr ParkPunkt PARK_WEGPUNKT = {137, 146};
 static constexpr ParkPunkt PARK_ANKUNFT[2] = {{158, 150}, {110, 120}};
+// Das Dorf: Die Häuser stehen am fernen Ende des Kieswegs. Evi läuft bis dorthin.
+static constexpr ParkPunkt PARK_DORF_ANKUNFT = {148, 84};
+static constexpr int PARK_DORF_X0 = 124, PARK_DORF_X1 = 196, PARK_DORF_Y0 = 56, PARK_DORF_Y1 = 71;   // antippbare Fläche
 static constexpr ParkPunkt PARK_FUNDPLATZ[2] = {{179, 149}, {104, 105}};
 // Dort steht der Besuch (früher immer Lotti). Füße auf derselben Höhe wie Lotti bisher.
 static constexpr int PARK_BESUCH_X = 185, PARK_BESUCH_FUSS = 133;
@@ -101,6 +104,7 @@ static ParkRahmen parkBesuchRahmen(Phase ph) {
 
 // Evi bleibt links vor dem Besuch stehen, auch wenn er breit ist (Tetro, Mimi).
 static ParkPunkt parkAnkunft(ParkZiel ziel, Phase ph) {
+  if (ziel == PARK_ZIEL_DORF) return PARK_DORF_ANKUNFT;
   if (ziel != PARK_ZIEL_BESUCH) return PARK_ANKUNFT[ziel];
   return {min(155, parkBesuchRahmen(ph).links - 12), 135};
 }
@@ -126,7 +130,7 @@ static void parkGrussWaehlen() {
 
 static void parkGrussText(char* ziel, size_t platz) {
   if (park.zweiter == 2) { parkGeschenkText(ziel, platz); return; }
-  const char* satz = park.zweiter ? parkNachsatz() : park.grussArt ? parkStufenGruss(park.stufe, park.gruss) : PARK_GRUSS_TEXT[park.gruss];
+  const char* satz = park.zweiter ? parkNachsatz() : park.grussArt == 2 ? GRUSS_HAUS[park.gruss] : park.grussArt ? parkStufenGruss(park.stufe, park.gruss) : PARK_GRUSS_TEXT[park.gruss];
   parkBesuchSatz(ziel, platz, satz);
 }
 
@@ -253,6 +257,7 @@ void parkTakt(ms_t jetzt, uint32_t m) {
         park.seit = m;
         park.phase = park.ziel == PARK_ZIEL_BESUCH ? PARK_GRUSS : PARK_SCHNUPPERT;
         if (park.phase == PARK_GRUSS) { park.rechts = true; parkGrussWaehlen(); }
+        if (park.ziel == PARK_ZIEL_DORF) { park.rechts = true; dorfOeffnen(jetzt); }
       }
     }
   } else if (park.phase == PARK_SCHNUPPERT && seit >= 650) {
@@ -263,7 +268,8 @@ void parkTakt(ms_t jetzt, uint32_t m) {
 }
 
 void parkKnopf(Knopf k) {
-  if (park.phase == PARK_NAME) { nameKnopf(k); return; }   // Namenseingabe: B löscht, START ist Fertig
+  if (park.phase == PARK_NAME) { nameKnopf(k); return; }
+  if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfKnopf(k); return; }   // Namenseingabe: B löscht, START ist Fertig
   if (k == K_B || k == K_START) { parkSchliessen(); return; }
   if (park.phase == PARK_ALBUM) { albumKnopf(k); return; }
   if (park.phase == PARK_STAMM) { stammKnopf(k); return; }
@@ -282,6 +288,7 @@ void parkKnopf(Knopf k) {
 
 void parkTouch(int x, int y) {
   if (park.phase == PARK_NAME) { nameTouch(x, y); return; }
+  if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfTouch(x, y); return; }
   if (park.phase == PARK_ALBUM) { albumTouch(x, y); return; }
   if (park.phase == PARK_STAMM) { stammTouch(x, y); return; }
   if (y >= ZEILE_Y) { parkKnopf(x >= 240 ? K_B : K_A); return; }
@@ -289,7 +296,8 @@ void parkTouch(int x, int y) {
   if (y < 0 || park.phase == PARK_LAEUFT || park.phase == PARK_SCHNUPPERT || park.phase == PARK_SUCHT) return;
   ParkZiel ziel = PARK_ZIELE;
   const ParkRahmen besuch = parkBesuchRahmen(phaseBei(pet, jetztMs()));
-  if (x >= besuch.links - 4 && x <= besuch.rechts + 4 && y >= besuch.oben - 4 && y <= PARK_BESUCH_FUSS + 3)
+  if (x >= PARK_DORF_X0 && x <= PARK_DORF_X1 && y >= PARK_DORF_Y0 && y <= PARK_DORF_Y1) ziel = PARK_ZIEL_DORF;
+  else if (x >= besuch.links - 4 && x <= besuch.rechts + 4 && y >= besuch.oben - 4 && y <= PARK_BESUCH_FUSS + 3)
     ziel = PARK_ZIEL_BESUCH;
   else if (abs(x - PARK_FUNDPLATZ[0].x) <= 21 && abs(y - PARK_FUNDPLATZ[0].y) <= 13) ziel = PARK_KIESWEG;
   else if (abs(x - PARK_FUNDPLATZ[1].x) <= 23 && abs(y - PARK_FUNDPLATZ[1].y) <= 20) ziel = PARK_WIESE;
@@ -492,6 +500,7 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
 
 void parkZeichnen(ms_t jetzt) {
   if (park.phase == PARK_NAME) { nameZeichnen(jetzt); return; }
+  if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfZeichnen(jetzt); return; }
   if (park.phase == PARK_ALBUM) { albumZeichnen(jetzt); return; }
   if (park.phase == PARK_STAMM) { stammZeichnen(jetzt); return; }
   const Phase ph = phaseBei(pet, jetzt);
@@ -515,14 +524,15 @@ void parkZeichnen(ms_t jetzt) {
   }
   parkFigurZeichnen(ph, m);
   if (park.phase == PARK_WAHL && tastenDa) {
-    const auto& ziel = park.ziel == PARK_ZIEL_BESUCH ? ParkPunkt{PARK_BESUCH_X, parkBesuchRahmen(ph).oben - 4} : PARK_FUNDPLATZ[park.ziel];
+    const auto& ziel = park.ziel == PARK_ZIEL_BESUCH ? ParkPunkt{PARK_BESUCH_X, parkBesuchRahmen(ph).oben - 4} :
+                       park.ziel == PARK_ZIEL_DORF ? ParkPunkt{(PARK_DORF_X0 + PARK_DORF_X1) / 2, PARK_DORF_Y0 + 8} : PARK_FUNDPLATZ[park.ziel];
     const int y = STATUS_H + ziel.y - 17;
     bild.fillTriangle(ziel.x - 4, y, ziel.x + 4, y, ziel.x, y + 5, 0);
   }
   zeichneStatus(ph);
   bild.fillRect(0, ZEILE_Y, BREITE, HOEHE - ZEILE_Y, 1);
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
-  const char* zieltext = park.ziel == PARK_ZIEL_BESUCH ? besuchName(park.besuch) : PARK_STELLE[park.ziel];
+  const char* zieltext = park.ziel == PARK_ZIEL_BESUCH ? besuchName(park.besuch) : park.ziel == PARK_ZIEL_DORF ? "Zum Dorf" : PARK_STELLE[park.ziel];
   char grusstext[64];
   const char* text = zieltext;
   const char* aktion = tastenDa ? "A Losgehen" : "Ziel antippen";

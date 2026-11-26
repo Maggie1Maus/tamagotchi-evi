@@ -29,6 +29,7 @@ Jahreszeit jahreszeitBei(ms_t t) {
 }
 
 bool weihnachtsZeit(ms_t t) {
+  if (dorfHaus) return false;      // im Haus eines Freundes keine Weihnachtsdeko (dorf.ino)
   const Ortszeit o = ortszeit(t);
   return (o.monat == 11 && o.tag >= 18) || o.monat == 12 || (o.monat == 1 && o.tag <= 5);
 }

@@ -45,3 +45,11 @@ bool parkFreundGeaendert = false;
 // Album (läuft als Phase PARK_ALBUM im Park-Zustand, damit Tasten, Touch und Schlafen schon passen)
 const int ALBUM_SPALTEN = 5, ALBUM_ZEILEN = 4;
 uint8_t albumWahl = 0;
+
+const int ALBUM_KOPF_Y = 27 + 4, ALBUM_GITTER_Y = 27 + 18;   // 27 = STATUS_H (evi-handy.ino, steht erst nach den Kopfdateien)
+const int ALBUM_ZELLE_B = 64, ALBUM_ZELLE_H = 39;
+
+// Begrüßungen im Haus eines Freundes (Dorf)
+const char* const GRUSS_HAUS[5] = {"Komm rein, *! Schön, dass du da bist!", "Willkommen bei mir zu Hause, *!",
+                                   "Setz dich, *! Ich freu mich so!", "Das ist mein Zuhause. Gefällt es dir?",
+                                   "Oh, Besuch! Mach's dir gemütlich!"};
