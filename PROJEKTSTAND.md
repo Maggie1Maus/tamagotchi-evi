@@ -2,8 +2,8 @@
 
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)
 
-- Der [neue Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) zeigt zwei Mähnenvarianten nur für Leo-Jungen. Mädchen haben keine Mähne. Bereichskarten, Kranzton, Muster und Linus' Schwanz sind überarbeitet. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.
-- **Noch nicht freigegeben.** Die Mähnenwahl A/B steht aus; bei beiden Varianten bleiben Evis Stirnspitzen sichtbar. Fellstrukturen und Flecken sind bei Originalgröße fein, Linus' Schwanz wird teilweise vom Körper verdeckt. Keine weiteren Figuren oder Altersstufen ergänzen, bis die Nutzerin den Probelauf freigibt.
+- Der [neue Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) nutzt Mähne A nur für Leo-Jungen; B ist entfernt. Die hellen Schwanzspitzen haben konturgenaue Kranzmasken ohne graues Fell, und die Kontrastkorrektur greift nur bei dunklen, fast gleichen Tönen. Der weiße Rest am rechten Jungenkranz wurde als Lücke im Kranz geschlossen. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.
+- **Noch nicht freigegeben.** Evis Stirnspitzen sind in Mähne A noch sichtbar. Fellstrukturen und Flecken sind bei Originalgröße fein, Linus' Schwanz wird teilweise vom Körper verdeckt. Keine weiteren Figuren oder Altersstufen ergänzen, bis die Nutzerin den Probelauf freigibt.
 
 ## Männliche Evi und neuer Familien-Baukasten (26. November 2026)
 

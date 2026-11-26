@@ -32,6 +32,10 @@ public static class BuildParts {
   static Bitmap Blank(int w,int h){return new Bitmap(w,h,PixelFormat.Format32bppArgb);}
   static void Save(Bitmap b,string path){Directory.CreateDirectory(Path.GetDirectoryName(path));b.Save(path,ImageFormat.Png);}
   static bool Equal(Color a,Color b){return a.A==b.A&&(a.A==0||a.R==b.R);}
+  static bool RuffBridge(int x,int y){
+    int[] left={94,94,92,90,89,88,87,87,87,87,87},right={95,95,98,98,98,98,98,98,98,97,94};
+    int k=y-55;return (y==53&&x==92)||(k>=0&&k<left.Length&&x>=left[k]&&x<=right[k]);
+  }
   static int Region(Color c,int x,int y,int w,int h,string kind){
     if(c.A==0)return 0;int v=Gray(c);
     if(kind=="ohren"&&v>=52&&v<125&&y<h*.49)return 85;
@@ -41,13 +45,13 @@ public static class BuildParts {
     return 51;
   }
   static void SaveMap(Bitmap src,string path,string kind){using(var map=Blank(src.Width,src.Height)){for(int y=0;y<src.Height;y++)for(int x=0;x<src.Width;x++){int r=Region(src.GetPixel(x,y),x,y,src.Width,src.Height,kind);if(r>0)map.SetPixel(x,y,Color.FromArgb(255,r,r,r));}Save(map,path);}}
-  static bool[,] FloodLight(Bitmap src,int sx,int sy){
+  static bool[,] FloodLight(Bitmap src,int sx,int sy,int minimum=125){
     int w=src.Width,h=src.Height;var seen=new bool[w,h];var qx=new int[w*h];var qy=new int[w*h];int first=0,last=0;
-    if(sx<0||sy<0||sx>=w||sy>=h||src.GetPixel(sx,sy).A==0||Gray(src.GetPixel(sx,sy))<125)return seen;
+    if(sx<0||sy<0||sx>=w||sy>=h||src.GetPixel(sx,sy).A==0||Gray(src.GetPixel(sx,sy))<minimum)return seen;
     seen[sx,sy]=true;qx[last]=sx;qy[last++]=sy;
     while(first<last){int px=qx[first],py=qy[first++];foreach(Point n in new[]{new Point(px-1,py),new Point(px+1,py),new Point(px,py-1),new Point(px,py+1)}){
       if(n.X<0||n.Y<0||n.X>=w||n.Y>=h||seen[n.X,n.Y])continue;Color c=src.GetPixel(n.X,n.Y);
-      if(c.A>0&&Gray(c)>=125){seen[n.X,n.Y]=true;qx[last]=n.X;qy[last++]=n.Y;}
+      if(c.A>0&&Gray(c)>=minimum){seen[n.X,n.Y]=true;qx[last]=n.X;qy[last++]=n.Y;}
     }}return seen;
   }
   static Bitmap BaseMap(Bitmap src,string sex,bool[,] tip){
@@ -55,12 +59,13 @@ public static class BuildParts {
     bool[,] ruff=FloodLight(src,female?50:60,female?80:74);
     var map=Blank(w,h);
     for(int y=0;y<h;y++)for(int x=0;x<w;x++){
-      Color c=src.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c),r;
+      Color c=src.GetPixel(x,y);if(c.A==0){if(!female&&RuffBridge(x,y))map.SetPixel(x,y,Color.FromArgb(255,68,68,68));continue;}int v=Gray(c),r;
       double jaw=Math.Min(1.0,Math.Abs(x-60)/40.0);
       int ruffTop=(int)Math.Round(56+14*(1-Math.Pow(jaw,1.45)));
       if(x<26||x>94)ruffTop=53;
       bool inRuff=ruff[x,y]&&(female?y>=72&&y<=96:y>=ruffTop&&y<=90);
-      bool inTip=tip[x,y]||(female?x>=84&&x<=111&&y>=43&&y<=76&&v>=170&&(x>=88||y>=52):x>=99&&y>=47&&y<=78&&v>=170);
+      if(!female&&x>=87&&x<=101&&y>=51&&y<=78&&v>=205)inRuff=true;
+      bool inTip=tip[x,y];
       if(inRuff||inTip)r=68;
       else if(y>h*.88&&v>=190)r=102;
       else if(v<=85){
@@ -145,7 +150,7 @@ public static class BuildParts {
   }
   static void SaveTailMap(Bitmap tail,bool[,] tip,string path){using(var map=Blank(tail.Width,tail.Height)){
     for(int y=0;y<tail.Height;y++)for(int x=0;x<tail.Width;x++){
-      Color c=tail.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c);bool inTip=tip[x,y]||(x>=84&&y>=43&&y<=78&&v>=170);int r=inTip?(v<=70?17:68):Region(c,x,y,tail.Width,tail.Height,"schwanz");
+      Color c=tail.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c);int r=tip[x,y]?68:v<=70?17:51;
       map.SetPixel(x,y,Color.FromArgb(255,r,r,r));
     }Save(map,path);
   }}
@@ -180,17 +185,14 @@ public static class BuildParts {
       int w=orig.Width,h=orig.Height;
       for(int y=0;y<h;y++)for(int x=0;x<w;x++){
         Color o=orig.GetPixel(x,y),a=ai.GetPixel(x,y);
-        bool e=Ear(x,y,w,h),t=Tail(x,y,w,h);
+        bool t=Tail(x,y,w,h),e=Ear(x,y,w,h)&&!(t&&y>=46&&x>w*.73);
         Color b=(e||t)?a:o;
         // Keep the original silhouette: own layers can restore each changed pixel exactly.
         if(o.A==0)b=Color.Transparent;
         basis.SetPixel(x,y,b);
         if(!Equal(o,b)&&o.A>0){if(e)ownEars.SetPixel(x,y,o);else if(t)ownTail.SetPixel(x,y,o);}
       }
-      bool[,] tip=FloodLight(orig,sex=="weiblich"?95:107,sex=="weiblich"?53:57);
-      if(sex=="weiblich")for(int y=42;y<=69;y++)for(int x=84;x<=111;x++){
-        Color c=orig.GetPixel(x,y);if(c.A>0&&Gray(c)>=190&&x>=84+(69-y)*.16)tip[x,y]=true;
-      }
+      bool[,] tip=FloodLight(orig,sex=="weiblich"?95:107,sex=="weiblich"?53:57,205);
       using(var region=BaseMap(basis,sex,tip)){
         Textures(basis,region,dir);
         Patterns(basis,region,sex,dir);
@@ -225,8 +227,8 @@ public static class BuildParts {
           Save(part,Path.Combine(dir,folder,filename+".png"));SaveMap(part,Path.Combine(dir,folder,filename+".bereiche.png"),folder);
         }
       }
-      if(sex=="maennlich")foreach(string variantId in new[]{"a","b"}){
-        using(var variant=Down(Path.Combine(ki,"maennlich-maehne-leo-v3-"+variantId+".png"),w,h))using(var part=Blank(w,h)){
+      if(sex=="maennlich"){
+        using(var variant=Down(Path.Combine(ki,"maennlich-maehne-leo-v3-a.png"),w,h))using(var part=Blank(w,h)){
           for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Mane(x,y,w,h)){
             Color v=variant.GetPixel(x,y),a=ai.GetPixel(x,y);
             bool outside=a.A==0&&y<85;
@@ -234,11 +236,7 @@ public static class BuildParts {
             if(v.A>0&&v.R<235&&(outside||bangs)&& (a.A==0||Math.Abs(v.R-a.R)>=17))part.SetPixel(x,y,v);
           }
           RemoveSpecks(part,8);
-          string name="leo-vorn-"+variantId;
-          Save(part,Path.Combine(dir,"besonderheit",name+".png"));SaveMap(part,Path.Combine(dir,"besonderheit",name+".bereiche.png"),"besonderheit");
-          if(variantId=="a"){
-            Save(part,Path.Combine(dir,"besonderheit","leo-vorn.png"));SaveMap(part,Path.Combine(dir,"besonderheit","leo-vorn.bereiche.png"),"besonderheit");
-          }
+          Save(part,Path.Combine(dir,"besonderheit","leo-vorn.png"));SaveMap(part,Path.Combine(dir,"besonderheit","leo-vorn.bereiche.png"),"besonderheit");
         }
       }
     }

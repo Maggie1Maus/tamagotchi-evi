@@ -8,7 +8,7 @@ const traits = Object.keys(labels), layers = ['schwanz','besonderheit-hinten','b
 const size = {baby:[94,89],teenager:[81,107],erwachsen:[114,116],senior:[115,110]};
 const state = {family:byId.evi,partner:byId.bit,child:null,locked:new Set(),history:[],visible:new Set(layers),missing:new Set(),all:false};
 const images = {};
-function effectiveKranzton(ton,wanted){const fur=187+(2-ton)*17,palette=[255,136,119,102];let best=wanted,score=Infinity;for(let k=0;k<=3;k++){const gap=Math.abs(palette[k]-fur);if(gap<51)continue;const s=Math.abs(k-wanted)*100-gap;if(s<score){score=s;best=k}}return best}
+function effectiveKranzton(ton,wanted){const fur=187+(2-ton)*17,palette=[255,136,119,102];let k=wanted;if(fur<=170)while(k>0&&palette[k]<=170&&Math.abs(palette[k]-fur)<51)k--;return k}
 function url(key){return (window.TEILE_DATEN||{})[key]||null}
 function getImage(key){if(!url(key))return Promise.resolve(null);if(!images[key])images[key]=new Promise(resolve=>{let im=new Image();im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=url(key)});return images[key]}
 async function colored(im,key,creature){
@@ -22,7 +22,7 @@ async function colored(im,key,creature){
   const mx=m.getContext('2d',{willReadFrequently:true});mx.drawImage(map,0,0);
   const md=mx.getImageData(0,0,c.width,c.height).data;
   for(let i=0;i<md.length;i+=4){
-    if(d.data[i+3]===0)continue;
+    if(d.data[i+3]===0){if(md[i]===68&&kranz>0){d.data[i]=d.data[i+1]=d.data[i+2]=[255,136,119,102][kranz];d.data[i+3]=255}continue;}
     const region=md[i],v=d.data[i];let next=v;
     if(region===51||region===119||region===85)next=v+(2-creature.ton)*17;
     if(region===68)next=v-(255-[255,136,119,102][kranz]);
