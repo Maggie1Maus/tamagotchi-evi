@@ -8,8 +8,7 @@
 //  - „Parkfreunde“ im Menü zeigt das Album aller 20 Figuren.
 #pragma once
 
-// Evis Wesen (und das der Figuren)
-enum Wesen : uint8_t { W_NASCH, W_SPORT, W_WASSER, W_LANG, W_SCHMUSE, W_NEUGIER, WESEN_ZAHL };
+// Evis Wesen (und das der Figuren): die Aufzählung `Wesen` steht in pet.h
 const char* const WESEN_NAME[WESEN_ZAHL] = {"Naschkatze", "Sportlerin", "wasserscheu", "Langschläferin", "Schmusekatze", "Neugierige"};
 
 // Reihenfolge wie BESUCH_NAME: Lotti, Bit, Blip, Blubber, Ella, Funke, Glöckchen, Groschen, Kiwi, Klecksi,

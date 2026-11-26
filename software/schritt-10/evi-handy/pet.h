@@ -47,6 +47,28 @@ enum Grund : uint8_t { OK, G_TOT, G_LEBT, G_EI, G_TAG, G_WACH, G_SCHLAEFT, G_MIT
 enum Wunschart : uint8_t { W_BALL, W_RATEN, W_MELODIE, W_NASCHEN, W_PUTZEN, W_FUETTERN };
 enum Stimmung : uint8_t { S_TOT, S_EI, S_SCHLAEFT, S_KRANK, S_BAUCH, S_HUNGRIG, S_SCHMUTZIG, S_TRAURIG, S_GLUECKLICH };
 
+// Evis Wesen (26.11.2026, parkfreunde.h): eins von sechs, aus ihrem Zeitpunkt „geboren“ ausgewürfelt, ändert sich nie.
+// Folgen in den Regeln (hier): Naschkatze – Hunger 15 % schneller, eine Nascherei mehr am Tag, Naschen +15 statt +10 Laune.
+// Sportlerin – Spiele 50 % mehr Münzen, wird 20 % schneller schmutzig, wacht eine Stunde früher auf.
+// Wasserscheu – Saubermachen kostet Laune (−5 statt +3), wird 20 % langsamer schmutzig.
+// Langschläferin – schläft eine Stunde länger und wird eine Stunde früher müde, Schlaf kostet 20 % weniger,
+// Gute Nacht gibt +15 statt +10 Laune. Schmusekatze – Kuscheln wirkt 50 % stärker.
+// Weitere Folgen: Tageslaunen (momente.ino), Streicheln (launen.ino), Fragen und Plaudern (freunde.ino).
+enum Wesen : uint8_t { W_NASCH, W_SPORT, W_WASSER, W_LANG, W_SCHMUSE, W_NEUGIER, WESEN_ZAHL };
+static inline uint32_t streuwert(const char* text);
+static inline int wesenVon(ms_t geboren) {
+  static ms_t zuletzt = 0;
+  static int wesen = 0;
+  static bool da = false;
+  if (!da || geboren != zuletzt) {
+    char s[64];
+    snprintf(s, sizeof(s), "%lld:%s:%d", (long long)geboren, "wesen", 0);
+    wesen = (int)(streuwert(s) % WESEN_ZAHL);
+    zuletzt = geboren; da = true;
+  }
+  return wesen;
+}
+
 struct Tier {
   char name[21];
   bool eigenerName;
@@ -102,8 +124,16 @@ static inline Phase phaseBei(const Tier& p, ms_t t) {
   return OMA;
 }
 
+static inline int wesenDe(const Tier& p) { return wesenVon(p.geboren); }
+// Langschläferinnen schlafen morgens eine Stunde länger, Sportlerinnen stehen eine Stunde früher auf.
+static inline int morgenStunde(const Tier& p) {
+  const int w = wesenDe(p);
+  return R::SCHLAF_BIS + (w == W_LANG ? 1 : w == W_SPORT ? -1 : 0);
+}
 static inline bool schlafenszeit(const Tier& p, ms_t t) {
-  return istNacht(t) || (stundeVon(t) >= R::RITUAL_AB && p.ritualNacht == nachtKennung(t));
+  const int h = stundeVon(t);
+  const bool nacht = h >= R::SCHLAF_VON || h < morgenStunde(p);
+  return nacht || (h >= R::RITUAL_AB && p.ritualNacht == nachtKennung(t));
 }
 static inline bool geweckt(const Tier& p, ms_t t) { return schlafenszeit(p, t) && t < p.wachBis; }
 
@@ -119,12 +149,14 @@ static inline bool schlaeft(const Tier& p, ms_t t) { return schlafArt(p, t) != W
 static inline bool wach(const Tier& p, ms_t t) { const Phase ph = phaseBei(p, t); return ph != EI && ph != TOT && !schlaeft(p, t); }
 
 static inline bool ritualLetzteNacht(const Tier& p, ms_t t) { return p.ritualNacht != -1 && p.ritualNacht == tagKennung(t - 12 * STUNDE); }
-static inline bool fruehMorgens(ms_t t) { const Ortszeit o = ortszeit(t); return o.stunde == R::SCHLAF_BIS && o.minute < R::MUEDE_MORGENS_MIN; }
+static inline bool fruehMorgens(const Tier& p, ms_t t) { const Ortszeit o = ortszeit(t); return o.stunde == morgenStunde(p) && o.minute < R::MUEDE_MORGENS_MIN; }
 static inline bool muede(const Tier& p, ms_t t) {
   if (!wach(p, t)) return false;
-  return istNacht(t) || stundeVon(t) == R::MUEDE_ABENDS || (fruehMorgens(t) && !ritualLetzteNacht(p, t));
+  const int abends = R::MUEDE_ABENDS - (wesenDe(p) == W_LANG ? 1 : 0);   // Langschläferinnen werden früher müde
+  return istNacht(t) || stundeVon(t) == abends || (fruehMorgens(p, t) && !ritualLetzteNacht(p, t));
 }
-static inline bool ausgeschlafen(const Tier& p, ms_t t) { return wach(p, t) && fruehMorgens(t) && ritualLetzteNacht(p, t); }
+static inline bool ausgeschlafen(const Tier& p, ms_t t) { return wach(p, t) && fruehMorgens(p, t) && ritualLetzteNacht(p, t); }
+static inline int naschenProTag(const Tier& p) { return R::NASCHEN_PRO_TAG + (wesenDe(p) == W_NASCH ? 1 : 0); }
 static inline bool bauchweh(const Tier& p, ms_t t) { return !p.tot && t < p.bauchwehBis; }
 
 // Mahlzeit zur Zeit t: 0 Frühstück, 1 Mittagessen, 2 Abendessen, -1 keine
@@ -191,6 +223,7 @@ static inline void weiterrechnen(Tier& p, ms_t jetzt) {
   if (jetzt < p.aktualisiert) { p.aktualisiert = jetzt; return; }
   if (jetzt == p.aktualisiert) return;
   ms_t t = p.aktualisiert;
+  const int wesen = wesenDe(p);
   while (t < jetzt) {
     ms_t ende = teileAb(t, MINUTE) * MINUTE + MINUTE;
     if (ende > jetzt) ende = jetzt;
@@ -207,11 +240,11 @@ static inline void weiterrechnen(Tier& p, ms_t jetzt) {
       const Schlaf s = schlafArt(p, t);
       if (!schlafenszeit(p, t)) p.lichtAus = false;
       const double* rate = R::ABNAHME[ph - BABY];
-      const double bedarf = s != WACH ? R::SCHLAF_BEDARF : 1;
+      const double bedarf = s != WACH ? R::SCHLAF_BEDARF * (wesen == W_LANG ? 0.8 : 1) : 1;
       const double launeSchlaf = s == WACH ? 1 : (s == MITTAGSSCHLAF || p.lichtAus) ? R::LAUNE_DUNKEL : R::LAUNE_HELL;
       const double unwohl = (p.krank || t < p.bauchwehBis) ? R::KRANK_LAUNE : 1;
-      p.satt = begrenzt(p.satt - rate[0] * bedarf * stunden);
-      p.sauber = begrenzt(p.sauber - rate[2] * bedarf * stunden);
+      p.satt = begrenzt(p.satt - rate[0] * (wesen == W_NASCH ? 1.15 : 1) * bedarf * stunden);
+      p.sauber = begrenzt(p.sauber - rate[2] * (wesen == W_SPORT ? 1.2 : wesen == W_WASSER ? 0.8 : 1) * bedarf * stunden);
       p.laune = begrenzt(p.laune - rate[1] * launeSchlaf * unwohl * stunden);
       const bool vernachlaessigt = p.satt <= 0 || p.laune <= 0 || p.sauber <= 0;
       p.vernachlaessigt = vernachlaessigt ? p.vernachlaessigt + dt : (p.vernachlaessigt > dt ? p.vernachlaessigt - dt : 0);
@@ -308,7 +341,7 @@ static inline Ergebnis pflegen(Tier& p, Aktion a, ms_t jetzt) {
   if (a == AUFWECKEN) { p.wachBis = jetzt + R::WACH_BLEIBEN; return e; }
   if (a == RITUAL) {
     p.ritualNacht = nachtKennung(jetzt);
-    p.laune = begrenzt(p.laune + R::RITUAL_LAUNE);
+    p.laune = begrenzt(p.laune + R::RITUAL_LAUNE + (wesenDe(p) == W_LANG ? 5 : 0));
     p.pflege++;
     e.bonus = lichtAusmachen();
     return e;
@@ -316,8 +349,8 @@ static inline Ergebnis pflegen(Tier& p, Aktion a, ms_t jetzt) {
   Wunsch w;
   const bool hatteWunsch = aktuellerWunsch(p, jetzt, w);
   if (a == FUETTERN) { p.satt = begrenzt(p.satt + 40); p.laune = begrenzt(p.laune + 3); p.sauber = begrenzt(p.sauber - 2); }
-  if (a == NASCHEN) { p.satt = begrenzt(p.satt + 10); p.laune = begrenzt(p.laune + 10); }
-  if (a == PUTZEN) { p.laune = begrenzt(p.laune + 3); p.sauber = begrenzt(p.sauber + 60); }
+  if (a == NASCHEN) { p.satt = begrenzt(p.satt + 10); p.laune = begrenzt(p.laune + (wesenDe(p) == W_NASCH ? 15 : 10)); }
+  if (a == PUTZEN) { p.laune = begrenzt(p.laune + (wesenDe(p) == W_WASSER ? -5 : 3)); p.sauber = begrenzt(p.sauber + 60); }
   if (a == MEDIZIN) { p.laune = begrenzt(p.laune - 5); }
   if (a == FUETTERN && mahlzeitFaellig(p, jetzt) >= 0) {
     e.mahlzeit = mahlzeitBei(jetzt);
@@ -328,7 +361,7 @@ static inline Ergebnis pflegen(Tier& p, Aktion a, ms_t jetzt) {
   if (a == NASCHEN) {
     if (p.naschTag != tagKennung(jetzt)) { p.naschTag = tagKennung(jetzt); p.naschZahl = 0; }
     p.naschZahl++;
-    if (p.naschZahl > R::NASCHEN_PRO_TAG) { p.bauchwehBis = jetzt + R::BAUCHWEH; e.bauchweh = true; }
+    if (p.naschZahl > naschenProTag(p)) { p.bauchwehBis = jetzt + R::BAUCHWEH; e.bauchweh = true; }
   }
   if (a == MEDIZIN) {
     if (p.krank) { p.krank = false; p.krankSeit = 0; p.vernachlaessigt = 0; }
@@ -356,7 +389,7 @@ static inline Ergebnis spielBeenden(Tier& p, int treffer, ms_t jetzt, Wunschart 
   p.laune = begrenzt(p.laune + R::SPIEL_LAUNE + treffer * R::SPIEL_LAUNE_TREFFER);
   p.satt = begrenzt(p.satt + R::SPIEL_SATT);
   p.sauber = begrenzt(p.sauber + R::SPIEL_SAUBER);
-  e.muenzen = treffer * R::SPIEL_MUENZEN_TREFFER;
+  e.muenzen = treffer * R::SPIEL_MUENZEN_TREFFER * (wesenDe(p) == W_SPORT ? 3 : 2) / 2;
   p.muenzen += e.muenzen;
   p.pflege++;
   if (geweckt(p, jetzt) && p.wachBis < jetzt + R::WACH_BLEIBEN) p.wachBis = jetzt + R::WACH_BLEIBEN;
@@ -370,7 +403,7 @@ static inline Ergebnis kuscheln(Tier& p, double laune, ms_t jetzt) {
   weiterrechnen(p, jetzt);
   if (!wach(p, jetzt)) { e.grund = G_SCHLAEFT; return e; }
   e.geaendert = true;
-  p.laune = begrenzt(p.laune + laune);
+  p.laune = begrenzt(p.laune + laune * (wesenDe(p) == W_SCHMUSE ? 1.5 : 1));
   p.pflege++;
   if (geweckt(p, jetzt) && p.wachBis < jetzt + R::WACH_BLEIBEN) p.wachBis = jetzt + R::WACH_BLEIBEN;
   return e;

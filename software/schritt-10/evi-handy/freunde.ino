@@ -564,13 +564,16 @@ int freundStufe() {
 }
 
 // ---------- Fragen ----------
-int fragenProTag(Phase ph) { return ph == BABY ? 4 : ph == TEEN ? 2 : (ph == ERWACHSEN || ph == OMA) ? 1 : 0; }
+int fragenProTag(Phase ph) {
+  const int n = ph == BABY ? 4 : ph == TEEN ? 2 : (ph == ERWACHSEN || ph == OMA) ? 1 : 0;
+  return n && wesenVon(pet.geboren) == W_NEUGIER ? n + 1 : n;   // Neugierige fragen eine Frage mehr am Tag
+}
 
 // Wann an diesem Tag gefragt wird: Baby 9/12/15/18 Uhr + bis zu 3 Stunden, Teenager 9/15 Uhr + bis zu 6, sonst 10 Uhr + bis zu 10
 ms_t frageZeit(ms_t jetzt, int slot, int anzahl) {
   const Ortszeit o = ortszeit(jetzt);
-  const int start = anzahl == 4 ? 9 + 3 * slot : anzahl == 2 ? 9 + 6 * slot : 10;
-  const int laenge = anzahl == 4 ? 3 : anzahl == 2 ? 6 : 10;
+  const int start = anzahl == 5 ? 9 + 2 * slot : anzahl == 4 ? 9 + 3 * slot : anzahl == 3 ? 9 + 4 * slot : anzahl == 2 ? 9 + 6 * slot : 10;
+  const int laenge = anzahl == 5 ? 2 : anzahl == 4 ? 3 : anzahl == 3 ? 4 : anzahl == 2 ? 6 : 10;
   char s[48];
   snprintf(s, sizeof(s), "%lld:%d-%d-%d:frage:%d", (long long)pet.geboren, o.jahr, o.monat, o.tag, slot);
   return ausOrtszeit(o.jahr, o.monat, o.tag, start, (int)(streuwert(s) % (uint32_t)(laenge * 60 - 6)));
@@ -711,7 +714,7 @@ void freundPlaudern() {
   char text[48];
   snprintf(text, sizeof(text), "%s erzählt dir was", pet.name);
   zeigeMeldung(text, 5000);
-  if (freund.plauderHeute < PLAUDERN_MIT_WIRKUNG) { freund.plauderHeute++; freundPlus(eviWesen() == W_NEUGIER ? 2 * PLUS_PLAUDERN : PLUS_PLAUDERN); }
+  if (freund.plauderHeute < (wesenVon(pet.geboren) == W_NEUGIER ? 5 : PLAUDERN_MIT_WIRKUNG)) { freund.plauderHeute++; freundPlus(eviWesen() == W_NEUGIER ? 2 * PLUS_PLAUDERN : PLUS_PLAUDERN); }
   gespraech.geaendert = true;
 }
 

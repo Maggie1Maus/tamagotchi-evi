@@ -44,6 +44,7 @@
 #include "parkbilder.h"
 #include "besucherbilder.h"
 #include "parkfreunde.h"
+#include "stammbaum.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom
@@ -70,7 +71,7 @@ bool bildschirmAn = true;
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
                          E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD,
-                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN, E_PARK, E_ALBUM };   // Zimmergestaltung
+                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN, E_PARK, E_ALBUM, E_STAMMBAUM };   // Zimmergestaltung
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
@@ -150,6 +151,7 @@ void speichern(ms_t jetzt) {
   spielstandSpeichern(pet, tonAn);
   freundSpeichern();                // Freundschaft, Antworten, Geburtstag (freunde.ino)
   parkFreundSpeichern();            // Treffen mit den Parkfreunden (parkfreunde.ino)
+  stammSpeichern();                 // Stammbaum (stammbaum.ino)
   zimmerSpeichern();
   letztesSpeichern = jetzt;
 }
@@ -631,6 +633,7 @@ void menueBauen() {
       punkt(E_PARK, &SYM_M_SONNE, "In den Park");
       punkt(E_ALBUM, &SYM_M_HERZ, "Parkfreunde");
     }
+    if (stammMoeglich(jetzt)) punkt(E_STAMMBAUM, &SYM_M_HERZ, "Stammbaum");
   }
   gewaehlt = 0;
 }
@@ -774,6 +777,7 @@ void aktionAusfuehren(Eintrag e) {
   const ms_t jetzt = jetztMs();
   if (e == E_PARK) { parkOeffnen(jetzt); return; }
   if (e == E_ALBUM) { albumOeffnen(jetzt); return; }
+  if (e == E_STAMMBAUM) { stammOeffnen(jetzt); return; }
   if (e == E_EINRICHTEN) { zimmerEinrichten(); return; }
   if (e == E_PLAUDERN) { freundPlaudern(); return; }
   if (e >= E_ANTWORT0 && e <= E_ANTWORT3) { freundAntwort(e - E_ANTWORT0); return; }
@@ -805,6 +809,7 @@ void aktionAusfuehren(Eintrag e) {
                    e == E_LICHT ? LICHT : e == E_RITUAL ? RITUAL : e == E_AUFWECKEN ? AUFWECKEN : NEUES_EI;
   const Tier vorher = pet;
   const Ergebnis r = pflegen(pet, a, jetzt);
+  if (r.geaendert && a == NEUES_EI) stammEintragen(vorher, jetzt);   // die verstorbene Evi kommt in den Stammbaum
   melde(vorher, jetzt);
   if (!r.geaendert) {
     grundText(r.grund, a, text, sizeof(text));
@@ -822,7 +827,7 @@ void aktionAusfuehren(Eintrag e) {
     reagiere(a == FUETTERN ? R_FUETTERN : a == NASCHEN ? R_NASCHEN : a == PUTZEN ? R_PUTZEN : R_MEDIZIN);
     snprintf(text, sizeof(text), "%s", a == FUETTERN ? "Mmh, lecker!" : a == NASCHEN ? "Mmh, ein Keks!" : a == PUTZEN ? "Blitzblank!" : "Bäh … aber es hilft!");
     if (r.mahlzeit >= 0) snprintf(text, sizeof(text), "Mmh, %s!", MAHLZEITEN[r.mahlzeit]);
-    if (a == NASCHEN && pet.naschZahl == R::NASCHEN_PRO_TAG) snprintf(text, sizeof(text), "Mmh! Jetzt ist aber genug Süßes.");
+    if (a == NASCHEN && pet.naschZahl == naschenProTag(pet)) snprintf(text, sizeof(text), "Mmh! Jetzt ist aber genug Süßes.");
     if (r.bauchweh) { snprintf(text, sizeof(text), "Aua, Bauchweh! Zu viel genascht."); piep(TON(TON_DANEBEN)); }
     zeigeMeldung(text);
   }
@@ -1151,6 +1156,7 @@ void setup() {
   himmel = himmelBei(jetzt);
   freundLaden();                  // Freundschaft und Geburtstag, vor dem ersten Speichern (freunde.ino)
   parkFreundLaden();              // Treffen mit den Parkfreunden (parkfreunde.ino)
+  stammLaden();                   // Stammbaum (stammbaum.ino)
   zimmerLaden();
   speichern(jetzt);
   letzteRunde = millis();

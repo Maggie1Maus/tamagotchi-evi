@@ -111,7 +111,7 @@ static void parkGrussWaehlen() {
   static int letzter = -1;
   parkFreundBegegnung(jetztMs());
   parkNachsatzWaehlen(jetztMs());
-  park.zweiter = false;
+  park.zweiter = 0;
   if (park.stufe == 0 || random(0, 2) == 0) {
     park.grussArt = 1;
     park.gruss = random(0, 5);
@@ -125,6 +125,7 @@ static void parkGrussWaehlen() {
 }
 
 static void parkGrussText(char* ziel, size_t platz) {
+  if (park.zweiter == 2) { parkGeschenkText(ziel, platz); return; }
   const char* satz = park.zweiter ? parkNachsatz() : park.grussArt ? parkStufenGruss(park.stufe, park.gruss) : PARK_GRUSS_TEXT[park.gruss];
   parkBesuchSatz(ziel, platz, satz);
 }
@@ -138,6 +139,12 @@ bool parkMoeglich(ms_t jetzt) {
 
 void parkSchliessen() {
   if (!parkOffen()) return;
+  if (park.phase == PARK_GRUSS && park.geschenk && park.zweiter < 2) {   // Geschenk wurde schon gegeben: wenigstens sagen
+    static char geschenk[64];
+    parkGeschenkText(geschenk, sizeof(geschenk));
+    park = ParkZustand();
+    zeigeMeldung(geschenk, 4000);
+  }
   park = ParkZustand();
   momentStoppen(true);
   moment.ruheBisTakt = evi.takt + RUHE_TAKTE;
@@ -223,6 +230,7 @@ static void parkHelfen() {
 
 void parkTakt(ms_t jetzt, uint32_t m) {
   if (!parkOffen()) return;
+  if (park.phase == PARK_STAMM) { if (!stammMoeglich(jetzt)) parkSchliessen(); return; }   // geht auch für Ei und verstorbene Evi
   if (!parkMoeglich(jetzt)) { parkSchliessen(); return; }
   if (park.phase != PARK_ALBUM && parkZuNass(jetzt)) {
     static char nass[64];
@@ -256,11 +264,13 @@ void parkTakt(ms_t jetzt, uint32_t m) {
 void parkKnopf(Knopf k) {
   if (k == K_B || k == K_START) { parkSchliessen(); return; }
   if (park.phase == PARK_ALBUM) { albumKnopf(k); return; }
+  if (park.phase == PARK_STAMM) { stammKnopf(k); return; }
   if (k == K_A) {
     if (park.phase == PARK_WAHL) parkZielStarten(park.ziel);
     else if (park.phase == PARK_HILFE) parkHelfen();
-    else if (park.phase == PARK_GRUSS && !park.zweiter) park.zweiter = true;   // erst der zweite Satz, dann weiter
-    else if (park.phase == PARK_GRUSS || park.phase == PARK_FUND) { park.zweiter = false; park.phase = PARK_WAHL; }
+    else if (park.phase == PARK_GRUSS && park.zweiter == 0) park.zweiter = 1;   // erst der zweite Satz, dann ein Geschenk, dann weiter
+    else if (park.phase == PARK_GRUSS && park.zweiter == 1 && park.geschenk) { park.zweiter = 2; piep(TON(TON_MUENZE)); }
+    else if (park.phase == PARK_GRUSS || park.phase == PARK_FUND) { park.zweiter = 0; park.geschenk = 0; park.phase = PARK_WAHL; }
     return;
   }
   if (park.phase != PARK_WAHL) return;
@@ -270,6 +280,7 @@ void parkKnopf(Knopf k) {
 
 void parkTouch(int x, int y) {
   if (park.phase == PARK_ALBUM) { albumTouch(x, y); return; }
+  if (park.phase == PARK_STAMM) { stammTouch(x, y); return; }
   if (y >= ZEILE_Y) { parkKnopf(x >= 240 ? K_B : K_A); return; }
   y -= STATUS_H;
   if (y < 0 || park.phase == PARK_LAEUFT || park.phase == PARK_SCHNUPPERT || park.phase == PARK_SUCHT) return;
@@ -478,6 +489,7 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
 
 void parkZeichnen(ms_t jetzt) {
   if (park.phase == PARK_ALBUM) { albumZeichnen(jetzt); return; }
+  if (park.phase == PARK_STAMM) { stammZeichnen(jetzt); return; }
   const Phase ph = phaseBei(pet, jetzt);
   if (ph < BABY || ph > OMA) { parkSchliessen(); return; }
   const Himmel h = himmelBei(jetzt);

@@ -3,7 +3,7 @@
 
 // ---------- Evis Wesen ----------
 // Jede Evi hat eins von sechs Wesen, aus ihrem Zeitpunkt „geboren“ ausgewürfelt. Es ändert sich nie.
-int eviWesen() { return (int)(eviWuerfel("wesen", 0) % WESEN_ZAHL); }
+int eviWesen() { return wesenVon(pet.geboren); }
 
 // Kleine Sätze, mit denen Evi ihr Wesen verrät (beim Plaudern)
 const char* const WESEN_PLAUDERN[WESEN_ZAHL][3] = {
@@ -101,7 +101,31 @@ void parkFreundBegegnung(ms_t jetzt) {
   float plus = park.passt ? 2.0f : 0.5f;
   if (park.stufe == 0 && eviWesen() == W_NEUGIER) plus += 1;
   freundPlus(plus);
+  // Beste Freunde bringen manchmal etwas mit (je nach ihrem Wesen)
+  if (park.stufe == 3 && random(0, 3) == 0) parkGeschenkGeben(jetzt);
   speichern(jetzt);
+}
+
+// ---------- Geschenke der besten Freunde ----------
+// Ab 7 Treffen bringt die Figur an etwa jedem dritten Tag etwas mit, passend zu ihrem Wesen:
+// Naschkatze Kekse (satt, froh), Sportlerin tobt mit Evi (froh), wasserscheu putzt Evi sauber, Langschläferin ein Kissen
+// (froh), Schmusekatze eine Umarmung (Freundschaft mit dir +3), Neugierige schenkt Münzen.
+void parkGeschenkGeben(ms_t jetzt) {
+  const int w = FIGUR_WESEN[park.besuch];
+  park.geschenk = 1 + w;
+  if (w == W_NASCH) { pet.satt = begrenzt(pet.satt + 25); launeAendern(pet, 5, jetzt); }
+  else if (w == W_SPORT) launeAendern(pet, 15, jetzt);
+  else if (w == W_WASSER) pet.sauber = begrenzt(pet.sauber + 30);
+  else if (w == W_LANG) launeAendern(pet, 10, jetzt);
+  else if (w == W_SCHMUSE) { freundPlus(3); launeAendern(pet, 5, jetzt); }
+  else { park.geschenkZahl = random(4, 8); pet.muenzen += park.geschenkZahl; }
+}
+
+void parkGeschenkText(char* ziel, size_t platz) {
+  static const char* const TEXT[WESEN_ZAHL] = {"%s bringt %s Kekse mit! ♥", "%s tobt mit %s herum! ♥", "%s putzt %s liebevoll sauber!",
+                                               "%s bringt %s ein weiches Kissen!", "%s umarmt %s ganz fest! ♥", "%s schenkt %s %d Münzen ♥"};
+  const int w = park.geschenk - 1;
+  snprintf(ziel, platz, TEXT[w], BESUCH_NAME[park.besuch], pet.name[0] ? pet.name : "Evi", (int)park.geschenkZahl);
 }
 
 // ---------- Begrüßung nach Stufe ----------

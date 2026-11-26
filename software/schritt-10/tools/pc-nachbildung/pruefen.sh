@@ -15,7 +15,7 @@ python3 -I "$HIER/arduino_zusammensetzen.py" "$SKETCH" "$AUS/evi-handy.ino"
 if [ "${2:-}" = "--zimmer" ]; then
   TESTS=(einrichtung umgebung kuscheln park-ansichten)
 else
-  TESTS=(bilder ablauf tasten bewegung umgebung sideboard kuscheln raumtiefe schlaf einrichtung park-ansichten zeitzurueck parkfreunde)
+  TESTS=(bilder ablauf tasten bewegung umgebung sideboard kuscheln raumtiefe schlaf einrichtung park-ansichten zeitzurueck parkfreunde stammbaum)
 fi
 for test in "${TESTS[@]}"; do
   cp "$HIER/$test.cpp" "$AUS/"

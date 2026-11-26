@@ -44,7 +44,13 @@ int launeHeute(ms_t t) {
   const Ortszeit o = ortszeit(t);
   char s[64];
   snprintf(s, sizeof(s), "%lld:%d-%d-%d:temper", (long long)pet.geboren, o.jahr, o.monat, o.tag);
-  return (int)(streuwert(s) % 4);
+  // Jede Wesensart hat eine Lieblingslaune, die an etwa 40 % der Tage kommt (statt 25 %).
+  static const int8_t LIEBLING[WESEN_ZAHL] = {2, 0, -1, 3, 1, -1};   // verfressen, verspielt, -, verträumt, verschmust, -
+  const uint32_t h = streuwert(s);
+  const int l = LIEBLING[wesenVon(pet.geboren)];
+  if (l < 0) return (int)(h % 4);
+  const int r = (int)(h % 5);
+  return r < 4 ? r : l;
 }
 
 // Für die Zeile unten: die Laune ohne Ausrufezeichen

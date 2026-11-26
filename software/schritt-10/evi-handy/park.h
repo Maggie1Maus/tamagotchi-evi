@@ -1,6 +1,6 @@
 #pragma once
 
-enum ParkPhase : uint8_t { PARK_ZU, PARK_WAHL, PARK_LAEUFT, PARK_SCHNUPPERT, PARK_HILFE, PARK_SUCHT, PARK_GRUSS, PARK_FUND, PARK_ALBUM };
+enum ParkPhase : uint8_t { PARK_ZU, PARK_WAHL, PARK_LAEUFT, PARK_SCHNUPPERT, PARK_HILFE, PARK_SUCHT, PARK_GRUSS, PARK_FUND, PARK_ALBUM, PARK_STAMM };
 enum ParkZiel : uint8_t { PARK_KIESWEG, PARK_WIESE, PARK_ZIEL_BESUCH, PARK_ZIELE };
 
 struct ParkPunkt { int x, y; };
@@ -19,7 +19,8 @@ struct ParkZustand {
   uint8_t grussArt = 0; // 0 allgemeiner Satz (PARK_GRUSS_TEXT), sonst Satz passend zur Stufe (parkfreunde.ino)
   uint8_t stufe = 0;    // Wie gut Evi den Besuch kannte: 0 fremd, 1 bekannt, 2 vertraut, 3 beste Freunde
   bool passt = false;   // Besuch hat dasselbe Wesen wie Evi
-  bool zweiter = false; // zweiter Satz (nach A) wird gezeigt
+  uint8_t zweiter = 0;  // 0 Begrüßung, 1 zweiter Satz (nach A), 2 Geschenk (nach A)
+  uint8_t geschenk = 0, geschenkZahl = 0;   // Geschenk des Besuchs: 0 keins, sonst 1 + Wesen (parkfreunde.ino)
   uint8_t nachArt = 0, nachSatz = 0;
 };
 

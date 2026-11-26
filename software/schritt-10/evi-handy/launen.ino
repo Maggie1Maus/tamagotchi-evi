@@ -133,7 +133,7 @@ void launenBeleidigtAngetippt() {
   const uint32_t m = millis();
   if (launen.letzterStreichler != 0 && m - launen.letzterStreichler < STREICHEL_ABSTAND) return;
   launen.letzterStreichler = m;
-  if (++launen.streichler >= 3) {
+  if (++launen.streichler >= (wesenVon(pet.geboren) == W_SCHMUSE ? 2 : 3)) {   // Schmusekatzen sind schneller versöhnt
     launenVersoehnen();
     kuschelZeigen(false, true, KUSCHEL_WUNSCH_DAUER);
     reagiere(R_KUSCHELN, KUSCHEL_WUNSCH_DAUER / TAKT_MS);
