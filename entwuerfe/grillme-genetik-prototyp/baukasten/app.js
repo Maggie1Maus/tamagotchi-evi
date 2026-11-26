@@ -36,6 +36,14 @@ function card(title,creature,age,opts={}){
 }
 function markMissing(sex,age,part,id){state.missing.add(`${sex}, ${age}, ${part}, ${id}`)}
 async function paint(wrap,creature,age,opts){
+  // Parkfiguren als Elternteil: immer ihre eigene Zeichnung unverändert zeigen, nie auf Evis Basis
+  if(creature.id&&byId[creature.id]&&creature.id!=='evi'&&creature.id!=='evi-m'){
+    const own=await getImage(`original/${creature.id}/${age}`);
+    if(!own){wrap.innerHTML=`<div class="missing">Bild von ${creature.name} fehlt</div>`;return}
+    const z=opts.small?1:Math.max(1,+$('zoom').value),c=document.createElement('canvas');c.width=own.width;c.height=own.height;c.style.width=own.width*z+'px';c.style.height=own.height*z+'px';
+    const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.fillStyle=$('hintergrund').value;x.fillRect(0,0,c.width,c.height);x.drawImage(own,0,0);
+    wrap.replaceChildren(c);const n=document.createElement('div');n.className='muted';n.textContent='Originalzeichnung';wrap.append(n);return;
+  }
   const sex=creature.geschlecht,baseId=familyBase(sex),basisKey=`teile/${sex}/${age}/basis.png`;
   let base=await getImage(basisKey),original=await getImage(`original/${baseId}/${age}`);
   if(!original&&!base){wrap.innerHTML='<div class="missing">männliche Evi fehlt noch</div>';markMissing(sex,age,'basis',baseId);updateTodo();return}

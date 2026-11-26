@@ -6,6 +6,12 @@
       "runtimeExecutable": "powershell",
       "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "handy-app/tools/serve.ps1", "-Root", "handy-app/dist"],
       "port": 4173
+    },
+    {
+      "name": "baukasten",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "handy-app/tools/serve.ps1", "-Root", "entwuerfe/grillme-genetik-prototyp/baukasten", "-Port", "4174"],
+      "port": 4174
     }
   ]
 }
