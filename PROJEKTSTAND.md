@@ -1,5 +1,16 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Parkfreunde, zweiter Satz, Album und Evis Wesen – 26. November 2026
+
+Auf Wunsch der Nutzerin (Ideen 1–4 aus dem Vorschlag), nur Waveshare, ohne neue Bilder. Neue Dateien `evi-handy/parkfreunde.h` und `parkfreunde.ino`; geändert: `park.ino`, `park.h`, `freunde.ino`, `evi-handy.ino`.
+
+- **Freunde erinnern sich:** Jede der 20 Figuren zählt, wie oft Evi sie getroffen hat (höchstens einmal pro Tag und Figur, beim Begrüßen). Stufen: fremd (nie), bekannt (1–2), vertraut (3–6), beste Freunde (ab 7). Fremde bekommen immer einen Kennenlern-Satz, danach etwa jedes zweite Mal einen Satz der Stufe, sonst einen der 50 alten Sätze. Gespeichert im EEPROM ab 3856 (`ParkFreundStand`, mit Prüfsumme), getrennt von Evi: die Freunde bleiben auch bei einer neuen Evi. Jedes Treffen gibt etwas Freundschaft mit dir (0,5, bei gleichem Wesen 2).
+- **Zweiter Satz:** Nach der Begrüßung zeigt A noch einen zweiten Satz, dann erst geht es weiter. Er ist entweder über das Wetter/die Jahreszeit/Tageszeit (10 Lagen, je 3 Sätze), über Funde (heute gefunden / noch nicht gesucht), über die Figur selbst oder, bei gleichem Wesen, „wir zwei sind gleich“.
+- **Album „Parkfreunde“** (Menü, unter „In den Park“): Raster aus allen 20 Figuren in halber Größe mit Evis Lebensphase. Unbekannte nur als Schatten, drei Punkte zeigen die Stufe. Unten Name, Art, Anzahl Treffen. Pfeile/Touch wählen, B oder „Zurück“ schließt. Läuft als Park-Phase `PARK_ALBUM`, deshalb gelten Schlafen, Bildschirm aus und Touch wie im Park.
+- **Evis Wesen:** Jede Evi hat eins von sechs (Naschkatze, Sportlerin, wasserscheu, Langschläferin, Schmusekatze, Neugierige), aus ihrem Zeitpunkt „geboren“ ausgewürfelt, ändert sich nie, steht oben im Album. Jede Figur hat auch eins (Tabelle `FIGUR_WESEN`, nach den „Wesen“ in `entwuerfe/neue-tamagotchis/vorschlaege.md`). Folgen: Naschkatze freut sich über Naschen (mehr Freundschaft), Sportlerin über Spiele (doppelt), Schmusekatze über Kuscheln (doppelt), Neugierige über Plaudern (doppelt) und neue Bekannte; wasserscheue Evis mögen Saubermachen nicht (keine Freundschaft dafür). Evi kommentiert das manchmal („Brr … muss das Wasser sein?“) und verrät ihr Wesen beim Plaudern. Im Park kommt von den 19 anderen Figuren jedes dritte Mal eine mit gleichem Wesen; Lotti weiter etwa jedes dritte Mal.
+- Weitere Ideen dazu: weitere Folgen (Langschläferin schläft morgens länger), Geschenke von besten Park-Freunden, eigene Sätze je Figur.
+- Neues PC-Prüfprogramm `tools/pc-nachbildung/parkfreunde.cpp` (in `pruefen.sh`): Satzlängen, Wesen, Treffer-Zählung, Speichern/Laden, Besucherwahl, Folgen, Album in allen Lebensphasen. Alle Prüfungen und der Fenstervergleich fehlerfrei. Am Board noch nicht ausprobiert.
+
 ## Uhr zurückgestellt: Dauer-Melodie behoben, Geburtstag neu fragen – 26. November 2026
 
 - **Bug:** Nach Vor- und Zurückstellen der Uhr (Jahreszeiten anschauen) kam alle 10 Sekunden die Entwicklungsmelodie mit „Evi ist jetzt ein Teenager!“. Ursache: Der Spielstand („aktualisiert“) blieb auf dem Zukunftsdatum stehen; `melde()` verglich die Phase dort (erwachsen) mit der Phase jetzt (Teenager). Außerdem rechnete Evi bis zum Erreichen des Zukunftsdatums nicht weiter.

@@ -25,6 +25,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-zimmer --zimme
 - Das Display ist mit nachgebildet (`ersatz/SPI.h`: Spalten, Zeilen, Schreiben). Nach jedem Bild wird verglichen, ob auf dem Display genau das Bild des Programms steht; so wird geprüft, dass `zeigen()` alles Geänderte schickt.
 
 - `zeitzurueck.cpp`: Uhr vor- und zurückgestellt ergibt keine Dauer-Entwicklungsmeldung, Evi rechnet danach normal weiter; Geburtstag wird über den Merker einmal neu gefragt.
+- `parkfreunde.cpp`: Treffer der Parkfreunde, Stufen, zweiter Satz, Wesen und ihre Folgen, Speichern/Laden, Album.
 
 Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit gibt es nur dort.
 

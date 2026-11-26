@@ -541,9 +541,18 @@ void freundMinus(float wert) {
 // Anlässe aus den anderen Dateien
 void freundKrank() { freundMinus(MINUS_KRANK); }
 void freundBeleidigt() { freundMinus(MINUS_BELEIDIGT); }
-void freundGepflegt() { freundPlus(PLUS_PFLEGE); }
-void freundGekuschelt() { freundPlus(PLUS_KUSCHELN); }
-void freundGespielt() { freundPlus(PLUS_SPIEL); }
+// Evis Wesen (parkfreunde.ino) hat kleine Folgen: Naschkatzen freuen sich über Naschen, wasserscheue Evis mögen
+// das Saubermachen nicht, Sportlerinnen spielen gern, Schmusekatzen kuscheln gern.
+void freundGepflegt(Aktion a) {
+  float plus = PLUS_PFLEGE;
+  if (a == NASCHEN && eviWesen() == W_NASCH) plus = 2;
+  if (a == PUTZEN && eviWesen() == W_WASSER) plus = 0;
+  freundPlus(plus);
+  if (a == NASCHEN) wesenSagen(0);
+  else if (a == PUTZEN) wesenSagen(2);
+}
+void freundGekuschelt() { freundPlus(eviWesen() == W_SCHMUSE ? 2 * PLUS_KUSCHELN : PLUS_KUSCHELN); wesenSagen(3); }
+void freundGespielt() { freundPlus(eviWesen() == W_SPORT ? 2 * PLUS_SPIEL : PLUS_SPIEL); wesenSagen(1); }
 void freundWunschErfuellt() { freundPlus(PLUS_LAUNENWUNSCH); }
 
 // 1 schüchtern, 2 bekannt, 3 vertraut, 4 Freunde, 5 beste Freunde (erst nach dem großen Moment)
@@ -667,6 +676,7 @@ void freundPlaudern() {
     if (istGeburtstag(jetzt)) satz = fuenf(S_GEBURTSTAG_PLAUDERN);
     else if (istGeburtstag(jetzt + TAG)) satz = fuenf(S_GEBURTSTAG_MORGEN);
   }
+  if (!satz && random(0, 4) == 0) satz = wesenPlaudernSatz();   // Evi verrät ihr Wesen (parkfreunde.ino)
   if (!satz) {
     // Was in Frage kommt: 0 ihre eigene Antwort, 1 eine Meinung, 2 deine Antwort (ab „bekannt“)
     int eigene[FRAGEN_MAX], ne = 0, deine[FRAGEN_MAX], nd = 0, meinungen[2 * 128], nm = 0;
@@ -701,7 +711,7 @@ void freundPlaudern() {
   char text[48];
   snprintf(text, sizeof(text), "%s erzählt dir was", pet.name);
   zeigeMeldung(text, 5000);
-  if (freund.plauderHeute < PLAUDERN_MIT_WIRKUNG) { freund.plauderHeute++; freundPlus(PLUS_PLAUDERN); }
+  if (freund.plauderHeute < PLAUDERN_MIT_WIRKUNG) { freund.plauderHeute++; freundPlus(eviWesen() == W_NEUGIER ? 2 * PLUS_PLAUDERN : PLUS_PLAUDERN); }
   gespraech.geaendert = true;
 }
 

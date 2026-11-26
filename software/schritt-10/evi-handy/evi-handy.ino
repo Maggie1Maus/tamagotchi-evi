@@ -43,6 +43,7 @@
 #include "park.h"
 #include "parkbilder.h"
 #include "besucherbilder.h"
+#include "parkfreunde.h"
 
 // ---------- Einstellungen ----------
 const int HELL_PROZENT = 50;                 // seit 25.11.2026 (vorher 80): das Licht braucht den meisten Strom
@@ -69,7 +70,7 @@ bool bildschirmAn = true;
 enum Eintrag : uint8_t { E_FUETTERN, E_NASCHEN, E_SPIELEN, E_PUTZEN, E_MEDIZIN, E_LICHT, E_AUFWECKEN, E_RITUAL, E_NEUES_EI,
                          E_TON, E_BALL, E_RATEN, E_MELODIE, E_KEKSE, E_SCHNICK,
                          E_TAG, E_TAG_GUT, E_TAG_LALA, E_TAG_SCHLECHT, E_SIDEBOARD,
-                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN, E_PARK };   // Zimmergestaltung
+                         E_PLAUDERN, E_ANTWORT0, E_ANTWORT1, E_ANTWORT2, E_ANTWORT3, E_EINRICHTEN, E_PARK, E_ALBUM };   // Zimmergestaltung
 enum Taste { LINKS, MITTE, RECHTS };
 enum Reaktion : uint8_t { R_KEINE, R_FUETTERN, R_NASCHEN, R_SPIELEN, R_PUTZEN, R_MEDIZIN, R_SCHLUEPFEN, R_ENTWICKLUNG,
                           R_GRUSS, R_JUBEL,     // Begrüßung: 2 bzw. 4 Hüpfer
@@ -148,6 +149,7 @@ void grundText(Grund g, Aktion a, char* aus, size_t n) {
 void speichern(ms_t jetzt) {
   spielstandSpeichern(pet, tonAn);
   freundSpeichern();                // Freundschaft, Antworten, Geburtstag (freunde.ino)
+  parkFreundSpeichern();            // Treffen mit den Parkfreunden (parkfreunde.ino)
   zimmerSpeichern();
   letztesSpeichern = jetzt;
 }
@@ -625,7 +627,10 @@ void menueBauen() {
     // Die Uhr wird weiterhin beim Einschalten gestellt, wenn sie nicht läuft.
     punkt(E_SIDEBOARD, &SYM_M_HERZ, "Sideboard öffnen");
     punkt(E_EINRICHTEN, &SYM_M_HERZ, "Zimmer einrichten");
-    if (parkMoeglich(jetzt)) punkt(E_PARK, &SYM_M_SONNE, "In den Park");
+    if (parkMoeglich(jetzt)) {
+      punkt(E_PARK, &SYM_M_SONNE, "In den Park");
+      punkt(E_ALBUM, &SYM_M_HERZ, "Parkfreunde");
+    }
   }
   gewaehlt = 0;
 }
@@ -768,6 +773,7 @@ void aktionAusfuehren(Eintrag e) {
   char text[100];
   const ms_t jetzt = jetztMs();
   if (e == E_PARK) { parkOeffnen(jetzt); return; }
+  if (e == E_ALBUM) { albumOeffnen(jetzt); return; }
   if (e == E_EINRICHTEN) { zimmerEinrichten(); return; }
   if (e == E_PLAUDERN) { freundPlaudern(); return; }
   if (e >= E_ANTWORT0 && e <= E_ANTWORT3) { freundAntwort(e - E_ANTWORT0); return; }
@@ -822,7 +828,7 @@ void aktionAusfuehren(Eintrag e) {
   }
   if (r.wunsch) { sage("Danke!", &SYM_W_HERZ, 3000); piep(TON(TON_MUENZE)); }
   if (r.geaendert && (a == FUETTERN || a == NASCHEN)) launenGegessen();   // Essenswunsch, Versöhnen (launen.ino)
-  if (r.geaendert && (a == FUETTERN || a == NASCHEN || a == PUTZEN || a == MEDIZIN)) freundGepflegt();
+  if (r.geaendert && (a == FUETTERN || a == NASCHEN || a == PUTZEN || a == MEDIZIN)) freundGepflegt(a);
   if (r.geaendert) speichern(jetzt);
 }
 
@@ -1144,6 +1150,7 @@ void setup() {
   }
   himmel = himmelBei(jetzt);
   freundLaden();                  // Freundschaft und Geburtstag, vor dem ersten Speichern (freunde.ino)
+  parkFreundLaden();              // Treffen mit den Parkfreunden (parkfreunde.ino)
   zimmerLaden();
   speichern(jetzt);
   letzteRunde = millis();

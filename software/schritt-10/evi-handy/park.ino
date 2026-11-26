@@ -66,13 +66,21 @@ static const char* const PARK_GRUSS_TEXT[] = {
 static constexpr int PARK_GRUESSE = sizeof(PARK_GRUSS_TEXT) / sizeof(PARK_GRUSS_TEXT[0]);
 static_assert(PARK_GRUESSE == 50, "50 Begrüßungen");
 
-// Wer gerade im Park ist. Lotti (Evis Freundin) etwa jedes dritte Mal, sonst eins der anderen 19.
+// Wer gerade im Park ist. Lotti (Evis Freundin) etwa jedes dritte Mal, sonst eine der anderen 19.
+// Seit 26.11.2026 kommt von diesen jedes dritte Mal jemand, der zu Evis Wesen passt (parkfreunde.h).
 int parkBesucher(ms_t jetzt) {
   char schluessel[40];
   snprintf(schluessel, sizeof(schluessel), "%ld:park:besuch:%d", (long)tagKennung(jetzt),
            stundeVon(jetzt) / PARK_BESUCH_STUNDEN);
   const uint32_t h = streuwert(schluessel);
-  return h % 3 == 0 ? 0 : 1 + (int)((h / 3) % (BESUCHER - 1));
+  if (h % 3 == 0) return 0;
+  const uint32_t r = h / 3;
+  if (r % 3 == 0) {
+    int passend[BESUCHER], n = 0;
+    for (int i = 1; i < BESUCHER; i++) if (FIGUR_WESEN[i] == eviWesen()) passend[n++] = i;
+    if (n) return passend[(r / 3) % n];
+  }
+  return 1 + (int)(r % (BESUCHER - 1));
 }
 
 // Der Besuch hat dieselbe Lebensphase wie Evi.
@@ -97,9 +105,19 @@ static ParkPunkt parkAnkunft(ParkZiel ziel, Phase ph) {
   return {min(155, parkBesuchRahmen(ph).links - 12), 135};
 }
 
-// Neuer Satz, nie zweimal hintereinander derselbe.
+// Neuer Satz, nie zweimal hintereinander derselbe. Dazu zählt das Treffen und der zweite Satz wird gewählt
+// (parkfreunde.ino). Fremde werden anders begrüßt als Bekannte, Vertraute und beste Freunde.
 static void parkGrussWaehlen() {
   static int letzter = -1;
+  parkFreundBegegnung(jetztMs());
+  parkNachsatzWaehlen(jetztMs());
+  park.zweiter = false;
+  if (park.stufe == 0 || random(0, 2) == 0) {
+    park.grussArt = 1;
+    park.gruss = random(0, 5);
+    return;
+  }
+  park.grussArt = 0;
   int neu = random(PARK_GRUESSE - (letzter >= 0 ? 1 : 0));
   if (letzter >= 0 && neu >= letzter) neu++;
   park.gruss = neu;
@@ -107,13 +125,8 @@ static void parkGrussWaehlen() {
 }
 
 static void parkGrussText(char* ziel, size_t platz) {
-  size_t n = snprintf(ziel, platz, "%s: ", BESUCH_NAME[park.besuch]);
-  for (const char* s = PARK_GRUSS_TEXT[park.gruss]; *s && n + 1 < platz; s++) {
-    if (*s == '*') n += snprintf(ziel + n, platz - n, "%s", pet.name[0] ? pet.name : "Evi");
-    else ziel[n++] = *s;
-    if (n >= platz) n = platz - 1;
-  }
-  ziel[n] = 0;
+  const char* satz = park.zweiter ? parkNachsatz() : park.grussArt ? parkStufenGruss(park.stufe, park.gruss) : PARK_GRUSS_TEXT[park.gruss];
+  parkBesuchSatz(ziel, platz, satz);
 }
 
 bool parkOffen() { return park.phase != PARK_ZU; }
@@ -229,10 +242,12 @@ void parkTakt(ms_t jetzt, uint32_t m) {
 
 void parkKnopf(Knopf k) {
   if (k == K_B || k == K_START) { parkSchliessen(); return; }
+  if (park.phase == PARK_ALBUM) { albumKnopf(k); return; }
   if (k == K_A) {
     if (park.phase == PARK_WAHL) parkZielStarten(park.ziel);
     else if (park.phase == PARK_HILFE) parkHelfen();
-    else if (park.phase == PARK_GRUSS || park.phase == PARK_FUND) park.phase = PARK_WAHL;
+    else if (park.phase == PARK_GRUSS && !park.zweiter) park.zweiter = true;   // erst der zweite Satz, dann weiter
+    else if (park.phase == PARK_GRUSS || park.phase == PARK_FUND) { park.zweiter = false; park.phase = PARK_WAHL; }
     return;
   }
   if (park.phase != PARK_WAHL) return;
@@ -241,6 +256,7 @@ void parkKnopf(Knopf k) {
 }
 
 void parkTouch(int x, int y) {
+  if (park.phase == PARK_ALBUM) { albumTouch(x, y); return; }
   if (y >= ZEILE_Y) { parkKnopf(x >= 240 ? K_B : K_A); return; }
   y -= STATUS_H;
   if (y < 0 || park.phase == PARK_LAEUFT || park.phase == PARK_SCHNUPPERT || park.phase == PARK_SUCHT) return;
@@ -448,6 +464,7 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
 }
 
 void parkZeichnen(ms_t jetzt) {
+  if (park.phase == PARK_ALBUM) { albumZeichnen(jetzt); return; }
   const Phase ph = phaseBei(pet, jetzt);
   if (ph < BABY || ph > OMA) { parkSchliessen(); return; }
   const Himmel h = himmelBei(jetzt);
