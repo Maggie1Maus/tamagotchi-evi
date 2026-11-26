@@ -25,6 +25,7 @@ struct ParkZustand {
   uint32_t meldungBis = 0;   // Dorf: bis dahin steht eine Meldung („nicht zu Hause“)
   uint8_t meldung = 0;       // Dorf: welche Meldung: 0 keine, 1 nicht zu Hause, 2 kenne ich nicht
   uint8_t meldungNr = 0;
+  bool dorfMenue = false;    // Dorf: Liste „Wen besuchst du?“ ist offen
   uint8_t liebeArt = 0, liebeKandidat = 0, liebeWahl = 0;   // Frage „Partner?“ (0 Freundschaft, 1 Klopfen) oder „Begraben?“ (2)
   ParkPhase liebeZurueck = PARK_ZU;                          // wohin es nach der Antwort zurückgeht
 };

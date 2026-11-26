@@ -507,6 +507,16 @@ static void parkFigurZeichnen(Phase ph, uint32_t m) {
   }
 }
 
+// Der Park ohne Figuren (Himmel, Boden, Licht, Regen/Schnee): auch Hintergrund des Dorfs außerhalb der Weihnachtszeit
+void parkHintergrundKomplett(ms_t jetzt) {
+  const Himmel h = himmelBei(jetzt);
+  const Wetter w = wetterBei(jetzt);
+  const Jahreszeit saison = jahreszeitBei(jetzt);
+  parkHintergrund(saison, h, w);
+  parkBeleuchtung(saison, h, w, weihnachtsZeit(jetzt));
+  parkNiederschlag(w, h, millis());
+}
+
 void parkZeichnen(ms_t jetzt) {
   if (park.phase == PARK_NAME) { nameZeichnen(jetzt); return; }
   if (park.phase == PARK_DORF || park.phase == PARK_BESUCHT) { dorfZeichnen(jetzt); return; }

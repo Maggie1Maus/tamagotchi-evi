@@ -1,5 +1,12 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Dorfbild eingebaut (26. November 2026)
+
+- Die Nutzerin hat die **Weihnachts-Dorfbilder** hochgeladen (`entwuerfe/dorf/weihnachten/dorf-weihnachten.zip`, 15 PNGs 320 × 174: Tag/Dämmerung/Nacht × Sonne, Sonne+Wolken, bewölkt, Regen, Schnee). `tools/make-dorf-grau.py` packt sie 1:1 nach `evi-handy/dorfbilder.h` (`DORF_WEIHNACHT[Himmel][Wetter]`, 16 Graustufen, rund 420 KB Programmspeicher).
+- **Ablauf:** Evi läuft den Kiesweg entlang zu den Häusern. Dort zeigt der Bildschirm **das Dorfbild** mit Evi vorne links, **keine Navigation im Dorf**. **A** (oder das Bild antippen) öffnet die Liste **„Wen besuchst du?“** rechts im Bild: alle, die man aus dem Park kennt, mit „zu Hause“, „im Park“ oder „wohnt bei dir“; Pfeile wählen, A (oder die Zeile zweimal antippen) besucht, B schließt die Liste, B im Dorfbild geht zurück in den Park. Unbekannte stehen nicht in der Liste.
+- **Außerhalb der Weihnachtszeit (18.11.–5.1.)** gibt es noch kein Dorfbild; dort dient der Park (Evi am Dorfeingang) als Hintergrund. **Für die anderen Jahreszeiten fehlen noch Dorfbilder** (Frühling, Sommer, Herbst, Winter ohne Weihnachtsschmuck): bei Bedarf bei der Nutzerin anfragen und über das Skript einbauen.
+- Test `dorf.cpp` prüft u. a. Pixel für Pixel alle Dorfbilder zur Weihnachtszeit.
+
 ## Schritt 3 (26.11.2026): Verlieben, Klopfen, Partner, Ei, Baby, Oma im Zimmer
 
 Neue Dateien `evi-handy/haushalt.h`, `haushalt.ino`. Gespeichert im EEPROM ab 2200 (`HaushaltStand`, mit Prüfsumme). Geändert: `park.h/.ino`, `dorf.ino`, `stammbaum.ino` (`stammEintragenKern`), `kuscheln.ino`, `evi-handy.ino`.

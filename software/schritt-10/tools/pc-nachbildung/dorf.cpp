@@ -57,18 +57,21 @@ int main() {
   beruehrt(160, 27 + 64);
   PRUEFE(park.phase == PARK_LAEUFT && park.ziel == PARK_ZIEL_DORF, "Antippen der Häuser: Tamagotchi läuft zum Dorf");
   laufen(6000);
-  PRUEFE(park.phase == PARK_DORF, "angekommen: Auswahl im Dorf");
+  PRUEFE(park.phase == PARK_DORF && !park.dorfMenue, "angekommen: das Dorfbild, die Liste ist noch zu");
+  zeichneAlles(); foto("dorf-bild.pgm");
+  knopf(K_A);
+  PRUEFE(park.dorfMenue, "A öffnet die Liste „Wen besuchst du?“");
   zeichneAlles(); foto("dorf-auswahl.pgm");
 
   // ---- Unbekannte kann man nicht besuchen ----
-  albumWahl = 5; knopf(K_A);
-  PRUEFE(park.phase == PARK_DORF && park.meldung == 2, "Unbekannte: „kennst du noch nicht“");
+  { int liste[BESUCHER]; const int n = dorfListe(liste);
+    PRUEFE(n == 3 && !dorfWaehle(5) && dorfWaehle(13), "die Liste enthält nur die drei Bekannten, Unbekannte kann man nicht wählen"); }
   zeichneAlles();
   // ---- Wer im Park steht, ist nicht zu Hause ----
   const ms_t imPark = zeitMitBesucher(13, true), zuHause = zeitMitBesucher(13, false);
   PRUEFE(imPark && zuHause, "Testzeiten gefunden");
   uhrSetzen(imPark); pet.aktualisiert = imPark; himmel = himmelBei(imPark);
-  albumWahl = 13; knopf(K_A);
+  dorfWaehle(13); knopf(K_A);
   PRUEFE(park.phase == PARK_DORF && park.meldung == 1 && parkFreund.treffer[13] == 7, "Mampf steht im Park: nicht zu Hause, kein Treffen gezählt");
   zeichneAlles();
   // Alle 8 Meldungen kommen vor
@@ -79,7 +82,7 @@ int main() {
   uhrSetzen(zuHause); pet.aktualisiert = zuHause; himmel = himmelBei(zuHause);
   parkFreund.heuteTag = 0;
   const int vor = parkFreund.treffer[13];
-  albumWahl = 13; knopf(K_A);
+  dorfWaehle(13); knopf(K_A);
   PRUEFE(park.phase == PARK_BESUCHT && park.besuch == 13, "Besuch im Haus");
   PRUEFE(parkFreund.treffer[13] == vor + 1, "der Besuch zählt als Treffen");
   zeichneAlles(); foto("dorf-haus.pgm");
@@ -100,14 +103,14 @@ int main() {
     int geschenke = 0;
     parkFreund.treffer[13] = 7; stamm.geschenkMaske[1] = 0; stamm.geschenkMaske[0] = 0; stamm.geschenkMaske[2] = 0;
     for (int i = 0; i < 40; i++) {
-      albumWahl = 13; knopf(K_A);
+      dorfWaehle(13); knopf(K_A);
       if (park.geschenk) geschenke++;
       knopf(K_B);
     }
     PRUEFE(parkFreund.treffer[13] == 47 && v0 > 0, "40 Besuche am selben Tag: 40 Treffen mehr (mehr Freundschaft)");
     PRUEFE(geschenke <= 1, "Beste Freunde schenken am selben Tag höchstens einmal");
     uhrSetzen(zuHause + 2 * TAG); pet.aktualisiert = zuHause + 2 * TAG;
-    int geschenke2 = 0; for (int i = 0; i < 60 && !geschenke2; i++) { albumWahl = 13; if (!dorfZuHause(13, jetztMs())) { uhrSetzen(zuHause + 2 * TAG + 4 * STUNDE); pet.aktualisiert = jetztMs(); } knopf(K_A); if (park.geschenk) geschenke2++; if (park.phase == PARK_BESUCHT) knopf(K_B); stamm.geschenkMaske[1] = 0; stamm.geschenkMaske[0] = 0; stamm.geschenkMaske[2] = 0; }
+    int geschenke2 = 0; for (int i = 0; i < 60 && !geschenke2; i++) { dorfWaehle(13); if (!dorfZuHause(13, jetztMs())) { uhrSetzen(zuHause + 2 * TAG + 4 * STUNDE); pet.aktualisiert = jetztMs(); } knopf(K_A); if (park.geschenk) geschenke2++; if (park.phase == PARK_BESUCHT) knopf(K_B); stamm.geschenkMaske[1] = 0; stamm.geschenkMaske[0] = 0; stamm.geschenkMaske[2] = 0; }
     PRUEFE(geschenke2 > 0, "an einem anderen Tag gibt es wieder Geschenke");
     uhrSetzen(zuHause); pet.aktualisiert = zuHause;
   }
@@ -116,7 +119,7 @@ int main() {
     bool ok = false;
     for (int i = 0; i < 120 && !ok; i++) {
       parkFreund.treffer[13] = 7; stamm.geschenkMaske[1] = 0; stamm.geschenkMaske[0] = 0; stamm.geschenkMaske[2] = 0;
-      albumWahl = 13; park.phase = PARK_DORF; knopf(K_A);
+      park.phase = PARK_DORF; dorfWaehle(13); knopf(K_A);
       if (park.phase == PARK_BESUCHT && park.geschenk) { meldung[0] = 0; knopf(K_B); ok = meldung[0] != 0; }
       else if (park.phase == PARK_BESUCHT) knopf(K_B);
     }
@@ -132,22 +135,49 @@ int main() {
     uhrSetzen(advent); pet.aktualisiert = advent; himmel = himmelBei(advent);
     park.phase = PARK_DORF; parkFreund.treffer[4] = 3;
     const ms_t z = advent; (void)z;
-    albumWahl = 4; for (int t = 0; t < 30 && !dorfZuHause(4, jetztMs()); t++) { uhrSetzen(jetztMs() + 4 * STUNDE); pet.aktualisiert = jetztMs(); }
+    dorfWaehle(4); for (int t = 0; t < 30 && !dorfZuHause(4, jetztMs()); t++) { uhrSetzen(jetztMs() + 4 * STUNDE); pet.aktualisiert = jetztMs(); }
     knopf(K_A); zeichneAlles(); foto("dorf-haus-advent.pgm");
     PRUEFE(park.phase == PARK_BESUCHT, "Besuch im Advent");
     knopf(K_B);
     uhrSetzen(zuHause); pet.aktualisiert = zuHause; himmel = himmelBei(zuHause);
   }
+  // ---- Das Dorf zur Weihnachtszeit zeigt die Dorfbilder (alle Tageszeiten und Wetterlagen) ----
+  {
+    bool kombi[3][5] = {}; bool alleGleich = true; int geprueft = 0;
+    for (int t = 0; t < 4000 && geprueft < 400; t++) {
+      const ms_t z = ausOrtszeit(2026, 12, 1, 0, 0) + (ms_t)t * 90 * MINUTE;
+      if (!weihnachtsZeit(z)) continue;
+      uhrSetzen(z); pet.aktualisiert = z;
+      const Himmel h = himmelBei(z); const Wetter w = wetterBei(z);
+      kombi[h][w] = true;
+      dorfHintergrund(z);
+      const ZimmerBild& b = *DORF_WEIHNACHT[h][w];
+      for (int y = 0; y < 174; y += 7) for (int x = 0; x < 320; x += 5)
+        if (bild.stufe(x, 27 + y) != grauStufe(b.grau, b.w, x, y)) alleGleich = false;
+      geprueft++;
+    }
+    int n = 0; for (int h = 0; h < 3; h++) for (int w = 0; w < 5; w++) if (kombi[h][w]) n++;
+    printf("  %d von 15 Kombinationen vorgekommen\n", n);
+    PRUEFE(alleGleich && n >= 9, "Weihnachtszeit: das Dorf zeigt Pixel für Pixel das passende Dorfbild");
+    PRUEFE(sizeof(DORF_WEIHNACHT) / sizeof(DORF_WEIHNACHT[0][0]) == 15, "15 Dorfbilder eingebunden");
+    uhrSetzen(zuHause); pet.aktualisiert = zuHause; himmel = himmelBei(zuHause);
+  }
   // ---- Zurück und nach Hause ----
+  park.phase = PARK_DORF; park.dorfMenue = true;
+  knopf(K_B); PRUEFE(park.phase == PARK_DORF && !park.dorfMenue, "B in der Liste: Liste zu");
   knopf(K_B); PRUEFE(park.phase == PARK_WAHL, "B im Dorf: zurück zum Park");
   knopf(K_B); PRUEFE(!parkOffen(), "B im Park: nach Hause");
   // Touch im Dorf
   parkOeffnen(jetztMs()); beruehrt(160, 27 + 64); laufen(6000);
   PRUEFE(park.phase == PARK_DORF, "zweiter Weg zum Dorf");
-  beruehrt(2 * 64 + 10, 45 + 39 + 10);   // Figur 7 (Spalte 2, Zeile 1)
-  PRUEFE(albumWahl == 7, "Antippen wählt eine Figur");
+  beruehrt(100, 100);
+  PRUEFE(park.dorfMenue, "das Dorf antippen öffnet die Liste");
+  beruehrt(200, 27 + 4 + 18 + 17 + 5);
+  PRUEFE(dorfPos == 1, "Antippen einer Zeile wählt sie");
+  beruehrt(100, 100);
+  PRUEFE(!park.dorfMenue, "neben die Liste tippen schließt sie");
   beruehrt(280, ZEILE_Y + 10);
-  PRUEFE(park.phase == PARK_WAHL, "Tipper unten rechts: zurück");
+  PRUEFE(park.phase == PARK_WAHL, "Tipper unten rechts: zurück zum Park");
   // Schlafen schließt alles
   bildschirmAus(); PRUEFE(!parkOffen(), "Bildschirm aus schließt das Dorf");
   printf(fehler ? "%d FEHLER\n" : "Alles in Ordnung.\n", fehler);

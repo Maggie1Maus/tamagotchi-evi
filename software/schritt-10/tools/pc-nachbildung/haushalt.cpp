@@ -88,7 +88,7 @@ int main() {
   PRUEFE(nie, "der Partner steht nie mehr im Park");
   // Dorf: wohnt bei dir
   parkFreund.treffer[partner] = 5;
-  park = ParkZustand(); park.phase = PARK_DORF; albumWahl = partner; knopf(K_A);
+  park = ParkZustand(); park.phase = PARK_DORF; dorfWaehle(partner); knopf(K_A);
   PRUEFE(park.phase == PARK_DORF && park.meldung == 3, "im Dorf: „wohnt jetzt bei dir“");
   zeichneAlles(); park = ParkZustand();
   // Ei wird nicht vor der Zeit gelegt
@@ -201,7 +201,7 @@ int main() {
     while (parkBesucher(z) == f) z += 4 * STUNDE;
     zeit(z);
     parkFreund.heuteTag = 0;
-    park = ParkZustand(); park.phase = PARK_DORF; albumWahl = f;
+    park = ParkZustand(); park.phase = PARK_DORF; dorfWaehle(f);
     knopf(K_A); PRUEFE(park.phase == PARK_BESUCHT, "Besuch bei dem besten Freund");
     knopf(K_B);
     PRUEFE(park.phase == PARK_LIEBE && park.liebeArt == 0 && park.liebeKandidat == f && park.liebeZurueck == PARK_DORF, "beim Verlassen des Hauses: „Soll er dein Partner werden?“");

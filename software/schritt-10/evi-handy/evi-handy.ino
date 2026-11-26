@@ -42,6 +42,7 @@
 #include "raumtiefe.h"
 #include "park.h"
 #include "parkbilder.h"
+#include "dorfbilder.h"
 #include "besucherbilder.h"
 #include "parkfreunde.h"
 #include "stammbaum.h"
