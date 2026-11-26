@@ -457,6 +457,12 @@ struct FreundStandV1 {
 };
 static_assert(sizeof(FreundStand) <= EEPROM_GROESSE - FREUND_ADRESSE, "Freundschaft passt nicht in den Speicher");
 static_assert(sizeof(FreundStandV1) <= EEPROM_GROESSE - FREUND_ADRESSE, "Version 1 passt nicht in den Speicher");
+// Ein Byte ganz hinten im Speicher: wie oft der Geburtstag schon neu gefragt wurde (geburtstagNeuFragenPruefen)
+const int GEB_NEU_ADRESSE = EEPROM_GROESSE - 1;
+const uint8_t GEB_NEU_FRAGEN = 1;
+static_assert(FREUND_ADRESSE + sizeof(FreundStand) <= GEB_NEU_ADRESSE, "Geburtstags-Merker überschneidet die Freundschaft");
+static_assert(FREUND_ADRESSE + sizeof(FreundStandV1) <= GEB_NEU_ADRESSE, "Geburtstags-Merker überschneidet Version 1");
+void geburtstagNeuFragenPruefen();
 
 void freundLaden() {
   uint8_t* b = (uint8_t*)&freund;
@@ -484,6 +490,19 @@ void freundLaden() {
     }
   }
   if (freund.evi != pet.geboren) freundNeueEvi();
+  geburtstagNeuFragenPruefen();
+}
+
+// Geburtstag noch einmal fragen: GEB_NEU_FRAGEN um eins erhöhen und neu aufspielen. Evi vergisst dann den
+// gespeicherten Geburtstag einmal und fragt bei nächster Gelegenheit wieder (alles andere bleibt).
+// 1: am 26.11.2026, die Nutzerin hatte sich vertippt.
+void geburtstagNeuFragenPruefen() {
+  if (EEPROM.read(GEB_NEU_ADRESSE) == GEB_NEU_FRAGEN) return;
+  freund.gebTag = 0; freund.gebMonat = 0; freund.gebGefeiert = 0;
+  gespraech.gebNaechsterVersuch = 0;
+  gespraech.geaendert = true;
+  EEPROM.write(GEB_NEU_ADRESSE, GEB_NEU_FRAGEN);
+  EEPROM.commit();
 }
 
 void freundSpeichern() {

@@ -1,5 +1,13 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Uhr zurückgestellt: Dauer-Melodie behoben, Geburtstag neu fragen – 26. November 2026
+
+- **Bug:** Nach Vor- und Zurückstellen der Uhr (Jahreszeiten anschauen) kam alle 10 Sekunden die Entwicklungsmelodie mit „Evi ist jetzt ein Teenager!“. Ursache: Der Spielstand („aktualisiert“) blieb auf dem Zukunftsdatum stehen; `melde()` verglich die Phase dort (erwachsen) mit der Phase jetzt (Teenager). Außerdem rechnete Evi bis zum Erreichen des Zukunftsdatums nicht weiter.
+- **Fix:** `weiterrechnen()` in `pet.h` setzt den Stand bei zurückgestellter Uhr auf jetzt und rechnet ab da normal weiter. `melde()` und `setup()` werten einen Stand in der Zukunft nicht mehr als Phasenwechsel. Bereits durchgerechnete Zukunftstage (Hunger, Sauberkeit) bleiben, das Alter stimmt immer (aus dem Schlüpfzeitpunkt).
+- Beim ersten Start nach dem Aufspielen kann noch einmal der Bildschirm „Datum und Uhrzeit“ kommen, weil der gespeicherte Stand in der Zukunft liegt – einfach das heutige Datum bestätigen.
+- **Geburtstag neu fragen** (Nutzerin hatte sich vertippt): Merker-Byte ganz hinten im EEPROM (`GEB_NEU_ADRESSE`, `GEB_NEU_FRAGEN` in `freunde.ino`). Ist er nicht gleich `GEB_NEU_FRAGEN`, vergisst Evi einmal den Geburtstag (Freundschaft und Antworten bleiben) und fragt bei nächster Gelegenheit neu. Für ein weiteres Neufragen `GEB_NEU_FRAGEN` um eins erhöhen.
+- Neues PC-Prüfprogramm `tools/pc-nachbildung/zeitzurueck.cpp` (in `pruefen.sh`): ohne Fix 3 Fehler, mit Fix alles in Ordnung; alle übrigen Prüfungen und der 51-Fenster-Vergleich ebenfalls fehlerfrei. Am Board noch nicht geprüft.
+
 ## Heller Fensterausblick – 26. November 2026
 
 - Die Nutzerin hat nach dem Test am Board einen freundlicheren Fensterausblick und einen helleren Tagesbaum gewünscht, die Tageslicht-Vorschau bestätigt und das vollständige Grafikpaket samt Codeanbindung zum Hochladen freigegeben.

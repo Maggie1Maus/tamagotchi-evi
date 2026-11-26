@@ -194,7 +194,9 @@ void eviTakt(ms_t jetzt) {
 
 // ---------- Ereignisse (wie announce in app.js) ----------
 void melde(const Tier& vorher, ms_t jetzt) {
-  const Phase von = phaseBei(vorher, vorher.aktualisiert), zu = phaseBei(pet, jetzt);
+  // Uhr zurückgestellt: Der alte Stand liegt in der Zukunft und zählt nicht (sonst kommt die Entwicklungsmeldung immer wieder).
+  const ms_t bisher = vorher.aktualisiert > jetzt ? jetzt : vorher.aktualisiert;
+  const Phase von = phaseBei(vorher, bisher), zu = phaseBei(pet, jetzt);
   char text[80];
   if (von != zu) {
     if (von == EI && zu != TOT) {
@@ -224,7 +226,7 @@ void melde(const Tier& vorher, ms_t jetzt) {
     speichern(jetzt);
     return;
   }
-  if (geweckt(vorher, vorher.aktualisiert) && schlafArt(pet, jetzt) == NACHTS) {
+  if (geweckt(vorher, bisher) && schlafArt(pet, jetzt) == NACHTS) {
     snprintf(text, sizeof(text), "%s ist wieder eingeschlafen.", pet.name);
     zeigeMeldung(text, 5000);
     return;
@@ -236,8 +238,8 @@ void melde(const Tier& vorher, ms_t jetzt) {
     bildschirmEin();
   }
   // Guten Morgen: Sie wacht auf, während du zuschaust.
-  if (bildschirmAn && schlafArt(vorher, vorher.aktualisiert) == NACHTS && !schlaeft(pet, jetzt) && !geweckt(pet, jetzt))
-    begruessen(vorher.aktualisiert);
+  if (bildschirmAn && schlafArt(vorher, bisher) == NACHTS && !schlaeft(pet, jetzt) && !geweckt(pet, jetzt))
+    begruessen(bisher);
 }
 
 // Alle 10 Sekunden und bei Bedarf: Zeit nachrechnen (tick in app.js)
@@ -1127,7 +1129,8 @@ void setup() {
     const Tier vorher = pet;
     weiterrechnen(pet, jetzt);
     // Was passiert ist, während Evi aus war (missedEvents in app.js)
-    const Phase von = phaseBei(vorher, vorher.aktualisiert), zu = phaseBei(pet, jetzt);
+    const ms_t bisher = vorher.aktualisiert > jetzt ? jetzt : vorher.aktualisiert;   // Uhr zurückgestellt
+    const Phase von = phaseBei(vorher, bisher), zu = phaseBei(pet, jetzt);
     char text[90] = "";
     if (zu == TOT && von != TOT) snprintf(text, sizeof(text), pet.ursache == ALTER ? "%s ist friedlich eingeschlafen, während du weg warst." : "%s ist gestorben, während du weg warst.", pet.name);
     else if (von == EI && zu != EI) snprintf(text, sizeof(text), "%s ist geschlüpft, während du weg warst.", pet.name);
@@ -1145,7 +1148,7 @@ void setup() {
   speichern(jetzt);
   letzteRunde = millis();
   moment.naechster = jetzt + naechsterAbstand();
-  if (hatStand) begruessenPlanen(geladen.aktualisiert);   // wie beim Öffnen der App: Evi begrüßt dich
+  if (hatStand) begruessenPlanen(geladen.aktualisiert > jetzt ? jetzt : geladen.aktualisiert);   // wie beim Öffnen der App: Evi begrüßt dich
   bildschirmEin();
   zeichneAlles();
 }

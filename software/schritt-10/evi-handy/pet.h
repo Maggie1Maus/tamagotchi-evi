@@ -184,8 +184,12 @@ static inline bool aktuellerWunsch(const Tier& p, ms_t t, Wunsch& w) {
 }
 
 // Rechnet die vergangene Zeit nach, Minute für Minute.
+// Seit 26.11.2026: Wurde die Uhr zurückgestellt (jetzt liegt vor dem letzten Stand), rechnet Evi ab jetzt
+// normal weiter. Vorher blieb der Stand in der Zukunft stehen, und alle 10 Sekunden kam die Entwicklungsmeldung.
 static inline void weiterrechnen(Tier& p, ms_t jetzt) {
-  if (p.tot || jetzt <= p.aktualisiert) return;
+  if (p.tot) return;
+  if (jetzt < p.aktualisiert) { p.aktualisiert = jetzt; return; }
+  if (jetzt == p.aktualisiert) return;
   ms_t t = p.aktualisiert;
   while (t < jetzt) {
     ms_t ende = teileAb(t, MINUTE) * MINUTE + MINUTE;

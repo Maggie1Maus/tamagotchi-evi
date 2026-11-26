@@ -24,6 +24,8 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-zimmer --zimme
 - `kuscheln.cpp`: Touch zum Kuscheln (nachgebildeter Touch-Chip CST328 in `ersatz/Wire.h`, `simFinger`), Kuschelwunsch, Menü ohne Uhr/Name/Hilfe, kleine Uhrzeit, trüber Regenhimmel.
 - Das Display ist mit nachgebildet (`ersatz/SPI.h`: Spalten, Zeilen, Schreiben). Nach jedem Bild wird verglichen, ob auf dem Display genau das Bild des Programms steht; so wird geprüft, dass `zeigen()` alles Geänderte schickt.
 
+- `zeitzurueck.cpp`: Uhr vor- und zurückgestellt ergibt keine Dauer-Entwicklungsmeldung, Evi rechnet danach normal weiter; Geburtstag wird über den Merker einmal neu gefragt.
+
 Ersetzt nicht den Test am Board: Ton, echter Touch, Tasten und Geschwindigkeit gibt es nur dort.
 
 - `garten.cpp`: (seit 25.11.2026 nicht mehr in `pruefen.sh`, Garten pausiert) Gartenmenü, Suche mit Hilfe per A/Touch, alle zwölf Lebensphasen-Posen, ältere Spaziergang-Funde behalten ihre Erinnerung, volle Sammlung, Version-2-Migration, Version-3-Metadaten, Jahreszeiten- und Wetterbilder, Heimkehr/RESET/Schlafenszeit. Version 1 wird zusätzlich in `sideboard.cpp` geprüft.
