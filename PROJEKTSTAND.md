@@ -1,5 +1,14 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Parkhorizont mit Häusern – Gestaltung vom 26. November 2026
+
+- Die bestehende Parkansicht wird um **genau drei kleine Häuschen am fernen Ende des Kieswegs** ergänzt: eines links, zwei rechts. Die zwei rechten Häuser stehen leicht hintereinander und dürfen sich überlappen; keines schwebt, alle stehen sichtbar auf dem Boden. Sie stehen nah am Weg und ersetzen weder den Weg noch die bestehenden Bäume und Sträucher am Horizont.
+- Die Häuser sind zunächst **reine Hintergrundkulisse**. Sie werden im Park nicht angetippt oder einzelnen Freunden per Auswahl zugeordnet. Die bestehenden Parkziele und die derzeitige Besuchsfigur im Park bleiben davon unabhängig.
+- Die Hausgrafiken sollen sich an Jahreszeit und Tageszeit anpassen: im Winter etwas Schnee auf den Dächern, nachts einzelne erleuchtete Fenster; die Landschaft bleibt ruhig und lesbar. Eine konkrete Ausgestaltung für alle Zustände wird mit den fertigen Parkgrafiken abgestimmt.
+- **Für später vorgemerkt, jetzt nicht umsetzen:** Evi könnte den Kiesweg entlanggehen; danach öffnet sich ein Besuchsmenü mit Freunden wie Lotti. Die Wahl erfolgt im Menü und nicht durch Antippen eines Hauses. Heute wird nur die Ansicht des Parks mit den Häusern gestaltet.
+- Gestaltungsprozess: Vor einer Übernahme der neuen Parkgrafik ins Repository oder in die Firmware zuerst eine Vorschau zeigen und Rückmeldung der Nutzerin einholen. Der Entwurf vom 26. November wurde noch nicht freigegeben. Er muss in die tatsächliche Displayauflösung und die 16 Graustufen des bestehenden Parks übertragen werden.
+
+
 Stand: 25. November 2026
 
 ## Wechselnder Besuch im Park (25. November 2026)
