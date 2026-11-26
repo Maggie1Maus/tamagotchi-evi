@@ -6,10 +6,21 @@
 - Die Häuser sind zunächst **reine Hintergrundkulisse**. Sie werden im Park nicht angetippt oder einzelnen Freunden per Auswahl zugeordnet. Die bestehenden Parkziele und die derzeitige Besuchsfigur im Park bleiben davon unabhängig.
 - Die Hausgrafiken sollen sich an Jahreszeit und Tageszeit anpassen: im Winter etwas Schnee auf den Dächern, nachts einzelne erleuchtete Fenster; die Landschaft bleibt ruhig und lesbar. Eine konkrete Ausgestaltung für alle Zustände wird mit den fertigen Parkgrafiken abgestimmt.
 - **Für später vorgemerkt, jetzt nicht umsetzen:** Evi könnte den Kiesweg entlanggehen; danach öffnet sich ein Besuchsmenü mit Freunden wie Lotti. Die Wahl erfolgt im Menü und nicht durch Antippen eines Hauses. Heute wird nur die Ansicht des Parks mit den Häusern gestaltet.
-- Gestaltungsprozess: Vor einer Übernahme der neuen Parkgrafik ins Repository oder in die Firmware zuerst eine Vorschau zeigen und Rückmeldung der Nutzerin einholen. Der Entwurf vom 26. November wurde noch nicht freigegeben. Er muss in die tatsächliche Displayauflösung und die 16 Graustufen des bestehenden Parks übertragen werden.
+- Gestaltungsprozess: Vorschau gezeigt, Häuser näher an den Weg gerückt, schwebendes Haus korrigiert und die beiden dünnen Hintergrundbäume entfernt. Anschließend beauftragte die Nutzerin die vollständige Ausarbeitung für Jahreszeiten, Tageszeiten und Wetter sowie leuchtende Fenster bei Nacht, Dämmerung und Regen. Der darauf aufbauende Stand ist unten dokumentiert.
 
 
-Stand: 25. November 2026
+Stand: 26. November 2026
+
+## Parkansichten für Jahreszeiten, Tageszeiten und Wetter (26. November 2026)
+
+- **Korrektur nach weiterer Rückmeldung:** Die zunächst zu kleinen Strich-Laternen sind durch freigestellte Graustufenzeichnungen mit Glas, Dach und schattiertem Mast ersetzt. Perspektivische Höhen 72/52/34 Pixel; deutlich breitere und hellere Lichtflächen auf dem Kiesweg. Fünfzackiger hängender Weihnachtsstern als separate Grafik, winterliche Schneedecke auf den Laternendächern. Schaltregeln bleiben Nacht, Dämmerung und Regen; Sterne während der bestehenden Weihnachtszeit. Positionen so angepasst, dass die entfernte Laterne neben der Baumkrone sichtbar bleibt und die vordere den Schneemann nicht überdeckt.
+- Die zuvor noch offenen Wünsche sind jetzt in den Quellen umgesetzt: größerer dreiteiliger Schneemann, kleine kahle Büsche bei den Winterhäusern, dichteres Herbstlaub besonders unter dem Baum, Pilze statt Blumen. Alle 51 Ansichten wurden erneut exportiert und geprüft. **Die Nutzerin hat die überarbeitete Vorschau am 26. November 2026 bestätigt und das Hochladen auf GitHub ausdrücklich freigegeben.** Veröffentlichung auf `main` nach dem bestehenden Projektablauf; die frühere automatische Ablehnung ist durch diese neue ausdrückliche Freigabe geklärt.
+
+- Nach den Korrekturen der Häuseranordnung und dem Entfernen der beiden dünnen Hintergrundbäume wurde die vollständige Ausarbeitung beauftragt. Neue Quellen und 320 × 174 große Grundbilder unter `entwuerfe/park/entwurf-2/`; die frühere Version bleibt als Entwurf erhalten.
+- Häuser bleiben reine Kulisse. Ihre drei Fenster sind eine eigene Lichtebene und leuchten nachts, bei Dämmerung und bei Regen, auch am Tag. Die drei separaten Parklaternen nutzen dieselbe Einschaltregel mit breiten, hellen Lichtflächen auf dem Boden und dezent gepunktetem Rand. Hängende Sterne während der bestehenden Weihnachtszeit (18. November bis 5. Januar).
+- Vier Jahreszeiten mit Blüten, Sommerkrone, dichterem Herbstlaub und Pilzen beziehungsweise Schnee auf Ästen, Baumfuß, Sträuchern, Bank und Dächern sowie größerem Schneemann. Keine Fußspuren. Graustufen beibehalten, Tageshimmel aufgehellt, Nachthimmel schwarz; Regen und Schneefall weiter animiert, Schneefall nur im Winter.
+- Eingebaut in die Waveshare-Parkdarstellung: `make-park-grau.py`, `parkbilder.h`, `park.ino`. 51 zulässige Kombinationen werden mit dem echten Firmware-Zeichencode exportiert, siehe `entwuerfe/park/entwurf-2/README.md`. Die Hausbesuchslogik bleibt eine spätere Aufgabe.
+- PC-Prüfung: Übersetzung mit Warnungen, bestehende Zimmer-/Park-/Fundprüfungen sowie alle 51 Parkansichten erfolgreich. Noch keine Prüfung auf dem physischen Waveshare-Board.
 
 ## Wechselnder Besuch im Park (25. November 2026)
 

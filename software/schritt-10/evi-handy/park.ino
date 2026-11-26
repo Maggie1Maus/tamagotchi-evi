@@ -264,17 +264,20 @@ static void parkHintergrund(Jahreszeit saison, Himmel h, Wetter w) {
   const ZimmerBild& grund = *PARK_BODEN[saison];
   const uint8_t* himmelmaske = PARK_HIMMEL[saison];
   const bool trueb = w == WT_BEWOELKT || w == WT_REGEN || w == WT_SCHNEE;
-  const int erde = (h == HIMMEL_NACHT ? 7 : h == HIMMEL_DAEMMERUNG ? 10 : 15) - (trueb ? 2 : 0);
+  const int erde = (h == HIMMEL_NACHT ? 7 : h == HIMMEL_DAEMMERUNG ? 11 : 15) - (trueb ? 1 : 0);
   uint8_t* puffer = bild.getBuffer() + STATUS_H * BREITE;
   for (int y = 0; y < grund.h; y++) {
-    const int sky = h == HIMMEL_NACHT ? (trueb ? 2 : 0) :
-                    h == HIMMEL_DAEMMERUNG ? (trueb ? 4 : 6) : (trueb ? 8 : 12);
     for (int x = 0; x < grund.w; x++) {
       const uint8_t stufe = grauStufe(grund.grau, grund.w, x, y);
       int wert = (stufe * erde + 7) / 15;
-      if (parkIstHimmel(himmelmaske, x, y) && (h != HIMMEL_TAG || w != WT_SONNE_WOLKEN)) {
-        const int band = (y + (trueb ? (x / 28 + y / 6) % 8 : 0)) / 23;
-        wert = sky + band + (w == WT_SONNE_WOLKEN ? (stufe >= 14 ? 2 : 0) : 0);
+      if (parkIstHimmel(himmelmaske, x, y)) {
+        // Nachts durchgehend schwarz, tags sonnig fast weiß. Wolken/Regen
+        // bleiben heller als zuvor; die Landschaft behält ihre 16 Graustufen.
+        if (h == HIMMEL_NACHT) wert = 0;
+        else if (h == HIMMEL_DAEMMERUNG) wert = (trueb ? 5 : 7) + y / 35;
+        else if (w == WT_SONNE) wert = 15;
+        else if (w == WT_SONNE_WOLKEN) wert = max(13, (int)stufe);
+        else wert = (w == WT_REGEN ? 10 : 11) + (stufe == 15 ? 1 : 0);
       }
       *puffer++ = min(15, wert) * 17;
     }
@@ -286,13 +289,94 @@ static void parkHintergrund(Jahreszeit saison, Himmel h, Wetter w) {
     const int dx = x - 265, dy = y - 24;
     if (dx * dx + dy * dy > 100 || !parkIstHimmel(himmelmaske, x, y)) continue;
     if (!nacht || (dx - 5) * (dx - 5) + (dy + 4) * (dy + 4) > 81)
-      bild.drawPixel(x, STATUS_H + y, nacht ? 238 : 255);
+      bild.drawPixel(x, STATUS_H + y, nacht ? 238 : dx * dx + dy * dy >= 81 ? 204 : 255);
   }
   if (nacht) {
     const ParkPunkt sterne[] = {{12, 12}, {22, 36}, {162, 15}, {193, 31}, {222, 9}, {241, 39}, {291, 10}, {301, 32}};
     for (const auto& s : sterne)
       if (parkIstHimmel(himmelmaske, s.x, s.y)) bild.drawPixel(s.x, STATUS_H + s.y, 221);
   }
+}
+
+// Fenster sind eine getrennte Lichtebene, keine neuen auswählbaren Parkziele.
+static bool parkLichtAn(Himmel h, Wetter w) {
+  return h != HIMMEL_TAG || w == WT_REGEN;
+}
+
+static void parkLichtFleck(int cx, int cy, int rx, int ry, int staerke) {
+  const int aussen = rx * rx * ry * ry;
+  for (int dy = -ry; dy <= ry; dy++) for (int dx = -rx; dx <= rx; dx++) {
+    const int abstand = dx * dx * ry * ry + dy * dy * rx * rx;
+    if (abstand > aussen) continue;
+    const int x = cx + dx, y = cy + dy;
+    if (x < 0 || x >= BREITE || y < 0 || y >= ZEILE_Y - STATUS_H) continue;
+    // Heller Kern, abgestufter Rand. Die Wegtextur wird aufgehellt, nicht übermalt.
+    if (abstand * 5 > aussen * 4 && (x * 13 + y * 7) % 3) continue;
+    const int zusatz = 17 * (1 + (staerke / 17 - 1) * (aussen - abstand) / aussen);
+    uint8_t& pixel = bild.getBuffer()[(STATUS_H + y) * BREITE + x];
+    pixel = min(255, (int)pixel + zusatz);
+  }
+}
+
+// Zeichnungen mit Graustufen und Deckkraft statt der früheren Strich-Platzhalter.
+static void parkLaterneZeichnen(int x, int fuss, int hoehe, Jahreszeit saison,
+                                Himmel h, bool an, bool weihnacht) {
+  const ZimmerBild& b = PARK_LATERNE;
+  const int breite = max(1, b.w * hoehe / b.h), links = x - breite / 2;
+  const int oben = fuss - hoehe + 1;
+  for (int y = 0; y < hoehe; y++) for (int dx = 0; dx < breite; dx++) {
+    const int sx = dx * b.w / breite, sy = y * b.h / hoehe;
+    if (!b.deckt(sx, sy)) continue;
+    const int i = sy * b.w + sx;
+    const bool glas = PARK_LATERNENGLAS[i >> 3] & (128 >> (i & 7));
+    const int grund = b.wert(sx, sy);
+    int ton = h == HIMMEL_NACHT ? max(51, grund * 9 / 15 / 17 * 17) : grund;
+    if (an && glas) ton = max(238, grund);
+    // Schneedecke auf den hellen oberen Dachflächen, passend zur Form des Dachs.
+    if (saison == JZ_WINTER && sy * 100 >= b.h * 6 && sy * 100 <= b.h * 14 && grund >= 153)
+      ton = an ? 255 : 238;
+    bild.drawPixel(links + dx, STATUS_H + oben + y, ton);
+  }
+  if (weihnacht) {
+    const ZimmerBild& stern = PARK_STERN;
+    const int groesse = max(7, hoehe / 5);
+    const int sw = max(1, stern.w * groesse / stern.h);
+    const int sx0 = x + max(5, breite / 2) + 2;
+    const int sy0 = oben + hoehe * 30 / 100;
+    const int mitte = sx0 + sw / 2;
+    const uint8_t metall = h == HIMMEL_NACHT ? 119 : 85;
+    bild.drawFastHLine(x + 1, STATUS_H + sy0 - 4, mitte - x, metall);
+    bild.drawFastVLine(mitte, STATUS_H + sy0 - 4, 5, metall);
+    for (int sy = 0; sy < groesse; sy++) for (int sx = 0; sx < sw; sx++) {
+      const int px = sx * stern.w / sw, py = sy * stern.h / groesse;
+      if (!stern.deckt(px, py)) continue;
+      const int g = stern.wert(px, py);
+      bild.drawPixel(sx0 + sx, STATUS_H + sy0 + sy, an ? max(170, g) : g);
+    }
+  }
+}
+
+static void parkBeleuchtung(Jahreszeit saison, Himmel h, Wetter w, bool weihnacht) {
+  const bool an = parkLichtAn(h, w);
+  if (an) {
+    // Je ein kleines Fenster pro Haus; dieselben festen Bildkoordinaten in
+    // allen vier Jahreszeiten. Ohne großen Halo über den winzigen Häusern.
+    for (const ParkPunkt& p : {ParkPunkt{134, 73}, ParkPunkt{173, 74}, ParkPunkt{183, 70}})
+      bild.fillRect(p.x, STATUS_H + p.y, 2, 2, 255);
+  }
+  // Laternen als eigenständige Elemente: mit der Tiefe kleiner, am Weg verankert.
+  const int lampen[][5] = {{162, 83, 34, 151, 84}, {196, 96, 52, 184, 98}, {50, 118, 72, 68, 120}};
+  for (const auto& l : lampen) {
+    const int x = l[0], fuss = l[1], hoehe = l[2];
+    const int kopf = fuss - hoehe;
+    if (an) {
+      const int licht = h == HIMMEL_TAG ? 68 : 102;
+      parkLichtFleck(l[3], l[4], hoehe / 2, max(3, hoehe / 8), licht);
+      parkLichtFleck(x, kopf + hoehe / 5, max(4, hoehe / 7), max(5, hoehe / 6), 51);
+    }
+    parkLaterneZeichnen(x, fuss, hoehe, saison, h, an, weihnacht);
+  }
+  bild.markieren();
 }
 
 static void parkNiederschlag(Wetter w, Himmel h, uint32_t m) {
@@ -369,7 +453,9 @@ void parkZeichnen(ms_t jetzt) {
   const Himmel h = himmelBei(jetzt);
   const Wetter w = wetterBei(jetzt);
   const uint32_t m = millis();
-  parkHintergrund(jahreszeitBei(jetzt), h, w);
+  const Jahreszeit saison = jahreszeitBei(jetzt);
+  parkHintergrund(saison, h, w);
+  parkBeleuchtung(saison, h, w, weihnachtsZeit(jetzt));
   parkNiederschlag(w, h, m);
   parkBesuchZeichnen(ph);
   const int stelle = parkFundstelle(jetzt);

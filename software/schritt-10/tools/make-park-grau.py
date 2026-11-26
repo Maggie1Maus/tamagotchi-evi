@@ -10,13 +10,14 @@ from PIL import Image
 
 
 STEP = Path(__file__).resolve().parents[1]
-QUELLE = STEP.parents[1] / "entwuerfe/park/entwurf-1"
+QUELLE = STEP.parents[1] / "entwuerfe/park/entwurf-2"
+ALT = STEP.parents[1] / "entwuerfe/park/entwurf-1"
 BREITE, HOEHE = 320, 174
-HIMMEL_H = 70
+HIMMEL_H = 74
 
 
-def lesen(datei, groesse):
-    with Image.open(QUELLE / datei) as bild:
+def lesen(datei, groesse, quelle=QUELLE):
+    with Image.open(quelle / datei) as bild:
         if bild.format != "PNG" or bild.size != groesse:
             raise ValueError(f"{datei}: erwartet PNG {groesse}")
         rgba = bild.convert("RGBA")
@@ -34,10 +35,19 @@ def maske_packen(deckung):
     return daten
 
 
-def himmel(punkte):
+def himmel(punkte, winter=False):
     # Helle Flächen, die vom Bildrand aus erreichbar sind. Konturen schützen Äste und Baumkronen.
     offen = [r >= (187 if i // BREITE < 56 else 204)
              for i, (r, _, _, _) in enumerate(punkte[:BREITE * HIMMEL_H])]
+    if winter:
+        # Weiße Schneekanten liegen unmittelbar über dunklen Ästen. Sie sind
+        # Landschaft und dürfen beim Wechsel zum schwarzen Himmel nicht verschwinden.
+        for y in range(HIMMEL_H - 2):
+            for x in range(32, 156):
+                i = y * BREITE + x
+                if punkte[i][0] >= 221 and any(
+                        punkte[(y + dy) * BREITE + x][0] < 136 for dy in (1, 2)):
+                    offen[i] = False
     sichtbar = bytearray(len(offen))
     wartend = deque()
 
@@ -49,7 +59,10 @@ def himmel(punkte):
                 wartend.append((x, y))
 
     for x in range(BREITE):
-        aufnehmen(x, 0)
+        # Die Sommerkrone ragt oben aus dem Bild. Helle Kronenpixel am
+        # oberen Rand sind keine Startpunkte für die Himmelssuche.
+        if x < 32 or x >= 156:
+            aufnehmen(x, 0)
     for y in range(1, HIMMEL_H):
         aufnehmen(0, y)
         aufnehmen(BREITE - 1, y)
@@ -86,14 +99,24 @@ def erzeugen():
 
     namen = ("FRUEHLING", "SOMMER", "HERBST", "WINTER")
     for saison in namen:
-        pfad = ("park-eingang.png" if saison == "SOMMER"
-                else f"jahreszeiten/park-eingang-{saison.lower()}.png")
+        pfad = f"park-{saison.lower()}.png"
         punkte = lesen(pfad, (BREITE, HOEHE))
         if any(a != 255 for _, _, _, a in punkte):
             raise ValueError(f"{pfad}: Parkhintergrund muss deckend sein")
         export(f"PARK_{saison}", punkte, BREITE, HOEHE)
-        tabelle(f"PARK_HIMMEL_{saison}", maske_packen(himmel(punkte)))
-    export("PARK_LOTTI", lesen("lotti-graustufen.png", (33, 54)), 33, 54)
+        tabelle(f"PARK_HIMMEL_{saison}", maske_packen(himmel(punkte, saison == "WINTER")))
+    for motiv in ("LATERNE", "STERN"):
+        with Image.open(QUELLE / f"{motiv.lower()}.png") as im:
+            breite, hoehe = im.size
+        punkte = lesen(f"{motiv.lower()}.png", (breite, hoehe))
+        export(f"PARK_{motiv}", punkte, breite, hoehe)
+        if motiv == "LATERNE":
+            # Die hellen Glasscheiben im oberen Gehäuse, ohne Metallrahmen.
+            glas = [a == 255 and r >= 187 and .21 <= (i % breite) / breite <= .82
+                    and .145 <= (i // breite) / hoehe <= .255
+                    for i, (r, _, _, a) in enumerate(punkte)]
+            tabelle("PARK_LATERNENGLAS", maske_packen(glas))
+    export("PARK_LOTTI", lesen("lotti-graustufen.png", (33, 54), ALT), 33, 54)
     evi_zip = STEP.parents[1] / "entwuerfe/evi/graustufen-vorschau/Evi-Graustufen.zip"
     phasen = ("02-Baby", "03-Teenager", "04-Erwachsen", "05-Oma")
     evi = []

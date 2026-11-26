@@ -20,6 +20,7 @@ bash software/schritt-10/tools/pc-nachbildung/pruefen.sh /tmp/evi-zimmer --zimme
 - `bewegung.cpp`: Lagesensor (nachgebildeter QMI8658 in `ersatz/Wire.h`, `simLage`): Gehen und Schütteln lösen nichts aus (Gassi seit 25.11.2026 entfernt), kippen, aufs Gesicht legen, „Wie war dein Tag?“, Kekse fangen, Schnick, Schnack, Schnuck.
 - `umgebung.cpp`: Jahreszeiten, Weihnachtszeit und Wetter; fotografiert das Zimmer in allen Kombinationen.
 - `einrichtung.cpp` prüft Möbelpositionen, den vorderen Bettrand und die bewegten Fensterebenen. `pruefe-zimmer-grau.py` vergleicht die Graustufenfotos aller 51 Fensterkombinationen und Animationsphasen mit den PNG-Ebenen.
+- `park-ansichten.cpp` exportiert alle 51 erlaubten Parkkombinationen, prüft Fensterlicht bei Nacht/Dämmerung/Regen, schwarzen Nachthimmel, die 16 Graustufen und die Szenengrenzen. Das Antippen eines Kulissenhauses löst keine neue Aktion aus. Mit `make-park-ansichten.py` entstehen daraus die Parkübersichten und PNGs unter `entwuerfe/park/entwurf-2/`.
 - `kuscheln.cpp`: Touch zum Kuscheln (nachgebildeter Touch-Chip CST328 in `ersatz/Wire.h`, `simFinger`), Kuschelwunsch, Menü ohne Uhr/Name/Hilfe, kleine Uhrzeit, trüber Regenhimmel.
 - Das Display ist mit nachgebildet (`ersatz/SPI.h`: Spalten, Zeilen, Schreiben). Nach jedem Bild wird verglichen, ob auf dem Display genau das Bild des Programms steht; so wird geprüft, dass `zeigen()` alles Geänderte schickt.
 
