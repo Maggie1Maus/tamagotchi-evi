@@ -8,7 +8,14 @@ Der Lebenslauf soll sich ändern (statt „Neues Ei“ im Menü):
 - **Verlieben:** Nur Mädchen und Junge können sich verlieben und ein Baby bekommen. Zwei gleiche Geschlechter bleiben beste Freunde. Verstehen sich ein erwachsenes Tamagotchi und eine Parkfreund-Figur des anderen Geschlechts sehr gut, gibt es irgendwann die Auswahl „verlieben“. Sagt die Nutzerin ja, wird die Figur Partner und **zieht ins Haus ein**. Der Partner kümmert sich selbst um seine Bedürfnisse; die Nutzerin spielt nicht mit ihm.
 - **Ei:** Am letzten Tag des erwachsenen Lebens legt das Tamagotchi ein Ei. Es hüpft etwa eine Minute und schlüpft dann. Mit dem Schlüpfen **verschwindet der Partner**; zu zweit sind dann das bisherige Tamagotchi (wird Oma) und das Baby.
 - **Das Baby ist das neue Tamagotchi der Nutzerin** (sie kümmert sich um das Baby). Die Mutter bzw. der Vater wird Oma/Opa, die Nutzerin kümmert sich nicht mehr um sie/ihn. Das Baby bekommt ein zufälliges Geschlecht, und die Nutzerin gibt ihm einen Namen. Eltern im Stammbaum: das Tamagotchi davor und der Partner.
-- Noch offen (mit der Nutzerin zu klären): was geschieht ohne Partner am letzten Erwachsenentag oder wenn ein Tamagotchi vorher stirbt, wie Oma/Opa und Partner im Zimmer gezeigt werden, wann die Auswahl „verlieben“ kommt, und was die Oma bis zum Lebensende macht.
+- **Antworten der Nutzerin (26.11.2026):**
+  - Das bisherige Tamagotchi **bleibt im Haus und lebt seine Lebensphasen zu Ende**, die Nutzerin kümmert sich ab dem Schlüpfen aber nur noch um das Baby.
+  - **Ohne Partner:** Am letzten erwachsenen Tag klopft es **alle zwei Stunden** (Piepton) an der Haustür. Ein Bildschirm zeigt das eigene und das andere Tamagotchi (weißer Hintergrund, keine neue Zeichnung) mit der Frage, ob es der neue Partner werden soll. Bei „Nein“ kommt zwei Stunden später ein neuer Kandidat, so lange, bis ein Partner gefunden ist. Findet sich keiner, beginnt eine neue Generation mit einem **neuen Ei**, wenn die Oma einschläft.
+  - **Frühes Sterben** (z. B. Vernachlässigung): „Neues Ei“ bleibt als Notlösung.
+  - **Zimmer mit mehreren:** Alle Figuren in **Originalgröße**, sie laufen frei herum, schauen aus dem Fenster und **schlafen auf dem Teppich**. Das gespielte Tamagotchi schläft im Körbchen. Man kann mit den anderen **interagieren**.
+  - **Oma/Opa:** Schläft sie friedlich ein, gibt es eine kleine Meldung. Sie bleibt dann **15 Minuten im Zimmer liegen**; mit ihr interagieren und **„begraben“** lässt sie sofort verschwinden.
+  - Lebensphasen (Stand `pet.h`): Baby 1 Tag, Teenager 2 Tage, Erwachsen 5 Tage, Oma 2 Tage, zusammen 10 Tage. Die Nutzerin wollte die Längen wissen, um zu entscheiden, wann das Verlieben kommt.
+- Noch offen: ab wann „verlieben“ über die Freundschaft angeboten wird, wann genau das Ei gelegt wird, und welche Interaktionen mit den anderen Tamagotchis es gibt.
 
 ## Namen: Tamagotchis benennen, wechselnde Namen der Parkfreunde – 26. November 2026
 
