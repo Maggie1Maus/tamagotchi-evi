@@ -1,5 +1,5 @@
 // Namen (26.11.2026, nur Waveshare). Logik in namen.ino.
-//  - Jedes neue Baby bekommt von der Nutzerin einen Namen (höchstens 11 Buchstaben) und ein Geschlecht.
+//  - Jedes neue Baby bekommt von der Nutzerin einen Namen (höchstens 11 Buchstaben); das Geschlecht wird ausgewürfelt.
 //    Die Tiere heißen allgemein „Tamagotchi“; das allererste hieß Evi und behält den Namen.
 //  - Die 20 Park-Figuren heißen ab dem ersten benannten Baby anders: 50 Jungen- und 50 Mädchennamen rotieren.
 //    Jede Figur behält ihren Namen, solange dieses Tamagotchi lebt, und heißt nie wie das Tamagotchi selbst.
@@ -31,8 +31,8 @@ const int NAME_MAX_ZEICHEN = 11, NAME_MAX_BYTES = 19;   // pet.name hat 21 Bytes
 // Namenseingabe (läuft als Park-Phase PARK_NAME)
 struct NameEditor {
   char text[24];
-  uint8_t pos;          // 0–29 Buchstaben, 30 Löschen, 31 Vorschlag, 32 Geschlecht, 33 Fertig
-  uint8_t geschlecht;   // 0 Mädchen, 1 Junge
+  uint8_t pos;          // 0–29 Buchstaben, 30 Löschen, 31 Vorschlag, 32 Fertig
+  uint8_t geschlecht;   // 0 Mädchen, 1 Junge (ausgewürfelt)
   uint8_t vorschlag;    // wievielter Vorschlag
 };
 NameEditor nameEdit;

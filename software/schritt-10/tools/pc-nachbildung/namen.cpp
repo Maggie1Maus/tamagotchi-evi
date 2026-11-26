@@ -21,7 +21,7 @@ void laufen(uint32_t ms) { for (uint32_t t = 0; t < ms; t += 10) { simMillis += 
 // Buchstabe antippen: Mitte der Zelle
 void tipp(int pos) { beruehrt((pos % 10) * 32 + 16, 92 + (pos / 10) * 24 + 10); }
 void taste(char c) { tipp(c - 'A'); }
-void knopfAn(int btn) { beruehrt(btn * 80 + 40, 92 + 3 * 24 + 10); }   // 0 Löschen, 1 Vorschlag, 2 Geschlecht, 3 Fertig
+void knopfAn(int btn) { beruehrt(btn * 107 + 50, 92 + 3 * 24 + 10); }   // 0 Löschen, 1 Vorschlag, 2 Fertig
 int zeichen(const char* s) { int n = 0; for (; *s; s++) if ((*s & 0xC0) != 0x80) n++; return n; }
 bool gleich(const char* a, const char* b) { return strcasecmp(a, b) == 0; }
 
@@ -75,7 +75,7 @@ int main() {
   zeichneAlles();
   PRUEFE(parkOffen(), "Namenseingabe zeichnet");
   // leerer Name geht nicht
-  knopfAn(3);
+  knopfAn(2);
   PRUEFE(park.phase == PARK_NAME && !pet.name[0], "ohne Buchstaben kein Fertig");
   // tippen per Touch: Groß-/Kleinschreibung
   taste('M'); taste('I'); taste('A');
@@ -110,15 +110,16 @@ int main() {
   char ersterVorschlag[24]; strcpy(ersterVorschlag, nameEdit.text);
   knopfAn(1);
   PRUEFE(inM && strcmp(ersterVorschlag, nameEdit.text), "Vorschlag: Jungenname, jeder neue anders");
-  knopfAn(2);
-  knopfAn(1);
+  nameEdit.geschlecht = 0; knopfAn(1);
   bool inW = false; for (int i = 0; i < 50; i++) if (!strcmp(nameEdit.text, NAMEN_W[i])) inW = true;
-  PRUEFE(nameEdit.geschlecht == 0 && inW, "Geschlecht umschalten: Vorschläge sind Mädchennamen");
+  PRUEFE(inW, "Mädchen: Vorschläge sind Mädchennamen");
+  { int j = 0, m = 0; for (int i = 0; i < 40; i++) { pet.geboren += 1234; char s2[40]; snprintf(s2, sizeof(s2), "%lld:geschlecht", (long long)pet.geboren); (streuwert(s2) & 1 ? m : j)++; }
+    PRUEFE(j > 5 && m > 5, "Geschlecht wird ausgewürfelt (beide kommen vor)"); pet.geboren -= 40 * 1234; }
   // Namen "Hugo" (liegt im Fenster der zweiten Generation) und Junge
   for (int i = 0; i < 12; i++) knopf(K_B);
   taste('H'); taste('U'); taste('G'); taste('O');
   nameEdit.geschlecht = 1;
-  knopfAn(3);
+  knopfAn(2);
   PRUEFE(!parkOffen() && !strcmp(pet.name, "Hugo") && pet.eigenerName, "Fertig: Name gesetzt, Eingabe geschlossen");
   PRUEFE(stamm.geschlechtAktuell == 1 && stamm.neueNamenAb == 2, "Junge gespeichert, neue Namen ab Generation 2");
   PRUEFE(strstr(meldung, "Hugo ist geschlüpft"), "Willkommensmeldung mit Namen");

@@ -110,7 +110,6 @@ void namenAktivieren(int pos, ms_t jetzt) {
   if (pos < 30) namenTippen(pos);
   else if (pos == 30) namenLoeschen();
   else if (pos == 31) namenVorschlag();
-  else if (pos == 32) nameEdit.geschlecht ^= 1;
   else namenFertig(jetzt);
 }
 
@@ -125,7 +124,7 @@ void namenOeffnen(ms_t jetzt) {
   memset(&nameEdit, 0, sizeof(nameEdit));
   char s[40];
   snprintf(s, sizeof(s), "%lld:geschlecht", (long long)pet.geboren);
-  nameEdit.geschlecht = streuwert(s) & 1;
+  nameEdit.geschlecht = streuwert(s) & 1;   // das Geschlecht wird ausgewürfelt (Wunsch der Nutzerin)
   bildschirmEin();
   piep(TON(TON_WUNSCH));
 }
@@ -149,15 +148,15 @@ void nameKnopf(Knopf k) {
     int sp = pos % 10, ze = pos / 10;
     if (k == K_L) sp = (sp + 9) % 10;
     else if (k == K_R) sp = (sp + 1) % 10;
-    else if (k == K_UP) { if (ze == 0) { pos = 30 + min(3, sp / 3); nameEdit.pos = (uint8_t)pos; return; } ze--; }
-    else if (k == K_DOWN) { if (ze == 2) { pos = 30 + min(3, sp / 3); nameEdit.pos = (uint8_t)pos; return; } ze++; }
+    else if (k == K_UP) { if (ze == 0) { pos = 30 + min(2, sp / 4); nameEdit.pos = (uint8_t)pos; return; } ze--; }
+    else if (k == K_DOWN) { if (ze == 2) { pos = 30 + min(2, sp / 4); nameEdit.pos = (uint8_t)pos; return; } ze++; }
     nameEdit.pos = (uint8_t)(ze * 10 + sp);
   } else {
     int b = pos - 30;
-    if (k == K_L) b = (b + 3) % 4;
-    else if (k == K_R) b = (b + 1) % 4;
-    else if (k == K_UP) { nameEdit.pos = (uint8_t)(20 + b * 3); return; }
-    else if (k == K_DOWN) { nameEdit.pos = (uint8_t)(b * 3); return; }
+    if (k == K_L) b = (b + 2) % 3;
+    else if (k == K_R) b = (b + 1) % 3;
+    else if (k == K_UP) { nameEdit.pos = (uint8_t)(20 + b * 4 + 1); return; }
+    else if (k == K_DOWN) { nameEdit.pos = (uint8_t)(b * 4 + 1); return; }
     nameEdit.pos = (uint8_t)(30 + b);
   }
 }
@@ -166,13 +165,14 @@ void nameTouch(int x, int y) {
   const int ze = (y - NAME_Y0) / NAME_ZELLE_H;
   if (y < NAME_Y0 || ze < 0 || ze > 3) return;
   if (ze < 3) namenAktivieren(ze * 10 + min(9, x / NAME_ZELLE_B), jetztMs());
-  else namenAktivieren(30 + min(3, x / 80), jetztMs());
+  else namenAktivieren(30 + min(2, x / 107), jetztMs());
 }
 
 void nameZeichnen(ms_t jetzt) {
   bild.fillScreen(1);
   zeichneStatus(phaseBei(pet, jetzt));
-  const char* titel = "Wie soll dein Tamagotchi heißen?";
+  char titel[64];
+  snprintf(titel, sizeof(titel), "Es ist ein %s! Wie soll es heißen?", nameEdit.geschlecht ? "Junge" : "Mädchen");
   schreibe(bild, (BREITE - textBreite(titel)) / 2, STATUS_H + 5, titel, 0);
   char zeile[40];
   snprintf(zeile, sizeof(zeile), "%s%s", nameEdit.text, namenZeichen(nameEdit.text) < NAME_MAX_ZEICHEN ? "_" : "");
@@ -188,17 +188,17 @@ void nameZeichnen(ms_t jetzt) {
     else bild.drawRect(x + 1, y, NAME_ZELLE_B - 2, NAME_ZELLE_H - 2, 170);
     schreibe(bild, x + (NAME_ZELLE_B - textBreite(NAME_TASTEN[p], 2)) / 2, y + 4, NAME_TASTEN[p], sel ? 1 : 0, 2);
   }
-  const char* knoepfe[4] = {"Löschen", "Vorschlag", nameEdit.geschlecht ? "Junge" : "Mädchen", "Fertig"};
-  for (int b = 0; b < 4; b++) {
-    const int x = b * 80, y = NAME_Y0 + 3 * NAME_ZELLE_H;
+  const char* knoepfe[3] = {"Löschen", "Vorschlag", "Fertig"};
+  for (int b = 0; b < 3; b++) {
+    const int x = b * 107, y = NAME_Y0 + 3 * NAME_ZELLE_H;
     const bool sel = nameEdit.pos == 30 + b;
-    if (sel) bild.fillRect(x + 2, y, 76, NAME_ZELLE_H - 2, 0);
-    else bild.drawRect(x + 2, y, 76, NAME_ZELLE_H - 2, 0);
-    schreibe(bild, x + (80 - textBreite(knoepfe[b])) / 2, y + 8, knoepfe[b], sel ? 1 : 0);
+    if (sel) bild.fillRect(x + 2, y, 103, NAME_ZELLE_H - 2, 0);
+    else bild.drawRect(x + 2, y, 103, NAME_ZELLE_H - 2, 0);
+    schreibe(bild, x + (107 - textBreite(knoepfe[b])) / 2, y + 8, knoepfe[b], sel ? 1 : 0);
   }
   bild.fillRect(0, ZEILE_Y, BREITE, HOEHE - ZEILE_Y, 1);
   bild.drawFastHLine(0, ZEILE_Y, BREITE, 0);
   schreibe(bild, RAND_LINKS + 3, ZEILE_Y + 6, "Mit den Tasten wählen oder antippen.", 0);
-  schreibe(bild, RAND_LINKS + 3, ZEILE_Y + 22, tastenDa ? "A Tippen · B Löschen · START Fertig" : "„Mädchen/Junge“ ändert das Geschlecht", 0);
+  schreibe(bild, RAND_LINKS + 3, ZEILE_Y + 22, tastenDa ? "A Tippen · B Löschen · START Fertig" : "Buchstaben antippen, dann „Fertig“.", 0);
   zeigen();
 }

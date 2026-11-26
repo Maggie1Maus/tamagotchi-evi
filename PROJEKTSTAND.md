@@ -1,5 +1,15 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Geplant: Verlieben, Partner, Ei und Generationenwechsel (Wunsch der Nutzerin vom 26. November 2026, noch nicht gebaut)
+
+Erster Teil schon umgesetzt: **Das Geschlecht eines Babys wird ausgewürfelt** (nicht gewählt); die Namenseingabe zeigt „Es ist ein Mädchen/Junge!“.
+
+Der Lebenslauf soll sich ändern (statt „Neues Ei“ im Menü):
+- **Verlieben:** Nur Mädchen und Junge können sich verlieben und ein Baby bekommen. Zwei gleiche Geschlechter bleiben beste Freunde. Verstehen sich ein erwachsenes Tamagotchi und eine Parkfreund-Figur des anderen Geschlechts sehr gut, gibt es irgendwann die Auswahl „verlieben“. Sagt die Nutzerin ja, wird die Figur Partner und **zieht ins Haus ein**. Der Partner kümmert sich selbst um seine Bedürfnisse; die Nutzerin spielt nicht mit ihm.
+- **Ei:** Am letzten Tag des erwachsenen Lebens legt das Tamagotchi ein Ei. Es hüpft etwa eine Minute und schlüpft dann. Mit dem Schlüpfen **verschwindet der Partner**; zu zweit sind dann das bisherige Tamagotchi (wird Oma) und das Baby.
+- **Das Baby ist das neue Tamagotchi der Nutzerin** (sie kümmert sich um das Baby). Die Mutter bzw. der Vater wird Oma/Opa, die Nutzerin kümmert sich nicht mehr um sie/ihn. Das Baby bekommt ein zufälliges Geschlecht, und die Nutzerin gibt ihm einen Namen. Eltern im Stammbaum: das Tamagotchi davor und der Partner.
+- Noch offen (mit der Nutzerin zu klären): was geschieht ohne Partner am letzten Erwachsenentag oder wenn ein Tamagotchi vorher stirbt, wie Oma/Opa und Partner im Zimmer gezeigt werden, wann die Auswahl „verlieben“ kommt, und was die Oma bis zum Lebensende macht.
+
 ## Namen: Tamagotchis benennen, wechselnde Namen der Parkfreunde – 26. November 2026
 
 Auf Wunsch der Nutzerin, nur Waveshare. Neu: `evi-handy/namen.h`, `namen.ino`. Geändert: `stammbaum.h/.ino`, `park.h/.ino`, `parkfreunde.ino`, `pet.h`, `freunde.ino`, `evi-handy.ino`.
