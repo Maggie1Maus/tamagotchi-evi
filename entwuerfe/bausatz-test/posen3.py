@@ -18,7 +18,7 @@ def koerper_datei(pose, nr=None):
     if pose == 'sitzend': return TEILE / 'koerper-sitzend-2.png'
     return dateien[0] if dateien else None
 
-def baue_pose(pose='sitzend', kopf=2, kruse=2, ohren='spitz', schwanz='buschig', gesicht='freundlich', fell=204, kranz=238, muster=None, nr=None):
+def baue_pose(pose='sitzend', kopf=2, ohren='spitz', schwanz='buschig', gesicht='freundlich', fell=204, muster=None, nr=None):
     p = L.POSEN[pose]
     c = Leinwand(); r = rollen(fell)
     hx, hy = p['hals']; zx, zy = p['hals_ziel']
@@ -42,7 +42,6 @@ def baue_pose(pose='sitzend', kopf=2, kruse=2, ohren='spitz', schwanz='buschig',
         m, d = __import__('basis3').muster_maske(muster)
         ok = m & c.a & (c.g >= 85) & (c.g < 250)
         c.g[ok] = np.clip(np.round((c.g[ok] + d) / 17) * 17, 0, 255)
-    c.teil(lade('kruse', 'flauschig', kruse), (28, 2), (kx, ky), {34: 34, 238: kranz, 204: kranz - 34, 170: kranz - 68})
     if gesicht:
         t = lade_teil('gesicht', gesicht)
         if t is not None:
@@ -56,7 +55,7 @@ if __name__ == '__main__':
     out = Image.new('RGB', (len(POSEN) * W * z, len(FIGUREN) * (H * z + 14)), 'white'); d = ImageDraw.Draw(out)
     for j, (o, s, f, kz, m) in enumerate(FIGUREN):
         for i, (pose, g) in enumerate(POSEN):
-            c = baue_pose(pose, ohren=o, schwanz=s, gesicht=g, fell=f, kranz=kz, muster=m)
+            c = baue_pose(pose, ohren=o, schwanz=s, gesicht=g, fell=f, muster=m)
             if pose == 'eingerollt': emotionen3.zzz(c)
             x, y = i * W * z, j * (H * z + 14)
             d.text((x + 4, y + 1), pose, fill='black'); out.paste(c.bild(255, z), (x, y + 14))

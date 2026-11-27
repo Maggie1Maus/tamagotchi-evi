@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Setzt die 3/4-Basis (Körper, Kopf, Halskrause + Ohren, Schwanz, Gesicht) auf einer 112 x 112 Leinwand zusammen.
+"""Setzt die 3/4-Basis (Körper, Kopf + Ohren, Schwanz, Gesicht) auf einer 112 x 112 Leinwand zusammen.
 Rollen: 34 Umriss, 119 innen, 170 Schatten, 204 Fell, 238 Licht, 255 Hintergrund. Fellton verschiebt Fell/Schatten/Licht.
 Aufruf: python3 basis3.py  ->  pruefbogen-basis3.png
 """
@@ -56,7 +56,7 @@ def muster_maske(art):
         return ((x - 66) / 9) ** 2 + ((y - 46) / 8) ** 2 <= 1, -68
     return None, 0
 
-def baue(koerper=3, kopf=1, kruse=2, ohren=None, schwanz=None, gesicht=None, fell=204, kranz=238, muster=None):
+def baue(koerper=3, kopf=1, ohren=None, schwanz=None, gesicht=None, fell=204, muster=None):
     from ki_teile import lade_teil
     c = Leinwand(); r = rollen(fell)
     if schwanz:
@@ -74,7 +74,6 @@ def baue(koerper=3, kopf=1, kruse=2, ohren=None, schwanz=None, gesicht=None, fel
         m, d = muster_maske(muster)
         ok = m & c.a & (c.g >= 85) & (c.g < 250)
         c.g[ok] = np.clip(np.round((c.g[ok] + d) / 17) * 17, 0, 255)
-    c.teil(lade('kruse', 'flauschig', kruse), (28, 2), L.KRUSE_ZIEL, {34: 34, 238: kranz, 204: kranz - 34, 170: kranz - 68})
     if gesicht:
         t = lade_teil('gesicht', gesicht)
         if t is not None:
@@ -84,10 +83,10 @@ def baue(koerper=3, kopf=1, kruse=2, ohren=None, schwanz=None, gesicht=None, fel
 
 if __name__ == '__main__':
     z = 3
-    kombis = [(k, h, 2) for k in (1, 2, 3) for h in (1, 2, 3)]
+    kombis = [(k, h) for k in (1, 2, 3) for h in (1, 2, 3)]
     out = Image.new('RGB', (3 * W * z, 3 * (H * z + 14)), 'white'); d = ImageDraw.Draw(out)
-    for i, (k, h, kr) in enumerate(kombis):
-        c = baue(k, h, kr, ohren='spitz', schwanz='buschig', gesicht='freundlich')
+    for i, (k, h) in enumerate(kombis):
+        c = baue(k, h, ohren='spitz', schwanz='buschig', gesicht='freundlich')
         x, y = (i % 3) * W * z, (i // 3) * (H * z + 14)
         d.text((x + 4, y + 1), f'Körper {k}, Kopf {h}', fill='black'); out.paste(c.bild(255, z), (x, y + 14))
     out.save(HIER / 'pruefbogen-basis3.png'); print(out.size)
@@ -97,10 +96,9 @@ def bogen_varianten():
     v = [('spitz', 'buschig', 204, 'freundlich'), ('rund', 'puschel', 170, 'lachend'), ('lang', 'duenn', 238, 'ueberrascht'),
          ('haengend', 'puschel', 187, 'traurig'), ('buschel', 'blitz', 221, 'wuetend'), ('spitz', 'duenn', 136, 'muede'),
          ('rund', 'buschig', 255, 'freundlich'), ('lang', 'blitz', 153, 'lachend')]
-    kr = [238, 238, 238, 238, 255, 238, 255, 221]
     out = Image.new('RGB', (4 * W * z, 2 * (H * z + 14)), 'white'); d = ImageDraw.Draw(out)
     for i, (o, s, f, g) in enumerate(v):
-        c = baue(2, 2, 2, ohren=o, schwanz=s, gesicht=g, fell=f, kranz=kr[i])
+        c = baue(2, 2, ohren=o, schwanz=s, gesicht=g, fell=f)
         x, y = (i % 4) * W * z, (i // 4) * (H * z + 14)
         d.text((x + 4, y + 1), f'Ohr {o}, Schwanz {s}, Fell {f}', fill='black'); out.paste(c.bild(255, z), (x, y + 14))
     out.save(HIER / 'pruefbogen-basis3-varianten.png'); print(out.size)

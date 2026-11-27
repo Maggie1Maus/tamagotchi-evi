@@ -1,4 +1,6 @@
-# Prompt für die Bild-KI: Basis im 3/4-Blick (Körper, Kopf, Halskrause)
+# Prompt für die Bild-KI: Basis im 3/4-Blick (Körper, Kopf)
+
+> **Stand 27.11.:** Die Halskrause wurde verworfen und entfernt (Datei, Schablone, Zusammensetzung). Die Zeilen zur Halskrause unten sind nur noch Historie.
 
 Stand 27. November 2026. Ersetzt die runde Basis aus `bausatz2.py`. Gleiche Methode wie [PROMPT-ki-teile.md](PROMPT-ki-teile.md): **ein Teil allein** auf der Schablone, feste Grauwert-Rollen, danach setzt das Skript zusammen.
 

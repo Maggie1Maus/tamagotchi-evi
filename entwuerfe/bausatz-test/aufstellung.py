@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 from basis3 import W, H, HIER
 from formen import baue_form
 
-# name: (körper, kopf, krause, ohren, schwanz, gesicht, fell, kranz, muster, fehlt)
+# name: (körper, kopf, [unbenutzt], ohren, schwanz, gesicht, fell, [unbenutzt], muster, fehlt)  (Halskrause entfernt)
 F = {
  'Evi':      (2, 2, 2, 'spitz', 'buschig', 'freundlich', 187, 238, None, ''),
  'Lotti':    (1, 1, 1, 'spitz', 'puschel', 'freundlich', 170, 255, 'tupfen', 'Rehohren, Stummelschwanz'),
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     out = Image.new('RGB', (cols * W * z, rows * (H * z + 30)), 'white'); d = ImageDraw.Draw(out)
     for i, (n, (k, h, kr, o, s, g, f, kz, m, fehlt)) in enumerate(F.items()):
         kf, hf = FORMEN[n]
-        c = baue_form(kf, hf, kr, ohren=o, schwanz=s, gesicht=g, fell=f, kranz=kz, muster=m)
+        c = baue_form(kf, hf, ohren=o, schwanz=s, gesicht=g, fell=f, muster=m)
         x, y = (i % cols) * W * z, (i // cols) * (H * z + 30)
         d.text((x + 4, y + 1), f'{n}  ({kf} / {hf})', fill='black')
         if fehlt: d.text((x + 4, y + 13), 'fehlt: ' + fehlt, fill=(160, 0, 0))

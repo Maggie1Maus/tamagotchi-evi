@@ -18,7 +18,7 @@ if __name__ == '__main__':
     z, cols = 3, 4
     out = Image.new('RGB', (cols * W * z, 2 * (H * z + 14)), 'white'); d = ImageDraw.Draw(out)
     for i, (n, k, h, o, s, g, f, kz, m) in enumerate(F):
-        c = baue_form(k, h, 2, ohren=o, schwanz=s, gesicht=g, fell=f, kranz=kz, merkmale=m)
+        c = baue_form(k, h, ohren=o, schwanz=s, gesicht=g, fell=f, merkmale=m)
         x, y = (i % cols) * W * z, (i // cols) * (H * z + 14)
         d.text((x + 4, y + 1), f'{n}: {", ".join(m) or ("Antennen" if o == "antenne" else "")}', fill='black')
         out.paste(c.bild(255, z), (x, y + 14))

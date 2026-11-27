@@ -45,3 +45,6 @@ Teile in `ki/teile/`: `merkmal-maehne`, `merkmal-stacheln`, `merkmal-panzer`, `m
 
 ## Halskrause und Panzer angepasst (27. November 2026)
 Die Halskrause liegt jetzt **hinter dem Kopf** und 3 Pixel tiefer (`KRUSE_TIEFER_STANDARD` in `formen.py`); der Kopf sitzt 7 Pixel **unter** dem Körperhals (`KOPF_UEBER_STANDARD = -7`), das Kinn berührt die Krause. Ein sichtbarer Halsstumpf oder ein schwebender Kopf ist damit weg. Der Panzer ist um 30° nach rechts unten gekippt (`PANZER_WINKEL`, `PANZER_VERSATZ`). Der Rüssel wurde entfernt.
+
+## Halskrause entfernt (27. November 2026)
+Die Halskrause ist komplett raus (`ki/teile/kruse-flauschig-*`, Schablone und alle Einträge). Der Kopf sitzt direkt am Körperhals, 5 Pixel unter dem Körper-Hals (`KOPF_UEBER_STANDARD = -5` in `formen.py`); das Kinn liegt über den Schultern. Die Parameter `kruse`, `kranz`, `kruse_tiefer` und `kruse_hinten` gibt es nicht mehr. Der Kranzton wird damit nicht mehr verwendet. Die Pose- und Gefühle-Bögen sind mit angepasst.

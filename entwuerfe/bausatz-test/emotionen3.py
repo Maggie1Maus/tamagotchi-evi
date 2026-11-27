@@ -50,7 +50,7 @@ if __name__ == '__main__':
     rows = (len(EMOTIONEN) + cols - 1) // cols
     out = Image.new('RGB', (cols * W * z, rows * (H * z + 16)), 'white'); d = ImageDraw.Draw(out)
     for k, (n, g, eff, hin) in enumerate(EMOTIONEN):
-        c = baue(2, 2, 2, ohren='spitz', schwanz='buschig', gesicht=g)
+        c = baue(2, 2, ohren='spitz', schwanz='buschig', gesicht=g)
         for e in eff: e(c)
         x, y = (k % cols) * W * z, (k // cols) * (H * z + 16)
         d.text((x + 4, y + 2), n + (f'  [{hin}]' if hin else ''), fill='black')

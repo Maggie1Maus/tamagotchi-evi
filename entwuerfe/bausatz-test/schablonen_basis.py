@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Schablonen für Körper, Kopf und Halskrause (3/4-Basis, Leinwand 112 x 112)."""
+"""Schablonen für Körper und Kopf (3/4-Basis, Leinwand 112 x 112)."""
 from PIL import Image, ImageDraw
 import os
 hier = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +31,6 @@ def schablone(name, gw, gh, anker, text, fuehrung=None):
 ROT, BLAU, GRUEN = (220, 0, 0), (0, 90, 220), (0, 150, 60)
 schablone('schablone-koerper.png', 80, 48, [((40, 3), 'Hals', ROT), ((66, 26), 'Schwanz', BLAU)], 'Koerper 80x48')
 schablone('schablone-kopf.png', 60, 44, [((30, 40), 'Hals', ROT), ((13, 8), 'Ohr links', BLAU), ((47, 8), 'Ohr rechts', BLAU), ((30, 24), 'Gesicht', GRUEN)], 'Kopf 60x44')
-schablone('schablone-kruse.png', 56, 20, [((28, 2), 'Hals', ROT)], 'Halskrause 56x20')
 # Pose-Körper (27.11.): Größe (Raster), Hals-Ansatz, Schwanz-Ansatz
 POSEN_KOERPER = {
     'laufen':    ((88, 48), (22, 8),  (76, 14)),
