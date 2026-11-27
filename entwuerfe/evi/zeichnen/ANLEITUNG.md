@@ -6,8 +6,8 @@ Du zeichnest jedes Teil (Ohren, Gesicht, Schwanz, Fell-Muster) **einmal** auf ei
 - iPad mit Apple Pencil
 - **Procreate** (einmalig rund 13 €, kein Abo). Kostenlos geht auch Adobe Fresco; die Schritte sind sehr ähnlich.
 - Die Vorlage aus diesem Ordner:
-  - `vorlagen/Vorlage-Evi.png` – Evi blass als Unterlage, 2048 × 2048 Pixel
-  - `vorlagen/Vorlage-Evi-mit-Raster.png` – dasselbe mit hellem Raster als Orientierung
+  - `erwachsen/vorlagen/Vorlage-Evi.png` – Evi blass als Unterlage, 2048 × 2048 Pixel
+  - `erwachsen/vorlagen/Vorlage-Evi-mit-Raster.png` – dasselbe mit hellem Raster als Orientierung
 
 ## 1. Vorlage aufs iPad bringen
 Lege die PNG-Datei in iCloud Drive oder schicke sie dir per AirDrop oder Mail. Ein Weg über das Repository: auf GitHub `tamagotchi-evi` die Datei öffnen und „Download“ wählen.
@@ -70,16 +70,21 @@ Alle sind 2048 × 2048, Evi ist immer an derselben Stelle. Die Teile passen desh
 
 | Datei | Wofür |
 |---|---|
-| `vorlagen/Vorlage-Evi.png` | ganze Evi blass, zum Größenvergleich |
-| `vorlagen/Vorlage-ohne-Ohren.png` | Ohren und Schwänze (Kopf und Körper blass, ohne Ohren und Schwanz) |
-| `vorlagen/Vorlage-ohne-Kranz.png` | Halskrause weg, zum Beispiel für Schleife oder Halsband |
-| `vorlagen/Vorlage-ohne-Gesicht.png` | Gesichter (Augen, Nase, Mund) |
-| `vorlagen/Vorlage-Silhouette.png` | nur Kopf- und Körperform, ohne Gesicht und Kranz |
+| `erwachsen/vorlagen/Vorlage-Evi.png` | ganze Evi blass, zum Größenvergleich |
+| `erwachsen/vorlagen/Vorlage-ohne-Ohren.png` | Ohren und Schwänze (Kopf und Körper blass, ohne Ohren und Schwanz) |
+| `erwachsen/vorlagen/Vorlage-ohne-Kranz.png` | Halskrause weg, zum Beispiel für Schleife oder Halsband |
+| `erwachsen/vorlagen/Vorlage-ohne-Gesicht.png` | Gesichter (Augen, Nase, Mund) |
+| `erwachsen/vorlagen/Vorlage-Silhouette.png` | nur Kopf- und Körperform, ohne Gesicht und Kranz |
 
 Fell-Muster und Zubehör kommen jeweils als **eigene Ebene oder eigene Datei** (Namen wie `muster-streifen`, `zubehoer-schleife`). Dann kann ich sie mit allen Ohren und Schwänzen kombinieren.
 
+## Ordner nach Altersstufen
+Jede Altersstufe hat einen eigenen Ordner mit denselben Unterordnern: `erwachsen/` (fertig angelegt, hier liegt Evi), `baby/`, `teenager/` und `opa/` (noch leer, warten auf Zeichnungen). Pfade unten gelten deshalb **je Stufe**, zum Beispiel `baby/gesichter/gesicht-gluecklich.png`. Die Dateinamen sind in allen Stufen gleich, nur der Ordner unterscheidet sie.
+
+Reihenfolge pro neuer Stufe: 1. `vorlagen/` (Claude baut sie aus der Evi der Stufe), 2. sechs Grundebenen in `basis/`, 3. Gesichter, 4. Ohren, Schwänze, Muster, Körperhaltungen. Das Werkzeug (`werkzeug/`) liegt bei `erwachsen/` und wird für eine neue Stufe dorthin kopiert, wenn die Grundebenen da sind.
+
 ## Wohin mit den fertigen Zeichnungen
-Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Figur an derselben Stelle wie in den Vorlagen). Die Dateien kommen in diese Ordner (alle in `entwuerfe/evi/zeichnen/`):
+Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Figur an derselben Stelle wie in den Vorlagen). Die Dateien kommen in diese Ordner (alle in `entwuerfe/evi/zeichnen/<stufe>/`, siehe oben):
 
 | Ordner | Inhalt | Dateinamen (Beispiele) |
 |---|---|---|

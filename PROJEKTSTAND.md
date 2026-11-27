@@ -7,6 +7,8 @@
 
 ## Evi neu aus eigenen Ebenen (27. November 2026)
 
+- **Ordner nach Altersstufen (27.11.):** `entwuerfe/evi/zeichnen/` hat jetzt `erwachsen/` (alles bisherige: basis, vorlagen, ergebnis, werkzeug, gesichter …), dazu leere, gleich aufgebaute `baby/`, `teenager/`, `opa/`. Pfade unten gelten für `erwachsen/`. Neue Gesichter der Nutzerin (neutral, glücklich, beleidigt …) liegen in `erwachsen/gesichter/`.
+
 - Die Nutzerin zeichnet Evi jetzt selbst auf dem iPad (Adobe Fresco) in sechs Ebenen: `basis/Evi-neue-vorlage-` + `kopf`, `koerper`, `kranz`, `gesicht`, `ohr`, `schwanz` (2048 × 2048, transparent, in `entwuerfe/evi/zeichnen/`). Weiße Flächen (Krause) sind Absicht: sie decken Linien dahinter ab.
 - `zusammensetzen.ps1` (+ `.cs`) baut daraus `Evi-neu-grau.png` (Fellgrau, Schattierungen, Ohr gespiegelt); `pixelfassung.ps1` rechnet es auf 114 × 116 Pixel, 16 Graustufen herunter (`Evi-neu-pixel.png`). Die Lücke zwischen den Vorderbeinen wird nach ihrer Größe erkannt und dunkel gefärbt (Körper-Ebene stark ändern → prüfen).
 - Anleitung und Vorlagen zum Zeichnen: `entwuerfe/evi/zeichnen/ANLEITUNG.md`. Ordner in `zeichnen/`: `basis/` (sechs Grundebenen), `vorlagen/`, `ergebnis/` (Evi-neu-grau, Evi-neu-pixel), `werkzeug/` (zusammensetzen.ps1, pixelfassung.ps1), `gesichter/ ohren/ schwaenze/ muster/ koerper/` für neue Teile (Namensregeln in der Anleitung). Die Ohr-Zeichnungen `ohr-buschel-maggie*.png` waren frühere Tests (jetzt in `archiv/entwuerfe/evi/zeichnen/`).
