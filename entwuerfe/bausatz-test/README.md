@@ -33,3 +33,6 @@ Grenzen: Seitenansichten (Laufen, Schnüffeln) gehen so nicht, dafür brauchen K
 
 ## 3/4-Basis aus KI-Teilen (27. November 2026)
 `basis3.py` setzt Körper, Kopf und Halskrause (`ki/teile/koerper-sitzend-*`, `kopf-3-4-*`, `kruse-flauschig-*`) mit Ohren, Schwanz und Gesicht auf 112 × 112 zusammen (Anordnung: `basis3_layout.py`). Prüfbögen: `pruefbogen-basis3.png` (alle neun Körper/Kopf-Kombinationen), `pruefbogen-basis3-varianten.png` (acht Beispiele mit Ohren, Schwänzen, Fellton, Kranzton, Gesicht). Ohren, Schwänze und Gesichter sind noch die frontalen Teile; sie müssen für 3/4 neu bestellt werden.
+
+## Posen auf der 3/4-Basis (27. November 2026)
+`posen3.py` → `pruefbogen-posen-basis3.png`: sitzend, laufen, hüpfen, geduckt, eingerollt (+ Zzz) mit denselben Köpfen, Ohren, Schwänzen und Gesichtern. Körper: `ki/teile/koerper-<pose>-<nr>.png`, Ansatz- und Zielpunkte je Pose in `basis3_layout.py` (`POSEN`). `emotionen3.py` zeigt 11 Gefühle, `aufstellung.py` alle 21 Figuren als Rezept (Variationstest, `pruefbogen-aufstellung.png`).

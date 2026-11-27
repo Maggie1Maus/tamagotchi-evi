@@ -27,8 +27,8 @@ KOPF_GESICHT = (0, -16)
 POSEN = {
     #  Teilname          Größe     Hals     Schwanz   Hals-Ziel auf der Leinwand  Kopf-Hals-Ziel
     'sitzend':    dict(groesse=(80, 48), hals=(40, 3),  schwanz=(66, 26), hals_ziel=(56, 66), kopf_ziel=(56, 62)),
-    'laufen':     dict(groesse=(88, 48), hals=(22, 8),  schwanz=(76, 14), hals_ziel=(36, 70), kopf_ziel=(36, 66)),
+    'laufen':     dict(groesse=(88, 48), hals=(22, 8),  schwanz=(76, 14), hals_ziel=(30, 70), kopf_ziel=(30, 66)),
     'huepfen':    dict(groesse=(80, 52), hals=(30, 8),  schwanz=(68, 18), hals_ziel=(40, 62), kopf_ziel=(40, 56)),
-    'geduckt':    dict(groesse=(88, 44), hals=(14, 22), schwanz=(78, 8),  hals_ziel=(34, 76), kopf_ziel=(34, 72)),
+    'geduckt':    dict(groesse=(88, 44), hals=(14, 22), schwanz=(78, 8),  hals_ziel=(30, 76), kopf_ziel=(30, 72), schwanz_dx=-10),
     'eingerollt': dict(groesse=(88, 40), hals=(24, 10), schwanz=(66, 18), hals_ziel=(36, 78), kopf_ziel=(36, 74)),
 }
