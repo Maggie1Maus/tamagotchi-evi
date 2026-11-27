@@ -14,3 +14,6 @@ Nichts hier wird von den Bauskripten gelesen. Neues Aussortiertes kommt hierher.
 Gemeint sind die archivierten Dateien unter `archiv/handy-app/dist/` und `archiv/handy-app/tools/`. So steht es in vielen Kommentaren
 der Waveshare-Firmware (`software/schritt-10/`) und in älteren Einträgen von `PROJEKTSTAND.md`: Die Dateien waren nur die Vorlage, die Firmware liest sie nicht.
 Ebenso meinen ältere Einträge mit `evi-baby.png` usw. und `maennlich/quellen` die Dateien unter `archiv/entwuerfe/evi/`.
+
+## Später dazugekommen
+- `entwuerfe/EW/zeichnen/` – elf „EW-Neu-Vorschlag-Gesicht“-Bilder (Gesichter-Vorschläge). Von nichts gelesen.
