@@ -57,6 +57,17 @@ SCHABLONEN = {
     'kopf-breit-baby': ((60, 44), (30, 40)),
     'kopf-breit-teenager': ((64, 42), (32, 38)),
     'kopf-breit-senior': ((68, 44), (34, 40)),
+    'koerper-laufen-baby': ((62, 34), (15, 6)),
+    'koerper-huepfen-baby': ((56, 36), (21, 6)),
+    'koerper-geduckt-baby': ((62, 30), (10, 15)),
+    'koerper-eingerollt-baby': ((62, 28), (17, 7)),
+    'koerper-laufen-teenager': ((80, 44), (20, 7)),
+    'koerper-huepfen-teenager': ((72, 48), (27, 7)),
+    'koerper-geduckt-teenager': ((80, 40), (13, 20)),
+    'koerper-eingerollt-teenager': ((80, 36), (22, 9)),
+    'koerper-laufen-senior': ((84, 46), (21, 8)),
+    'koerper-huepfen-senior': ((76, 50), (29, 8)),
+    'koerper-eingerollt-senior': ((84, 38), (23, 10)),
     'kopf': ((60, 44), (30, 40)),
 }
 

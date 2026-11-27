@@ -65,3 +65,7 @@ Teile in `ki/teile/`: `koerper-baby/teenager/senior`, `kopf-baby/teenager/senior
 
 ## Altersstufen für alle Formen (27. November 2026)
 9 Körper (rundlich, schlank, kräftig × Baby, Teenager, Senior) und 6 Köpfe (klein-rund, breit × 3 Stufen) in `ki/teile/`. Maße und Ansätze in `formen_alter.json` (erzeugt Schablonen, Layout und Loader-Einträge). `altersformen.py` → `pruefbogen-altersformen.png` (6 Form-Paare × 4 Altersstufen). Posen der Altersstufen sind noch offen (Entscheidung der Nutzerin: Senioren nur Schlafen, Laufen, Hüpfen).
+
+## Anpassungen und neue Aufträge (27. November 2026)
+- Muster (Flecken, Streifen, Tupfen, Augenfleck) liegen jetzt **relativ zu Kopf und Körper** (`muster_relativ` in `formen.py`) statt auf festen Leinwandpositionen. Die Mähne wird auf die Kopfgröße beschnitten und die Lücke zum Kopf gefüllt (`MAEHNE_RAND`). Augenmaske und Backenblitze werden auf die Kopfform beschnitten.
+- Neue Aufträge: `PROMPT-ki-posen-alter.md` (11 Pose-Körper für Baby, Teenager, Senior; Maße in `posen_alter.json`) und `PROMPT-ki-gesichter.md` (hungrig, krank, gähnen, singen, schmutzig).

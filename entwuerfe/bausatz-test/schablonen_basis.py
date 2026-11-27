@@ -93,4 +93,8 @@ for n, ((gw, gh), hals, schwanz) in _FA['koerper'].items():
     schablone(f'schablone-koerper-{n}.png', gw, gh, [(tuple(hals), 'Hals', ROT), (tuple(schwanz), 'Schwanz', BLAU)], f'Koerper {n} {gw}x{gh}')
 for n, ((gw, gh), hals, ol, orr, g) in _FA['koepfe'].items():
     schablone(f'schablone-kopf-{n}.png', gw, gh, [(tuple(hals), 'Hals', ROT), (tuple(ol), 'Ohr links', BLAU), (tuple(orr), 'Ohr rechts', BLAU), (tuple(g), 'Gesicht', GRUEN)], f'Kopf {n} {gw}x{gh}')
+# Posen der Altersstufen (27.11.)
+_PA = _json.load(open(os.path.join(hier, 'posen_alter.json'), encoding='utf-8'))
+for n, ((gw, gh), hals, schwanz) in _PA.items():
+    schablone(f'schablone-koerper-{n}.png', gw, gh, [(tuple(hals), 'Hals', ROT), (tuple(schwanz), 'Schwanz', BLAU)], f'Koerper {n} {gw}x{gh}')
 print('fertig')

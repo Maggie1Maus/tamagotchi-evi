@@ -29,6 +29,18 @@ POSEN = {
     'laufen':     dict(groesse=(88, 48), hals=(22, 8),  schwanz=(76, 14), hals_ziel=(30, 70), kopf_ziel=(30, 75)),
     'huepfen':    dict(groesse=(80, 52), hals=(30, 8),  schwanz=(68, 18), hals_ziel=(40, 62), kopf_ziel=(40, 65)),
     'geduckt':    dict(groesse=(88, 44), hals=(14, 22), schwanz=(78, 8),  hals_ziel=(30, 76), kopf_ziel=(30, 81), schwanz_dx=-10),
+    # Posen der Altersstufen (27.11.)
+    'laufen-baby': dict(groesse=(62, 34), hals=(15, 6), schwanz=(53, 10), hals_ziel=(32, 82), kopf_ziel=(32, 87)),
+    'huepfen-baby': dict(groesse=(56, 36), hals=(21, 6), schwanz=(48, 13), hals_ziel=(32, 80), kopf_ziel=(32, 85)),
+    'geduckt-baby': dict(groesse=(62, 30), hals=(10, 15), schwanz=(55, 6), hals_ziel=(32, 95), kopf_ziel=(32, 100)),
+    'eingerollt-baby': dict(groesse=(62, 28), hals=(17, 7), schwanz=(46, 13), hals_ziel=(32, 89), kopf_ziel=(32, 94)),
+    'laufen-teenager': dict(groesse=(80, 44), hals=(20, 7), schwanz=(68, 13), hals_ziel=(32, 73), kopf_ziel=(32, 78)),
+    'huepfen-teenager': dict(groesse=(72, 48), hals=(27, 7), schwanz=(61, 16), hals_ziel=(32, 69), kopf_ziel=(32, 74)),
+    'geduckt-teenager': dict(groesse=(80, 40), hals=(13, 20), schwanz=(70, 7), hals_ziel=(32, 90), kopf_ziel=(32, 95)),
+    'eingerollt-teenager': dict(groesse=(80, 36), hals=(22, 9), schwanz=(59, 16), hals_ziel=(32, 83), kopf_ziel=(32, 88)),
+    'laufen-senior': dict(groesse=(84, 46), hals=(21, 8), schwanz=(72, 13), hals_ziel=(32, 72), kopf_ziel=(32, 77)),
+    'huepfen-senior': dict(groesse=(76, 50), hals=(29, 8), schwanz=(65, 17), hals_ziel=(32, 68), kopf_ziel=(32, 73)),
+    'eingerollt-senior': dict(groesse=(84, 38), hals=(23, 10), schwanz=(63, 17), hals_ziel=(32, 82), kopf_ziel=(32, 87)),
     'eingerollt': dict(groesse=(88, 40), hals=(24, 10), schwanz=(66, 18), hals_ziel=(36, 78), kopf_ziel=(36, 83)),
 }
 
