@@ -123,8 +123,8 @@ def baue_form(koerper='sitzend', kopf='3-4', ohren='spitz', schwanz='buschig', g
         if t is not None:
             c.teil(t[0], t[1], (kx + hf['gesicht'][0] - khx, ky + hf['gesicht'][1] - khy), {34: 17, 119: 51, 170: 102, 204: 153, 238: 255})
     if 'backentasche' in aufsaetze:
-        aufsatz('backentasche', (mx - 17, my + 7), rl=r)
-        aufsatz('backentasche', (W - 1 - (mx + 17), my + 7), spiegeln=True, rl=r)
+        aufsatz('backentasche', (mx - 18, my + 5), rl=r)
+        aufsatz('backentasche', (W - 1 - (mx + 18), my + 5), spiegeln=True, rl=r)
     if 'backenblitz' in aufsaetze:
         aufsatz('backenblitz', (mx - 17, my + 6)); aufsatz('backenblitz', (W - 1 - (mx + 17), my + 6), spiegeln=True)
     if 'halsband' in aufsaetze: aufsatz('halsband', (kx - 2, ky + 3))

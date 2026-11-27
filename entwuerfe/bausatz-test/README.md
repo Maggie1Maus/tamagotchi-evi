@@ -51,3 +51,6 @@ Die Halskrause ist komplett raus (`ki/teile/kruse-flauschig-*`, Schablone und al
 
 ## Gefühle und kleine Aufsätze (27. November 2026)
 `emotionen3.py` nutzt jetzt dieselbe Zusammensetzung wie `formen.py` (vorher schwebten die Ohren, weil der Bogen noch die alte Anordnung hatte). Die Effekte (Träne, Sabber, Schweiß, Schmutz, Zzz) liegen relativ zur Gesichtsmitte (`formen.geometrie`). Für die kleinen Aufsätze gibt es Schablonen (`ki/schablone-aufsatz-*.png`), den Prompt `PROMPT-ki-aufsaetze.md` und den Parameter `aufsaetze` in `formen.baue_form`. Die Lage ist mit Platzhaltern geprüft, nicht mit echten Bildern.
+
+## Kleine Aufsätze eingebaut (27. November 2026)
+`ki/teile/aufsatz-*` und `schwanz-geringelt-3.png` sind eingebaut. `aufsaetze.py` → `pruefbogen-aufsaetze.png` (Mia Schleife, Glöckchen, Klecksi Halsband, Mampf Backentaschen, Groschen Augenmaske und Ringelschwanz, Funke Backenblitze). Lage in `basis3_layout.py` (`AUFSAETZE`) und `formen.py`; Backentaschen sitzen bei (Gesichtsmitte − 18, +5).
