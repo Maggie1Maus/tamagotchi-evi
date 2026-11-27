@@ -7,7 +7,7 @@
 //    übrigen Zeichnungen macht (Linien: deckend und dunkel; Maske: deckend). Nichts wird neu gezeichnet.
 //  - Die Besuchsbilder der Nutzerin (Schmetterling 32 × 26, Vogel 23 × 20) aus handy-app/dist/besuch/
 //    (aufbereitet mit archiv/handy-app/tools/prepare_besuch.py), unverändert übernommen.
-//  - Die Symbole in der Gedankenwolke (22 px, Strich 1,8 wie #thought-icon in style.css)
+//  - Die Symbole in der Gedankenwolke (22 px, Strich 1,8 wie #thought-icon in archiv/handy-app/dist/style.css)
 //    und die Summ-Noten ♪ (17 px) und ♫ (14 px).
 //
 // Läuft in der Cloud-Sitzung (Linux, Node mit Playwright/Chromium). Auf dem Haupt-PC wird es
