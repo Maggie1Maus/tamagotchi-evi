@@ -14,7 +14,7 @@
 
 ## Bauteile Paket 1 gebaut (27. November 2026) – wartet auf Freigabe
 
-- Aus den KI-Bildern in `baukasten/werkzeug/ki/` sind Ohren und Schwänze von Mia, Glöckchen, Lotti, Klecksi und Funke (Erwachsen, beide Geschlechter) entstanden, dazu `halsband`, `backenblitze`, `kitz-tupfen`, `augenfleck` und neue `flecken` für Klecksi. [Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-paket-1.png). Bauskripte jetzt auch in Python (`paket1-bauen.py`, `pruefbogen-paket-1.py`, `teile-aktualisieren.py`). Evis Basis und die Probelauf-Teile sind unverändert (nur `flecken` wurde für Klecksi neu gerechnet).
+- Aus den KI-Bildern in `archiv/entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/ki/` sind Ohren und Schwänze von Mia, Glöckchen, Lotti, Klecksi und Funke (Erwachsen, beide Geschlechter) entstanden, dazu `halsband`, `backenblitze`, `kitz-tupfen`, `augenfleck` und neue `flecken` für Klecksi. [Prüfbogen](archiv/entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-paket-1.png). Bauskripte jetzt auch in Python (`paket1-bauen.py`, `pruefbogen-paket-1.py`, `teile-aktualisieren.py`). Evis Basis und die Probelauf-Teile sind unverändert (nur `flecken` wurde für Klecksi neu gerechnet).
 - Zu prüfen: Klecksis dunkles Ohr hat eine helle Lücke (helle Ohr-Pixel gleichen dem Fell und fallen weg), Funkes Ohren sind klein, die Mädchen-Muster `kitz-tupfen` und `flecken` sind wegen der kleinen Fellfläche sparsam, der rechte Jungenkranz zeigt weiter den bekannten Rand aus der freigegebenen Basis.
 - **Rückmeldung der Nutzerin (27.11.):** Blitze zu klein/verpixelt; Klecksi soll Flecken auch am Körper haben; Ohren sitzen nicht richtig am Kopf und sind pixelig. Erledigt: Blitze jetzt sauber gesetzt (5×6 Pixel, mehr Platz ist auf der Wange nicht), Klecksis `flecken` über den ganzen Körper. **Offen:** Ohren brauchen neue KI-Bilder, Aufträge dafür unter „Zweite Runde Ohren“ in `PROMPT-paket-1-bildauftraege.md` (Funke, Klecksi, Glöckchen, Lotti).
 - Keine weiteren Figuren oder Altersstufen, bis die Nutzerin Paket 1 freigibt.
@@ -22,24 +22,24 @@
 ## Eigene Bauteile zeichnen auf dem iPad (27. November 2026)
 
 - Wunsch der Nutzerin: Die KI-Zeichnungen der letzten Runden gefallen ihr nicht; sie möchte die Bauteile (Ohren, Gesichtsmerkmale, Schwänze, Fell-Muster) selbst mit iPad, Apple Pencil und Procreate zeichnen. Die 20 ursprünglichen Tamagotchis bleiben und werden nur mit Evi gekreuzt.
-- Fertig: [Anleitung](entwuerfe/evi/zeichnen/ANLEITUNG.md) und zwei Vorlagen (`Vorlage-Evi.png`, `Vorlage-Evi-mit-Raster.png`, 2048 × 2048, Evi blass als Unterlage; gebaut mit `vorlage-bauen.ps1` aus der Graustufen-Evi `baukasten/werkzeug/evi-weiblich-original.png`). Abgabe als PSD in `entwuerfe/evi/zeichnen/abgabe/`.
+- Fertig: [Anleitung](entwuerfe/evi/zeichnen/ANLEITUNG.md) und zwei Vorlagen (`Vorlage-Evi.png`, `Vorlage-Evi-mit-Raster.png`, 2048 × 2048, Evi blass als Unterlage; gebaut mit `archiv/entwuerfe/evi/zeichnen/vorlage-bauen.ps1` aus der Graustufen-Evi `archiv/entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/evi-weiblich-original.png`). Abgabe als PSD in `entwuerfe/evi/zeichnen/abgabe/`.
 - Nächster Schritt: Die Nutzerin zeichnet zuerst zwei Ohren, einen Schwanz und ein Streifenmuster. Danach Ebenen auseinanderschneiden (Werkzeug für PSD fehlt noch, Python ist auf dem PC nicht installiert), spiegeln, Graustufen und Fellfarben setzen und kombinieren.
 
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)
 
-- Der [neue Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) nutzt Mähne A nur für Leo-Jungen; B ist entfernt. Die hellen Schwanzspitzen haben konturgenaue Kranzmasken ohne graues Fell, und die Kontrastkorrektur greift nur bei dunklen, fast gleichen Tönen. Der weiße Rest am rechten Jungenkranz wurde als Lücke im Kranz geschlossen. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.
+- Der [neue Prüfbogen](archiv/entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) nutzt Mähne A nur für Leo-Jungen; B ist entfernt. Die hellen Schwanzspitzen haben konturgenaue Kranzmasken ohne graues Fell, und die Kontrastkorrektur greift nur bei dunklen, fast gleichen Tönen. Der weiße Rest am rechten Jungenkranz wurde als Lücke im Kranz geschlossen. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.
 - **Freigegeben von der Nutzerin (27. November 2026).** Die anschließende Kleinkorrektur ist im neuen Prüfbogen umgesetzt: einzelne helle Pixel am rechten Jungenkranz und an den Schultern sind in der Kranzmaske, die wuschelige Struktur ist von der Stirnmitte entfernt. Leo-Jungen bekommen Mähne A, Leo-Mädchen keine Mähne (Löwin); ein heller Kranz auf hellem Fell ist erlaubt. Auf Wunsch der Nutzerin werden derzeit keine neuen Figuren oder Altersstufen ergänzt.
 - Älterer Hinweis (vor der Freigabe): Evis Stirnspitzen sind in Mähne A noch sichtbar. Fellstrukturen und Flecken sind bei Originalgröße fein, Linus' Schwanz wird teilweise vom Körper verdeckt. Keine weiteren Figuren oder Altersstufen ergänzen, bis die Nutzerin den Probelauf freigibt.
 
 ## Männliche Evi und neuer Familien-Baukasten (26. November 2026)
 
 - Die Nutzerin hat das männliche Evi-Charakterblatt freigegeben. Unter [maennlich/README.md](entwuerfe/evi/maennlich/README.md) liegen 80 Graustufen-Sprites für Baby, Teenager, Erwachsener und Opa. Der beleidigte Opa wurde auf vier Pfoten korrigiert. Die Fenster- und Gartenposen zeigen nur die Figur.
-- Der neue [Familien-Baukasten](entwuerfe/grillme-genetik-prototyp/baukasten/README.md) läuft als eigenständige `index.html` mit eingebetteten Bildern, Elternwahl nach Geschlecht, Merkmalsauswahl, Generationen und Liste der noch fehlenden deckungsgleichen Teile. Die vorhandenen Kreuzungsvorschauen bleiben bestehen.
-- Für Erwachsene gibt es jetzt einen [Bauteil-Probelauf](entwuerfe/grillme-genetik-prototyp/baukasten/README.md) für beide Geschlechter mit Leo-, Linus- und Groschen-Ohren und -Schwänzen, Mähne, Bereichskarten, Fell- und Kranztönen, Strukturen und Zubehör. Der [Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) zeigt die Ergebnisse; Evis eigene Teile ergeben wieder exakt das Original (0 abweichende Pixel). Leos Mähne und Groschens Schwanzansatz brauchen optische Korrektur und Freigabe. Weitere Figuren und Altersstufen bleiben bis dahin offen. Der interaktive Browsertest von `file://` wurde durch die Browser-Sicherheitsrichtlinie verweigert.
+- Der neue [Familien-Baukasten](archiv/entwuerfe/grillme-genetik-prototyp/baukasten/README.md) läuft als eigenständige `index.html` mit eingebetteten Bildern, Elternwahl nach Geschlecht, Merkmalsauswahl, Generationen und Liste der noch fehlenden deckungsgleichen Teile. Die vorhandenen Kreuzungsvorschauen bleiben bestehen.
+- Für Erwachsene gibt es jetzt einen [Bauteil-Probelauf](archiv/entwuerfe/grillme-genetik-prototyp/baukasten/README.md) für beide Geschlechter mit Leo-, Linus- und Groschen-Ohren und -Schwänzen, Mähne, Bereichskarten, Fell- und Kranztönen, Strukturen und Zubehör. Der [Prüfbogen](archiv/entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) zeigt die Ergebnisse; Evis eigene Teile ergeben wieder exakt das Original (0 abweichende Pixel). Leos Mähne und Groschens Schwanzansatz brauchen optische Korrektur und Freigabe. Weitere Figuren und Altersstufen bleiben bis dahin offen. Der interaktive Browsertest von `file://` wurde durch die Browser-Sicherheitsrichtlinie verweigert.
 
 ## Grillme-Genetik: korrigierte Ohrvorschau (26. November 2026)
 
-- Die [isolierte Vorschau](entwuerfe/grillme-genetik-prototyp/README.md) zeigt Evis aktuelle Graustufen-Ohren auf Mia, Lotti und Glöckchen. Jede Altersstufe hat eigene Konturen und Ansatzpunkte. Die Originale stehen direkt darunter.
+- Die [isolierte Vorschau](archiv/entwuerfe/grillme-genetik-prototyp/README.md) zeigt Evis aktuelle Graustufen-Ohren auf Mia, Lotti und Glöckchen. Jede Altersstufe hat eigene Konturen und Ansatzpunkte. Die Originale stehen direkt darunter.
 - Augen, Schnauze, Schwanz und Bewegungsposen brauchen noch eigene Freistellungen. Vor der Ausweitung auf weitere Figuren steht die optische Freigabe der Vorschau.
 
 ## Dorfbild eingebaut (26. November 2026)
@@ -51,7 +51,7 @@
 
 ## Neue Genetikvorschau mit gemeinsamer Kopfform (26. November 2026)
 
-- Der [interaktive Prototyp](entwuerfe/grillme-genetik-prototyp/gemeinsame-kopfform/README.md) verwendet jetzt einen Evi-Entwurf, Lotti, Glöckchen und Mia als Ausgangsfiguren. Die gemeinsame Kopfform ist wieder runder. Die fünf Merkmale lassen sich in allen vier Altersstufen mit acht Emotionen und 13 Posen anschauen.
+- Der [interaktive Prototyp](archiv/entwuerfe/grillme-genetik-prototyp/gemeinsame-kopfform/README.md) verwendet jetzt einen Evi-Entwurf, Lotti, Glöckchen und Mia als Ausgangsfiguren. Die gemeinsame Kopfform ist wieder runder. Die fünf Merkmale lassen sich in allen vier Altersstufen mit acht Emotionen und 13 Posen anschauen.
 
 ## Schritt 3 (26.11.2026): Verlieben, Klopfen, Partner, Ei, Baby, Oma im Zimmer
 

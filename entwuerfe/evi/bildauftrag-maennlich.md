@@ -1,6 +1,6 @@
 # Bildauftrag: männliche Evi (alle Altersstufen, Emotionen und Posen)
 
-Stand 26. November 2026. Wunsch der Nutzerin: Es braucht eine **männliche Gesamtzeichnung von Evi mit allem Drum und Dran**. Jungen aus Evis Familie bauen auf ihr auf, Mädchen auf Evi (siehe [Baukasten-Prompt](../grillme-genetik-prototyp/PROMPT-baukasten.md)).
+Stand 26. November 2026. Wunsch der Nutzerin: Es braucht eine **männliche Gesamtzeichnung von Evi mit allem Drum und Dran**. Jungen aus Evis Familie bauen auf ihr auf, Mädchen auf Evi (siehe [Baukasten-Prompt](../../archiv/entwuerfe/grillme-genetik-prototyp/PROMPT-baukasten.md)).
 
 Die männliche Evi ist **dieselbe Tierart wie Evi**, nur als Junge: sofort als Evis Bruder erkennbar, nicht als neues Tier.
 

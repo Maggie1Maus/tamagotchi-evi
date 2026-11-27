@@ -1,11 +1,4 @@
 {
   "version": "0.0.1",
-  "configurations": [
-    {
-      "name": "baukasten",
-      "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "handy-app/tools/serve.ps1", "-Root", "entwuerfe/grillme-genetik-prototyp/baukasten", "-Port", "4174"],
-      "port": 4174
-    }
-  ]
+  "configurations": []
 }

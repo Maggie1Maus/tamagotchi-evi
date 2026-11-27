@@ -15,5 +15,5 @@ Gemeint sind die archivierten Dateien unter `archiv/handy-app/dist/` und `archiv
 der Waveshare-Firmware (`software/schritt-10/`) und in älteren Einträgen von `PROJEKTSTAND.md`: Die Dateien waren nur die Vorlage, die Firmware liest sie nicht.
 Ebenso meinen ältere Einträge mit `evi-baby.png` usw. und `maennlich/quellen` die Dateien unter `archiv/entwuerfe/evi/`.
 
-## Später dazugekommen
-- `entwuerfe/EW/zeichnen/` – elf „EW-Neu-Vorschlag-Gesicht“-Bilder (Gesichter-Vorschläge). Von nichts gelesen.
+- `entwuerfe/grillme-genetik-prototyp/` (mit dem Familien-Baukasten) und `entwuerfe/bausatz-test/` – Experimente zur Vererbung/Kreuzung der Tamagotchis. Vererbung bleibt laut `Tamagotchi_Anforderungen.md` ein offener Punkt; dies ist die bisherige Arbeit dazu. Die Seiten und Skripte darin nutzen relative Pfade und funktionieren am sichersten, wenn der Ordner wieder an `entwuerfe/` zurückgeschoben wird.
+- `entwuerfe/evi/zeichnen/vorlage*-bauen.ps1` – bauten die Zeichenvorlagen aus den Baukasten-Teilen (die fertigen Vorlagen liegen weiter in `entwuerfe/evi/zeichnen/`).

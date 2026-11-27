@@ -22,7 +22,7 @@ Alles Wichtige muss deshalb **im Repository** stehen, nicht nur im lokalen Gedä
 - Kommunikation auf Deutsch, einfach erklärt.
 
 ## Technik
-- Node.js ist auf dem Haupt-PC nicht installiert. Vorschau des Baukastens: `.claude/launch.json` → `handy-app/tools/serve.ps1` (PowerShell-Server, Port 4174).
+- Node.js ist auf dem Haupt-PC nicht installiert. Kleiner Vorschau-Server für statische Seiten: `handy-app/tools/serve.ps1` (PowerShell, Port 4174, Wurzel mit `-Root` angeben). Der frühere Baukasten liegt im Archiv.
 - Arbeitsablauf mit Git: vor dem Arbeiten `git pull`, danach committen und `git push`, damit andere Geräte den Stand haben.
 - **Immer auch auf `main` hochladen** (Wunsch der Nutzerin vom 20.11.2026). Arbeitet eine Sitzung auf einem eigenen Zweig, die Änderungen zusätzlich auf `main` bringen, ohne nachzufragen. Die anderen Geräte holen sich nur `main`.
 - Der Projektordner heißt auf dem Haupt-PC „Tamagotchi Projekt 2“ (unter Dokumente\ChatGPT), auf GitHub `tamagotchi-evi`.
