@@ -31,7 +31,6 @@ SCHABLONEN = {
     'merkmal-fluegel': ((56, 56), (6, 50)),
     'merkmal-fluegel-fee': ((56, 56), (6, 50)),
     'merkmal-fluegel-drache': ((56, 56), (6, 50)),
-    'merkmal-ruessel': ((24, 40), (12, 2)),
     'kopf': ((60, 44), (30, 40)),
     'kruse': ((56, 20), (28, 2)),
 }

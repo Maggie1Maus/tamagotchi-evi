@@ -8,7 +8,7 @@ from formen import baue_form
 F = {
  'Evi':      (2, 2, 2, 'spitz', 'buschig', 'freundlich', 187, 238, None, ''),
  'Lotti':    (1, 1, 1, 'spitz', 'puschel', 'freundlich', 170, 255, 'tupfen', 'Rehohren, Stummelschwanz'),
- 'Ella':     (3, 3, 3, 'haengend', 'duenn', 'freundlich', 187, 221, None, 'Rüssel'),
+ 'Ella':     (3, 3, 3, 'haengend', 'duenn', 'freundlich', 187, 221, None, 'Rüssel verworfen'),
  'Glöckchen':(2, 1, 2, 'haengend', 'puschel', 'lachend', 238, 255, None, 'Glöckchen'),
  'Kiwi':     (3, 2, 1, None, 'blitz', 'freundlich', 153, 221, 'tupfen', 'Dino-Zacken'),
  'Klecksi':  (1, 3, 2, 'haengend', 'duenn', 'lachend', 255, 255, 'flecken', 'Halsband'),

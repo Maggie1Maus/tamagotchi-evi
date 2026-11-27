@@ -63,5 +63,4 @@ schablone('schablone-merkmal-stacheln.png', 48, 32, [((6, 26), 'Rücken', ROT)],
 schablone('schablone-merkmal-panzer.png', 56, 44, [((6, 40), 'Rücken', ROT)], 'Panzer 56x44',
           [('linie', [(0, 40), (28, 42), (55, 43)], 'Unterkante liegt auf dem Rücken')])
 schablone('schablone-merkmal-fluegel.png', 56, 56, [((6, 50), 'Schulter', ROT)], 'Fluegel 56x56')
-schablone('schablone-merkmal-ruessel.png', 24, 40, [((12, 2), 'Nase', ROT)], 'Ruessel 24x40')
 print('fertig')

@@ -1,6 +1,6 @@
 # Prompt für die Bild-KI: Artmerkmale (27. November 2026)
 
-Ziel: Aus den katzenartigen Körpern echte Arten machen. Erste Runde: **Mähne** (Leo), **Stacheln** (Rolli), **Panzer** (Tetro), **Flügel** (Lumi, Blubber), **Antennen** (Bit, Blip), **Rüssel** (Ella). Gleiche Methode wie [PROMPT-ki-teile.md](PROMPT-ki-teile.md): ein Teil allein auf der Schablone, feste Grauwerte, Skript setzt zusammen.
+Ziel: Aus den katzenartigen Körpern echte Arten machen. Erste Runde: **Mähne** (Leo), **Stacheln** (Rolli), **Panzer** (Tetro), **Flügel** (Lumi, Blubber), **Antennen** (Bit, Blip), . Gleiche Methode wie [PROMPT-ki-teile.md](PROMPT-ki-teile.md): ein Teil allein auf der Schablone, feste Grauwerte, Skript setzt zusammen.
 
 Nicht in dieser Runde: Schnecke (Mimi) und Geist (Spuki) sind andere Tiere, nicht nur ein Zusatzteil; Backentaschen (Mampf), Augenmaske und Ringe (Groschen), Schleife, Glöckchen, Halsband, Backenblitze (kleine Aufsätze, später).
 
@@ -12,14 +12,13 @@ Nicht in dieser Runde: Schnecke (Mimi) und Geist (Spuki) sind andere Tiere, nich
 | Panzer | **vor dem Körper**, deckt Rücken und Hinterteil | Rücken (6, 40) | Rückenlinie |
 | Flügel | **hinter dem Körper**, am Rücken | Schulter (6, 50) | Schulterblatt |
 | Antennen | wie **Ohren** (zwei, symmetrisch) | Ohr-Ansatz | Ohr-Ansätze des Kopfes |
-| Rüssel | **vor dem Gesicht** (deckt Nase und Mund) | Nase oben (12, 2) | Nase |
 
 Der Körper schaut nach links, der Rücken liegt rechts und fällt von der Schulter zum Hinterteil nach rechts unten ab. Die blasse blaue Hilfslinie in den Schablonen zeigt das. **Nicht mitzeichnen.**
 
 ## Anhängen
 1. Die Schablone (Kreuz = Ansatz, blasse blaue Form = Hilfe, wird nicht gezeichnet):
-   `ki/schablone-merkmal-maehne.png` (88 × 68), `…-stacheln.png` (48 × 32), `…-panzer.png` (56 × 44), `…-fluegel.png` (56 × 56), `…-ruessel.png` (24 × 40); für Antennen `ki/schablone-ohr.png` (24 × 32).
-2. **Stil:** `ki/teile/koerper-sitzend-2.png` (Körper, Mähne, Stacheln, Panzer, Flügel) bzw. `ki/teile/kopf-3-4-2.png` (Mähne, Rüssel, Antennen).
+   `ki/schablone-merkmal-maehne.png` (88 × 68), `…-stacheln.png` (48 × 32), `…-panzer.png` (56 × 44), `…-fluegel.png` (56 × 56); für Antennen `ki/schablone-ohr.png` (24 × 32).
+2. **Stil:** `ki/teile/koerper-sitzend-2.png` (Körper, Mähne, Stacheln, Panzer, Flügel) bzw. `ki/teile/kopf-3-4-2.png` (Mähne, Antennen).
 
 ## Maße
 | Teil | Datei | Raster | Ausgabe (8-fach) |
@@ -30,7 +29,6 @@ Der Körper schaut nach links, der Rücken liegt rechts und fällt von der Schul
 | Flügel Fee | `merkmal-fluegel-fee-<nr>.png` | 56 × 56 | 448 × 448 |
 | Flügel Drache | `merkmal-fluegel-drache-<nr>.png` | 56 × 56 | 448 × 448 |
 | Antenne | `ohr-antenne-<nr>.png` | 24 × 32 | 192 × 256 |
-| Rüssel | `merkmal-ruessel-<nr>.png` | 24 × 40 | 192 × 320 |
 
 ## Grauwerte (Rollen, wie bisher; zusätzlich Hinweise je Teil)
 34 Umriss (1 Pixel), 119 innen/dunkle Fugen, 170 Schatten, 204 Fell, 238 Licht, 255 Hintergrund. Nur diese Werte, Dithering, keine Halbtöne.
@@ -60,7 +58,6 @@ Draw it in EXACTLY the style, line weight and fur/shading look of the second att
 | Flügel Fee | a folded fairy wing seen from the side, slender and rounded with fine veins, pointing up and back (to the right) from the red cross | 448 x 448 |
 | Flügel Drache | a folded small dragon/bat wing seen from the side with bone spars and a scalloped membrane, pointing up and back (to the right) from the red cross | 448 x 448 |
 | Antenne | the LEFT one of a pair of thin robot/alien antennae: a straight thin stalk with a round bulb on top, leaning slightly outward (to the left); stalk 2 sprite pixels wide | 192 x 256 |
-| Rüssel | a short elephant trunk hanging down from the nose, seen from the front, slightly curled at the tip, with fine wrinkle lines; the top end attaches at the red cross | 192 x 320 |
 
 Je Teil **3 Varianten** erzeugen, die beste behalten.
 
@@ -73,4 +70,4 @@ Ich ergänze `formen.py` um diese Merkmale (Ebenenreihenfolge, Rücken-Ansatz je
 ## Grenzen
 - Die Rückenlinie ist bei jedem Körper etwas anders (schlank fällt steiler ab). Stacheln, Panzer und Flügel werden deshalb am Ansatz ausgerichtet und können an einer Körperform leicht abstehen. Das korrigiere ich über den Ansatzpunkt.
 - Die Merkmale sind für die **sitzende** Haltung gezeichnet. Für laufen, hüpfen und schlafen bräuchten sie eigene Ansätze oder neue Teile. Die Mähne und die Antennen sind davon am wenigsten betroffen, Panzer und Stacheln am meisten.
-- Der Rüssel überdeckt das Gesicht (Nase und Mund). Die Gesichter der Rüssel-Figuren bräuchten eigene Teile ohne Mund, falls der Rüssel gut aussieht.
+- **Rüssel (Ella): verworfen** am 27.11. (sah nicht gut aus); die Datei wurde entfernt.

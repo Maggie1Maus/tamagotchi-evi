@@ -51,7 +51,6 @@ KOPF_FORMEN = {
 # Artmerkmale: Ansatz auf der Leinwand wird je Körperform aus der Rückenlinie abgeleitet:
 #   Rücken-Ansatz = (Hals-x + 16, Oberkante des Körpers an dieser Spalte).
 #   Mähne: Mitte hinter dem Kopf (Kopfmitte = Gesicht-Ansatz des Kopfes).
-#   Rüssel: oben auf der Nase = Gesicht-Ansatz + (0, 4).
 #   Antennen und Hörner sind Ohren-Teile (ki/teile/ohr-antenne-*.png, ohr-horn-*.png) und nutzen die Ohren-Ansätze.
 RUECKEN_VERSATZ = 16
 MERKMALE = {
@@ -59,5 +58,4 @@ MERKMALE = {
     'stacheln': dict(art='ruecken_hinten', groesse=(48, 32), anker=(6, 26)),
     'panzer':   dict(art='ruecken_vorn', groesse=(56, 44), anker=(6, 40)),
     'fluegel':  dict(art='ruecken_hinten', groesse=(56, 56), anker=(6, 50)),
-    'ruessel':  dict(art='vor_gesicht', groesse=(24, 40), anker=(12, 2)),
 }

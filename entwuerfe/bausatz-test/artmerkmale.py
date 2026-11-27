@@ -12,7 +12,7 @@ F = [  # Name, Körper, Kopf, Ohren, Schwanz, Gesicht, Fell, Kranz, Merkmale
  ('Blubber', 'kraeftig', 'klein-rund', 'rund', 'blitz', 'wuetend', 170, 119, ('fluegel-drache',)),
  ('Bit', 'kraeftig', 'breit', 'antenne', 'blitz', 'freundlich', 119, 170, ()),
  ('Blip', 'sitzend', 'klein-rund', 'antenne', 'duenn', 'ueberrascht', 204, 238, ()),
- ('Ella', 'kraeftig', 'breit', 'haengend', 'duenn', 'freundlich', 187, 221, ('ruessel',)),
+ ('Ella', 'kraeftig', 'breit', 'haengend', 'duenn', 'freundlich', 187, 221, ()),
 ]
 if __name__ == '__main__':
     z, cols = 3, 4
