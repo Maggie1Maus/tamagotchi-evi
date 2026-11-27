@@ -37,6 +37,12 @@ def lade_teil(art, name):
     if art == 'gesicht':
         if np.all(raster == 255):
             raise ValueError(f'{datei.name}: Gesicht ist leer')
+        # Einzelne Streupixel (ohne Nachbarn, auch diagonal) entfernen.
+        belegt = (raster != 255).astype(int)
+        rand = np.pad(belegt, 1)
+        nachbarn = sum(rand[1 + dy:1 + dy + belegt.shape[0], 1 + dx:1 + dx + belegt.shape[1]]
+                       for dy in (-1, 0, 1) for dx in (-1, 0, 1) if (dx, dy) != (0, 0))
+        raster[(belegt == 1) & (nachbarn == 0)] = 255
         return raster, (ax, ay)
     if raster[ay, ax] == 255:
         raise ValueError(f'{datei.name}: Ansatzpunkt liegt außerhalb des Teils')
