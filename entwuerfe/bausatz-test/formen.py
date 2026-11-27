@@ -10,6 +10,8 @@ from basis3 import Leinwand, rollen, muster_maske, W, H, HIER, TEILE, Z
 from ki_teile import lade_teil
 
 BODEN = 110
+# Köpfe mit spitzem Kinn sitzen tiefer, damit das Kinn in der Halskrause verschwindet (Nutzerin, 27.11.)
+KOPF_TIEFER = {'spitz': 10}
 
 def datei(art, form, bevorzugt=None):
     if art == 'koerper' and form == 'sitzend': return TEILE / 'koerper-sitzend-2.png'
@@ -22,7 +24,9 @@ def raster(p): return np.array(Image.open(p).convert('RGB'))[::Z, ::Z, 0]
 def baue_form(koerper='sitzend', kopf='3-4', kruse=2, ohren='spitz', schwanz='buschig', gesicht='freundlich',
               fell=204, kranz=238, muster=None, kopf_ueber=None):
     kf, hf = L.KOERPER_FORMEN[koerper], L.KOPF_FORMEN[kopf]
-    if kopf_ueber is None: kopf_ueber = {'schlank': 1}.get(koerper, 4)   # hohe Körper: Kopf tiefer, damit lange Ohren nicht abgeschnitten werden
+    if kopf_ueber is None:
+        kopf_ueber = {'schlank': 1}.get(koerper, 4)   # hohe Körper: Kopf tiefer, damit lange Ohren nicht abgeschnitten werden
+        kopf_ueber -= KOPF_TIEFER.get(kopf, 0)
     gw, gh = kf['groesse']; hx, hy = kf['hals']
     zx, zy = 56, BODEN - (gh - 1) + hy                  # Körper-Hals auf der Leinwand
     kx, ky = 56, zy - kopf_ueber                         # Kopf-Hals
