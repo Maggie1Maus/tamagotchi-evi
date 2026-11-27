@@ -4,6 +4,7 @@
 
 - Aus den KI-Bildern in `baukasten/werkzeug/ki/` sind Ohren und Schwänze von Mia, Glöckchen, Lotti, Klecksi und Funke (Erwachsen, beide Geschlechter) entstanden, dazu `halsband`, `backenblitze`, `kitz-tupfen`, `augenfleck` und neue `flecken` für Klecksi. [Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-paket-1.png). Bauskripte jetzt auch in Python (`paket1-bauen.py`, `pruefbogen-paket-1.py`, `teile-aktualisieren.py`). Evis Basis und die Probelauf-Teile sind unverändert (nur `flecken` wurde für Klecksi neu gerechnet).
 - Zu prüfen: Klecksis dunkles Ohr hat eine helle Lücke (helle Ohr-Pixel gleichen dem Fell und fallen weg), Funkes Ohren sind klein, die Mädchen-Muster `kitz-tupfen` und `flecken` sind wegen der kleinen Fellfläche sparsam, der rechte Jungenkranz zeigt weiter den bekannten Rand aus der freigegebenen Basis.
+- **Rückmeldung der Nutzerin (27.11.):** Blitze zu klein/verpixelt; Klecksi soll Flecken auch am Körper haben; Ohren sitzen nicht richtig am Kopf und sind pixelig. Erledigt: Blitze jetzt sauber gesetzt (5×6 Pixel, mehr Platz ist auf der Wange nicht), Klecksis `flecken` über den ganzen Körper. **Offen:** Ohren brauchen neue KI-Bilder, Aufträge dafür unter „Zweite Runde Ohren“ in `PROMPT-paket-1-bildauftraege.md` (Funke, Klecksi, Glöckchen, Lotti).
 - Keine weiteren Figuren oder Altersstufen, bis die Nutzerin Paket 1 freigibt.
 
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)

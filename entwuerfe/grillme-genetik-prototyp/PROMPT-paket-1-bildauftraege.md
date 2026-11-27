@@ -40,3 +40,31 @@ Edit the attached pixel-art sprite. Add ONLY one small lightning-bolt mark on ea
 ```
 
 **Muster `kitz-tupfen`, `augenfleck`, angepasste `flecken`** werden von Claude als Masken über die Bereichskarten gerechnet (Tupfen: hell, nur auf `fell`; Augenfleck: dunkel um ein Auge, Augenlinien bleiben). Dafür ist keine Bild-KI nötig.
+
+---
+
+## Zweite Runde Ohren (27. November 2026, nach der ersten Sichtung)
+
+Probleme in der ersten Runde: Ohren sitzen nicht richtig am Kopf, die Kanten sind unsauber (pixelig), Funkes Ohren sind nur kleine Büschel, Klecksis rechtes Ohr hängt lose neben dem Kopf. Die Aufträge unten ersetzen B2 für **Funke, Klecksi, Glöckchen, Lotti**. Wieder je Geschlecht, gleiche Dateinamen wie vorher (alte Dateien überschreiben).
+
+Zusätzlich an **jeden** Auftrag anhängen:
+```text
+IMPORTANT: Work on a clean pixel grid. Every visible pixel step must be exactly one pixel of the original sprite (the image is an 8x nearest-neighbour enlargement). No anti-aliasing, no blurry or half-tone edge pixels, no stray single pixels. The outline of the ear must be ONE continuous dark-gray stepped line of the same thickness as the head outline. The base of each ear must OVERLAP the head outline and merge into it with no gap, so the ear clearly grows out of the head. Do not touch anything else.
+```
+
+**Funke** (Ohren deutlich größer):
+```text
+Add two clearly visible, upright, pointed squirrel ears on top of the head, about one fifth of the head height tall and clearly taller than the forehead tufts, each with a small brush tuft of fur at the tip. Dark-gray inner ear. They sit at the upper left and upper right of the head and grow out of the head outline.
+```
+**Klecksi** (beide Ohren am Kopf, ein Ohr dunkel, eins hell):
+```text
+Add two floppy dalmatian ears that hang from the upper sides of the head: the LEFT ear (viewer's left) solid dark gray, the RIGHT ear light with a few dark spots. Both are attached to the head outline at the top corner and hang down along the side of the head, touching the head, never floating beside it. The dark ear must be one even dark shape without lighter squares inside.
+```
+**Glöckchen**:
+```text
+Add two long floppy dog ears that start at the top corners of the head, overlap the head outline, and hang down along the sides of the head with soft gray fur dots. They must never cover eyes or mouth.
+```
+**Lotti**:
+```text
+Add two large broad deer ears that grow out of the upper sides of the head (overlapping the head outline), slightly angled outward, dark-gray inner ear, one clean continuous outline.
+```

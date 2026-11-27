@@ -109,9 +109,16 @@ def bauen(sex):
     speichern(t, os.path.join(dir_, 'zubehoer', 'halsband.png'))
     speichern(karte(t, 'zubehoer'), os.path.join(dir_, 'zubehoer', 'halsband.bereiche.png'))
     print(sex, 'halsband', int((t[..., 3] > 0).sum()))
-    # Backenblitze: nur Wangen
-    var = runter(os.path.join(ki, f'{sex}-besonderheit-backenblitze.png'), w, h)
-    t = teil_aus(var, ai, (y > h * .30) & (y < h * .60), 34)
+    # Backenblitze: sauber gesetzter Blitz (5x6 Pixel, mehr Platz ist auf der Wange nicht) auf jeder Wange statt der verwaschenen KI-Punkte
+    blitz = ["..###", ".###.", "#####", "..##.", ".##..", "##..."]
+    pos = [(25, 59, False), (72, 59, True)] if sex == 'weiblich' else [(30, 52, False), (82, 52, True)]
+    t = leer(w, h)
+    for ox, oy, spiegel in pos:
+        for r, zeile in enumerate(blitz):
+            zeile = zeile[::-1] if spiegel else zeile
+            for c, z in enumerate(zeile):
+                if z == '#' and basis[oy + r, ox + c, 3] > 0 and bkarte[oy + r, ox + c, 0] != 34:
+                    t[oy + r, ox + c] = (34, 34, 34, 255)
     speichern(t, os.path.join(dir_, 'besonderheit', 'backenblitze-vorn.png'))
     speichern(karte(t, 'besonderheit'), os.path.join(dir_, 'besonderheit', 'backenblitze-vorn.bereiche.png'))
     speichern(leer(w, h), os.path.join(dir_, 'besonderheit', 'backenblitze-hinten.png'))
@@ -129,17 +136,19 @@ def bauen(sex):
             m[zeile:zeile + 2, cx2:cx2 + 2] = True
     zone = (y > 72) & (y < 104)
     muster['kitz-tupfen'] = (m & zone & fell, 255)
-    # flecken (Dalmatiner): unregelmäßig, kräftig, auch Kopf-Rand und Flanken
+    # flecken (Dalmatiner): unregelmäßig, kräftig, über den ganzen Körper verteilt
     rng = np.random.RandomState(11 if female else 12)
     m = np.zeros((h, w), bool)
-    zentren = [(29, 87, 5.5, 4.5), (35, 96, 3.5, 3.2), (82, 85, 4.8, 5.2), (76, 95, 3.6, 3.0),
-               (24, 78, 3.0, 3.4), (88, 99, 3.0, 2.6), (42, 70, 2.4, 2.2), (66, 74, 2.2, 2.4)] if female else \
-              [(31, 83, 5.5, 4.5), (37, 92, 3.5, 3.2), (93, 82, 4.8, 5.2), (86, 93, 3.6, 3.0),
-               (26, 74, 3.0, 3.4), (96, 97, 3.0, 2.6), (47, 68, 2.4, 2.2), (72, 71, 2.2, 2.4)]
-    for k, (cx, cy, rx, ry) in enumerate(zentren):
-        warp = .22 * np.sin(x * .83 + y * .51 + k * 2.3)
-        m |= (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 + warp) < 1
-    muster['flecken'] = (m & fell & (y > 66), 255)
+    k = 0
+    for gy in range(66, h, 7):
+        for gx in range(8, w - 6, 8):
+            cx = gx + rng.randint(-2, 3); cy = gy + rng.randint(-2, 3)
+            rx = rng.uniform(1.6, 3.4); ry = rng.uniform(1.6, 3.2)
+            if not (0 <= cy < h and 0 <= cx < w and fell[cy, cx]):
+                continue
+            warp = .22 * np.sin(x * .83 + y * .51 + k * 2.3); k += 1
+            m |= (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 + warp) < 1
+    muster['flecken'] = (m & fell & (y > 64), 255)
     # augenfleck: dunkel um das rechte Auge (Betrachter), Augenlinien (Bereich 34) bleiben
     ex, ey = (64, 52) if female else (77, 50)
     m = (((x - ex) / 9.5) ** 2 + ((y - ey) / 8.5) ** 2) <= 1
