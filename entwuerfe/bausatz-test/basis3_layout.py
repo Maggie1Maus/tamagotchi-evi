@@ -61,13 +61,11 @@ MERKMALE = {
 
 # Kleine Aufsätze: Lage relativ zum Kopf (kx, ky = Kopf-Hals; mx, my = Gesichtsmitte; ohr_r = rechter Ohr-Ansatz).
 #   schleife:     rechtes Ohr, Ansatz = ohr_r + (-2, 1), vor dem Kopf
-#   gloeckchen:   unter dem Kinn, (kx - 4, ky + 5)
 #   halsband:     um den Hals, (kx - 2, ky + 3), nach dem Kopf
 #   augenmaske:   über den Augen, (mx, my - 4), VOR dem Gesicht
 #   backenblitz:  Wange, links (mx - 17, my + 6), rechts gespiegelt
 AUFSAETZE = {
     'schleife':     dict(groesse=(24, 20), anker=(12, 16)),
-    'gloeckchen':   dict(groesse=(16, 20), anker=(8, 2)),
     'halsband':     dict(groesse=(44, 14), anker=(22, 3)),
     'augenmaske':   dict(groesse=(52, 16), anker=(26, 8)),
     'backenblitz':  dict(groesse=(12, 14), anker=(6, 7)),

@@ -57,3 +57,5 @@ Die Halskrause ist komplett raus (`ki/teile/kruse-flauschig-*`, Schablone und al
 
 ## Aufsätze überarbeitet (27. November 2026)
 Die Backentaschen sind entfernt (Datei, Schablone, Code, Prompt). Das Halsband wird auf die Körperform beschnitten, endet also am Halsrand und steht nicht mehr über. Das Glöckchen hängt mit seiner Schnur direkt am Kinn (`kinn()` in `formen.py` bestimmt die Kinn-Höhe je Kopf).
+
+Das Glöckchen wurde am 27.11. ebenfalls entfernt (Datei, Schablone, Code, Prompt).

@@ -1,12 +1,11 @@
 # Prompt für die Bild-KI: kleine Aufsätze (27. November 2026)
 
-Sechs kleine Teile, die auf Kopf oder Hals sitzen: **Schleife** (Mia), **Glöckchen** (Glöckchen), **Halsband** (Klecksi), **Augenmaske** (Groschen), **Backenblitze** (Funke). Dazu optional ein **geringelter Schwanz** (Groschen). Gleiche Methode wie [PROMPT-ki-teile.md](PROMPT-ki-teile.md): ein Teil allein auf der Schablone, feste Grauwerte, Skript setzt zusammen.
+Sechs kleine Teile, die auf Kopf oder Hals sitzen: **Schleife** (Mia), **Halsband** (Klecksi), **Augenmaske** (Groschen), **Backenblitze** (Funke). Dazu optional ein **geringelter Schwanz** (Groschen). Gleiche Methode wie [PROMPT-ki-teile.md](PROMPT-ki-teile.md): ein Teil allein auf der Schablone, feste Grauwerte, Skript setzt zusammen.
 
 ## Wo sie sitzen
 | Aufsatz | Lage | Ansatz im Teil | Wohin | Ebene |
 |---|---|---|---|---|
 | Schleife | auf dem Kopf am rechten Ohr | Knoten unten Mitte (12, 16) | rechtes Ohr, leicht innen | vor dem Kopf |
-| Glöckchen | an einem Band unter dem Kinn | oben Mitte (8, 2) | unter dem Kinn, etwas links | vor dem Körper |
 | Halsband | schmales Band um den Hals mit Marke | oben Mitte (22, 3) | unter dem Kinn | nach dem Kopf |
 | Augenmaske | dunkle Fläche über beiden Augen | Mitte (26, 8) | über den Augen | **vor** dem Kopf, **hinter** dem Gesicht (die Augen liegen darüber) |
 | Backenblitz | kleiner Blitz, **linke** Wange (rechter wird gespiegelt) | Mitte (6, 7) | Wange | nach dem Gesicht |
@@ -17,7 +16,6 @@ Die Figur schaut leicht nach links (3/4).
 | Teil | Datei | Raster | Ausgabe (8-fach) | Schablone |
 |---|---|---|---|---|
 | Schleife | `aufsatz-schleife-<nr>.png` | 24 × 20 | 192 × 160 | `ki/schablone-aufsatz-schleife.png` |
-| Glöckchen | `aufsatz-gloeckchen-<nr>.png` | 16 × 20 | 128 × 160 | `…-gloeckchen.png` |
 | Halsband | `aufsatz-halsband-<nr>.png` | 44 × 14 | 352 × 112 | `…-halsband.png` |
 | Augenmaske | `aufsatz-augenmaske-<nr>.png` | 52 × 16 | 416 × 128 | `…-augenmaske.png` (blasse Linie = Augenhöhe, nicht zeichnen) |
 | Backenblitz | `aufsatz-backenblitz-<nr>.png` | 12 × 14 | 96 × 112 | `…-backenblitz.png` |
@@ -26,7 +24,6 @@ Die Figur schaut leicht nach links (3/4).
 ## Grauwerte (Rollen)
 34 Umriss (1 Pixel), 119 dunkel, 170 Schatten, 204 Fell/Mittelton, 238 hell, 255 Hintergrund. Nur diese Werte, Dithering, keine Halbtöne.
 - Schleife: Stoff 238, Schatten 170, Knoten 119.
-- Glöckchen: Glocke 238, Schatten 170, Schlitz 34, kleine Öse oben mit Band 119.
 - Halsband: Band 119, Schnalle und Marke 238, Umriss 34.
 - Backentasche: wie Fell (204 mit 170-Schatten, 238-Licht), weil sie mit dem Fellton umgefärbt wird.
 - Augenmaske: Fläche 119 mit weicheren Rändern in 170.
@@ -49,7 +46,6 @@ Style: match the attached style image in line weight and shading. The character 
 | Teil | [TEIL] | [AUSGABEGROESSE] |
 |---|---|---|
 | Schleife | a cute bow (ribbon with two loops and a small knot in the middle), seen from the front, light cloth gray 238, knot 119; the knot center sits at the red cross | 192 x 160 |
-| Glöckchen | a small round bell (jingle bell) with a slit and a tiny loop at the top, hanging down from the red cross | 128 x 160 |
 | Halsband | a narrow collar band lying horizontally, slightly curved like it wraps around a neck, dark gray 119, with a small round tag or buckle in the middle (light gray 238); red cross at the top center | 352 x 112 |
 | Augenmaske | a raccoon-style dark eye mask: one wide dark band (gray 119) that covers both eye areas, with soft slightly pointed ends going outward and down; the area in the middle between the eyes is connected; center at the red cross | 416 x 128 |
 | Backenblitz | a small lightning-bolt mark for the LEFT cheek, dark gray 34, bold zigzag, 3 sprite pixels thick, readable at small size; center at the red cross | 96 x 112 |

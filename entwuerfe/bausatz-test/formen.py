@@ -142,8 +142,6 @@ def baue_form(koerper='sitzend', kopf='3-4', ohren='spitz', schwanz='buschig', g
                 # nur dort zeichnen, wo ein Körper (Hals, Schultern) ist: das Band endet am Halsrand
                 if 0 <= cx < W and 0 <= cy < H and maske[cy, cx]:
                     c.g[cy, cx] = int(ra[y3, x3]); c.a[cy, cx] = True
-    if 'gloeckchen' in aufsaetze:
-        aufsatz('gloeckchen', (kx - 4, kinn(kx - 4) - 1))      # hängt direkt am Kinn
     if 'schleife' in aufsaetze: aufsatz('schleife', (ohr_r[0] - 2, ohr_r[1] + 1))
     return c
 
