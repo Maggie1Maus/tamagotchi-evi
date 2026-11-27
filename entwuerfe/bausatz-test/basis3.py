@@ -41,7 +41,22 @@ def rollen(fell=204, kranz=238):
     d = fell - 204
     return {34: 34, 119: 119 + d // 2, 170: 170 + d, 204: 204 + d, 238: 238 + d}
 
-def baue(koerper=3, kopf=1, kruse=2, ohren=None, schwanz=None, gesicht=None, fell=204, kranz=238):
+def muster_maske(art):
+    y, x = np.mgrid[0:H, 0:W]
+    if art == 'flecken':
+        m = np.zeros((H, W), bool)
+        for i, (cx, cy, r) in enumerate([(30, 88, 5), (70, 80, 6), (52, 98, 4), (44, 76, 3.5), (78, 100, 4), (66, 36, 4), (38, 40, 3), (60, 72, 3)]):
+            m |= ((x - cx) / r) ** 2 + ((y - cy) / (r * .85)) ** 2 + .15 * np.sin(x * .9 + y * .6 + i) <= 1
+        return m, -68
+    if art == 'streifen':
+        return ((y - x // 2) % 9 < 3) & (y > 26), -51
+    if art == 'tupfen':
+        return (x % 7 < 2) & (y % 6 < 2), 34
+    if art == 'augenfleck':
+        return ((x - 66) / 9) ** 2 + ((y - 46) / 8) ** 2 <= 1, -68
+    return None, 0
+
+def baue(koerper=3, kopf=1, kruse=2, ohren=None, schwanz=None, gesicht=None, fell=204, kranz=238, muster=None):
     from ki_teile import lade_teil
     c = Leinwand(); r = rollen(fell)
     if schwanz:
@@ -55,6 +70,10 @@ def baue(koerper=3, kopf=1, kruse=2, ohren=None, schwanz=None, gesicht=None, fel
             c.teil(t[0], t[1], zl, r)
             c.teil(t[0], t[1], (W - 1 - zr[0], zr[1]), r, spiegeln=True)
     c.teil(lade('kopf', '3-4', kopf), (30, 40), L.KOPF_ZIEL, r)
+    if muster:
+        m, d = muster_maske(muster)
+        ok = m & c.a & (c.g >= 85) & (c.g < 250)
+        c.g[ok] = np.clip(np.round((c.g[ok] + d) / 17) * 17, 0, 255)
     c.teil(lade('kruse', 'flauschig', kruse), (28, 2), L.KRUSE_ZIEL, {34: 34, 238: kranz, 204: kranz - 34, 170: kranz - 68})
     if gesicht:
         t = lade_teil('gesicht', gesicht)
