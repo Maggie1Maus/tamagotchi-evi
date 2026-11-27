@@ -15,3 +15,14 @@ Kleiner Versuch, ob Ohren, Schwänze und Fell **per Skript** statt per Bild-KI e
 ## Freistehende KI-Teile
 
 In [ki/teile](ki/teile) liegt je Ohr- und Schwanzform die ausgewählte von drei Varianten. `python3 bausatz2.py` lädt die PNGs anhand von Form und Varianten-Nummer und erstellt den [Prüfbogen](pruefbogen-test2.png). Weiße Pixel sind beim Zusammensetzen durchsichtig. Das rechte Ohr wird aus dem linken gespiegelt. Fehlt ein Teil, verwendet das Skript die bisherige Form.
+
+## Gesichtsausdrücke
+
+`tiere(gesicht='lachend')` setzt ein freistehendes Gesicht auf die Figur.
+Verfügbare Ausdrücke sind `freundlich`, `lachend`, `ueberrascht`,
+`traurig`, `wuetend` und `muede`. Ohne Gesichtsauswahl bleibt
+`mund='offen'` oder `mund='zu'` wie bisher verfügbar. Schablone und
+Bildauftrag stehen im [Prompt](PROMPT-ki-teile.md).
+
+`python3 gesichterbogen.py` erstellt den [Prüfbogen](pruefbogen-gesichter.png)
+mit demselben Tier pro Ausdruck, vergrößert sowie mit dunklerem Fell in Originalgröße.

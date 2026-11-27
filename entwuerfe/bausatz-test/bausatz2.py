@@ -16,7 +16,8 @@ from ki_teile import lade_teil
 W = H = 96
 CX = 47.5
 LINIE = 34
-ANKER = {'ohr': (31, 25), 'ohr-seite': (24, 40), 'schwanz': (70, 78)}
+ANKER = {'ohr': (31, 25), 'ohr-seite': (24, 40), 'schwanz': (70, 78), 'gesicht': (48, 48)}
+GESICHTSTOENE = {34: 17, 119: 51, 170: 102, 204: 153, 238: 255}
 BAYER = np.array([[0, 2], [3, 1]]) / 4.0
 
 Y, X = np.mgrid[0:H, 0:W]
@@ -71,8 +72,6 @@ class Bild:
         self.setze(m, np.round(v / 17) * 17)
         return m
     def ki_teil(self, teil, ziel, fell, innen, gespiegelt=False, licht=None):
-        raster, (ax, ay) = teil
-        gx, gy = ziel
         rollen = {
             34: LINIE,
             119: innen,
@@ -80,6 +79,11 @@ class Bild:
             204: fell,
             238: fell + 34 if licht is None else licht,
         }
+        return self.setze_teil(teil, ziel, rollen, gespiegelt)
+
+    def setze_teil(self, teil, ziel, rollen, gespiegelt=False):
+        raster, (ax, ay) = teil
+        gx, gy = ziel
         fuellung = leer()
         for rolle, ton in rollen.items():
             y, x = np.nonzero(raster == rolle)
@@ -128,7 +132,7 @@ def schwanz(art):
     else: return None, None
     return m, sp
 
-def tiere(ohren='spitz', schw='puschel', f=204, bauch=238, spitze=250, innen=119, muster='keins', mund='offen'):
+def tiere(ohren='spitz', schw='puschel', f=204, bauch=238, spitze=250, innen=119, muster='keins', mund='offen', gesicht=None):
     b = Bild()
     kopf = ellipse(CX, 40, 26, 23); koerper = ellipse(CX, 71, 21, 18)
     arme = ellipse(26, 70, 5, 8) | ellipse(69, 70, 5, 8)
@@ -184,26 +188,30 @@ def tiere(ohren='spitz', schw='puschel', f=204, bauch=238, spitze=250, innen=119
     elif muster == 'streifen':
         mm = ((Y - X // 2) % 9 < 3) & (koerper | (kopf & (Y < 28))) & ~bm
         b.setze(mm & erode(koerper | kopf), f - 51)
-    # Gesicht
-    for ex in (35, 59):
-        b.setze(ellipse(ex + .5, 41, 4, 5.2), 17)
-        b.setze(ellipse(ex - 0.5, 39, 1.4, 1.6), 255)            # großer Glanzpunkt
-        b.setze((X == ex + 2) & (Y == 44), 238)                   # kleiner Glanzpunkt
-        au = -1 if ex < CX else 1                                   # Wimpern am äußeren Augenrand
-        for k in (0, 1):
-            b.setze((X == int(ex + au * (5 + k))) & (Y == 37 - k), 17)
+    gesichtsteil = lade_teil('gesicht', gesicht) if gesicht is not None else None
     # Wangen (gerastert)
     for wx in (26, 69):
         w = ellipse(wx, 49, 5, 3.2) & ((X + Y) % 2 == 0)
         b.setze(w, 170)
-    # Nase und Mund
-    b.setze(polygon([(46, 47), (50, 47), (48, 50)]), 51)
-    if mund == 'offen':
-        b.setze(ellipse(CX, 52, 6.5, 5) & (Y >= 52), 17)
-        b.setze(ellipse(CX, 55.5, 3.6, 1.9) & (Y >= 54) & (Y <= 56), 153)   # Zunge
-        b.setze(((X == 41) | (X == 54)) & (Y == 51), 34)          # Mundwinkel
+    if gesichtsteil is not None:
+        b.setze_teil(gesichtsteil, ANKER['gesicht'], GESICHTSTOENE)
     else:
-        b.setze(linie([(42, 52), (45, 55), (50, 55), (53, 52)], 1), 34)
+        # Gesicht
+        for ex in (35, 59):
+            b.setze(ellipse(ex + .5, 41, 4, 5.2), 17)
+            b.setze(ellipse(ex - 0.5, 39, 1.4, 1.6), 255)            # großer Glanzpunkt
+            b.setze((X == ex + 2) & (Y == 44), 238)                   # kleiner Glanzpunkt
+            au = -1 if ex < CX else 1                                   # Wimpern am äußeren Augenrand
+            for k in (0, 1):
+                b.setze((X == int(ex + au * (5 + k))) & (Y == 37 - k), 17)
+        # Nase und Mund
+        b.setze(polygon([(46, 47), (50, 47), (48, 50)]), 51)
+        if mund == 'offen':
+            b.setze(ellipse(CX, 52, 6.5, 5) & (Y >= 52), 17)
+            b.setze(ellipse(CX, 55.5, 3.6, 1.9) & (Y >= 54) & (Y <= 56), 153)   # Zunge
+            b.setze(((X == 41) | (X == 54)) & (Y == 51), 34)          # Mundwinkel
+        else:
+            b.setze(linie([(42, 52), (45, 55), (50, 55), (53, 52)], 1), 34)
     # Schnurrhaare
     for y0, dy in ((48, -2), (50, 0), (52, 2)):
         b.setze(linie([(21, y0), (13, y0 + dy)], 1), 119)

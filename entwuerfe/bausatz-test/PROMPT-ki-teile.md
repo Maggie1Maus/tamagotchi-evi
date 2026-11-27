@@ -72,3 +72,27 @@ Passt ein Bild nicht (falsche Größe, andere Grautöne, unsauber), sage ich, wo
 
 ## Später dieselbe Vorlage nutzen für
 Flügel, Hörner, Geweih, Fühler, Antennen, Stacheln, Rüssel, Mähne, Gesichter (Augen und Mund als Teile): Schablone und Maße je Teil festlegen, Rollen-Tabelle bleibt gleich.
+
+## Gesichter als freistehende Teile
+
+`ki/schablone-gesicht.png` und `ki/stilvorlage-kopf.png` anhängen.
+Das Gesicht braucht 40 × 28 Rasterpixel bzw. 320 × 224 Bildpixel. Der rote
+Punkt (20, 18) markiert die Nase. Die Augenmitten liegen ungefähr bei
+(7, 11) und (31, 11), der Mund darunter, etwa bei (20, 24).
+
+```text
+Create ONE standalone grayscale pixel-art face overlay on the attached 320 x 224
+template. Draw only two eyes, optional brows, a small centered nose, and a mouth.
+Expression: [EXPRESSION]. Match the attached style reference.
+Each pixel is a flat 8 x 8 block. Use ONLY gray 34 (dark strokes), 119 (nose
+and dark accents), 170 (midtones), 204 (tongue), 238 (bright highlights)
+and 255 (transparent background after import). Keep white eye highlights at
+238 so they survive import. Leave the blank spaces between features white.
+Place the nose on the red mark; omit the mark, grid, head, fur, cheeks,
+whiskers and text. No antialiasing or partial blocks.
+```
+
+Je drei Varianten für freundlich, lachend, überrascht, traurig, wütend und
+müde erzeugen. Die ausgewählte Variante als
+`ki/teile/gesicht-<ausdruck>-<nr>.png` ablegen. Der Bausatz setzt das
+gesamte Gesicht vor den Kopf. Die Gesichtstöne sind unabhängig vom Fellton.

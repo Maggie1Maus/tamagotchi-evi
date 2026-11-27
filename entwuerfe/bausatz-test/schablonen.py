@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Erzeugt die Schablonen und die Stilvorlage für die Bild-KI (siehe PROMPT-ki-teile.md)."""
 from PIL import Image, ImageDraw
+from ki_teile import RASTER, SCHABLONEN
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 hier = os.path.dirname(os.path.abspath(__file__))
-Z = 8
+Z = RASTER
 def schablone(name, gw, gh, anker, text):
     im = Image.new('RGB', (gw * Z, gh * Z), 'white'); d = ImageDraw.Draw(im)
     for x in range(0, gw + 1):
@@ -21,6 +22,8 @@ def schablone(name, gw, gh, anker, text):
 schablone('schablone-ohr.png', 24, 32, (12, 29), 'Ohr 24x32, roter Punkt = Ansatz')
 schablone('schablone-ohr-haengend.png', 24, 32, (12, 2), 'Hängeohr 24x32, roter Punkt = Ansatz')
 schablone('schablone-schwanz.png', 32, 40, (3, 29), 'Schwanz 32x40, roter Punkt = Ansatz')
+(gw, gh), anker = SCHABLONEN['gesicht']
+schablone('schablone-gesicht.png', gw, gh, anker, 'Gesicht 40x28, roter Punkt = Nase')
 # Stilvorlage: Ausschnitt der neuen Basis (Kopf mit Ohr, Schwanz) auf 8x
 import bausatz2 as b
 t = b.tiere('spitz', 'buschig')

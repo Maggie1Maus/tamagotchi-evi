@@ -11,6 +11,7 @@ ROLLEN = (34, 119, 170, 204, 238, 255)
 SCHABLONEN = {
     'ohr': ((24, 32), (12, 29)),
     'ohr-haengend': ((24, 32), (12, 2)),
+    'gesicht': ((40, 28), (20, 18)),
     'schwanz': ((32, 40), (3, 29)),
 }
 
@@ -32,6 +33,11 @@ def lade_teil(art, name):
     erwartet = raster.repeat(RASTER, axis=0).repeat(RASTER, axis=1)
     if not np.all(pixel[..., :3] == erwartet[..., None]):
         raise ValueError(f'{datei.name}: Farbabweichung oder unsauberes 8×8-Raster')
+    # Augen, Brauen, Nase und Mund sind bewusst voneinander getrennt.
+    if art == 'gesicht':
+        if np.all(raster == 255):
+            raise ValueError(f'{datei.name}: Gesicht ist leer')
+        return raster, (ax, ay)
     if raster[ay, ax] == 255:
         raise ValueError(f'{datei.name}: Ansatzpunkt liegt außerhalb des Teils')
 
