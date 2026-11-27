@@ -6,8 +6,8 @@ Du zeichnest jedes Teil (Ohren, Gesicht, Schwanz, Fell-Muster) **einmal** auf ei
 - iPad mit Apple Pencil
 - **Procreate** (einmalig rund 13 €, kein Abo). Kostenlos geht auch Adobe Fresco; die Schritte sind sehr ähnlich.
 - Die Vorlage aus diesem Ordner:
-  - `Vorlage-Evi.png` – Evi blass als Unterlage, 2048 × 2048 Pixel
-  - `Vorlage-Evi-mit-Raster.png` – dasselbe mit hellem Raster als Orientierung
+  - `vorlagen/Vorlage-Evi.png` – Evi blass als Unterlage, 2048 × 2048 Pixel
+  - `vorlagen/Vorlage-Evi-mit-Raster.png` – dasselbe mit hellem Raster als Orientierung
 
 ## 1. Vorlage aufs iPad bringen
 Lege die PNG-Datei in iCloud Drive oder schicke sie dir per AirDrop oder Mail. Ein Weg über das Repository: auf GitHub `tamagotchi-evi` die Datei öffnen und „Download“ wählen.
@@ -55,7 +55,7 @@ Für jede Ebene: Linie zeichnen, dann Fläche füllen. Fülle in Procreate, inde
 ## 6. Abgeben
 1. Aktionen (Schraubenschlüssel) → **Teilen** → **PSD**. Alle Ebenen bleiben erhalten.
 2. Auf den PC bringen (iCloud Drive, AirDrop, Mail oder Cloud-Ordner) und im Projekt ablegen unter
-   `entwuerfe/evi/zeichnen/abgabe/` (zum Beispiel `ohren-1.psd`).
+   `entwuerfe/evi/zeichnen/` in den passenden Ordner (siehe unten, zum Beispiel `ohren/`).
 3. Sag Claude Bescheid. Claude schneidet die Ebenen auseinander, spiegelt, setzt Graustufen und Fellfarben und baut alle Kombinationen.
 
 ## Regeln, damit alles passt
@@ -70,11 +70,11 @@ Alle sind 2048 × 2048, Evi ist immer an derselben Stelle. Die Teile passen desh
 
 | Datei | Wofür |
 |---|---|
-| `Vorlage-Evi.png` | ganze Evi blass, zum Größenvergleich |
-| `Vorlage-ohne-Ohren.png` | Ohren und Schwänze (Kopf und Körper blass, ohne Ohren und Schwanz) |
-| `Vorlage-ohne-Kranz.png` | Halskrause weg, zum Beispiel für Schleife oder Halsband |
-| `Vorlage-ohne-Gesicht.png` | Gesichter (Augen, Nase, Mund) |
-| `Vorlage-Silhouette.png` | nur Kopf- und Körperform, ohne Gesicht und Kranz |
+| `vorlagen/Vorlage-Evi.png` | ganze Evi blass, zum Größenvergleich |
+| `vorlagen/Vorlage-ohne-Ohren.png` | Ohren und Schwänze (Kopf und Körper blass, ohne Ohren und Schwanz) |
+| `vorlagen/Vorlage-ohne-Kranz.png` | Halskrause weg, zum Beispiel für Schleife oder Halsband |
+| `vorlagen/Vorlage-ohne-Gesicht.png` | Gesichter (Augen, Nase, Mund) |
+| `vorlagen/Vorlage-Silhouette.png` | nur Kopf- und Körperform, ohne Gesicht und Kranz |
 
 Fell-Muster und Zubehör kommen jeweils als **eigene Ebene oder eigene Datei** (Namen wie `muster-streifen`, `zubehoer-schleife`). Dann kann ich sie mit allen Ohren und Schwänzen kombinieren.
 
@@ -89,6 +89,6 @@ Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Fig
 | `muster/` | Fell-Muster und Flecken | `muster-flecken.png`, `muster-streifen.png`, `muster-schmutz.png` |
 | `koerper/` | Körper in anderen Haltungen | `koerper-schlafend.png`, `koerper-huepfen.png`, `koerper-laufen.png` |
 
-Die sechs Grundebenen (`Evi-neue-vorlage-…`) bleiben wie sie sind direkt in `zeichnen/` liegen.
+Die sechs Grundebenen (`Evi-neue-vorlage-…`) liegen in `basis/`, die Vorlagen zum Zeichnen in `vorlagen/`, die fertigen Zusammensetzungen in `ergebnis/` und die Programme in `werkzeug/`. Die Vorschläge von ChatGPT zu den Gesichtern liegen in `gesichter/vorschlaege-chatgpt/`.
 
 **Namensregeln:** nur Kleinbuchstaben, keine Leerzeichen, Umlaute als `ae`, `oe`, `ue` (müde → `muede`, hüpfen → `huepfen`), Wörter mit Bindestrich trennen. Ein Teil pro Datei, kein Wort „neu“ oder Nummer im Namen; eine überarbeitete Version ersetzt einfach die alte Datei (der Verlauf bei GitHub hebt die alte auf).

@@ -7,9 +7,9 @@
 
 ## Evi neu aus eigenen Ebenen (27. November 2026)
 
-- Die Nutzerin zeichnet Evi jetzt selbst auf dem iPad (Adobe Fresco) in sechs Ebenen: `Evi-neue-vorlage-` + `kopf`, `koerper`, `kranz`, `gesicht`, `ohr`, `schwanz` (2048 × 2048, transparent, in `entwuerfe/evi/zeichnen/`). Weiße Flächen (Krause) sind Absicht: sie decken Linien dahinter ab.
+- Die Nutzerin zeichnet Evi jetzt selbst auf dem iPad (Adobe Fresco) in sechs Ebenen: `basis/Evi-neue-vorlage-` + `kopf`, `koerper`, `kranz`, `gesicht`, `ohr`, `schwanz` (2048 × 2048, transparent, in `entwuerfe/evi/zeichnen/`). Weiße Flächen (Krause) sind Absicht: sie decken Linien dahinter ab.
 - `zusammensetzen.ps1` (+ `.cs`) baut daraus `Evi-neu-grau.png` (Fellgrau, Schattierungen, Ohr gespiegelt); `pixelfassung.ps1` rechnet es auf 114 × 116 Pixel, 16 Graustufen herunter (`Evi-neu-pixel.png`). Die Lücke zwischen den Vorderbeinen wird nach ihrer Größe erkannt und dunkel gefärbt (Körper-Ebene stark ändern → prüfen).
-- Anleitung und Vorlagen zum Zeichnen: `entwuerfe/evi/zeichnen/ANLEITUNG.md`. Die Ohr-Zeichnungen `ohr-buschel-maggie*.png` waren frühere Tests (jetzt in `archiv/entwuerfe/evi/zeichnen/`).
+- Anleitung und Vorlagen zum Zeichnen: `entwuerfe/evi/zeichnen/ANLEITUNG.md`. Ordner in `zeichnen/`: `basis/` (sechs Grundebenen), `vorlagen/`, `ergebnis/` (Evi-neu-grau, Evi-neu-pixel), `werkzeug/` (zusammensetzen.ps1, pixelfassung.ps1), `gesichter/ ohren/ schwaenze/ muster/ koerper/` für neue Teile (Namensregeln in der Anleitung). Die Ohr-Zeichnungen `ohr-buschel-maggie*.png` waren frühere Tests (jetzt in `archiv/entwuerfe/evi/zeichnen/`).
 - Noch nicht auf dem Waveshare eingebaut. Nächster Schritt offen: Gesichter für die Emotionen zeichnen lassen, Altersstufen, Ohren und Schwänze für die Kreuzung mit den 20 Tamagotchis.
 
 ## Bauteile Paket 1 gebaut (27. November 2026) – wartet auf Freigabe
