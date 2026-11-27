@@ -59,3 +59,6 @@ Die Halskrause ist komplett raus (`ki/teile/kruse-flauschig-*`, Schablone und al
 Die Backentaschen sind entfernt (Datei, Schablone, Code, Prompt). Das Halsband wird auf die Körperform beschnitten, endet also am Halsrand und steht nicht mehr über. Das Glöckchen hängt mit seiner Schnur direkt am Kinn (`kinn()` in `formen.py` bestimmt die Kinn-Höhe je Kopf).
 
 Das Glöckchen wurde am 27.11. ebenfalls entfernt (Datei, Schablone, Code, Prompt).
+
+## Altersstufen (27. November 2026)
+Teile in `ki/teile/`: `koerper-baby/teenager/senior`, `kopf-baby/teenager/senior`. `altersstufen.py` → `pruefbogen-altersstufen.png` (dasselbe Tier als Baby, Teenager, Erwachsen, Senior). Nur sitzend, je eine Körper- und Kopfform pro Stufe. Offen: Das Muster `flecken` hat feste Positionen für den Erwachsenen und landet bei Baby und Senior teils im Gesicht.
