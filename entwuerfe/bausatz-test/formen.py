@@ -10,6 +10,7 @@ from basis3 import Leinwand, rollen, muster_maske, W, H, HIER, TEILE, Z
 from ki_teile import lade_teil
 
 BODEN = 110
+KOPF_UEBER_STANDARD = -3     # Kopf-Hals liegt so viele Pixel ÜBER dem Körper-Hals (negativ = darunter)
 KRUSE_TIEFER_STANDARD = 3   # Halskrause sitzt so viele Pixel unter dem Kopf-Hals: der Kopf sitzt am Hals, nicht auf der Krause
 PANZER_WINKEL = 30       # Grad, nach rechts unten gekippt
 PANZER_VERSATZ = (-14, 8)  # Verschiebung gegenüber dem Rückenansatz
@@ -29,8 +30,7 @@ def baue_form(koerper='sitzend', kopf='3-4', kruse=2, ohren='spitz', schwanz='bu
     kf, hf = L.KOERPER_FORMEN[koerper], L.KOPF_FORMEN[kopf]
     khx, khy = hf['hals']
     if kopf_ueber is None:
-        kopf_ueber = {'schlank': 1}.get(koerper, 4)   # hohe Körper: Kopf tiefer, damit lange Ohren nicht abgeschnitten werden
-        kopf_ueber -= KOPF_TIEFER.get(kopf, 0) + 2      # Kopf sitzt 2 Pixel tiefer am Hals (27.11.)
+        kopf_ueber = KOPF_UEBER_STANDARD - KOPF_TIEFER.get(kopf, 0)   # negativ: Kopf sitzt im Körperhals, Kinn berührt die Krause
     gw, gh = kf['groesse']; hx, hy = kf['hals']
     zx, zy = 56, BODEN - (gh - 1) + hy                  # Körper-Hals auf der Leinwand
     kx, ky = 56, zy - kopf_ueber                         # Kopf-Hals
