@@ -1,5 +1,12 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Evi neu aus eigenen Ebenen (27. November 2026)
+
+- Die Nutzerin zeichnet Evi jetzt selbst auf dem iPad (Adobe Fresco) in sechs Ebenen: `Evi-neue-vorlage-` + `kopf`, `koerper`, `kranz`, `gesicht`, `ohr`, `schwanz` (2048 × 2048, transparent, in `entwuerfe/evi/zeichnen/`). Weiße Flächen (Krause) sind Absicht: sie decken Linien dahinter ab.
+- `zusammensetzen.ps1` (+ `.cs`) baut daraus `Evi-neu-grau.png` (Fellgrau, Schattierungen, Ohr gespiegelt); `pixelfassung.ps1` rechnet es auf 114 × 116 Pixel, 16 Graustufen herunter (`Evi-neu-pixel.png`). Die Lücke zwischen den Vorderbeinen wird nach ihrer Größe erkannt und dunkel gefärbt (Körper-Ebene stark ändern → prüfen).
+- Anleitung und Vorlagen zum Zeichnen: `entwuerfe/evi/zeichnen/ANLEITUNG.md`. Die Ohr-Zeichnungen `ohr-buschel-maggie*.png` sind frühere Tests.
+- Noch nicht auf dem Waveshare eingebaut. Nächster Schritt offen: Gesichter für die Emotionen zeichnen lassen, Altersstufen, Ohren und Schwänze für die Kreuzung mit den 20 Tamagotchis.
+
 ## Bauteile Paket 1 gebaut (27. November 2026) – wartet auf Freigabe
 
 - Aus den KI-Bildern in `baukasten/werkzeug/ki/` sind Ohren und Schwänze von Mia, Glöckchen, Lotti, Klecksi und Funke (Erwachsen, beide Geschlechter) entstanden, dazu `halsband`, `backenblitze`, `kitz-tupfen`, `augenfleck` und neue `flecken` für Klecksi. [Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-paket-1.png). Bauskripte jetzt auch in Python (`paket1-bauen.py`, `pruefbogen-paket-1.py`, `teile-aktualisieren.py`). Evis Basis und die Probelauf-Teile sind unverändert (nur `flecken` wurde für Klecksi neu gerechnet).
