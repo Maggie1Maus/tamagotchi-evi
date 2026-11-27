@@ -81,19 +81,26 @@ Fell-Muster und Zubehör kommen jeweils als **eigene Ebene oder eigene Datei** (
 ## Ordner nach Altersstufen
 Jede Altersstufe hat einen eigenen Ordner mit denselben Unterordnern: `erwachsen/` (fertig angelegt, hier liegt Evi), `baby/`, `teenager/` und `opa/` (noch leer, warten auf Zeichnungen). Pfade unten gelten deshalb **je Stufe**, zum Beispiel `baby/gesichter/gesicht-gluecklich.png`. Die Dateinamen sind in allen Stufen gleich, nur der Ordner unterscheidet sie.
 
-Reihenfolge pro neuer Stufe: 1. `vorlagen/` (Claude baut sie aus der Evi der Stufe), 2. sechs Grundebenen in `basis/`, 3. Gesichter, 4. Ohren, Schwänze, Muster, Körperhaltungen. Das Werkzeug (`werkzeug/`) liegt bei `erwachsen/` und wird für eine neue Stufe dorthin kopiert, wenn die Grundebenen da sind.
+Reihenfolge pro neuer Stufe: 1. `vorlagen/` (Claude baut sie aus der Evi der Stufe), 2. je ein Kopf, Körper, Halsschmuck, Gesicht, Ohr und Schwanz in `frontal`, 3. weitere Gesichter, 4. weitere Ohren, Schwänze, Muster, Haltungen, 5. die anderen Ansichten. Das Werkzeug (`werkzeug/`) liegt bei `erwachsen/` und wird für eine neue Stufe dorthin kopiert, wenn die Grundebenen da sind.
 
 ## Wohin mit den fertigen Zeichnungen
-Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Figur an derselben Stelle wie in den Vorlagen). Die Dateien kommen in diese Ordner (alle in `entwuerfe/evi/zeichnen/<stufe>/`, siehe oben):
+Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Figur an derselben Stelle wie in den Vorlagen). Alles liegt in `entwuerfe/evi/zeichnen/<stufe>/`.
+
+**Ansichten:** Was sich mit der Blickrichtung ändert (Kopf, Gesicht, Ohren, Halsschmuck), hat je einen Unterordner `frontal/` (von vorn, zuerst), `seite/`, `schnueffeln/` (leichte Draufsicht, Schnüffeln am Boden) und `hinten/`. Körper und Schwanz hängen von der Haltung ab, nicht von der Ansicht.
 
 | Ordner | Inhalt | Dateinamen (Beispiele) |
 |---|---|---|
-| `gesichter/` | Gesichter für Stimmungen | `gesicht-gluecklich.png`, `gesicht-hungrig.png`, `gesicht-traurig.png`, `gesicht-muede.png`, `gesicht-krank.png`, `gesicht-schmutzig.png`, `gesicht-singen.png`, `gesicht-staunen.png`, `gesicht-gaehnen.png` |
-| `ohren/` | Ohr-Varianten (nur linkes Ohr) | `ohr-haengend.png`, `ohr-spitz.png`, `ohr-rund.png` |
-| `schwaenze/` | Schwanz-Varianten | `schwanz-buschig.png`, `schwanz-duenn.png` |
-| `muster/` | Fell-Muster und Flecken | `muster-flecken.png`, `muster-streifen.png`, `muster-schmutz.png` |
-| `koerper/` | Körper in anderen Haltungen | `koerper-schlafend.png`, `koerper-huepfen.png`, `koerper-laufen.png` |
+| `koepfe/<ansicht>/` | Kopfform | `kopf-rund.png` |
+| `gesichter/<ansicht>/` | Gesichter für Stimmungen | `gesicht-neutral.png`, `gesicht-gluecklich.png`, `gesicht-traurig.png`, `gesicht-muede.png`, `gesicht-krank.png` … |
+| `ohren/<ansicht>/` | Ohr-Varianten (nur linkes Ohr) | `ohr-buschel.png`, `ohr-spitz.png`, `ohr-haengend.png` |
+| `halsschmuck/<ansicht>/` | Krause, Schleife, Halsband … | `krause-evi.png`, `schleife.png`, `halsband.png` |
+| `koerper/` | Körper je Haltung | `koerper-sitzend.png`, `koerper-laufen.png`, `koerper-schlafend.png`, `koerper-huepfen.png` |
+| `schwaenze/` | Schwanz-Varianten | `schwanz-buschel.png`, `schwanz-duenn.png` |
+| `muster/` | Fell-Muster und Flecken | `muster-flecken.png`, `muster-streifen.png` |
+| `posen/` | Textdatei je Pose: welche Teile in welcher Reihenfolge | `sitzen-frontal.txt` (Beispiel liegt in `erwachsen/`) |
 
-Die sechs Grundebenen (`Evi-neue-vorlage-…`) liegen in `basis/`, die Vorlagen zum Zeichnen in `vorlagen/`, die fertigen Zusammensetzungen in `ergebnis/` und die Programme in `werkzeug/`. Die Vorschläge von ChatGPT zu den Gesichtern liegen in `gesichter/vorschlaege-chatgpt/`.
+Dazu in jeder Stufe: `vorlagen/` (Zeichenvorlagen), `ergebnis/` (fertige Zusammensetzungen) und bei `erwachsen/` das `werkzeug/`. Einen Ordner `basis/` gibt es nicht mehr: Evis Grundteile liegen jetzt einfach als erste Variante in den Teile-Ordnern. Die ChatGPT-Vorschläge für Gesichter liegen in `erwachsen/gesichter/frontal/vorschlaege-chatgpt/`.
+
+**Zusammensetzen:** `erwachsen/werkzeug/zusammensetzen.ps1` wählt die Teile über die Dateinamen, zum Beispiel `.\zusammensetzen.ps1 -Gesicht gluecklich -Hals schleife`. Ohne Angaben entsteht die normale Evi.
 
 **Namensregeln:** nur Kleinbuchstaben, keine Leerzeichen, Umlaute als `ae`, `oe`, `ue` (müde → `muede`, hüpfen → `huepfen`), Wörter mit Bindestrich trennen. Ein Teil pro Datei, kein Wort „neu“ oder Nummer im Namen; eine überarbeitete Version ersetzt einfach die alte Datei (der Verlauf bei GitHub hebt die alte auf).

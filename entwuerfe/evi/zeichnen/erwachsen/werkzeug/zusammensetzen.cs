@@ -68,15 +68,14 @@ public static class Zus{
  static void Over(float[] g,float[] a,L l,bool mirror,int axis){
   for(int y=0;y<N;y++)for(int x=0;x<N;x++){int sx=mirror?(2*axis-x):x;if(sx<0||sx>=N)continue;int s=y*N+sx;float la=l.a[s];if(la<=0)continue;int p=y*N+x;
    float oa=la+a[p]*(1-la);g[p]=(l.g[s]*la+g[p]*a[p]*(1-la))/oa;a[p]=oa;}}
- public static string Run(string dir,string ausgabe){
-  Func<string,string> P=n=>Path.Combine(dir,n);
+ public static string Run(string kopfP,string koerperP,string krauseP,string gesichtP,string ohrP,string schwanzP,string ausgabe){
   float LIN=51,FELL=204,KOPF=221,KRAUSE=244,INN=85;
-  var schwanz=Build(P("Evi-neue-vorlage-schwanz.png"),4,LIN,rk=>rk==0?FELL:(rk==1?255f:FELL),-1,null);
-  var ohr=Build(P("Evi-neue-vorlage-ohr.png"),4,LIN,rk=>rk==0?FELL:(rk==1?INN:FELL),-1,null);
-  var kopf=Build(P("Evi-neue-vorlage-kopf.png"),6,LIN,rk=>rk==0?KOPF:-1f,-1,null);
-  var koerper=Build(P("Evi-neue-vorlage-koerper.png"),5,LIN,rk=>rk<=1?FELL:(rk==2?90f:240f),-1,new int[][]{new int[]{814,1145,1096,1134}});
-  var kranz=Build(P("Evi-neue-vorlage-kranz.png"),4,LIN,rk=>-1f,KRAUSE,null);
-  var gesicht=Eigen(P("Evi-neue-vorlage-gesicht.png"),34);
+  var schwanz=Build(schwanzP,4,LIN,rk=>rk==0?FELL:(rk==1?255f:FELL),-1,null);
+  var ohr=Build(ohrP,4,LIN,rk=>rk==0?FELL:(rk==1?INN:FELL),-1,null);
+  var kopf=Build(kopfP,6,LIN,rk=>rk==0?KOPF:-1f,-1,null);
+  var koerper=Build(koerperP,5,LIN,rk=>rk<=1?FELL:(rk==2?90f:240f),-1,new int[][]{new int[]{814,1145,1096,1134}});
+  var kranz=Build(krauseP,4,LIN,rk=>-1f,KRAUSE,null);
+  var gesicht=Eigen(gesichtP,34);
   int hx0=N,hx1=0,hy0=N,hy1=0;for(int p=0;p<N*N;p++)if(kopf.cover[p]){int x=p%N,y=p/N;if(x<hx0)hx0=x;if(x>hx1)hx1=x;if(y<hy0)hy0=y;if(y>hy1)hy1=y;}
   float cx=(hx0+hx1)/2f,cy=(hy0+hy1)/2f,R=(hx1-hx0)/2f;
   for(int p=0;p<N*N;p++)if(kopf.shad[p]){int x=p%N,y=p/N;float t=((x-cx)+(y-cy))/(2*R);kopf.g[p]-=16*t;}

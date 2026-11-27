@@ -7,7 +7,8 @@
 
 ## Evi neu aus eigenen Ebenen (27. November 2026)
 
-- **Ordner nach Altersstufen (27.11.):** `entwuerfe/evi/zeichnen/` hat jetzt `erwachsen/` (alles bisherige: basis, vorlagen, ergebnis, werkzeug, gesichter …), dazu leere, gleich aufgebaute `baby/`, `teenager/`, `opa/`. Pfade unten gelten für `erwachsen/`. Neue Gesichter der Nutzerin (neutral, glücklich, beleidigt …) liegen in `erwachsen/gesichter/`.
+- **Ordner nach Altersstufen (27.11.):** `entwuerfe/evi/zeichnen/` hat jetzt `erwachsen/` (alles bisherige: basis, vorlagen, ergebnis, werkzeug, gesichter …), dazu leere, gleich aufgebaute `baby/`, `teenager/`, `opa/`. Pfade unten gelten für `erwachsen/`.
+- **Teile-Struktur (27.11.):** Kein `basis/` mehr. Pro Stufe: `koepfe/`, `gesichter/`, `ohren/`, `halsschmuck/` (Krause, Schleife, Halsband …) jeweils mit Ansichten `frontal/ seite/ schnueffeln/ hinten/`, dazu `koerper/` (nach Haltung), `schwaenze/`, `muster/`, `posen/` (Textdatei je Pose mit Teile-Liste). Evis Grundteile sind jetzt `kopf-rund`, `ohr-buschel`, `schwanz-buschel`, `koerper-sitzend`, `krause-evi`, `gesicht-neutral`. `zusammensetzen.ps1` hat Parameter (-Gesicht, -Ohr, -Hals …) und liest diese Pfade; **noch nicht auf Windows getestet**. Neue Gesichter der Nutzerin (neutral, glücklich, beleidigt …) liegen in `erwachsen/gesichter/`.
 
 - Die Nutzerin zeichnet Evi jetzt selbst auf dem iPad (Adobe Fresco) in sechs Ebenen: `basis/Evi-neue-vorlage-` + `kopf`, `koerper`, `kranz`, `gesicht`, `ohr`, `schwanz` (2048 × 2048, transparent, in `entwuerfe/evi/zeichnen/`). Weiße Flächen (Krause) sind Absicht: sie decken Linien dahinter ab.
 - `zusammensetzen.ps1` (+ `.cs`) baut daraus `Evi-neu-grau.png` (Fellgrau, Schattierungen, Ohr gespiegelt); `pixelfassung.ps1` rechnet es auf 114 × 116 Pixel, 16 Graustufen herunter (`Evi-neu-pixel.png`). Die Lücke zwischen den Vorderbeinen wird nach ihrer Größe erkannt und dunkel gefärbt (Körper-Ebene stark ändern → prüfen).
