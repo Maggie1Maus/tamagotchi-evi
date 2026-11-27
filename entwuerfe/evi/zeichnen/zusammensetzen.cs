@@ -1,6 +1,6 @@
 using System;using System.Collections.Generic;using System.Drawing;using System.Drawing.Imaging;using System.IO;
 public static class Zus{
- const int N=2048;
+ const int N=2048;public static string Dbg="";
  public class L{public float[] g=new float[N*N];public float[] a=new float[N*N];public bool[] line=new bool[N*N];public bool[] shad=new bool[N*N];public bool[] cover=new bool[N*N];}
  static void Read(string f,out byte[] lum,out byte[] al){
   var b=new Bitmap(f);var d=b.LockBits(new Rectangle(0,0,N,N),ImageLockMode.ReadOnly,PixelFormat.Format32bppArgb);
@@ -49,7 +49,7 @@ public static class Zus{
   var ld=Dil(flood,r);List<int> size;var lab=Label(ld,out size);Grow(lab,r);
   var order=new List<int>();for(int i=1;i<size.Count;i++)order.Add(i);order.Sort((a,b)=>size[b].CompareTo(size[a]));
   var rank=new int[size.Count];for(int i=0;i<order.Count;i++)rank[order[i]]=i;
-  var fc=new float[size.Count];for(int i=1;i<size.Count;i++)fc[i]=(size[i]<40)?-1:farbe(rank[i]);
+  if(f.Contains("koerper")){for(int i=0;i<Math.Min(order.Count,6);i++){long sx=0,sy=0;int c=0;for(int p=0;p<N*N;p++)if(lab[p]==order[i]){sx+=p%N;sy+=p/N;c++;}Dbg+="["+size[order[i]]+"@"+(sx/Math.Max(c,1))+","+(sy/Math.Max(c,1))+"]";}}var fc=new float[size.Count];for(int i=1;i<size.Count;i++)fc[i]=(size[i]<40)?-1:farbe(rank[i]);
   for(int p=0;p<N*N;p++){
    float g=0,a=0;bool fill=false;
    if(lab[p]>0&&fc[lab[p]]>=0){g=fc[lab[p]];a=1;fill=true;}
@@ -74,7 +74,7 @@ public static class Zus{
   var schwanz=Build(P("Evi-neue-vorlage-schwanz.png"),4,LIN,rk=>rk==0?FELL:(rk==1?255f:FELL),-1,null);
   var ohr=Build(P("Evi-neue-vorlage-ohr.png"),4,LIN,rk=>rk==0?FELL:(rk==1?INN:FELL),-1,null);
   var kopf=Build(P("Evi-neue-vorlage-kopf.png"),6,LIN,rk=>rk==0?KOPF:-1f,-1,null);
-  var koerper=Build(P("Evi-neue-vorlage-koerper.png"),5,LIN,rk=>rk==0?FELL:-1f,-1,new int[][]{new int[]{814,1145,1096,1134}});
+  var koerper=Build(P("Evi-neue-vorlage-koerper.png"),5,LIN,rk=>rk<=1?FELL:(rk==2?90f:240f),-1,new int[][]{new int[]{814,1145,1096,1134}});
   var kranz=Build(P("Evi-neue-vorlage-kranz.png"),4,LIN,rk=>-1f,KRAUSE,null);
   var gesicht=Eigen(P("Evi-neue-vorlage-gesicht.png"),34);
   int hx0=N,hx1=0,hy0=N,hy1=0;for(int p=0;p<N*N;p++)if(kopf.cover[p]){int x=p%N,y=p/N;if(x<hx0)hx0=x;if(x>hx1)hx1=x;if(y<hy0)hy0=y;if(y>hy1)hy1=y;}
@@ -94,5 +94,5 @@ public static class Zus{
   var d=bmp.LockBits(new Rectangle(0,0,N,N),ImageLockMode.WriteOnly,PixelFormat.Format32bppArgb);
   var buf=new byte[N*N*4];for(int i=0;i<N*N;i++){byte v=(byte)Math.Max(0,Math.Min(255,Math.Round(g[i])));buf[i*4]=v;buf[i*4+1]=v;buf[i*4+2]=v;buf[i*4+3]=(byte)Math.Round(a[i]*255);}
   System.Runtime.InteropServices.Marshal.Copy(buf,0,d.Scan0,buf.Length);bmp.UnlockBits(d);bmp.Save(ausgabe,ImageFormat.Png);
-  return "Achse "+axis;}
+  return "Achse "+axis+" "+Dbg;}
 }
