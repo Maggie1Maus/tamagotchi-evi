@@ -36,6 +36,12 @@ SCHABLONEN = {
     'aufsatz-augenmaske': ((52, 16), (26, 8)),
     'aufsatz-backenblitz': ((12, 14), (6, 7)),
     'aufsatz': ((24, 20), (12, 16)),
+    'koerper-baby': ((56, 34), (28, 3)),
+    'koerper-teenager': ((72, 44), (36, 3)),
+    'koerper-senior': ((76, 46), (34, 8)),
+    'kopf-baby': ((56, 44), (28, 40)),
+    'kopf-teenager': ((58, 42), (29, 38)),
+    'kopf-senior': ((58, 44), (29, 40)),
     'kopf': ((60, 44), (30, 40)),
 }
 

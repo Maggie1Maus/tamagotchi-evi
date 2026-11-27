@@ -71,4 +71,19 @@ AUFSAETZE = {  # Name: (Raster, Ansatz, Beschriftung, Hilfsform)
 }
 for n, ((gw, gh), a, text, fuehr) in AUFSAETZE.items():
     schablone(f'schablone-aufsatz-{n}.png', gw, gh, [(a, 'Ansatz', ROT)], text, fuehr)
+# Altersstufen (27.11.): Körper und Kopf je Stufe
+ALTER_KOERPER = {  # Name: (Raster, Hals, Schwanz)
+    'baby':       ((56, 34), (28, 3), (46, 18)),
+    'teenager':   ((72, 44), (36, 3), (60, 24)),
+    'senior':     ((76, 46), (34, 8), (62, 28)),
+}
+for n, ((gw, gh), hals, schwanz) in ALTER_KOERPER.items():
+    schablone(f'schablone-koerper-{n}.png', gw, gh, [(hals, 'Hals', ROT), (schwanz, 'Schwanz', BLAU)], f'Koerper {n} {gw}x{gh}')
+ALTER_KOPF = {  # Name: (Raster, Hals, Ohr links, Ohr rechts, Gesicht)
+    'baby':     ((56, 44), (28, 40), (11, 9), (45, 9), (28, 25)),
+    'teenager': ((58, 42), (29, 38), (12, 8), (46, 8), (29, 23)),
+    'senior':   ((58, 44), (29, 40), (12, 9), (46, 9), (29, 25)),
+}
+for n, ((gw, gh), hals, ol, orr, g) in ALTER_KOPF.items():
+    schablone(f'schablone-kopf-{n}.png', gw, gh, [(hals, 'Hals', ROT), (ol, 'Ohr links', BLAU), (orr, 'Ohr rechts', BLAU), (g, 'Gesicht', GRUEN)], f'Kopf {n} {gw}x{gh}')
 print('fertig')
