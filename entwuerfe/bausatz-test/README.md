@@ -26,3 +26,7 @@ Bildauftrag stehen im [Prompt](PROMPT-ki-teile.md).
 
 `python3 gesichterbogen.py` erstellt den [Prüfbogen](pruefbogen-gesichter.png)
 mit demselben Tier pro Ausdruck, vergrößert sowie mit dunklerem Fell in Originalgröße.
+
+## Pose-Test (27. November 2026)
+`posen.py` → `pruefbogen-posen.png`: dieselben Teile (Ohren, Schwänze, Gesichter, Fell, Muster) in vier Posen: stehen, hüpfen, schlafen, neugierig (Kopf schief). Eine Pose ist nur eine Tabelle in `POSEN` (Formen von Kopf, Körper, Armen, Füßen plus Ansatzpunkte für Ohren links/rechts, Schwanz und Gesicht). Die Teile bleiben unverändert.
+Grenzen: Seitenansichten (Laufen, Schnüffeln) gehen so nicht, dafür brauchen Kopf, Ohren und Gesicht eigene Teile im Profil.
