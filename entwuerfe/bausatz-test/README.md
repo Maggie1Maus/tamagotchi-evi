@@ -36,3 +36,6 @@ Grenzen: Seitenansichten (Laufen, Schnüffeln) gehen so nicht, dafür brauchen K
 
 ## Posen auf der 3/4-Basis (27. November 2026)
 `posen3.py` → `pruefbogen-posen-basis3.png`: sitzend, laufen, hüpfen, geduckt, eingerollt (+ Zzz) mit denselben Köpfen, Ohren, Schwänzen und Gesichtern. Körper: `ki/teile/koerper-<pose>-<nr>.png`, Ansatz- und Zielpunkte je Pose in `basis3_layout.py` (`POSEN`). `emotionen3.py` zeigt 11 Gefühle, `aufstellung.py` alle 21 Figuren als Rezept (Variationstest, `pruefbogen-aufstellung.png`).
+
+## Weitere Körper- und Kopfformen (27. November 2026)
+Körper rundlich, schlank, kräftig und Köpfe klein-rund, breit, spitz (`ki/teile/…`). `formen.py` setzt sitzende Figuren aus beliebigen Körper- und Kopfformen zusammen (`pruefbogen-formen.png`, 4 × 4 Grundformen). `aufstellung.py` baut mit diesen Formen alle 21 Figuren (`pruefbogen-aufstellung-formen.png`; der ältere Bogen mit nur einer Form heißt `pruefbogen-aufstellung.png`). Nur sitzend; die Posen laufen, hüpfen, geduckt, eingerollt gibt es bisher nur für die Normalform.

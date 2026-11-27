@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Variationstest: alle 21 Figuren als Bausatz-Rezept (mit den bisherigen Teilen). -> pruefbogen-aufstellung.png"""
 from PIL import Image, ImageDraw
-from basis3 import baue, W, H, HIER
+from basis3 import W, H, HIER
+from formen import baue_form
 
 # name: (körper, kopf, krause, ohren, schwanz, gesicht, fell, kranz, muster, fehlt)
 F = {
@@ -27,14 +28,23 @@ F = {
  'Rolli':    (2, 3, 1, None, 'puschel', 'freundlich', 136, 153, None, 'Stacheln'),
  'Tetro':    (3, 1, 2, None, 'duenn', 'muede', 119, 136, None, 'Panzer'),
 }
+FORMEN = {
+ 'Evi': ('sitzend', '3-4'), 'Lotti': ('schlank', 'spitz'), 'Ella': ('kraeftig', 'breit'), 'Glöckchen': ('rundlich', '3-4'),
+ 'Kiwi': ('kraeftig', '3-4'), 'Klecksi': ('schlank', 'breit'), 'Lumi': ('schlank', 'klein-rund'), 'Mia': ('sitzend', 'spitz'),
+ 'Mimi': ('rundlich', 'klein-rund'), 'Moosi': ('rundlich', 'breit'), 'Spuki': ('schlank', '3-4'), 'Bit': ('kraeftig', 'spitz'),
+ 'Blip': ('sitzend', 'klein-rund'), 'Blubber': ('kraeftig', 'klein-rund'), 'Funke': ('schlank', 'spitz'), 'Groschen': ('rundlich', 'breit'),
+ 'Leo': ('kraeftig', 'breit'), 'Linus': ('schlank', '3-4'), 'Mampf': ('rundlich', 'klein-rund'), 'Rolli': ('rundlich', '3-4'),
+ 'Tetro': ('kraeftig', '3-4'),
+}
 if __name__ == '__main__':
     z, cols = 2, 7
     rows = (len(F) + cols - 1) // cols
     out = Image.new('RGB', (cols * W * z, rows * (H * z + 30)), 'white'); d = ImageDraw.Draw(out)
     for i, (n, (k, h, kr, o, s, g, f, kz, m, fehlt)) in enumerate(F.items()):
-        c = baue(k, h, kr, ohren=o, schwanz=s, gesicht=g, fell=f, kranz=kz, muster=m)
+        kf, hf = FORMEN[n]
+        c = baue_form(kf, hf, kr, ohren=o, schwanz=s, gesicht=g, fell=f, kranz=kz, muster=m)
         x, y = (i % cols) * W * z, (i // cols) * (H * z + 30)
-        d.text((x + 4, y + 1), n, fill='black')
+        d.text((x + 4, y + 1), f'{n}  ({kf} / {hf})', fill='black')
         if fehlt: d.text((x + 4, y + 13), 'fehlt: ' + fehlt, fill=(160, 0, 0))
         out.paste(c.bild(255, z), (x, y + 28))
-    out.save(HIER / 'pruefbogen-aufstellung.png'); print(out.size)
+    out.save(HIER / 'pruefbogen-aufstellung-formen.png'); print(out.size)
