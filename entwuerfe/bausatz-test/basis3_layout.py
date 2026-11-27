@@ -43,6 +43,16 @@ KOERPER_FORMEN = {
     'baby':     dict(groesse=(56, 34), hals=(28, 3), schwanz=(46, 18)),
     'teenager': dict(groesse=(72, 44), hals=(36, 3), schwanz=(60, 24)),
     'senior':   dict(groesse=(76, 46), hals=(34, 8), schwanz=(62, 28)),
+    # Formen x Altersstufen (27.11.)
+    'rundlich-baby': dict(groesse=(50, 28), hals=(25, 3), schwanz=(42, 16)),
+    'rundlich-teenager': dict(groesse=(64, 36), hals=(32, 3), schwanz=(54, 20)),
+    'rundlich-senior': dict(groesse=(68, 38), hals=(30, 7), schwanz=(58, 24)),
+    'schlank-baby': dict(groesse=(54, 40), hals=(26, 3), schwanz=(44, 26)),
+    'schlank-teenager': dict(groesse=(68, 50), hals=(33, 3), schwanz=(56, 31)),
+    'schlank-senior': dict(groesse=(72, 52), hals=(32, 8), schwanz=(58, 32)),
+    'kraeftig-baby': dict(groesse=(58, 36), hals=(29, 3), schwanz=(49, 20)),
+    'kraeftig-teenager': dict(groesse=(76, 46), hals=(38, 3), schwanz=(64, 25)),
+    'kraeftig-senior': dict(groesse=(80, 48), hals=(36, 8), schwanz=(66, 27)),
 }
 # Köpfe: Hals-Ansatz, Ohr links/rechts, Gesicht (alle in Rasterpixeln des Kopfteils)
 KOPF_FORMEN = {
@@ -53,6 +63,13 @@ KOPF_FORMEN = {
     'baby':       dict(groesse=(56, 44), hals=(28, 40), ohr_l=(11, 9), ohr_r=(45, 9), gesicht=(28, 25)),
     'teenager':   dict(groesse=(58, 42), hals=(29, 38), ohr_l=(12, 8), ohr_r=(46, 8), gesicht=(29, 23)),
     'senior':     dict(groesse=(58, 44), hals=(29, 40), ohr_l=(12, 9), ohr_r=(46, 9), gesicht=(29, 25)),
+    # Formen x Altersstufen (27.11.)
+    'klein-rund-baby': dict(groesse=(48, 40), hals=(24, 36), ohr_l=(9, 8), ohr_r=(39, 8), gesicht=(24, 23)),
+    'klein-rund-teenager': dict(groesse=(50, 38), hals=(25, 34), ohr_l=(10, 7), ohr_r=(40, 7), gesicht=(25, 21)),
+    'klein-rund-senior': dict(groesse=(52, 40), hals=(26, 36), ohr_l=(11, 8), ohr_r=(41, 8), gesicht=(26, 23)),
+    'breit-baby': dict(groesse=(60, 44), hals=(30, 40), ohr_l=(12, 9), ohr_r=(48, 9), gesicht=(30, 25)),
+    'breit-teenager': dict(groesse=(64, 42), hals=(32, 38), ohr_l=(13, 8), ohr_r=(51, 8), gesicht=(32, 23)),
+    'breit-senior': dict(groesse=(68, 44), hals=(34, 40), ohr_l=(14, 9), ohr_r=(54, 9), gesicht=(34, 25)),
 }
 
 # Artmerkmale: Ansatz auf der Leinwand wird je Körperform aus der Rückenlinie abgeleitet:

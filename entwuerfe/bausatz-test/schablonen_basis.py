@@ -86,4 +86,11 @@ ALTER_KOPF = {  # Name: (Raster, Hals, Ohr links, Ohr rechts, Gesicht)
 }
 for n, ((gw, gh), hals, ol, orr, g) in ALTER_KOPF.items():
     schablone(f'schablone-kopf-{n}.png', gw, gh, [(hals, 'Hals', ROT), (ol, 'Ohr links', BLAU), (orr, 'Ohr rechts', BLAU), (g, 'Gesicht', GRUEN)], f'Kopf {n} {gw}x{gh}')
+# Alle Formen x Altersstufen (27.11.)
+import json as _json
+_FA = _json.load(open(os.path.join(hier, 'formen_alter.json'), encoding='utf-8'))
+for n, ((gw, gh), hals, schwanz) in _FA['koerper'].items():
+    schablone(f'schablone-koerper-{n}.png', gw, gh, [(tuple(hals), 'Hals', ROT), (tuple(schwanz), 'Schwanz', BLAU)], f'Koerper {n} {gw}x{gh}')
+for n, ((gw, gh), hals, ol, orr, g) in _FA['koepfe'].items():
+    schablone(f'schablone-kopf-{n}.png', gw, gh, [(tuple(hals), 'Hals', ROT), (tuple(ol), 'Ohr links', BLAU), (tuple(orr), 'Ohr rechts', BLAU), (tuple(g), 'Gesicht', GRUEN)], f'Kopf {n} {gw}x{gh}')
 print('fertig')
