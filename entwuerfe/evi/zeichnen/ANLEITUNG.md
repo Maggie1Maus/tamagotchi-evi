@@ -79,7 +79,7 @@ Alle sind 2048 × 2048, Evi ist immer an derselben Stelle. Die Teile passen desh
 Fell-Muster und Zubehör kommen jeweils als **eigene Ebene oder eigene Datei** (Namen wie `muster-streifen`, `zubehoer-schleife`). Dann kann ich sie mit allen Ohren und Schwänzen kombinieren.
 
 ## Ordner nach Altersstufen
-Jede Altersstufe hat einen eigenen Ordner mit denselben Unterordnern: `erwachsen/` (fertig angelegt, hier liegt Evi), `baby/`, `teenager/` und `opa/` (noch leer, warten auf Zeichnungen). Pfade unten gelten deshalb **je Stufe**, zum Beispiel `baby/gesichter/gesicht-gluecklich.png`. Die Dateinamen sind in allen Stufen gleich, nur der Ordner unterscheidet sie.
+Jede Altersstufe hat einen eigenen Ordner mit denselben Unterordnern: `erwachsen/` (fertig angelegt, hier liegt Evi), `baby/`, `teenager/` und `senior/` (noch leer, warten auf Zeichnungen). Pfade unten gelten deshalb **je Stufe**, zum Beispiel `baby/gesichter/gesicht-gluecklich.png`. Die Dateinamen sind in allen Stufen gleich, nur der Ordner unterscheidet sie.
 
 Reihenfolge pro neuer Stufe: 1. `vorlagen/` (Claude baut sie aus der Evi der Stufe), 2. je ein Kopf, Körper, Halsschmuck, Gesicht, Ohr und Schwanz in `frontal`, 3. weitere Gesichter, 4. weitere Ohren, Schwänze, Muster, Haltungen, 5. die anderen Ansichten. Das Werkzeug (`werkzeug/`) liegt bei `erwachsen/` und wird für eine neue Stufe dorthin kopiert, wenn die Grundebenen da sind.
 
