@@ -173,7 +173,7 @@ Ein falscher Ton beendet „Melodie merken“, geschaffte Runden zählen. Abbrec
 - **Name ändern:** Buchstabentafel A–Z, Ä Ö Ü ß, Umschalten (Aa), Bindestrich, Leerzeichen, Löschen, Zurück, OK. Steuerkreuz wählt, A tippt, START speichert, B bricht ab; oder auf die Tafel tippen. Nach dem ersten Buchstaben geht es klein weiter, nach Leerzeichen und Bindestrich wieder groß. Höchstens 20 Bytes (Platz im Spielstand).
 - **Hilfe:** die Texte der App, angepasst an den Retro Gamer (Tasten, Uhr, Spielstand; ohne Handy-Hinweise), 7 Seiten. ◀▶ oder ▲▼ blättern, B oder START schließt; Touch: links zurück, Mitte schließen, rechts weiter.
 
-**Etappe 4: Evis eigene Momente** (`momente.ino`, wie `moments.js` und die Momente in `app.js`), zuerst nur für die erwachsene Evi, seit 24. November 2026 in jeder Phase außer dem Ei (siehe oben):
+**Etappe 4: Evis eigene Momente** (`momente.ino`, wie `moments.js` und die Momente in `app.js` (beide im Archiv: `archiv/handy-app/dist/`)), zuerst nur für die erwachsene Evi, seit 24. November 2026 in jeder Phase außer dem Ei (siehe oben):
 - **Kleine Momente** alle 5–10 Minuten: herumlaufen und hüpfen, aus dem Fenster schauen (Sonne oder Mond in der Gedankenwolke), an etwas denken, summen (♪ ♫), gähnen, sich im Kreis drehen. Hungrig, traurig oder schmutzig denkt sie nur an Essen, Spielen oder Baden; müde gähnt sie.
 - **Besuch** ein- bis zweimal am Tag zwischen 9 und 21 Uhr (wartet bis 22 Uhr): Schmetterling oder Vogel, im Dunkeln eine Sternschnuppe, mit Ton. Gleiche Zeiten wie in der App (Streuwert aus Geburtszeit und Datum).
 - **Begrüßung** mit Hüpfen und „Guten Morgen!“, „Da bist du ja endlich!“, „Guten Abend!“ oder „Hallo!“ …; beim ersten Gruß des Tages die **Tageslaune** (verspielt, verschmust, verfressen, verträumt), die auch die Momente beeinflusst. Unten steht die Laune alle 10 Sekunden im Wechsel.
@@ -317,7 +317,7 @@ Der Spielstand von Schritt 9 wird nicht übernommen: Es beginnt ein neues Ei.
 - `kuscheln.ino`: Evi antippen oder streicheln, Kuschelwunsch (seit 24.11.2026).
 - `lage.h`, `bewegung.ino`: Lagesensor und was Evi bei Bewegung tut, „Wie war dein Tag?“ (seit 24.11.2026).
 - `umgebung.ino`, `umgebung.h`: neues Zimmer, Jahreszeiten, Wetter und Weihnachtsdeko (seit 24.11.2026; `tools/make-umgebung.py`).
-- `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js`.
+- `pet.h`: Spielregeln aus `pet.js`. `zeit.h`: Datum und deutsche Ortszeit mit Sommerzeit. `himmel.h`: Sonnenstand aus `sky.js` (Archiv: `archiv/handy-app/dist/`).
 - `uhr.h`: Uhr PCF85063 (I²C 0x51). `speicher.h`: Spielstand mit Prüfsumme. `text.h`: Schrift mit Umlauten. `ton.h`: Töne der App.
 - `schlaf.h`: Schlafmodus, damit die Batterien länger halten (seit 25.11.2026).
 - `board.h`, `touch.h`, `bildschirm.h`: aus Schritt 8/9.

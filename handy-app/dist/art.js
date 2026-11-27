@@ -1,4 +1,4 @@
-// Generated from entwuerfe/evi/ by build-art.ps1: the drawings, unchanged except cropped,
+// Generated from entwuerfe/evi/ by archiv/handy-app/tools/build-art.ps1: the drawings, unchanged except cropped,
 // scaled to one size per stage and made transparent outside. [file, width, height] in pixels.
 export const ART = {
   egg: {

@@ -1,7 +1,7 @@
 """Erzeugt evi-cube/evi_art.h aus Evis Zeichnungen.
 
 Quelle sind die schon zugeschnittenen Bilder der Handy-App
-(handy-app/dist/img/adult-*.png, erzeugt von handy-app/tools/build-art.ps1).
+(handy-app/dist/img/adult-*.png, erzeugt von archiv/handy-app/tools/build-art.ps1).
 Nichts wird neu gezeichnet: Alle Bilder werden mit demselben Massstab
 verkleinert, und jeder Punkt wird an oder aus. Die schwarzen Linien der
 Zeichnung leuchten auf dem OLED, alles andere bleibt dunkel.
