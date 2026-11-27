@@ -55,7 +55,7 @@ def lade_teil(art, name):
     if not np.all(pixel[..., :3] == erwartet[..., None]):
         raise ValueError(f'{datei.name}: Farbabweichung oder unsauberes 8×8-Raster')
     # Augen, Brauen, Nase und Mund sind bewusst voneinander getrennt.
-    if art == 'gesicht':
+    if art in ('gesicht', 'merkmal'):
         if np.all(raster == 255):
             raise ValueError(f'{datei.name}: Gesicht ist leer')
         # Einzelne Streupixel (ohne Nachbarn, auch diagonal) entfernen.

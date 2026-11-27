@@ -21,8 +21,9 @@ def datei(art, form, bevorzugt=None):
 def raster(p): return np.array(Image.open(p).convert('RGB'))[::Z, ::Z, 0]
 
 def baue_form(koerper='sitzend', kopf='3-4', kruse=2, ohren='spitz', schwanz='buschig', gesicht='freundlich',
-              fell=204, kranz=238, muster=None, kopf_ueber=None):
+              fell=204, kranz=238, muster=None, kopf_ueber=None, merkmale=()):
     kf, hf = L.KOERPER_FORMEN[koerper], L.KOPF_FORMEN[kopf]
+    khx, khy = hf['hals']
     if kopf_ueber is None:
         kopf_ueber = {'schlank': 1}.get(koerper, 4)   # hohe Körper: Kopf tiefer, damit lange Ohren nicht abgeschnitten werden
         kopf_ueber -= KOPF_TIEFER.get(kopf, 0)
@@ -30,12 +31,62 @@ def baue_form(koerper='sitzend', kopf='3-4', kruse=2, ohren='spitz', schwanz='bu
     zx, zy = 56, BODEN - (gh - 1) + hy                  # Körper-Hals auf der Leinwand
     kx, ky = 56, zy - kopf_ueber                         # Kopf-Hals
     c = Leinwand(); r = rollen(fell)
+    kr = raster(datei('koerper', koerper))
+    spalte = min(hx + L.RUECKEN_VERSATZ, kr.shape[1] - 1)
+    oben = int(np.nonzero(kr[:, spalte] != 255)[0].min())
+    rueck = (zx + spalte - hx, zy + oben - hy)            # Rückenansatz auf der Leinwand
+    def merk(name, ziel, rl=None):
+        t = lade_teil('merkmal', name)
+        if t is not None: c.teil(t[0], t[1], ziel, rl or r)
+    # Körper-Silhouette auf der Leinwand (für Stacheln und Panzer)
+    maske = np.zeros((H, W), bool)
+    ys_, xs_ = np.nonzero(kr != 255)
+    maske[np.clip(ys_ - hy + zy, 0, H - 1), np.clip(xs_ - hx + zx, 0, W - 1)] = True
+    oberkante = np.array([(int(np.nonzero(kr[:, x] != 255)[0].min()) if (kr[:, x] != 255).any() else -1) for x in range(kr.shape[1])])
+    def stacheln():
+        """Stachelband folgt der Oberkante von Kopf + Körper, vom Scheitel bis zum Hinterteil (liegt hinter beiden)."""
+        t = lade_teil('merkmal', 'stacheln')
+        if t is None: return
+        ra, (ax, ay) = t
+        uni = maske.copy()
+        kraster = raster(datei('kopf', kopf))
+        yk, xk = np.nonzero(kraster != 255)
+        uni[np.clip(yk - khy + ky, 0, H - 1), np.clip(xk - khx + kx, 0, W - 1)] = True
+        start = kx - 12 - ax                      # Spalte des Teils px=0
+        for px in range(ra.shape[1]):
+            cx = start + px
+            if cx < 0 or cx >= W or not uni[:, cx].any(): continue
+            ty = int(np.nonzero(uni[:, cx])[0].min())
+            zeilen = np.nonzero(ra[:, px] != 255)[0]
+            if len(zeilen) == 0: continue
+            unten = int(zeilen.max())
+            for py in zeilen:
+                cy = ty + 1 - unten + py
+                if 0 <= cy < H:
+                    c.g[cy, cx] = r.get(int(ra[py, px]), int(ra[py, px])); c.a[cy, cx] = True
+    def panzer():
+        """Panzer liegt wie ein Rucksack auf dem Rücken (links unten am Rückenansatz, nach rechts begrenzt auf die Leinwand)."""
+        t = lade_teil('merkmal', 'panzer')
+        if t is None: return
+        ra, (ax, ay) = t
+        ys2, xs2 = np.nonzero(ra != 255)
+        ox, oy = rueck[0] - 14, rueck[1] + 6
+        for y2, x2 in zip(ys2, xs2):
+            cx, cy = x2 - ax + ox, y2 - ay + oy
+            if 0 <= cx < W and 0 <= cy < H:
+                c.g[cy, cx] = r.get(int(ra[y2, x2]), int(ra[y2, x2])); c.a[cy, cx] = True
+    for m in merkmale:
+        if m == 'stacheln': stacheln()
+        elif m in ('fluegel-fee', 'fluegel-drache'): merk(m, rueck)   # hinter dem Körper
     if schwanz:
         t = lade_teil('schwanz', schwanz)
         if t is not None:
             c.teil(t[0], t[1], (zx + kf['schwanz'][0] - hx, zy + kf['schwanz'][1] - hy), r)
-    c.teil(raster(datei('koerper', koerper)), (hx, hy), (zx, zy), r)
+    c.teil(kr, (hx, hy), (zx, zy), r)
+    if 'panzer' in merkmale: panzer()                                              # vor dem Körper, auf die Körperform beschnitten
     khx, khy = hf['hals']
+    kopfmitte = (kx + hf['gesicht'][0] - khx, ky + hf['gesicht'][1] - khy)
+    if 'maehne' in merkmale: merk('maehne', kopfmitte)                              # hinter dem Kopf
     if ohren:
         t = lade_teil('ohr', ohren)
         if t is not None:
@@ -56,6 +107,7 @@ def baue_form(koerper='sitzend', kopf='3-4', kruse=2, ohren='spitz', schwanz='bu
         t = lade_teil('gesicht', gesicht)
         if t is not None:
             c.teil(t[0], t[1], (kx + hf['gesicht'][0] - khx, ky + hf['gesicht'][1] - khy), {34: 17, 119: 51, 170: 102, 204: 153, 238: 255})
+    if 'ruessel' in merkmale: merk('ruessel', (kopfmitte[0], kopfmitte[1] + 4))
     return c
 
 KOERPER = ['sitzend', 'rundlich', 'schlank', 'kraeftig']

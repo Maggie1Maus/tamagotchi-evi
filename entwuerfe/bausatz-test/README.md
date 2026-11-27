@@ -39,3 +39,6 @@ Grenzen: Seitenansichten (Laufen, Schnüffeln) gehen so nicht, dafür brauchen K
 
 ## Weitere Körper- und Kopfformen (27. November 2026)
 Körper rundlich, schlank, kräftig und Köpfe klein-rund und breit (der spitze Kopf wurde verworfen) (`ki/teile/…`). `formen.py` setzt sitzende Figuren aus beliebigen Körper- und Kopfformen zusammen (`pruefbogen-formen.png`, 4 × 3 Grundformen). `aufstellung.py` baut mit diesen Formen alle 21 Figuren (`pruefbogen-aufstellung-formen.png`; der ältere Bogen mit nur einer Form heißt `pruefbogen-aufstellung.png`). Nur sitzend; die Posen laufen, hüpfen, geduckt, eingerollt gibt es bisher nur für die Normalform.
+
+## Artmerkmale (27. November 2026)
+Teile in `ki/teile/`: `merkmal-maehne`, `merkmal-stacheln`, `merkmal-panzer`, `merkmal-fluegel-fee`, `merkmal-fluegel-drache`, `merkmal-ruessel`, `ohr-antenne`. `formen.py` setzt sie über den Parameter `merkmale` ein (Mähne hinter dem Kopf, Stacheln als Band entlang Kopf und Rücken, Panzer wie ein Rucksack, Flügel hinter dem Körper, Rüssel vor dem Gesicht, Antennen als Ohren). Prüfbogen: `pruefbogen-artmerkmale.png` (Leo, Rolli, Tetro, Lumi, Blubber, Bit, Blip, Ella). Nur sitzend.
