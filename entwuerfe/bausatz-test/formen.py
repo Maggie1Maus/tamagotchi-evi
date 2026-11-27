@@ -122,13 +122,28 @@ def baue_form(koerper='sitzend', kopf='3-4', ohren='spitz', schwanz='buschig', g
         t = lade_teil('gesicht', gesicht)
         if t is not None:
             c.teil(t[0], t[1], (kx + hf['gesicht'][0] - khx, ky + hf['gesicht'][1] - khy), {34: 17, 119: 51, 170: 102, 204: 153, 238: 255})
-    if 'backentasche' in aufsaetze:
-        aufsatz('backentasche', (mx - 18, my + 5), rl=r)
-        aufsatz('backentasche', (W - 1 - (mx + 18), my + 5), spiegeln=True, rl=r)
     if 'backenblitz' in aufsaetze:
         aufsatz('backenblitz', (mx - 17, my + 6)); aufsatz('backenblitz', (W - 1 - (mx + 17), my + 6), spiegeln=True)
-    if 'halsband' in aufsaetze: aufsatz('halsband', (kx - 2, ky + 3))
-    if 'gloeckchen' in aufsaetze: aufsatz('gloeckchen', (kx - 4, ky + 5))
+    # Unterkante des Kopfes (Kinn) an einer Spalte der Leinwand
+    kraster2 = raster(datei('kopf', kopf))
+    def kinn(x):
+        sp = x - kx + khx
+        if 0 <= sp < kraster2.shape[1] and (kraster2[:, sp] != 255).any():
+            return ky + int(np.nonzero(kraster2[:, sp] != 255)[0].max()) - khy
+        return ky + 3
+    if 'halsband' in aufsaetze:
+        t = lade_teil('aufsatz', 'halsband')
+        if t is not None:
+            ra, (ax_, ay_) = t
+            ziel = (kx - 3, kinn(kx - 3) - 1)
+            ys3, xs3 = np.nonzero(ra != 255)
+            for y3, x3 in zip(ys3, xs3):
+                cx, cy = x3 - ax_ + ziel[0], y3 - ay_ + ziel[1]
+                # nur dort zeichnen, wo ein Körper (Hals, Schultern) ist: das Band endet am Halsrand
+                if 0 <= cx < W and 0 <= cy < H and maske[cy, cx]:
+                    c.g[cy, cx] = int(ra[y3, x3]); c.a[cy, cx] = True
+    if 'gloeckchen' in aufsaetze:
+        aufsatz('gloeckchen', (kx - 4, kinn(kx - 4) - 1))      # hängt direkt am Kinn
     if 'schleife' in aufsaetze: aufsatz('schleife', (ohr_r[0] - 2, ohr_r[1] + 1))
     return c
 

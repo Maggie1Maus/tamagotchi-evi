@@ -54,3 +54,6 @@ Die Halskrause ist komplett raus (`ki/teile/kruse-flauschig-*`, Schablone und al
 
 ## Kleine Aufsätze eingebaut (27. November 2026)
 `ki/teile/aufsatz-*` und `schwanz-geringelt-3.png` sind eingebaut. `aufsaetze.py` → `pruefbogen-aufsaetze.png` (Mia Schleife, Glöckchen, Klecksi Halsband, Mampf Backentaschen, Groschen Augenmaske und Ringelschwanz, Funke Backenblitze). Lage in `basis3_layout.py` (`AUFSAETZE`) und `formen.py`; Backentaschen sitzen bei (Gesichtsmitte − 18, +5).
+
+## Aufsätze überarbeitet (27. November 2026)
+Die Backentaschen sind entfernt (Datei, Schablone, Code, Prompt). Das Halsband wird auf die Körperform beschnitten, endet also am Halsrand und steht nicht mehr über. Das Glöckchen hängt mit seiner Schnur direkt am Kinn (`kinn()` in `formen.py` bestimmt die Kinn-Höhe je Kopf).

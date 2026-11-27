@@ -34,7 +34,6 @@ SCHABLONEN = {
     'aufsatz-schleife': ((24, 20), (12, 16)),
     'aufsatz-gloeckchen': ((16, 20), (8, 2)),
     'aufsatz-halsband': ((44, 14), (22, 3)),
-    'aufsatz-backentasche': ((24, 24), (12, 12)),
     'aufsatz-augenmaske': ((52, 16), (26, 8)),
     'aufsatz-backenblitz': ((12, 14), (6, 7)),
     'aufsatz': ((24, 20), (12, 16)),

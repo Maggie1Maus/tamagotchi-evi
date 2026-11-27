@@ -67,7 +67,6 @@ AUFSAETZE = {  # Name: (Raster, Ansatz, Beschriftung, Hilfsform)
     'schleife':     ((24, 20), (12, 16), 'Schleife 24x20', None),
     'gloeckchen':   ((16, 20), (8, 2),   'Gloeckchen 16x20', None),
     'halsband':     ((44, 14), (22, 3),  'Halsband 44x14', None),
-    'backentasche': ((24, 24), (12, 12), 'Backentasche 24x24 (linke Wange)', None),
     'augenmaske':   ((52, 16), (26, 8),  'Augenmaske 52x16', [('linie', [(4, 8), (48, 8)], 'Augenlinie')]),
     'backenblitz':  ((12, 14), (6, 7),   'Backenblitz 12x14 (linke Wange)', None),
 }

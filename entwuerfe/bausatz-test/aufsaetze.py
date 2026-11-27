@@ -8,7 +8,6 @@ F = [  # Name, Körper, Kopf, Ohren, Schwanz, Gesicht, Fell, Muster, Aufsätze
  ('Mia: Schleife', 'sitzend', '3-4', 'spitz', 'duenn', 'freundlich', 238, None, ('schleife',)),
  ('Glöckchen: Glöckchen', 'rundlich', '3-4', 'haengend', 'puschel', 'lachend', 238, None, ('gloeckchen',)),
  ('Klecksi: Halsband', 'schlank', 'breit', 'haengend', 'duenn', 'lachend', 255, 'flecken', ('halsband',)),
- ('Mampf: Backentaschen', 'rundlich', 'klein-rund', 'rund', 'puschel', 'lachend', 221, None, ('backentasche',)),
  ('Groschen: Augenmaske, Ringelschwanz', 'rundlich', 'breit', 'rund', 'geringelt', 'freundlich', 153, None, ('augenmaske',)),
  ('Funke: Backenblitze', 'schlank', '3-4', 'buschel', 'buschig', 'lachend', 204, None, ('backenblitz',)),
 ]
