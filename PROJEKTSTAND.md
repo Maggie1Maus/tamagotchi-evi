@@ -7,6 +7,12 @@
 - **Rückmeldung der Nutzerin (27.11.):** Blitze zu klein/verpixelt; Klecksi soll Flecken auch am Körper haben; Ohren sitzen nicht richtig am Kopf und sind pixelig. Erledigt: Blitze jetzt sauber gesetzt (5×6 Pixel, mehr Platz ist auf der Wange nicht), Klecksis `flecken` über den ganzen Körper. **Offen:** Ohren brauchen neue KI-Bilder, Aufträge dafür unter „Zweite Runde Ohren“ in `PROMPT-paket-1-bildauftraege.md` (Funke, Klecksi, Glöckchen, Lotti).
 - Keine weiteren Figuren oder Altersstufen, bis die Nutzerin Paket 1 freigibt.
 
+## Eigene Bauteile zeichnen auf dem iPad (27. November 2026)
+
+- Wunsch der Nutzerin: Die KI-Zeichnungen der letzten Runden gefallen ihr nicht; sie möchte die Bauteile (Ohren, Gesichtsmerkmale, Schwänze, Fell-Muster) selbst mit iPad, Apple Pencil und Procreate zeichnen. Die 20 ursprünglichen Tamagotchis bleiben und werden nur mit Evi gekreuzt.
+- Fertig: [Anleitung](entwuerfe/evi/zeichnen/ANLEITUNG.md) und zwei Vorlagen (`Vorlage-Evi.png`, `Vorlage-Evi-mit-Raster.png`, 2048 × 2048, Evi blass als Unterlage; gebaut mit `vorlage-bauen.ps1` aus `evi-aktuell-referenz.png`). Abgabe als PSD in `entwuerfe/evi/zeichnen/abgabe/`.
+- Nächster Schritt: Die Nutzerin zeichnet zuerst zwei Ohren, einen Schwanz und ein Streifenmuster. Danach Ebenen auseinanderschneiden (Werkzeug für PSD fehlt noch, Python ist auf dem PC nicht installiert), spiegeln, Graustufen und Fellfarben setzen und kombinieren.
+
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)
 
 - Der [neue Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) nutzt Mähne A nur für Leo-Jungen; B ist entfernt. Die hellen Schwanzspitzen haben konturgenaue Kranzmasken ohne graues Fell, und die Kontrastkorrektur greift nur bei dunklen, fast gleichen Tönen. Der weiße Rest am rechten Jungenkranz wurde als Lücke im Kranz geschlossen. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.
