@@ -5,7 +5,7 @@ import os
 hier = os.path.dirname(os.path.abspath(__file__))
 Z = 8
 
-def schablone(name, gw, gh, anker, text):
+def schablone(name, gw, gh, anker, text, fuehrung=None):
     im = Image.new('RGB', (gw * Z, gh * Z), 'white'); d = ImageDraw.Draw(im)
     for x in range(gw + 1):
         d.line([(x * Z, 0), (x * Z, gh * Z)], fill=(236, 236, 236) if x % 4 else (214, 214, 214))
@@ -15,6 +15,15 @@ def schablone(name, gw, gh, anker, text):
         d.line([(ax * Z - 12, ay * Z), (ax * Z + 12, ay * Z)], fill=col, width=3)
         d.line([(ax * Z, ay * Z - 12), (ax * Z, ay * Z + 12)], fill=col, width=3)
         d.text((ax * Z + 8, ay * Z + 6), label, fill=col)
+    for art, geo, beschr in (fuehrung or []):   # blasse blaue Hilfsformen (nicht zeichnen!)
+        col = (150, 190, 235)
+        if art == 'linie':
+            d.line([(x * Z, y * Z) for x, y in geo], fill=col, width=3)
+            d.text((geo[0][0] * Z + 4, geo[0][1] * Z + 4), beschr, fill=col)
+        elif art == 'ellipse':
+            cx, cy, rx, ry = geo
+            d.ellipse([(cx - rx) * Z, (cy - ry) * Z, (cx + rx) * Z, (cy + ry) * Z], outline=col, width=3)
+            d.text(((cx - rx) * Z + 6, (cy - ry) * Z + 6), beschr, fill=col)
     d.rectangle([0, 0, gw * Z - 1, gh * Z - 1], outline=(220, 0, 0))
     d.text((6, 4), text, fill=(220, 0, 0))
     im.save(os.path.join(hier, 'ki', name))
@@ -46,4 +55,13 @@ FORMEN_KOPF = {  # Name: (Raster, Hals, Ohr links, Ohr rechts, Gesicht)
 }
 for n, ((gw, gh), hals, ol, orr, g) in FORMEN_KOPF.items():
     schablone(f'schablone-kopf-{n}.png', gw, gh, [(hals, 'Hals', ROT), (ol, 'Ohr links', BLAU), (orr, 'Ohr rechts', BLAU), (g, 'Gesicht', GRUEN)], f'Kopf {n} {gw}x{gh}')
+# Artmerkmale (27.11.)
+schablone('schablone-merkmal-maehne.png', 88, 68, [((44, 38), 'Kopfmitte', ROT)], 'Maehne 88x68',
+          [('ellipse', (44, 38, 32, 22), 'Kopf (wird verdeckt)')])
+schablone('schablone-merkmal-stacheln.png', 48, 32, [((6, 26), 'Rücken', ROT)], 'Stacheln 48x32',
+          [('linie', [(0, 24), (24, 27), (47, 31)], 'Rückenlinie, Stacheln stehen darauf')])
+schablone('schablone-merkmal-panzer.png', 56, 44, [((6, 40), 'Rücken', ROT)], 'Panzer 56x44',
+          [('linie', [(0, 40), (28, 42), (55, 43)], 'Unterkante liegt auf dem Rücken')])
+schablone('schablone-merkmal-fluegel.png', 56, 56, [((6, 50), 'Schulter', ROT)], 'Fluegel 56x56')
+schablone('schablone-merkmal-ruessel.png', 24, 40, [((12, 2), 'Nase', ROT)], 'Ruessel 24x40')
 print('fertig')
