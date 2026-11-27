@@ -77,3 +77,18 @@ Alle sind 2048 × 2048, Evi ist immer an derselben Stelle. Die Teile passen desh
 | `Vorlage-Silhouette.png` | nur Kopf- und Körperform, ohne Gesicht und Kranz |
 
 Fell-Muster und Zubehör kommen jeweils als **eigene Ebene oder eigene Datei** (Namen wie `muster-streifen`, `zubehoer-schleife`). Dann kann ich sie mit allen Ohren und Schwänzen kombinieren.
+
+## Wohin mit den fertigen Zeichnungen
+Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Figur an derselben Stelle wie in den Vorlagen). Die Dateien kommen in diese Ordner (alle in `entwuerfe/evi/zeichnen/`):
+
+| Ordner | Inhalt | Dateinamen (Beispiele) |
+|---|---|---|
+| `gesichter/` | Gesichter für Stimmungen | `gesicht-gluecklich.png`, `gesicht-hungrig.png`, `gesicht-traurig.png`, `gesicht-muede.png`, `gesicht-krank.png`, `gesicht-schmutzig.png`, `gesicht-singen.png`, `gesicht-staunen.png`, `gesicht-gaehnen.png` |
+| `ohren/` | Ohr-Varianten (nur linkes Ohr) | `ohr-haengend.png`, `ohr-spitz.png`, `ohr-rund.png` |
+| `schwaenze/` | Schwanz-Varianten | `schwanz-buschig.png`, `schwanz-duenn.png` |
+| `muster/` | Fell-Muster und Flecken | `muster-flecken.png`, `muster-streifen.png`, `muster-schmutz.png` |
+| `koerper/` | Körper in anderen Haltungen | `koerper-schlafend.png`, `koerper-huepfen.png`, `koerper-laufen.png` |
+
+Die sechs Grundebenen (`Evi-neue-vorlage-…`) bleiben wie sie sind direkt in `zeichnen/` liegen.
+
+**Namensregeln:** nur Kleinbuchstaben, keine Leerzeichen, Umlaute als `ae`, `oe`, `ue` (müde → `muede`, hüpfen → `huepfen`), Wörter mit Bindestrich trennen. Ein Teil pro Datei, kein Wort „neu“ oder Nummer im Namen; eine überarbeitete Version ersetzt einfach die alte Datei (der Verlauf bei GitHub hebt die alte auf).
