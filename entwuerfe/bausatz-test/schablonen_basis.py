@@ -23,4 +23,13 @@ ROT, BLAU, GRUEN = (220, 0, 0), (0, 90, 220), (0, 150, 60)
 schablone('schablone-koerper.png', 80, 48, [((40, 3), 'Hals', ROT), ((66, 26), 'Schwanz', BLAU)], 'Koerper 80x48')
 schablone('schablone-kopf.png', 60, 44, [((30, 40), 'Hals', ROT), ((13, 8), 'Ohr links', BLAU), ((47, 8), 'Ohr rechts', BLAU), ((30, 24), 'Gesicht', GRUEN)], 'Kopf 60x44')
 schablone('schablone-kruse.png', 56, 20, [((28, 2), 'Hals', ROT)], 'Halskrause 56x20')
+# Pose-Körper (27.11.): Größe (Raster), Hals-Ansatz, Schwanz-Ansatz
+POSEN_KOERPER = {
+    'laufen':    ((88, 48), (22, 8),  (76, 14)),
+    'huepfen':   ((80, 52), (30, 8),  (68, 18)),
+    'geduckt':   ((88, 44), (14, 22), (78, 8)),
+    'eingerollt': ((88, 40), (24, 10), (66, 18)),
+}
+for n, ((gw, gh), hals, schwanz) in POSEN_KOERPER.items():
+    schablone(f'schablone-koerper-{n}.png', gw, gh, [(hals, 'Hals', ROT), (schwanz, 'Schwanz', BLAU)], f'Koerper {n} {gw}x{gh}')
 print('fertig')

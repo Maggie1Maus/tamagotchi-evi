@@ -15,6 +15,10 @@ SCHABLONEN = {
     'schwanz': ((32, 40), (3, 29)),
     # 3/4-Basis (Leinwand 112 x 112), Ansatz jeweils der Hals; weitere Ansätze siehe basis3_layout.py
     'koerper': ((80, 48), (40, 3)),
+    'koerper-laufen': ((88, 48), (22, 8)),
+    'koerper-huepfen': ((80, 52), (30, 8)),
+    'koerper-geduckt': ((88, 44), (14, 22)),
+    'koerper-eingerollt': ((88, 40), (24, 10)),
     'kopf': ((60, 44), (30, 40)),
     'kruse': ((56, 20), (28, 2)),
 }
