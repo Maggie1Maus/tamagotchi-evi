@@ -1,6 +1,6 @@
 # Prompt für die Bild-KI: weitere Körper- und Kopfformen (27. November 2026)
 
-Ziel: **mehr Variation in der Silhouette.** Der Variationstest (`pruefbogen-aufstellung.png`) zeigt: Mit einer einzigen Körper- und Kopfform sehen alle Figuren gleich aus, nur Ohren, Schwanz, Fellton und Muster unterscheiden sich. Dieser Auftrag liefert **3 weitere Körper (sitzend)** und **3 weitere Köpfe**. Danach gibt es 4 × 4 Grundformen.
+Ziel: **mehr Variation in der Silhouette.** Der Variationstest (`pruefbogen-aufstellung.png`) zeigt: Mit einer einzigen Körper- und Kopfform sehen alle Figuren gleich aus, nur Ohren, Schwanz, Fellton und Muster unterscheiden sich. Dieser Auftrag liefert **3 weitere Körper (sitzend)** und **2 weitere Köpfe** (der dritte, „spitz“, wurde am 27.11. verworfen). Danach gibt es 4 × 3 Grundformen.
 
 Gleiche Methode wie [PROMPT-ki-basis.md](PROMPT-ki-basis.md) und [PROMPT-ki-posen.md](PROMPT-ki-posen.md): ein Teil allein auf der Schablone, feste Grauwerte, Skript setzt zusammen. Der sitzende Körper 2 und der Kopf 2 sind die Vorbilder für Stil, Linie und Fellton.
 
@@ -20,7 +20,6 @@ Gleiche Methode wie [PROMPT-ki-basis.md](PROMPT-ki-basis.md) und [PROMPT-ki-pose
 |---|---|---|---|---|---|---|---|
 | klein-rund | `kopf-klein-rund-<nr>.png` | 52 × 40 | 416 × 320 | (26, 36) | (11, 7) / (41, 7) | (26, 22) | klein, fast kreisrund (Hamster, Maus, Küken) |
 | breit | `kopf-breit-<nr>.png` | 68 × 44 | 544 × 352 | (34, 40) | (15, 8) / (53, 8) | (34, 24) | sehr breit mit dicken Backen und Backenfell (Löwe, Waschbär, Katze) |
-| spitz | `kopf-spitz-<nr>.png` | 56 × 46 | 448 × 368 | (28, 42) | (11, 8) / (45, 8) | (28, 26) | herzförmig, schmales spitzes Kinn (Fuchs, Eichhörnchen, Reh) |
 
 ## Grauwerte, Stil, Richtung (wie bisher)
 34 Umriss (1 Pixel), 119 innen, 170 Schatten, 204 Fell, 238 Licht, 255 Hintergrund. Nur diese Werte, Dithering, ein paar Fellpunkte, keine Halbtöne, kein Anti-Aliasing. Blickrichtung leicht nach **links** (3/4). Artneutral.
@@ -46,12 +45,11 @@ Draw it in EXACTLY the style, line weight, fur tones and level of detail of the 
 | Körper kräftig | the headless body of the character sitting upright, sturdy and strong: broad shoulders, wide chest, thick front legs, big haunch. NO head, NO ears, NO tail, NO neck ruff. Open neck edge at the red cross, plain fur at the blue cross, paws on the last grid row. | 672 x 400 |
 | Kopf klein-rund | the head of the character: small and almost perfectly round, short soft cheeks, plain blank face (NO eyes, NO nose, NO mouth, NO whiskers, NO ears). Closed chin/neck at the bottom, centered on the red cross. | 416 x 320 |
 | Kopf breit | the head of the character: very wide with big fluffy cheek tufts on both sides, low and broad, plain blank face (NO eyes, NO nose, NO mouth, NO whiskers, NO ears). Closed chin/neck at the bottom, centered on the red cross. | 544 x 352 |
-| Kopf spitz | the head of the character: heart-shaped with a narrow pointed chin and wider forehead, plain blank face (NO eyes, NO nose, NO mouth, NO whiskers, NO ears). Closed chin/neck at the bottom, centered on the red cross. | 448 x 368 |
 
 Je Teil **3 Varianten** erzeugen, die beste behalten.
 
 ## Ablage
-`ki/teile/koerper-rundlich-<nr>.png`, `koerper-schlank-<nr>.png`, `koerper-kraeftig-<nr>.png`, `kopf-klein-rund-<nr>.png`, `kopf-breit-<nr>.png`, `kopf-spitz-<nr>.png`.
+`ki/teile/koerper-rundlich-<nr>.png`, `koerper-schlank-<nr>.png`, `koerper-kraeftig-<nr>.png`, `kopf-klein-rund-<nr>.png`, `kopf-breit-<nr>.png`.
 
 ## Was danach passiert
 - Ich erweitere die Zusammensetzung um diese Formen. Platzierung: Boden bei y = 110, Körper-Hals mittig. Die Regeln stehen in `basis3_layout.py` (`KOERPER_FORMEN`, `KOPF_FORMEN`).

@@ -24,7 +24,6 @@ SCHABLONEN = {
     'koerper-kraeftig': ((84, 50), (42, 3)),
     'kopf-klein-rund': ((52, 40), (26, 36)),
     'kopf-breit': ((68, 44), (34, 40)),
-    'kopf-spitz': ((56, 46), (28, 42)),
     'kopf': ((60, 44), (30, 40)),
     'kruse': ((56, 20), (28, 2)),
 }

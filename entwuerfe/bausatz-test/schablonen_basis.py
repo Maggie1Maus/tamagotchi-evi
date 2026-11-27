@@ -43,7 +43,6 @@ for n, ((gw, gh), hals, schwanz) in FORMEN_KOERPER.items():
 FORMEN_KOPF = {  # Name: (Raster, Hals, Ohr links, Ohr rechts, Gesicht)
     'klein-rund': ((52, 40), (26, 36), (11, 7), (41, 7), (26, 22)),
     'breit':      ((68, 44), (34, 40), (15, 8), (53, 8), (34, 24)),
-    'spitz':      ((56, 46), (28, 42), (11, 8), (45, 8), (28, 26)),
 }
 for n, ((gw, gh), hals, ol, orr, g) in FORMEN_KOPF.items():
     schablone(f'schablone-kopf-{n}.png', gw, gh, [(hals, 'Hals', ROT), (ol, 'Ohr links', BLAU), (orr, 'Ohr rechts', BLAU), (g, 'Gesicht', GRUEN)], f'Kopf {n} {gw}x{gh}')

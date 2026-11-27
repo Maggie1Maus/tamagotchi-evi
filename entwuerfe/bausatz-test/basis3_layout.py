@@ -46,5 +46,4 @@ KOPF_FORMEN = {
     '3-4':        dict(groesse=(60, 44), hals=(30, 40), ohr_l=(13, 8), ohr_r=(47, 8), gesicht=(30, 24)),
     'klein-rund': dict(groesse=(52, 40), hals=(26, 36), ohr_l=(11, 7), ohr_r=(41, 7), gesicht=(26, 22)),
     'breit':      dict(groesse=(68, 44), hals=(34, 40), ohr_l=(15, 8), ohr_r=(53, 8), gesicht=(34, 24)),
-    'spitz':      dict(groesse=(56, 46), hals=(28, 42), ohr_l=(11, 8), ohr_r=(45, 8), gesicht=(28, 26)),
 }

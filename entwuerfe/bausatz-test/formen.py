@@ -10,8 +10,7 @@ from basis3 import Leinwand, rollen, muster_maske, W, H, HIER, TEILE, Z
 from ki_teile import lade_teil
 
 BODEN = 110
-# Köpfe mit spitzem Kinn sitzen tiefer, damit das Kinn in der Halskrause verschwindet (Nutzerin, 27.11.)
-KOPF_TIEFER = {'spitz': 10}
+KOPF_TIEFER = {}   # Platz für kopfspezifische Absenkung (der spitze Kopf wurde am 27.11. entfernt)
 
 def datei(art, form, bevorzugt=None):
     if art == 'koerper' and form == 'sitzend': return TEILE / 'koerper-sitzend-2.png'
@@ -60,10 +59,10 @@ def baue_form(koerper='sitzend', kopf='3-4', kruse=2, ohren='spitz', schwanz='bu
     return c
 
 KOERPER = ['sitzend', 'rundlich', 'schlank', 'kraeftig']
-KOEPFE = ['3-4', 'klein-rund', 'breit', 'spitz']
+KOEPFE = ['3-4', 'klein-rund', 'breit']
 if __name__ == '__main__':
     z = 2
-    out = Image.new('RGB', (4 * W * z, 4 * (H * z + 14)), 'white'); d = ImageDraw.Draw(out)
+    out = Image.new('RGB', (3 * W * z, 4 * (H * z + 14)), 'white'); d = ImageDraw.Draw(out)
     for j, k in enumerate(KOERPER):
         for i, h in enumerate(KOEPFE):
             c = baue_form(k, h)

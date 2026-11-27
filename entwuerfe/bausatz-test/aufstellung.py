@@ -29,10 +29,10 @@ F = {
  'Tetro':    (3, 1, 2, None, 'duenn', 'muede', 119, 136, None, 'Panzer'),
 }
 FORMEN = {
- 'Evi': ('sitzend', '3-4'), 'Lotti': ('schlank', 'spitz'), 'Ella': ('kraeftig', 'breit'), 'Glöckchen': ('rundlich', '3-4'),
- 'Kiwi': ('kraeftig', '3-4'), 'Klecksi': ('schlank', 'breit'), 'Lumi': ('schlank', 'klein-rund'), 'Mia': ('sitzend', 'spitz'),
- 'Mimi': ('rundlich', 'klein-rund'), 'Moosi': ('rundlich', 'breit'), 'Spuki': ('schlank', '3-4'), 'Bit': ('kraeftig', 'spitz'),
- 'Blip': ('sitzend', 'klein-rund'), 'Blubber': ('kraeftig', 'klein-rund'), 'Funke': ('schlank', 'spitz'), 'Groschen': ('rundlich', 'breit'),
+ 'Evi': ('sitzend', '3-4'), 'Lotti': ('schlank', 'klein-rund'), 'Ella': ('kraeftig', 'breit'), 'Glöckchen': ('rundlich', '3-4'),
+ 'Kiwi': ('kraeftig', '3-4'), 'Klecksi': ('schlank', 'breit'), 'Lumi': ('schlank', 'klein-rund'), 'Mia': ('sitzend', '3-4'),
+ 'Mimi': ('rundlich', 'klein-rund'), 'Moosi': ('rundlich', 'breit'), 'Spuki': ('schlank', '3-4'), 'Bit': ('kraeftig', 'breit'),
+ 'Blip': ('sitzend', 'klein-rund'), 'Blubber': ('kraeftig', 'klein-rund'), 'Funke': ('schlank', '3-4'), 'Groschen': ('rundlich', 'breit'),
  'Leo': ('kraeftig', 'breit'), 'Linus': ('schlank', '3-4'), 'Mampf': ('rundlich', 'klein-rund'), 'Rolli': ('rundlich', '3-4'),
  'Tetro': ('kraeftig', '3-4'),
 }
