@@ -10,7 +10,7 @@
 ## Eigene Bauteile zeichnen auf dem iPad (27. November 2026)
 
 - Wunsch der Nutzerin: Die KI-Zeichnungen der letzten Runden gefallen ihr nicht; sie möchte die Bauteile (Ohren, Gesichtsmerkmale, Schwänze, Fell-Muster) selbst mit iPad, Apple Pencil und Procreate zeichnen. Die 20 ursprünglichen Tamagotchis bleiben und werden nur mit Evi gekreuzt.
-- Fertig: [Anleitung](entwuerfe/evi/zeichnen/ANLEITUNG.md) und zwei Vorlagen (`Vorlage-Evi.png`, `Vorlage-Evi-mit-Raster.png`, 2048 × 2048, Evi blass als Unterlage; gebaut mit `vorlage-bauen.ps1` aus `evi-aktuell-referenz.png`). Abgabe als PSD in `entwuerfe/evi/zeichnen/abgabe/`.
+- Fertig: [Anleitung](entwuerfe/evi/zeichnen/ANLEITUNG.md) und zwei Vorlagen (`Vorlage-Evi.png`, `Vorlage-Evi-mit-Raster.png`, 2048 × 2048, Evi blass als Unterlage; gebaut mit `vorlage-bauen.ps1` aus der Graustufen-Evi `baukasten/werkzeug/evi-weiblich-original.png`). Abgabe als PSD in `entwuerfe/evi/zeichnen/abgabe/`.
 - Nächster Schritt: Die Nutzerin zeichnet zuerst zwei Ohren, einen Schwanz und ein Streifenmuster. Danach Ebenen auseinanderschneiden (Werkzeug für PSD fehlt noch, Python ist auf dem PC nicht installiert), spiegeln, Graustufen und Fellfarben setzen und kombinieren.
 
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)

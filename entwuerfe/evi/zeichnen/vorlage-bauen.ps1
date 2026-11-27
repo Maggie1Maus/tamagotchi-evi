@@ -1,16 +1,16 @@
-# Baut die Procreate-Vorlagen aus Evis Original (nur skaliert und aufgehellt, nichts neu gezeichnet).
+# Baut die Procreate-Vorlagen aus der Graustufen-Evi (nur ganzzahlig vergroessert und aufgehellt, nichts neu gezeichnet).
 Add-Type -AssemblyName System.Drawing
 $ordner = $PSScriptRoot
-$quelle = Join-Path $ordner '..\evi-aktuell-referenz.png'
+$quelle = Join-Path $ordner '..\..\grillme-genetik-prototyp\baukasten\werkzeug\evi-weiblich-original.png'
 $src = New-Object System.Drawing.Bitmap(((Resolve-Path $quelle).Path))
 $LW = 2048
 $faktor = 3                       # Evi 3x vergroessert (820x640 -> 2460 waere zu gross, deshalb zugeschnitten)
 # Evi-Inhalt zuschneiden (weisser Rand weg)
 $minx=$src.Width;$miny=$src.Height;$maxx=0;$maxy=0
 for($y=0;$y -lt $src.Height;$y++){for($x=0;$x -lt $src.Width;$x++){
- if($src.GetPixel($x,$y).R -lt 128){ if($x -lt $minx){$minx=$x}; if($x -gt $maxx){$maxx=$x}; if($y -lt $miny){$miny=$y}; if($y -gt $maxy){$maxy=$y} }}}
+ if($src.GetPixel($x,$y).A -gt 128){ if($x -lt $minx){$minx=$x}; if($x -gt $maxx){$maxx=$x}; if($y -lt $miny){$miny=$y}; if($y -gt $maxy){$maxy=$y} }}}
 $w=$maxx-$minx+1;$h=$maxy-$miny+1
-$s=[math]::Floor(1500/[math]::Max($w,$h)*100)/100
+$s=[math]::Floor(1500/[math]::Max($w,$h))
 $dw=[int]($w*$s);$dh=[int]($h*$s)
 $ox=[int](($LW-$dw)/2);$oy=[int](($LW-$dh)/2)
 
@@ -24,7 +24,7 @@ function Neu($mitGitter,$datei){
   }
   # Evi als hellblaue Unterlage (Linien blass, damit eigene schwarze Linien gut sichtbar sind)
   $cm = New-Object System.Drawing.Imaging.ColorMatrix
-  $cm.Matrix33 = 0.30
+  $cm.Matrix33 = 0.40
   $ia = New-Object System.Drawing.Imaging.ImageAttributes
   $ia.SetColorMatrix($cm)
   $zg.InterpolationMode='NearestNeighbor'; $zg.PixelOffsetMode='Half'
