@@ -10,7 +10,7 @@ from basis3 import Leinwand, rollen, muster_maske, W, H, HIER, TEILE, Z
 from ki_teile import lade_teil
 
 BODEN = 110
-KOPF_UEBER_STANDARD = -3     # Kopf-Hals liegt so viele Pixel ÜBER dem Körper-Hals (negativ = darunter)
+KOPF_UEBER_STANDARD = -7     # Kopf-Hals liegt so viele Pixel ÜBER dem Körper-Hals (negativ = darunter)
 KRUSE_TIEFER_STANDARD = 3   # Halskrause sitzt so viele Pixel unter dem Kopf-Hals: der Kopf sitzt am Hals, nicht auf der Krause
 PANZER_WINKEL = 30       # Grad, nach rechts unten gekippt
 PANZER_VERSATZ = (-14, 8)  # Verschiebung gegenüber dem Rückenansatz
