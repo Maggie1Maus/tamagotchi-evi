@@ -64,3 +64,16 @@ Für jede Ebene: Linie zeichnen, dann Fläche füllen. Fülle in Procreate, inde
 - Nur schwarze Linien und schwarze Flächen, keine Farben. Fellfarben und Graustufen setzt Claude.
 - Evis Körperlinien nicht mit abpausen, nur dein Teil zeichnen.
 - Hängt ein Teil an Evi (zum Beispiel ein Ohr), lass es ein kleines Stück in Evi hineinreichen, damit später keine Lücke entsteht.
+
+## Welche Vorlage wofür
+Alle sind 2048 × 2048, Evi ist immer an derselben Stelle. Die Teile passen deshalb zu jeder Vorlage.
+
+| Datei | Wofür |
+|---|---|
+| `Vorlage-Evi.png` | ganze Evi blass, zum Größenvergleich |
+| `Vorlage-ohne-Ohren.png` | Ohren und Schwänze (Kopf und Körper blass, ohne Ohren und Schwanz) |
+| `Vorlage-ohne-Kranz.png` | Halskrause weg, zum Beispiel für Schleife oder Halsband |
+| `Vorlage-ohne-Gesicht.png` | Gesichter (Augen, Nase, Mund) |
+| `Vorlage-Silhouette.png` | nur Kopf- und Körperform, ohne Gesicht und Kranz |
+
+Fell-Muster und Zubehör kommen jeweils als **eigene Ebene oder eigene Datei** (Namen wie `muster-streifen`, `zubehoer-schleife`). Dann kann ich sie mit allen Ohren und Schwänzen kombinieren.
