@@ -14,3 +14,5 @@ OHR_LINKS_ZIEL = (39, 30)      # Kopf-Ansatz (13, 8) -> Leinwand
 OHR_RECHTS_ZIEL = (73, 30)     # Kopf-Ansatz (47, 8) -> Leinwand
 GESICHT_ZIEL = (56, 46)        # Kopf-Ansatz (30, 24) -> Leinwand
 KOERPER_SCHWANZ_ANSATZ = (66, 26)
+OHR_SEITE_LINKS_ZIEL = (31, 38)   # Hängeohren: oben Mitte des Ohres am Kopfrand links
+OHR_SEITE_RECHTS_ZIEL = (82, 38)

@@ -30,3 +30,6 @@ mit demselben Tier pro Ausdruck, vergrößert sowie mit dunklerem Fell in Origin
 ## Pose-Test (27. November 2026)
 `posen.py` → `pruefbogen-posen.png`: dieselben Teile (Ohren, Schwänze, Gesichter, Fell, Muster) in vier Posen: stehen, hüpfen, schlafen, neugierig (Kopf schief). Eine Pose ist nur eine Tabelle in `POSEN` (Formen von Kopf, Körper, Armen, Füßen plus Ansatzpunkte für Ohren links/rechts, Schwanz und Gesicht). Die Teile bleiben unverändert.
 Grenzen: Seitenansichten (Laufen, Schnüffeln) gehen so nicht, dafür brauchen Kopf, Ohren und Gesicht eigene Teile im Profil.
+
+## 3/4-Basis aus KI-Teilen (27. November 2026)
+`basis3.py` setzt Körper, Kopf und Halskrause (`ki/teile/koerper-sitzend-*`, `kopf-3-4-*`, `kruse-flauschig-*`) mit Ohren, Schwanz und Gesicht auf 112 × 112 zusammen (Anordnung: `basis3_layout.py`). Prüfbögen: `pruefbogen-basis3.png` (alle neun Körper/Kopf-Kombinationen), `pruefbogen-basis3-varianten.png` (acht Beispiele mit Ohren, Schwänzen, Fellton, Kranzton, Gesicht). Ohren, Schwänze und Gesichter sind noch die frontalen Teile; sie müssen für 3/4 neu bestellt werden.
