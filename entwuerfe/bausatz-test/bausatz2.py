@@ -16,7 +16,7 @@ from ki_teile import lade_teil
 W = H = 96
 CX = 47.5
 LINIE = 34
-ANKER = {'ohr': (31, 25), 'ohr-seite': (24, 40), 'schwanz': (65, 74)}
+ANKER = {'ohr': (31, 25), 'ohr-seite': (24, 40), 'schwanz': (70, 78)}
 BAYER = np.array([[0, 2], [3, 1]]) / 4.0
 
 Y, X = np.mgrid[0:H, 0:W]
