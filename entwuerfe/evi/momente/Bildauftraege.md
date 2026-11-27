@@ -12,7 +12,7 @@ Seit Version 0.10 tut die erwachsene Evi ab und zu etwas von selbst: Sie läuft 
 
 1. Bild mit dem Auftrag unten erzeugen. Als Vorlage dient `../emotionen/erwachsen/evi-erwachsen-gluecklich.png`.
 2. In diesem Ordner speichern, **genau** unter dem angegebenen Namen, zum Beispiel `evi-erwachsen-laufen.png`.
-3. `handy-app/tools/build-art.ps1` ausführen (oder Claude darum bitten). Das Skript schneidet zu, entfernt die Beschriftung und macht den Rand durchsichtig, wie bei den Emotionen. Das Bild selbst bleibt unverändert.
+3. `archiv/handy-app/tools/build-art.ps1` ausführen (oder Claude darum bitten). Das Skript schneidet zu, entfernt die Beschriftung und macht den Rand durchsichtig, wie bei den Emotionen. Das Bild selbst bleibt unverändert.
 4. Fertig: Jede vorhandene Zeichnung wird sofort benutzt. Es müssen nicht alle auf einmal da sein.
 
 Gut zu wissen:

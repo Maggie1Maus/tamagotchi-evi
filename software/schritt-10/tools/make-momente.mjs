@@ -6,7 +6,7 @@
 //    nur verkleinert und in Schwarz/Weiß umgerechnet, genau wie make-assets.ps1 es mit den
 //    übrigen Zeichnungen macht (Linien: deckend und dunkel; Maske: deckend). Nichts wird neu gezeichnet.
 //  - Die Besuchsbilder der Nutzerin (Schmetterling 32 × 26, Vogel 23 × 20) aus handy-app/dist/besuch/
-//    (aufbereitet mit handy-app/tools/prepare_besuch.py), unverändert übernommen.
+//    (aufbereitet mit archiv/handy-app/tools/prepare_besuch.py), unverändert übernommen.
 //  - Die Symbole in der Gedankenwolke (22 px, Strich 1,8 wie #thought-icon in style.css)
 //    und die Summ-Noten ♪ (17 px) und ♫ (14 px).
 //

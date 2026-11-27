@@ -4,7 +4,7 @@ Die zehn Fundstücke sind noch im alten Schwarz-Weiß-Stil. Evi und das Zimmer g
 
 ## So geht es
 
-1. In ChatGPT ein neues Bild anfordern und **eine neue Graustufen-Evi als Stilvorlage anhängen**, zum Beispiel `entwuerfe/evi/graustufen-vorschau/Evi-Alltagsposen.png`.
+1. In ChatGPT ein neues Bild anfordern und **eine neue Graustufen-Evi als Stilvorlage anhängen**, zum Beispiel `archiv/entwuerfe/evi/graustufen-vorschau/Evi-Alltagsposen.png`.
 2. Den Auftrag unten einfügen (der Text im Kasten).
 3. Gefällt das Bild: als `name-grau.png` ablegen (zum Beispiel `micky-grau.png`) in `entwuerfe/sammlung/`. Hintergrund **transparent**, Größe etwa 60 × 60 Punkte wirkt am besten.
 

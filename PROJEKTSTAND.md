@@ -1,10 +1,15 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Aufräumen: Archiv (27. November 2026)
+- Neuer Ordner `archiv/` (siehe `archiv/README.md`). Aussortiertes wird dort abgelegt statt gelöscht; die Pfade spiegeln die alten.
+- Archiviert: alte Evi-Fassung `emotionen/evi-*.png`, lose Vorschaubilder und Bildprompts in `entwuerfe/evi/`, Ohr-Tests in `zeichnen/`, doppelte Vorschauen in `graustufen-vorschau/`, männliche Blätter (`maennlich/quellen`), die vier alten Pixel-Evi-Basisbilder, die lokale Evi-Emotionen-ZIP sowie die **Handy-App** (Code, Tests, Icons, `build-art.ps1`, `prepare_besuch.py`) mit ihren Sicherungen.
+- In `handy-app/` bleibt, was der Waveshare-Bau noch liest (siehe `CLAUDE.md`). Die Vorschau „handy-app“ in `.claude/launch.json` entfällt. Evis fertige Bilder in `handy-app/dist/img/` bleiben; zum Neubauen `build-art.ps1` samt Basisbildern aus dem Archiv zurückholen.
+
 ## Evi neu aus eigenen Ebenen (27. November 2026)
 
 - Die Nutzerin zeichnet Evi jetzt selbst auf dem iPad (Adobe Fresco) in sechs Ebenen: `Evi-neue-vorlage-` + `kopf`, `koerper`, `kranz`, `gesicht`, `ohr`, `schwanz` (2048 × 2048, transparent, in `entwuerfe/evi/zeichnen/`). Weiße Flächen (Krause) sind Absicht: sie decken Linien dahinter ab.
 - `zusammensetzen.ps1` (+ `.cs`) baut daraus `Evi-neu-grau.png` (Fellgrau, Schattierungen, Ohr gespiegelt); `pixelfassung.ps1` rechnet es auf 114 × 116 Pixel, 16 Graustufen herunter (`Evi-neu-pixel.png`). Die Lücke zwischen den Vorderbeinen wird nach ihrer Größe erkannt und dunkel gefärbt (Körper-Ebene stark ändern → prüfen).
-- Anleitung und Vorlagen zum Zeichnen: `entwuerfe/evi/zeichnen/ANLEITUNG.md`. Die Ohr-Zeichnungen `ohr-buschel-maggie*.png` sind frühere Tests.
+- Anleitung und Vorlagen zum Zeichnen: `entwuerfe/evi/zeichnen/ANLEITUNG.md`. Die Ohr-Zeichnungen `ohr-buschel-maggie*.png` waren frühere Tests (jetzt in `archiv/entwuerfe/evi/zeichnen/`).
 - Noch nicht auf dem Waveshare eingebaut. Nächster Schritt offen: Gesichter für die Emotionen zeichnen lassen, Altersstufen, Ohren und Schwänze für die Kreuzung mit den 20 Tamagotchis.
 
 ## Bauteile Paket 1 gebaut (27. November 2026) – wartet auf Freigabe
