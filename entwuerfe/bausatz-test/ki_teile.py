@@ -19,6 +19,12 @@ SCHABLONEN = {
     'koerper-huepfen': ((80, 52), (30, 8)),
     'koerper-geduckt': ((88, 44), (14, 22)),
     'koerper-eingerollt': ((88, 40), (24, 10)),
+    'koerper-rundlich': ((72, 40), (36, 3)),
+    'koerper-schlank': ((76, 56), (36, 3)),
+    'koerper-kraeftig': ((84, 50), (42, 3)),
+    'kopf-klein-rund': ((52, 40), (26, 36)),
+    'kopf-breit': ((68, 44), (34, 40)),
+    'kopf-spitz': ((56, 46), (28, 42)),
     'kopf': ((60, 44), (30, 40)),
     'kruse': ((56, 20), (28, 2)),
 }

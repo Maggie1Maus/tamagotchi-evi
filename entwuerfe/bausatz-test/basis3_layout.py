@@ -32,3 +32,19 @@ POSEN = {
     'geduckt':    dict(groesse=(88, 44), hals=(14, 22), schwanz=(78, 8),  hals_ziel=(30, 76), kopf_ziel=(30, 72), schwanz_dx=-10),
     'eingerollt': dict(groesse=(88, 40), hals=(24, 10), schwanz=(66, 18), hals_ziel=(36, 78), kopf_ziel=(36, 74)),
 }
+
+# Formen (sitzend). Platzierung: Boden bei y = 110, Körper-Hals mittig bei x = 56.
+#   hals_ziel_y = 110 - (Höhe - 1) + hals_y ; Kopf-Hals liegt 4 Pixel darüber.
+KOERPER_FORMEN = {
+    'sitzend':  dict(groesse=(80, 48), hals=(40, 3), schwanz=(66, 26)),
+    'rundlich': dict(groesse=(72, 40), hals=(36, 3), schwanz=(60, 22)),
+    'schlank':  dict(groesse=(76, 56), hals=(36, 3), schwanz=(62, 34)),
+    'kraeftig': dict(groesse=(84, 50), hals=(42, 3), schwanz=(70, 28)),
+}
+# Köpfe: Hals-Ansatz, Ohr links/rechts, Gesicht (alle in Rasterpixeln des Kopfteils)
+KOPF_FORMEN = {
+    '3-4':        dict(groesse=(60, 44), hals=(30, 40), ohr_l=(13, 8), ohr_r=(47, 8), gesicht=(30, 24)),
+    'klein-rund': dict(groesse=(52, 40), hals=(26, 36), ohr_l=(11, 7), ohr_r=(41, 7), gesicht=(26, 22)),
+    'breit':      dict(groesse=(68, 44), hals=(34, 40), ohr_l=(15, 8), ohr_r=(53, 8), gesicht=(34, 24)),
+    'spitz':      dict(groesse=(56, 46), hals=(28, 42), ohr_l=(11, 8), ohr_r=(45, 8), gesicht=(28, 26)),
+}
