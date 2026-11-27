@@ -112,7 +112,7 @@ async function paint(wrap,creature,age,opts){
         const rc=document.createElement('canvas');rc.width=w;rc.height=h;
         const rx=rc.getContext('2d',{willReadFrequently:true});if(region)rx.drawImage(region,0,0);
         const rd=rx.getImageData(0,0,w,h).data;
-        const shift=creature.muster==='helle-brust'?68:creature.muster==='punkte'?-34:creature.muster==='maske'?-51:-68;
+        const shift=creature.muster==='helle-brust'||creature.muster==='kitz-tupfen'?68:creature.muster==='punkte'?-34:creature.muster==='maske'?-51:-68;
         for(let i=0;i<md.length;i+=4)if(md[i+3]>0&&ba[i+3]>0&&rd[i]===51){let g=Math.max(0,Math.min(255,Math.round((bd.data[i]+shift*md[i]/255)/17)*17));bd.data[i]=bd.data[i+1]=bd.data[i+2]=g}
         ctx.putImageData(bd,0,0);
       }else missing.push(`Größe passt nicht: ${key}`);
@@ -145,7 +145,7 @@ function renderTraits(){
     if(t==='ton')for(let v=0;v<=4;v++)sel.add(new Option(`${v} – ${['sehr hell','hell','mittel','dunkel','sehr dunkel'][v]}`,String(v)));
     else if(t==='kranzton')for(let v=0;v<=3;v++)sel.add(new Option(`${v} – ${['weiß','hellgrau','mittelgrau','dunkelgrau'][v]}`,String(v)));
     else{sel.add(new Option('keins','keins'));for(const f of figs)sel.add(new Option(`${f.name} (${f[t]})`,f.id));
-      const extras=t==='struktur'?['punkte','glatt','gesprenkelt','gestrichelt','wuschelig']:t==='muster'?['flecken','ringe','helle-brust','maske','punkte']:t==='zubehoer'?['halstuch']:[];
+      const extras=t==='struktur'?['punkte','glatt','gesprenkelt','gestrichelt','wuschelig']:t==='muster'?['flecken','ringe','helle-brust','maske','punkte','kitz-tupfen','augenfleck']:t==='zubehoer'?['halstuch','halsband']:[];
       for(const extra of extras)sel.add(new Option(`Direkt: ${extra}`,`direkt:${extra}`));
     }
     sel.value=t==='ton'||t==='kranzton'?String(state.child[t]):(state.child[t]==='keins'?'keins':figs.find(f=>f[t]===state.child[t])?.id||`direkt:${state.child[t]}`);

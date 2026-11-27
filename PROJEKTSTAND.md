@@ -1,5 +1,11 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
+## Bauteile Paket 1: Vorbereitung (27. November 2026)
+
+- Vorbereitet, aber noch **keine Teile gebaut**: Für Ohren und Schwänze braucht es die Bild-KI (Schritt B), die Claude nicht hat. Die Bildaufträge stehen in [PROMPT-paket-1-bildauftraege.md](entwuerfe/grillme-genetik-prototyp/PROMPT-paket-1-bildauftraege.md), die 8-fach vergrößerten Formvorlagen von Lotti, Klecksi und Funke liegen neben Mia und Glöckchen in `baukasten/werkzeug/`.
+- `figuren.js`: Lotti `kitz-tupfen`, Klecksi Zubehör `halsband`, Funke Besonderheit `backenblitze`. `app.js` kennt `kitz-tupfen`, `augenfleck` und `halsband` als Direktwahl (`kitz-tupfen` hellt auf).
+- **Nächster Schritt:** Nutzerin erzeugt mit der Bild-KI die Ohren/Schwänze (je Figur, je Geschlecht) und legt sie in `baukasten/werkzeug/ki/` ab. Danach baut Claude Ebenen, Muster-Masken und `pruefbogen-paket-1.png` (die Skripte sind PowerShell; hier läuft nur Python, ggf. auf Python umbauen).
+
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)
 
 - Der [neue Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-erwachsen.png) nutzt Mähne A nur für Leo-Jungen; B ist entfernt. Die hellen Schwanzspitzen haben konturgenaue Kranzmasken ohne graues Fell, und die Kontrastkorrektur greift nur bei dunklen, fast gleichen Tönen. Der weiße Rest am rechten Jungenkranz wurde als Lücke im Kranz geschlossen. Evis eigene Teile ergeben bei beiden Geschlechtern weiterhin 0 abweichende Pixel zum Original.

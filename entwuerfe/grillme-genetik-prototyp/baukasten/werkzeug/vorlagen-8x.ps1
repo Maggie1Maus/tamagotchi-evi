@@ -6,7 +6,7 @@ $quellen=@{
   'evi-weiblich'=(Join-Path $hier 'evi-weiblich-original.png')
   'evi-maennlich'=(Join-Path $hier 'evi-maennlich-original.png')
 }
-foreach($name in @('leo','linus','groschen','mia','gloeckchen')){$quellen[$name]=Join-Path $repo "entwuerfe\neue-tamagotchis\graustufen\$name\erwachsen-gluecklich.png"}
+foreach($name in @('leo','linus','groschen','mia','gloeckchen','lotti','klecksi','funke')){$quellen[$name]=Join-Path $repo "entwuerfe\neue-tamagotchis\graustufen\$name\erwachsen-gluecklich.png"}
 foreach($name in $quellen.Keys){
   $src=[Drawing.Bitmap]::new($quellen[$name])
   try{
