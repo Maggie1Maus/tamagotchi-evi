@@ -24,7 +24,7 @@ Zum Wiederholen: `werkzeug/bauteile-bauen.ps1`, danach `werkzeug/pruefbogen-baue
 
 Korrekturrunde vom 27. November: Leos runde, volle Jungen-Mähne A ist ausgewählt; B ist entfernt. Mädchen haben keine Mähnenebene. Die Kranzmaske der Schwanzspitze folgt nur der hellen zusammenhängenden Fläche; obere Spitzenpixel liegen nun im Schwanzteil statt fälschlich im Ohrteil. Die automatische Kontrastkorrektur greift nur bei zwei dunklen, fast gleichen Tönen und hellt dann den Kranz auf. Helle Kränze auf hellem Fell bleiben erlaubt. Flecken liegen auf Flanke und Rücken, die Maske um die Augen; Augenlinien bleiben erhalten. Linus' Schwanz wurde neu gezeichnet. Schleife und Glöckchen sind größer und neu positioniert.
 
-Sichtbare Restpunkte: Evis drei ursprüngliche Stirnspitzen sind in Mähne A noch sichtbar. Fellstrukturen und Flecken sind in Originalgröße fein; Linus' Schwanz wird durch den Körper teilweise verdeckt. Der ursprüngliche weibliche Sprite enthält 40 Graustufen. Um ihn Pixel für Pixel zu bewahren, werden Originalpixel nicht gerundet; neu gezeichnete Teile und Varianten verwenden 16 Stufen. Der Probelauf ist weiterhin **nicht freigegeben**.
+Der Probelauf wurde am 27. November 2026 freigegeben. Anschließend wurden die letzten hellen Pixel am rechten Jungenkranz und an den Schultern in die Kranzmaske aufgenommen; die wuschelige Struktur bleibt von der Stirnmitte fern. Evis drei ursprüngliche Stirnspitzen sind in Mähne A sichtbar. Fellstrukturen und Flecken sind in Originalgröße fein; Linus' Schwanz wird teilweise vom Körper verdeckt. Der ursprüngliche weibliche Sprite enthält 40 Graustufen. Um ihn Pixel für Pixel zu bewahren, werden Originalpixel nicht gerundet; neu gezeichnete Teile und Varianten verwenden 16 Stufen.
 
 ## Stand und Grenzen
 

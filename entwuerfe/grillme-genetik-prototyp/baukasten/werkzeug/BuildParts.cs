@@ -74,7 +74,27 @@ public static class BuildParts {
       }else if((female?x>42&&x<69&&y>57&&y<69:x>48&&x<73&&y>53&&y<67)&&v>215)r=34;
       else r=51;
       map.SetPixel(x,y,Color.FromArgb(255,r,r,r));
-    }return map;
+    }
+    if(!female){
+      // Close isolated bright shoulder pixels next to the actual ruff, without
+      // extending its mask as a rectangular patch over the face or body.
+      var add=new bool[w,h];
+      for(int y=60;y<=85;y++)for(int x=16;x<Math.Min(w,105);x++){
+        if(x>39&&x<78)continue;
+        Color c=src.GetPixel(x,y);if(c.A==0||Gray(c)<205||map.GetPixel(x,y).R==68)continue;
+        bool near=false;
+        for(int dy=-4;dy<=4&&!near;dy++)for(int dx=-4;dx<=4;dx++){
+          int nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=w||ny>=h)continue;
+          if(map.GetPixel(nx,ny).R==68){near=true;break;}
+        }
+        if(near)add[x,y]=true;
+      }
+      for(int y=60;y<=85;y++)for(int x=16;x<Math.Min(w,105);x++)if(add[x,y])map.SetPixel(x,y,Color.FromArgb(255,68,68,68));
+      foreach(Point p in new[]{new Point(35,62),new Point(83,62),new Point(39,64),new Point(24,70),new Point(83,74),new Point(84,74),new Point(84,77),new Point(84,79)}){
+        Color c=src.GetPixel(p.X,p.Y);if(c.A>0)map.SetPixel(p.X,p.Y,Color.FromArgb(255,68,68,68));
+      }
+    }
+    return map;
   }
   static bool Fur(Bitmap map,int x,int y){return x>=0&&y>=0&&x<map.Width&&y<map.Height&&map.GetPixel(x,y).R==51&&map.GetPixel(x,y).A>0;}
   static void Textures(Bitmap basis,Bitmap map,string dir){
@@ -93,7 +113,7 @@ public static class BuildParts {
       foreach(string type in new[]{"gesprenkelt","gestrichelt","wuschelig"})using(var tex=Blank(w,h)){
         for(int y=0;y<h;y++)for(int x=0;x<w;x++)if(Fur(map,x,y)){
           int v=Gray(basis.GetPixel(x,y));bool mark=false;
-          bool forehead=y<48&&x>w*.40&&x<w*.60;
+          bool forehead=(type=="wuschelig"?y<60&&x>w*.35&&x<w*.65:y<48&&x>w*.40&&x<w*.60);
           if(forehead)continue;
           int cell=type=="gesprenkelt"?6:8,gx=x/cell,gy=y/cell;
           int seed=Math.Abs((gx*73+gy*131+gx*gy*17)%997);
@@ -148,9 +168,11 @@ public static class BuildParts {
       ".#lllllllll#.", "#lllllllllll#", "#############", ".#mmmmmmmmm#.", "..##mmmmm##..", ".....###.....", "......#......"
     });
   }
-  static void SaveTailMap(Bitmap tail,bool[,] tip,string path){using(var map=Blank(tail.Width,tail.Height)){
+  static void SaveTailMap(Bitmap tail,bool[,] tip,Bitmap baseMap,string sex,string path){using(var map=Blank(tail.Width,tail.Height)){
     for(int y=0;y<tail.Height;y++)for(int x=0;x<tail.Width;x++){
-      Color c=tail.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c);int r=tip[x,y]?68:v<=70?17:51;
+      Color c=tail.GetPixel(x,y);if(c.A==0)continue;int v=Gray(c);
+      bool ruff=baseMap.GetPixel(x,y).R==68||(sex=="maennlich"&&x>=83&&x<=98&&y>=53&&y<=78&&v>=205);
+      int r=(tip[x,y]||ruff)?68:v<=70?17:51;
       map.SetPixel(x,y,Color.FromArgb(255,r,r,r));
     }Save(map,path);
   }}
@@ -197,10 +219,12 @@ public static class BuildParts {
         Textures(basis,region,dir);
         Patterns(basis,region,sex,dir);
         Save(basis,Path.Combine(dir,"basis.png"));Save(region,Path.Combine(dir,"basis.bereiche.png"));
+        string ownPart=sex=="weiblich"?"evi":"evi-m";
+        SaveTailMap(ownTail,tip,region,sex,Path.Combine(dir,"schwanz",ownPart+".bereiche.png"));
       }
       string own=sex=="weiblich"?"evi":"evi-m";
       Save(ownEars,Path.Combine(dir,"ohren",own+".png"));SaveMap(ownEars,Path.Combine(dir,"ohren",own+".bereiche.png"),"ohren");
-      Save(ownTail,Path.Combine(dir,"schwanz",own+".png"));SaveTailMap(ownTail,tip,Path.Combine(dir,"schwanz",own+".bereiche.png"));
+      Save(ownTail,Path.Combine(dir,"schwanz",own+".png"));
       foreach(string fig in new[]{"leo","linus","groschen"})foreach(string kind in new[]{"ohren","schwanz"}){
         string source=sex+"-"+kind+"-"+fig+(kind=="schwanz"&&fig=="linus"?"-v2":"")+".png";
         using(var variant=Down(Path.Combine(ki,source),w,h))using(var part=Blank(w,h)){
