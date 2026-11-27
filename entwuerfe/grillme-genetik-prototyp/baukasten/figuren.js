@@ -1,4 +1,10 @@
 // Geschätzte Merkmale sind mit ~ markiert. Alle Einträge können hier geändert werden.
+// Paket 1 (27.11.2026): Diese Merkmale sind am Parkbild geprüft, nicht mehr geschätzt.
+const PAKET1_GEPRUEFT = {
+  mia:['ohren','schwanz','muster','zubehoer'], gloeckchen:['ohren','schwanz','muster','zubehoer'],
+  lotti:['ohren','schwanz','besonderheit','muster','zubehoer'], klecksi:['ohren','schwanz','besonderheit','muster','zubehoer'],
+  funke:['ohren','schwanz','besonderheit','muster','zubehoer']
+};
 window.FIGUREN = [
   ['evi','Evi','weiblich','Evi-Art','evi','evi','keins',2,'keins','keins'],
   ['evi-m','Männliche Evi','maennlich','Evi-Art','evi-m','evi-m','keins',2,'keins','keins'],
@@ -25,6 +31,7 @@ window.FIGUREN = [
 ].map(([id,name,geschlecht,tierart,ohren,schwanz,besonderheit,ton,muster,zubehoer]) => ({
   id,name,geschlecht,tierart,ohren,schwanz,besonderheit,ton,muster,zubehoer,
   geschaetzt: id === 'evi' ? [] : ['ohren','schwanz','besonderheit','ton','muster','zubehoer']
+    .filter(t => !(PAKET1_GEPRUEFT[id] || []).includes(t))
 }));
 
 // Kranzton 0=weiß, 1=hellgrau, 2=mittelgrau, 3=dunkelgrau.

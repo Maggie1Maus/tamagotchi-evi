@@ -1,10 +1,10 @@
 # Tamagotchi-Projekt – Stand zum Weiterarbeiten
 
-## Bauteile Paket 1: Vorbereitung (27. November 2026)
+## Bauteile Paket 1 gebaut (27. November 2026) – wartet auf Freigabe
 
-- Vorbereitet, aber noch **keine Teile gebaut**: Für Ohren und Schwänze braucht es die Bild-KI (Schritt B), die Claude nicht hat. Die Bildaufträge stehen in [PROMPT-paket-1-bildauftraege.md](entwuerfe/grillme-genetik-prototyp/PROMPT-paket-1-bildauftraege.md), die 8-fach vergrößerten Formvorlagen von Lotti, Klecksi und Funke liegen neben Mia und Glöckchen in `baukasten/werkzeug/`.
-- `figuren.js`: Lotti `kitz-tupfen`, Klecksi Zubehör `halsband`, Funke Besonderheit `backenblitze`. `app.js` kennt `kitz-tupfen`, `augenfleck` und `halsband` als Direktwahl (`kitz-tupfen` hellt auf).
-- **Nächster Schritt:** Nutzerin erzeugt mit der Bild-KI die Ohren/Schwänze (je Figur, je Geschlecht) und legt sie in `baukasten/werkzeug/ki/` ab. Danach baut Claude Ebenen, Muster-Masken und `pruefbogen-paket-1.png` (die Skripte sind PowerShell; hier läuft nur Python, ggf. auf Python umbauen).
+- Aus den KI-Bildern in `baukasten/werkzeug/ki/` sind Ohren und Schwänze von Mia, Glöckchen, Lotti, Klecksi und Funke (Erwachsen, beide Geschlechter) entstanden, dazu `halsband`, `backenblitze`, `kitz-tupfen`, `augenfleck` und neue `flecken` für Klecksi. [Prüfbogen](entwuerfe/grillme-genetik-prototyp/baukasten/werkzeug/pruefbogen-paket-1.png). Bauskripte jetzt auch in Python (`paket1-bauen.py`, `pruefbogen-paket-1.py`, `teile-aktualisieren.py`). Evis Basis und die Probelauf-Teile sind unverändert (nur `flecken` wurde für Klecksi neu gerechnet).
+- Zu prüfen: Klecksis dunkles Ohr hat eine helle Lücke (helle Ohr-Pixel gleichen dem Fell und fallen weg), Funkes Ohren sind klein, die Mädchen-Muster `kitz-tupfen` und `flecken` sind wegen der kleinen Fellfläche sparsam, der rechte Jungenkranz zeigt weiter den bekannten Rand aus der freigegebenen Basis.
+- Keine weiteren Figuren oder Altersstufen, bis die Nutzerin Paket 1 freigibt.
 
 ## Bauteil-Probelauf: Korrekturrunde (27. November 2026)
 

@@ -26,6 +26,10 @@ Korrekturrunde vom 27. November: Leos runde, volle Jungen-Mähne A ist ausgewäh
 
 Der Probelauf wurde am 27. November 2026 freigegeben. Anschließend wurden die letzten hellen Pixel am rechten Jungenkranz und an den Schultern in die Kranzmaske aufgenommen; die wuschelige Struktur bleibt von der Stirnmitte fern. Evis drei ursprüngliche Stirnspitzen sind in Mähne A sichtbar. Fellstrukturen und Flecken sind in Originalgröße fein; Linus' Schwanz wird teilweise vom Körper verdeckt. Der ursprüngliche weibliche Sprite enthält 40 Graustufen. Um ihn Pixel für Pixel zu bewahren, werden Originalpixel nicht gerundet; neu gezeichnete Teile und Varianten verwenden 16 Stufen.
 
+## Paket 1 (27. November 2026, Entwurf, wartet auf Freigabe)
+
+Mia, Glöckchen, Lotti, Klecksi und Funke haben Ohren und Schwänze für Erwachsene, beide Geschlechter. Neu sind außerdem das Zubehör `halsband`, die Besonderheit `backenblitze` und die Muster `kitz-tupfen`, `augenfleck` und (für Klecksi neu gerechnet) `flecken`. Der [Prüfbogen](werkzeug/pruefbogen-paket-1.png) zeigt alles. Gebaut mit Python: `werkzeug/paket1-bauen.py`, danach `werkzeug/pruefbogen-paket-1.py` und `teile-aktualisieren.py` (Gegenstück zum PowerShell-Skript). Die KI-Bilder liegen in `werkzeug/ki/`. Evis Basis und die Teile des Probelaufs bleiben unverändert.
+
 ## Stand und Grenzen
 
 Die männliche Evi hat 80 zugeschnittene Graustufen-Einzelbilder in `../../evi/maennlich/Sprites/`. Die Bildbögen und das reproduzierbare Zuschnittskript liegen daneben. In den Fenster- und Gartenposen ist nur die Figur; der beleidigte Opa hat vier Pfoten. Die 80 Bilder sind Bildentwürfe, noch keine optisch freigegebenen Spielgrafiken.
