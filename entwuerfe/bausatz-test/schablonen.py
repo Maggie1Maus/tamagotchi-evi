@@ -19,6 +19,7 @@ def schablone(name, gw, gh, anker, text):
     im.save(os.path.join(hier, 'ki', name))
 # Ohr: 24 x 32 Rasterpixel, Ansatz = unten Mitte; Schwanz: 32 x 40, Ansatz = links Mitte
 schablone('schablone-ohr.png', 24, 32, (12, 29), 'Ohr 24x32, roter Punkt = Ansatz')
+schablone('schablone-ohr-haengend.png', 24, 32, (12, 2), 'Hängeohr 24x32, roter Punkt = Ansatz')
 schablone('schablone-schwanz.png', 32, 40, (3, 29), 'Schwanz 32x40, roter Punkt = Ansatz')
 # Stilvorlage: Ausschnitt der neuen Basis (Kopf mit Ohr, Schwanz) auf 8x
 import bausatz2 as b

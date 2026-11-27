@@ -11,6 +11,8 @@ import numpy as np
 from PIL import Image, ImageDraw
 import os
 
+from ki_teile import lade_teil
+
 W = H = 96
 CX = 47.5
 LINIE = 34
@@ -48,9 +50,10 @@ class Bild:
         self.g = np.zeros((H, W), np.uint8); self.a = np.zeros((H, W), bool)
     def setze(self, m, v):
         self.g[m] = np.clip(v, 0, 255) if np.ndim(v) == 0 else np.clip(v, 0, 255)[m]; self.a[m] = True
-    def fell(self, maske, fuell, tuften=True, salz=1, punkte=True, schatten=True):
+    def fell(self, maske, fuell, tuften=True, salz=1, punkte=True, schatten=True, naht=None):
         m = flauschig(maske, salz=salz) if tuften else maske
-        self.setze(umriss(m), LINIE)
+        rand = umriss(m)
+        self.setze(rand if naht is None else rand & ~naht, LINIE)
         ys, xs = np.nonzero(m)
         cy, cx = (ys.min() + ys.max()) / 2, (xs.min() + xs.max()) / 2
         hy, hx = max(1, (ys.max() - ys.min()) / 2), max(1, (xs.max() - xs.min()) / 2)
@@ -67,6 +70,30 @@ class Bild:
         v = np.where(innen & ((X - cx) + (Y - cy) > 4), v - 17, v)
         self.setze(m, np.round(v / 17) * 17)
         return m
+    def ki_teil(self, teil, ziel, fell, innen, gespiegelt=False, licht=None):
+        raster, (ax, ay) = teil
+        gx, gy = ziel
+        rollen = {
+            34: LINIE,
+            119: innen,
+            170: fell - 34,
+            204: fell,
+            238: fell + 34 if licht is None else licht,
+        }
+        fuellung = leer()
+        for rolle, ton in rollen.items():
+            y, x = np.nonzero(raster == rolle)
+            x, y = x - ax + gx, y - ay + gy
+            if gespiegelt:
+                x = W - 1 - x
+            sichtbar = (x >= 0) & (x < W) & (y >= 0) & (y < H)
+            maske = leer()
+            maske[y[sichtbar], x[sichtbar]] = True
+            self.setze(maske, ton)
+            if rolle != LINIE:
+                fuellung |= maske
+        return fuellung
+
     def bild(self, hg=255, z=4):
         a = np.full((H, W, 3), hg, np.uint8); a[self.a] = np.stack([self.g[self.a]] * 3, 1)
         return Image.fromarray(a).resize((W * z, H * z), Image.NEAREST)
@@ -106,35 +133,47 @@ def tiere(ohren='spitz', schw='puschel', f=204, bauch=238, spitze=250, innen=119
     kopf = ellipse(CX, 40, 26, 23); koerper = ellipse(CX, 71, 21, 18)
     arme = ellipse(26, 70, 5, 8) | ellipse(69, 70, 5, 8)
     fuesse = ellipse(36, 88, 8, 4.5) | ellipse(59, 88, 8, 4.5)
-    sm, sp = schwanz(schw)
-    if sm is not None:
-        m = b.fell(sm, f, salz=21)
-        if sp.any():
-            t = sp & erode(m); b.setze(t, np.where(rauschen(9) < 14, spitze - 17, spitze))
-    o = ohr(ohren)
-    if o is not None:
-        for sx in (False, True):
-            a, i = o
-            a = spiegel(a) if sx else a; i = spiegel(i) if sx else i
-            m = b.fell(a, f, tuften=False, salz=31 + sx)
-            if i.any():
-                ii = i & erode(m)
-                b.setze(ii, np.where(rauschen(13) < 25, innen + 17, innen))
-                # Innenohrfell: helle Strichel
-                b.setze(ii & (((X + 2 * Y) % 7) == 0), innen + 34)
+    schwanznaht = ohrnaht = None
+    schwanzteil = lade_teil('schwanz', schw)
+    if schwanzteil is not None:
+        licht = spitze if schw in ('buschig', 'duenn') else None
+        schwanznaht = b.ki_teil(schwanzteil, ANKER['schwanz'], f, innen, licht=licht)
+    else:
+        sm, sp = schwanz(schw)
+        if sm is not None:
+            m = b.fell(sm, f, salz=21)
+            if sp.any():
+                t = sp & erode(m); b.setze(t, np.where(rauschen(9) < 14, spitze - 17, spitze))
+    ohrteil = lade_teil('ohr', ohren)
+    if ohrteil is not None:
+        ziel = ANKER['ohr-seite' if ohren == 'haengend' else 'ohr']
+        ohrnaht = b.ki_teil(ohrteil, ziel, f, innen)
+        ohrnaht |= b.ki_teil(ohrteil, ziel, f, innen, gespiegelt=True)
+    else:
+        o = ohr(ohren)
+        if o is not None:
+            for sx in (False, True):
+                a, i = o
+                a = spiegel(a) if sx else a; i = spiegel(i) if sx else i
+                m = b.fell(a, f, tuften=False, salz=31 + sx)
+                if i.any():
+                    ii = i & erode(m)
+                    b.setze(ii, np.where(rauschen(13) < 25, innen + 17, innen))
+                    # Innenohrfell: helle Strichel
+                    b.setze(ii & (((X + 2 * Y) % 7) == 0), innen + 34)
     b.fell(fuesse, f, tuften=False, salz=41)
     # Zehen
     for fx in (36, 59):
         for dx in (-3, 0, 3):
             b.setze((X == fx + dx) & (Y >= 87) & (Y <= 88), LINIE + 17)
-    b.fell(koerper, f, salz=51)
+    b.fell(koerper, f, salz=51, naht=schwanznaht)
     # Bauch mit Zackenrand (wie Evis Halskrause)
     zack = 1.0 + 0.10 * np.abs(np.sin((X - CX) * 0.55))
     bm = ((((X - CX) / (13 * zack)) ** 2 + ((Y - 74) / (12 * zack)) ** 2) <= 1) & koerper & (Y > 62)
     bi = bm & erode(koerper)
     b.setze(bi, np.where(rauschen(17) < 8, bauch - 17, bauch))
     b.fell(arme, f, tuften=False, salz=61)
-    b.fell(kopf, f, salz=71)
+    b.fell(kopf, f, salz=71, naht=ohrnaht)
     # Muster
     if muster == 'flecken':
         mm = leer()

@@ -6,13 +6,14 @@ Stand 27. November 2026. Gilt für den **Bausatz** (`bausatz2.py`), nicht für d
 Die KI soll **ein Teil allein** zeichnen (Ohr, Schwanz, später Flügel, Hörner, Gesichter), **nicht in ein fertiges Bild hinein**. Dann muss sie kein Raster, keinen Kopfrand und keine Figur treffen. Mein Skript setzt das Teil an den Ansatzpunkt, rechnet das Fell auf jeden Fellton um und verschmilzt den Umriss. Damit das klappt, braucht jedes Bild **feste Maße und feste Grauwerte**. Dieser Prompt ist deshalb eine Vorlage, die für jedes weitere Teil gleich bleibt: nur die Zeile `[TEIL]` wechselt.
 
 ## Anhängen (bei jedem Auftrag)
-1. **Schablone**: `ki/schablone-ohr.png` (Ohren, Hörner …) oder `ki/schablone-schwanz.png` (Schwänze, Flügel …). Sie ist die Zeichenfläche: Raster 8 × 8 Pixel je Rasterpixel, roter Punkt = Ansatz.
+1. **Schablone**: `ki/schablone-ohr.png` (Ohren, Hörner …), `ki/schablone-ohr-haengend.png` (Hängeohren) oder `ki/schablone-schwanz.png` (Schwänze, Flügel …). Sie ist die Zeichenfläche: Raster 8 × 8 Pixel je Rasterpixel, roter Punkt = Ansatz.
 2. **Stilvorlage**: `ki/stilvorlage-kopf.png` bzw. `ki/stilvorlage-schwanz.png` (so sieht ein fertiges Teil in unserem Stil aus: Umriss, Verlauf, Fellpunkte).
 
 ## Maße (immer gleich)
 | Teil | Raster | Ausgabegröße (8-fach) | Ansatz (roter Punkt) |
 |---|---|---|---|
 | Ohr (linkes Ohr, nach oben) | 24 × 32 | 192 × 256 | unten Mitte (12, 29) |
+| Hängeohr (linkes Ohr, nach unten) | 24 × 32 | 192 × 256 | oben Mitte (12, 2) |
 | Schwanz (nach rechts) | 32 × 40 | 256 × 320 | links Mitte (3, 29) |
 
 ## Grauwerte (Rollen, immer gleich)

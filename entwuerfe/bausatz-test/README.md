@@ -11,3 +11,7 @@ Kleiner Versuch, ob Ohren, Schwänze und Fell **per Skript** statt per Bild-KI e
 ## Version 2 (größer, mit Details)
 `bausatz2.py` → `pruefbogen-test2.png`: 96 × 96 Pixel, Fellpunkte, gerasterte Verläufe, flauschiger Rand, Augen mit Glanzpunkten, Mund mit Zunge, Schnurrhaare, Bauchfell, Zehen, Ohrinnenfell.
 `schablonen.py` erzeugt die Schablonen für die Bild-KI. Prompt: [PROMPT-ki-teile.md](PROMPT-ki-teile.md).
+
+## Freistehende KI-Teile
+
+In [ki/teile](ki/teile) liegt je Ohr- und Schwanzform die ausgewählte von drei Varianten. `python3 bausatz2.py` lädt die PNGs anhand von Form und Varianten-Nummer und erstellt den [Prüfbogen](pruefbogen-test2.png). Weiße Pixel sind beim Zusammensetzen durchsichtig. Das rechte Ohr wird aus dem linken gespiegelt. Fehlt ein Teil, verwendet das Skript die bisherige Form.
