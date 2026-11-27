@@ -43,6 +43,13 @@ Stand 26. November 2026. Diese Zusammenfassung hält die Beschlüsse aus der Gri
 - Alle Bauteile werden als **deckungsgleiche Ebenen** in Basisgröße gezeichnet (keine Ankerpunkte nötig). Fellton und Muster werden gerechnet, die Umrisslinie bleibt.
 - Prompt für den Baukasten-Prototyp: [PROMPT-baukasten.md](PROMPT-baukasten.md). Bildauftrag für die männliche Evi (80 Bilder, in drei Runden): [bildauftrag-maennlich.md](../evi/bildauftrag-maennlich.md).
 
+## Probelauf freigegeben (27. November 2026)
+
+- Der Bauteil-Probelauf (Erwachsen, beide Geschlechter, Leo, Linus, Groschen) ist von der Nutzerin **freigegeben**, mit einer Kleinkorrektur am Jungen-Kranz und an der wuscheligen Struktur auf der Stirn. Der Weg „Teile im Evi-Stil auf Evis Basis zeichnen, Fellton, Kranzton, Struktur und Muster rechnen“ wird damit für alle Figuren übernommen.
+- **Leo:** Jungen erben Mähne A (rund und voll, auch oben auf dem Kopf). Mädchen bekommen keine Mähne, aber Leos Ohren und Schwanz.
+- **Kranz:** Ein heller Kranz auf hellem Fell ist erlaubt. Nur wenn Kranz und Fell beide dunkel und fast gleich sind, wird der Kranz eine Stufe heller.
+- **Weiteres Vorgehen:** die übrigen 17 Parkfiguren für Erwachsen in Paketen zu etwa fünf Figuren, jedes Paket mit Prüfbogen und Freigabe. Danach Baby, Teenager und Senior.
+
 ## Stand und offene Entscheidungen
 
 - Der [Browserprototyp](gemeinsame-kopfform/index.html) dient der optischen Prüfung von vier Figuren. Die Browserprüfung umfasste die sechs Elternpaare und Kombinationen in den Posen. Eine optische Freigabe für alle 21 Figuren oder ein Test auf dem Gerät steht aus.
