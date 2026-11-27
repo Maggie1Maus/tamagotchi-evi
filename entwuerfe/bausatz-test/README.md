@@ -62,3 +62,6 @@ Das Glöckchen wurde am 27.11. ebenfalls entfernt (Datei, Schablone, Code, Promp
 
 ## Altersstufen (27. November 2026)
 Teile in `ki/teile/`: `koerper-baby/teenager/senior`, `kopf-baby/teenager/senior`. `altersstufen.py` → `pruefbogen-altersstufen.png` (dasselbe Tier als Baby, Teenager, Erwachsen, Senior). Nur sitzend, je eine Körper- und Kopfform pro Stufe. Offen: Das Muster `flecken` hat feste Positionen für den Erwachsenen und landet bei Baby und Senior teils im Gesicht.
+
+## Altersstufen für alle Formen (27. November 2026)
+9 Körper (rundlich, schlank, kräftig × Baby, Teenager, Senior) und 6 Köpfe (klein-rund, breit × 3 Stufen) in `ki/teile/`. Maße und Ansätze in `formen_alter.json` (erzeugt Schablonen, Layout und Loader-Einträge). `altersformen.py` → `pruefbogen-altersformen.png` (6 Form-Paare × 4 Altersstufen). Posen der Altersstufen sind noch offen (Entscheidung der Nutzerin: Senioren nur Schlafen, Laufen, Hüpfen).
