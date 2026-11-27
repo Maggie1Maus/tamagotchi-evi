@@ -62,4 +62,15 @@ schablone('schablone-merkmal-stacheln.png', 48, 32, [((6, 26), 'Rücken', ROT)],
 schablone('schablone-merkmal-panzer.png', 56, 44, [((6, 40), 'Rücken', ROT)], 'Panzer 56x44',
           [('linie', [(0, 40), (28, 42), (55, 43)], 'Unterkante liegt auf dem Rücken')])
 schablone('schablone-merkmal-fluegel.png', 56, 56, [((6, 50), 'Schulter', ROT)], 'Fluegel 56x56')
+# Kleine Aufsätze (27.11.)
+AUFSAETZE = {  # Name: (Raster, Ansatz, Beschriftung, Hilfsform)
+    'schleife':     ((24, 20), (12, 16), 'Schleife 24x20', None),
+    'gloeckchen':   ((16, 20), (8, 2),   'Gloeckchen 16x20', None),
+    'halsband':     ((44, 14), (22, 3),  'Halsband 44x14', None),
+    'backentasche': ((24, 24), (12, 12), 'Backentasche 24x24 (linke Wange)', None),
+    'augenmaske':   ((52, 16), (26, 8),  'Augenmaske 52x16', [('linie', [(4, 8), (48, 8)], 'Augenlinie')]),
+    'backenblitz':  ((12, 14), (6, 7),   'Backenblitz 12x14 (linke Wange)', None),
+}
+for n, ((gw, gh), a, text, fuehr) in AUFSAETZE.items():
+    schablone(f'schablone-aufsatz-{n}.png', gw, gh, [(a, 'Ansatz', ROT)], text, fuehr)
 print('fertig')

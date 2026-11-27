@@ -24,7 +24,7 @@ def datei(art, form, bevorzugt=None):
 def raster(p): return np.array(Image.open(p).convert('RGB'))[::Z, ::Z, 0]
 
 def baue_form(koerper='sitzend', kopf='3-4', ohren='spitz', schwanz='buschig', gesicht='freundlich',
-              fell=204, muster=None, kopf_ueber=None, merkmale=()):
+              fell=204, muster=None, kopf_ueber=None, merkmale=(), aufsaetze=()):
     kf, hf = L.KOERPER_FORMEN[koerper], L.KOPF_FORMEN[kopf]
     khx, khy = hf['hals']
     if kopf_ueber is None:
@@ -111,11 +111,34 @@ def baue_form(koerper='sitzend', kopf='3-4', ohren='spitz', schwanz='buschig', g
         m, d = muster_maske(muster)
         ok = m & c.a & (c.g >= 85) & (c.g < 250)
         c.g[ok] = np.clip(np.round((c.g[ok] + d) / 17) * 17, 0, 255)
+    geo = geometrie(koerper, kopf, kopf_ueber)
+    mx, my = geo['mx'], geo['my']
+    ohr_r = (kx + hf['ohr_r'][0] - khx, ky + hf['ohr_r'][1] - khy)
+    def aufsatz(name, ziel, spiegeln=False, rl=None):
+        t = lade_teil('aufsatz', name)
+        if t is not None: c.teil(t[0], t[1], ziel, rl or {34: 34, 119: 119, 170: 170, 204: 204, 238: 238}, spiegeln=spiegeln)
+    if 'augenmaske' in aufsaetze: aufsatz('augenmaske', (mx, my - 4))
     if gesicht:
         t = lade_teil('gesicht', gesicht)
         if t is not None:
             c.teil(t[0], t[1], (kx + hf['gesicht'][0] - khx, ky + hf['gesicht'][1] - khy), {34: 17, 119: 51, 170: 102, 204: 153, 238: 255})
+    if 'backentasche' in aufsaetze:
+        aufsatz('backentasche', (mx - 17, my + 7), rl=r)
+        aufsatz('backentasche', (W - 1 - (mx + 17), my + 7), spiegeln=True, rl=r)
+    if 'backenblitz' in aufsaetze:
+        aufsatz('backenblitz', (mx - 17, my + 6)); aufsatz('backenblitz', (W - 1 - (mx + 17), my + 6), spiegeln=True)
+    if 'halsband' in aufsaetze: aufsatz('halsband', (kx - 2, ky + 3))
+    if 'gloeckchen' in aufsaetze: aufsatz('gloeckchen', (kx - 4, ky + 5))
+    if 'schleife' in aufsaetze: aufsatz('schleife', (ohr_r[0] - 2, ohr_r[1] + 1))
     return c
+
+def geometrie(koerper='sitzend', kopf='3-4', kopf_ueber=None):
+    """Wichtige Punkte auf der Leinwand: Kopf-Hals (kx, ky) und Gesichtsmitte (mx, my)."""
+    kf, hf = L.KOERPER_FORMEN[koerper], L.KOPF_FORMEN[kopf]
+    if kopf_ueber is None: kopf_ueber = KOPF_UEBER_STANDARD - KOPF_TIEFER.get(kopf, 0)
+    zy = BODEN - (kf['groesse'][1] - 1) + kf['hals'][1]
+    kx, ky = 56, zy - kopf_ueber
+    return dict(kx=kx, ky=ky, mx=kx + hf['gesicht'][0] - hf['hals'][0], my=ky + hf['gesicht'][1] - hf['hals'][1])
 
 KOERPER = ['sitzend', 'rundlich', 'schlank', 'kraeftig']
 KOEPFE = ['3-4', 'klein-rund', 'breit']

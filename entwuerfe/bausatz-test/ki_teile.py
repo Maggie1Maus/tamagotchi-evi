@@ -31,6 +31,13 @@ SCHABLONEN = {
     'merkmal-fluegel': ((56, 56), (6, 50)),
     'merkmal-fluegel-fee': ((56, 56), (6, 50)),
     'merkmal-fluegel-drache': ((56, 56), (6, 50)),
+    'aufsatz-schleife': ((24, 20), (12, 16)),
+    'aufsatz-gloeckchen': ((16, 20), (8, 2)),
+    'aufsatz-halsband': ((44, 14), (22, 3)),
+    'aufsatz-backentasche': ((24, 24), (12, 12)),
+    'aufsatz-augenmaske': ((52, 16), (26, 8)),
+    'aufsatz-backenblitz': ((12, 14), (6, 7)),
+    'aufsatz': ((24, 20), (12, 16)),
     'kopf': ((60, 44), (30, 40)),
 }
 
@@ -53,7 +60,7 @@ def lade_teil(art, name):
     if not np.all(pixel[..., :3] == erwartet[..., None]):
         raise ValueError(f'{datei.name}: Farbabweichung oder unsauberes 8×8-Raster')
     # Augen, Brauen, Nase und Mund sind bewusst voneinander getrennt.
-    if art in ('gesicht', 'merkmal'):
+    if art in ('gesicht', 'merkmal', 'aufsatz'):
         if np.all(raster == 255):
             raise ValueError(f'{datei.name}: Gesicht ist leer')
         # Einzelne Streupixel (ohne Nachbarn, auch diagonal) entfernen.

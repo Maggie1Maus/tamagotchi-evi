@@ -48,3 +48,6 @@ Die Halskrause liegt jetzt **hinter dem Kopf** und 3 Pixel tiefer (`KRUSE_TIEFER
 
 ## Halskrause entfernt (27. November 2026)
 Die Halskrause ist komplett raus (`ki/teile/kruse-flauschig-*`, Schablone und alle Einträge). Der Kopf sitzt direkt am Körperhals, 5 Pixel unter dem Körper-Hals (`KOPF_UEBER_STANDARD = -5` in `formen.py`); das Kinn liegt über den Schultern. Die Parameter `kruse`, `kranz`, `kruse_tiefer` und `kruse_hinten` gibt es nicht mehr. Der Kranzton wird damit nicht mehr verwendet. Die Pose- und Gefühle-Bögen sind mit angepasst.
+
+## Gefühle und kleine Aufsätze (27. November 2026)
+`emotionen3.py` nutzt jetzt dieselbe Zusammensetzung wie `formen.py` (vorher schwebten die Ohren, weil der Bogen noch die alte Anordnung hatte). Die Effekte (Träne, Sabber, Schweiß, Schmutz, Zzz) liegen relativ zur Gesichtsmitte (`formen.geometrie`). Für die kleinen Aufsätze gibt es Schablonen (`ki/schablone-aufsatz-*.png`), den Prompt `PROMPT-ki-aufsaetze.md` und den Parameter `aufsaetze` in `formen.baue_form`. Die Lage ist mit Platzhaltern geprüft, nicht mit echten Bildern.
