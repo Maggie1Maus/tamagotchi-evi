@@ -29,7 +29,7 @@ for($r=0;$r -lt $rows;$r++){for($c=0;$c -lt $cols;$c++){
     if($nr -ge 0 -and $nr -lt $rows -and $nc -ge 0 -and $nc -lt $cols -and -not $blk[$nr,$nc] -and $lab[$nr,$nc] -eq 0 -and $comp[$nr,$nc] -eq 0){$comp[$nr,$nc]=$id;$q.Enqueue(@($nr,$nc))}}}
   $sizes[$id]=$cnt}}}
 "Innenflaechen: " + (($sizes.GetEnumerator()|%{"$($_.Key)=$($_.Value)"}) -join ', ')
-$dunkel=($sizes.GetEnumerator()|sort Value|select -first 1).Key   # kleinste = Ohrmuschel
+$dunkel=($sizes.GetEnumerator()|sort Value -desc|select -skip 1 -first 1).Key   # zweitgroesste Flaeche = Ohrmuschel
 # 4) Ohrbild im Spritemass (114x116): Zelle (r,c) -> Sprite (c-28, r-27)
 $W=114;$H=116
 $ear=New-Object System.Drawing.Bitmap($W,$H)
