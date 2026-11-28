@@ -52,5 +52,9 @@ Vorläufige Zuordnung (zum Ändern, sobald die Nutzerin etwas anderes will):
 | denken | ohne-pfote-links | pfote-finger | gesicht-denken |
 | hungrig | ohne-pfote-links | pfote-finger | gesicht-hungrig |
 | gähnen | ohne-pfote-links | pfote-gesicht | gesicht-gaehnen |
-| beleidigt | ohne-vorderpfoten | arme-verschraenkt | gesicht-beleidigt |
+| beleidigt | ohne-vorderpfoten | arme-verschraenkt__aufkoerper | gesicht-beleidigt |
 | garten-zeigen | ohne-vorderpfoten | pfoten-hoch | gesicht-gluecklich |
+
+## Ebenen der Pfoten (28.11.)
+- `arme-verschraenkt__aufkoerper`: liegt unter der Krause (Arme sind teils verdeckt), aber über dem Körper.
+- `pfote-gesicht`, `pfote-finger` und `pfoten-hoch`: liegen ohne Endung ganz oben, also über Krause und Gesicht.
