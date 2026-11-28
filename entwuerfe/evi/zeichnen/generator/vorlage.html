@@ -74,7 +74,7 @@ function wuerfeln(){const d=D(),A=d.tamagotchis[$('e1').value]||{},B=d.tamagotch
 function reihe(){const d=D(),l=[];[...SLOTS.map(x=>x[0]),'gesicht'].forEach(s=>{let t=d.teile.find(t=>t.slot===s&&t.datei===wahl[s]);
   if(t&&$('haengt').checked&&(s==='ohr'||s==='schwanz')){const z=d.teile.find(u=>u.slot===s&&u.zustand&&u.name===t.name+(s==='ohr'?'-haengend':'-gesenkt'));if(z)t=z}
   if(t)l.push(t)});
- const o=a=>RANG[a.slot],h=l.filter(t=>t.schicht==='hinten').sort((a,b)=>o(a)-o(b)),m=l.filter(t=>t.schicht==='mitte').sort((a,b)=>o(a)-o(b)),v=l.filter(t=>t.schicht==='vorne').sort((a,b)=>o(a)-o(b));return[...h,...m,...v]}
+ const o=a=>a.schicht==='aufkoerper'?2.5:RANG[a.slot],h=l.filter(t=>t.schicht==='hinten').sort((a,b)=>o(a)-o(b)),m=l.filter(t=>t.schicht==='mitte'||t.schicht==='aufkoerper').sort((a,b)=>o(a)-o(b)),v=l.filter(t=>t.schicht==='vorne').sort((a,b)=>o(a)-o(b));return[...h,...m,...v]}
 async function zeichne(){
  document.querySelectorAll('#slots select').forEach(s=>{if(wahl[s.dataset.s]!==undefined)s.value=wahl[s.dataset.s]});
  const teile=reihe();await Promise.all(teile.map(t=>{const i=bild(t);return i.complete?1:new Promise(r=>i.onload=r)}));

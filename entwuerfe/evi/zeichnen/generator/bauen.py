@@ -67,7 +67,7 @@ def bake(stufe, ansicht):
     teile = []; boxen = []
     def add(typ, name, g, a, slot, mitUmriss=True):
         teil = dict(typ=typ, name=name.split('__')[0], zustand=bool(re.search(r'-(haengend|gesenkt)(__|$)', name)), datei=name, slot=slot, bild=klein(g, a),
-                    schicht='vorne' if name.endswith('__vorne') else ('hinten' if name.endswith('__hinten') else 'mitte'))
+                    schicht='vorne' if name.endswith('__vorne') else ('hinten' if name.endswith('__hinten') else ('aufkoerper' if name.endswith('__aufkoerper') else 'mitte')))
         teile.append(teil)
         if mitUmriss:
             b = umriss(a)

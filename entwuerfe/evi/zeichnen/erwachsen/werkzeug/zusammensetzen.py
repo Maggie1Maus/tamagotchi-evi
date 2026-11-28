@@ -142,6 +142,10 @@ def bauen(gesicht, ohr, schwanz, kopf='kopf-rund', koerper='koerper-sitzend', ha
     hinten = [t for t in teile if t[1].endswith('__hinten')]
     vorne = [t for t in teile if t[1].endswith('__vorne')]
     mitte = [t for t in teile if t not in hinten and t not in vorne]
+    auf = [t for t in mitte if t[1].endswith('__aufkoerper')]      # direkt ueber dem Koerper, unter Kopf und Krause
+    mitte = [t for t in mitte if t not in auf]
+    i = next(k for k, t in enumerate(mitte) if t[0] == 'koerper') + 1
+    mitte = mitte[:i] + auf + mitte[i:]
     g = np.zeros((N, N), np.float32); a = np.zeros((N, N), np.float32)
     for _, _, ebene, spiegeln in hinten + mitte + vorne:
         g, a = drauf(g, a, ebene, spiegeln, axis)
