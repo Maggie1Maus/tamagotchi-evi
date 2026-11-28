@@ -1,0 +1,12 @@
+# Pose: Klecksi sitzt und schaut nach vorn (Reihenfolge = von hinten nach vorn)
+# Klecksi = Evis Kopf, Koerper und Gesicht, dazu Schlappohren, duenner Schwanz und Flecken.
+# Hinweis: ohr-schlapp*.png enthaelt beide Ohren (links und rechts gezeichnet), nicht spiegeln.
+ansicht   = frontal
+schwanz   = schwaenze/schwanz-duenn-flecken.png
+ohr       = ohren/frontal/ohr-schlapp-flecken.png
+koerper   = koerper/koerper-sitzend.png
+muster-koerper = muster/muster-flecken-koerper.png
+kopf      = koepfe/frontal/kopf-rund.png
+muster-gesicht = muster/frontal/muster-flecken-gesicht.png
+halsschmuck = halsschmuck/frontal/krause-evi.png
+gesicht   = gesichter/frontal/gesicht-neutral.png

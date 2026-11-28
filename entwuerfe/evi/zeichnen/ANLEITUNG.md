@@ -96,10 +96,13 @@ Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Fig
 | `halsschmuck/<ansicht>/` | Krause, Schleife, Halsband … | `krause-evi.png`, `schleife.png`, `halsband.png` |
 | `koerper/` | Körper je Haltung | `koerper-sitzend.png`, `koerper-laufen.png`, `koerper-schlafend.png`, `koerper-huepfen.png` |
 | `schwaenze/` | Schwanz-Varianten | `schwanz-buschel.png`, `schwanz-duenn.png` |
-| `muster/` | Fell-Muster und Flecken | `muster-flecken.png`, `muster-streifen.png` |
+| `muster/<ansicht>/` | Fell-Muster fürs Gesicht (je Ansicht) | `muster-flecken-gesicht.png` |
+| `muster/` | Fell-Muster für den Körper (je Haltung) | `muster-flecken-koerper.png`, `muster-streifen-koerper.png` |
 | `posen/` | Textdatei je Pose: welche Teile in welcher Reihenfolge | `sitzen-frontal.txt` (Beispiel liegt in `erwachsen/`) |
 
 Dazu in jeder Stufe: `vorlagen/` (Zeichenvorlagen), `ergebnis/` (fertige Zusammensetzungen) und bei `erwachsen/` das `werkzeug/`. Einen Ordner `basis/` gibt es nicht mehr: Evis Grundteile liegen jetzt einfach als erste Variante in den Teile-Ordnern. Die ChatGPT-Vorschläge für Gesichter liegen in `erwachsen/gesichter/frontal/vorschlaege-chatgpt/`.
+
+**Ohren und Schwänze mit Flecken:** gibt es als eigene Datei mit Endung `-flecken` (`ohr-schlapp-flecken.png`, `schwanz-duenn-flecken.png`). Sie sind das normale Teil samt Flecken. Ohren dürfen beide Seiten enthalten (links und rechts gezeichnet, dann nicht spiegeln; vermerkt in der Pose).
 
 **Zusammensetzen:** `erwachsen/werkzeug/zusammensetzen.ps1` wählt die Teile über die Dateinamen, zum Beispiel `.\zusammensetzen.ps1 -Gesicht gluecklich -Hals schleife`. Ohne Angaben entsteht die normale Evi.
 
