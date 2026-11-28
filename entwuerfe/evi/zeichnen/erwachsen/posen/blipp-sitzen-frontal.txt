@@ -1,8 +1,8 @@
 # Pose: Blipp sitzt und schaut nach vorn (Reihenfolge = von hinten nach vorn)
 # Blipp = Evis Kopf, Koerper, Krause und Gesicht, dazu Stitch-Ohren, Stitch-Schwanz, Fuehler und Sprenkel.
-# Hinweis: ohr-stitch.png enthaelt beide Ohren (links und rechts gezeichnet), nicht spiegeln.
+# Stitch-Schwanz = Stacheln auf dem Koerper, liegt deshalb __vorne. Hinweis: ohr-stitch.png enthaelt beide Ohren (links und rechts gezeichnet), nicht spiegeln.
 ansicht   = frontal
-schwanz   = schwaenze/frontal/schwanz-stitch.png
+schwanz   = schwaenze/frontal/schwanz-stitch__vorne.png
 ohr       = ohren/frontal/ohr-stitch.png
 koerper   = koerper/frontal/koerper-sitzend.png
 kopf      = koepfe/frontal/kopf-rund.png
