@@ -41,3 +41,16 @@ Farben, Graustufen, Schatten, Pixelfassung und die Kombination macht das Program
 ## Stand 28.11. (nach den Pfoten-Uploads)
 Fertig: Gesichter singen/gähnen/denken, hängende Ohren, gesenkte Schwänze, `pfote-finger`, `pfote-gesicht`, `pfoten-hoch`, `arme-verschraenkt`, Körper `koerper-sitzend-ohne-vorderpfoten` und `koerper-sitzend-ohne-pfote-links`.
 Noch offen: Pfote Bauch (hungrig), Pfote Staunen, Thermometer, Schmutzflecken + Stinklinien, Runde 2 (schlafend, hüpfen, laufen, drehen, Fenster, Garten schnuppern/untersuchen).
+
+## Grundsatz: Pfotenhaltungen sind allgemein, nicht an ein Gefühl gebunden (Wunsch der Nutzerin, 28.11.)
+Eine Pfotenhaltung heißt nach dem, was sie zeigt (`pfote-finger`, `pfote-gesicht`, `pfoten-hoch`, `arme-verschraenkt`), nicht nach der Stimmung. Die Stimmung entsteht aus **Gesicht + Ohren-/Schwanzhaltung + Pfotenhaltung**; das Gesicht macht eindeutig, was gemeint ist. So kann man eine Pfotenhaltung für mehrere Bilder nutzen und muss weniger zeichnen.
+"Links" im Dateinamen `koerper-sitzend-ohne-pfote-links` heißt: von uns aus gesehen links (technisch Evis rechte Pfote). `pfote-finger` ist die Pfote für denken, geht aber auch für hungrig.
+
+Vorläufige Zuordnung (zum Ändern, sobald die Nutzerin etwas anderes will):
+| Bild | Körper | Pfoten | Gesicht |
+|---|---|---|---|
+| denken | ohne-pfote-links | pfote-finger | gesicht-denken |
+| hungrig | ohne-pfote-links | pfote-finger | gesicht-hungrig |
+| gähnen | ohne-pfote-links | pfote-gesicht | gesicht-gaehnen |
+| beleidigt | ohne-vorderpfoten | arme-verschraenkt | gesicht-beleidigt |
+| garten-zeigen | ohne-vorderpfoten | pfoten-hoch | gesicht-gluecklich |
