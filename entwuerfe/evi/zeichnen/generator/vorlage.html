@@ -42,8 +42,8 @@ small{opacity:.7}
 </div></div></main>
 <script>
 const DATEN=/*DATEN*/null;
-const SLOTS=[['kopf','Kopf'],['koerper','Körper'],['ohr','Ohren'],['schwanz','Schwanz'],['halsschmuck','Halsschmuck'],['kopfschmuck','Kopfschmuck'],['muster-koerper','Muster Körper'],['muster-gesicht','Muster Gesicht']];
-const RANG={schwanz:0,ohr:1,koerper:2,'muster-koerper':3,kopf:4,'muster-gesicht':5,halsschmuck:6,kopfschmuck:6.5,gesicht:7};
+const SLOTS=[['kopf','Kopf'],['koerper','Körper'],['ohr','Ohren'],['schwanz','Schwanz'],['halsschmuck','Halsschmuck'],['kopfschmuck','Kopfschmuck'],['pfoten','Pfoten (zusätzlich)'],['muster-koerper','Muster Körper'],['muster-gesicht','Muster Gesicht']];
+const RANG={schwanz:0,ohr:1,koerper:2,'muster-koerper':3,kopf:4,'muster-gesicht':5,halsschmuck:6,kopfschmuck:6.5,gesicht:7,pfoten:7.5};
 const $=i=>document.getElementById(i);const bilder={};
 let wahl={},herkunft={};
 const stufen=Object.keys(DATEN);
@@ -59,7 +59,7 @@ function fuelleAlles(){
  const box=$('slots');box.innerHTML='';
  SLOTS.forEach(([s,l])=>{const items=d.teile.filter(t=>t.slot===s&&!t.zustand);
   box.insertAdjacentHTML('beforeend',`<label>${l}</label><select data-s="${s}"></select>`);
-  const sel=box.lastElementChild;opt(sel,items.map(t=>[t.datei,t.name+(ursprung(t).length?'  ('+ursprung(t).join(', ')+')':'')]),(s.startsWith('muster')||s==='kopfschmuck'));
+  const sel=box.lastElementChild;opt(sel,items.map(t=>[t.datei,t.name+(ursprung(t).length?'  ('+ursprung(t).join(', ')+')':'')]),(s.startsWith('muster')||s==='kopfschmuck'||s==='pfoten'));
   if(!items.length){sel.disabled=true}sel.onchange=()=>{wahl[s]=sel.value;herkunft={};zeichne()}});
  box.insertAdjacentHTML('beforeend',`<label>Stimmung (Gesicht)</label><select data-s="gesicht"></select>`);
  const g=box.lastElementChild;opt(g,d.teile.filter(t=>t.slot==='gesicht').map(t=>[t.datei,t.name.replace('gesicht-','')]));g.onchange=()=>{wahl.gesicht=g.value;zeichne()};

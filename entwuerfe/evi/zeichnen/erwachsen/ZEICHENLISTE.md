@@ -37,3 +37,7 @@ Der neue Ordner `pfoten/` (und `zubehoer/`) bekommt wie alle die Ansichtsordner.
 
 ## Nicht neu zu zeichnen
 Farben, Graustufen, Schatten, Pixelfassung und die Kombination macht das Programm.
+
+## Stand 28.11. (nach den Pfoten-Uploads)
+Fertig: Gesichter singen/gähnen/denken, hängende Ohren, gesenkte Schwänze, `pfote-finger`, `pfote-gesicht`, `pfoten-hoch`, `arme-verschraenkt`, Körper `koerper-sitzend-ohne-vorderpfoten` und `koerper-sitzend-ohne-pfote-links`.
+Noch offen: Pfote Bauch (hungrig), Pfote Staunen, Thermometer, Schmutzflecken + Stinklinien, Runde 2 (schlafend, hüpfen, laufen, drehen, Fenster, Garten schnuppern/untersuchen).
