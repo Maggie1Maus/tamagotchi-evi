@@ -14,6 +14,7 @@ from PIL import Image
 HIER = pathlib.Path(__file__).resolve().parent
 REPO = HIER.parents[2]
 ZIP = REPO / "entwuerfe/evi/graustufen-vorschau/Evi-Graustufen.zip"
+NEU = REPO / "entwuerfe/evi/graustufen-neu"   # neue Bilder aus Evis eigenen Teilen: haben Vorrang vor der ZIP
 SKETCH = HIER.parent / "evi-handy"
 AUS = SKETCH / "evigrau.h"
 
@@ -27,7 +28,7 @@ GARTEN = {"garten-schnuppern": "SCHNUPPERN", "garten-untersuchen": "UNTERSUCHEN"
 
 # Größen der vorhandenen Schwarz-Weiß-Bilder aus den Programmdateien lesen
 groessen = {}
-for datei in ("assets.h", "momente.h", "gartenbilder.h"):
+for datei in ("assets.h", "momente.h", "pausiert-garten/gartenbilder.h"):
     for m in re.finditer(r"static const Bild (\w+) = \{(\d+), (\d+),", (SKETCH / datei).read_text(encoding="utf-8")):
         groessen[m.group(1)] = (int(m.group(2)), int(m.group(3)))
 
@@ -42,7 +43,7 @@ def alt_name(ordner, datei):
     return None
 
 z = zipfile.ZipFile(ZIP)
-eintraege, fehler = [], 0
+eintraege, fehler, neue_bilder = [], 0, []
 for name in sorted(z.namelist()):
     m = re.fullmatch(r"Sprites/([^/]+)/([^/]+)\.png", name)
     if not m:
@@ -50,7 +51,11 @@ for name in sorted(z.namelist()):
     alt = alt_name(m.group(1), m.group(2))
     if alt is None or alt not in groessen:
         print("kein altes Bild für", name, alt); fehler += 1; continue
-    im = Image.open(io.BytesIO(z.read(name))).convert("LA")
+    neu = NEU / name
+    if neu.exists():
+        im = Image.open(neu).convert("LA"); neue_bilder.append(name)
+    else:
+        im = Image.open(io.BytesIO(z.read(name))).convert("LA")
     if im.size != groessen[alt]:
         print("Größe passt nicht:", name, im.size, "alt", groessen[alt]); fehler += 1; continue
     w, h = im.size
@@ -76,9 +81,15 @@ for alt, w, h, daten, name in eintraege:
 out.append("")
 out.append("struct GrauZuordnung { const Bild* alt; const uint8_t* daten; };")
 out.append("static const GrauZuordnung GRAU_TABELLE[] = {")
+garten_aktiv = (SKETCH / "gartenbilder.h").exists()   # Garten ist pausiert (pausiert-garten/): dann nicht in die Tabelle
+anzahl = 0
 for alt, *_ in eintraege:
+    if alt.startswith("GA_") and not garten_aktiv:
+        continue
     out.append(f"  {{&{alt}, G_{alt}}},")
+    anzahl += 1
 out.append("};")
-out.append(f"static const int GRAU_ANZAHL = {len(eintraege)};")
+out.append("static const int GRAU_ANZAHL = sizeof(GRAU_TABELLE) / sizeof(GRAU_TABELLE[0]);")
 AUS.write_text("\n".join(out) + "\n", encoding="utf-8")
+print(len(neue_bilder), "davon neu aus graustufen-neu:", ", ".join(n.split("/")[-1][:-4] for n in neue_bilder))
 print(len(eintraege), "Bilder,", sum(len(e[3]) for e in eintraege), "Byte ->", AUS)

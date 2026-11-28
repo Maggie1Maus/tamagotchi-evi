@@ -91,7 +91,7 @@ def muster_ebene(f):
     e = eigen(f, LIN); return e
 
 def bauen(gesicht, ohr, schwanz, kopf='kopf-rund', koerper='koerper-sitzend', hals='krause-evi',
-          muster_koerper=None, muster_gesicht=None, kopfschmuck=None, ansicht='frontal', fell=FELL, ausgabe=None):
+          muster_koerper=None, muster_gesicht=None, kopfschmuck=None, pfoten=None, ansicht='frontal', fell=FELL, ausgabe=None):
     """Alle Angaben sind Dateinamen ohne .png. Gibt (grau, alpha) zurueck, speichert RGBA wenn ausgabe gesetzt."""
     P = lambda t, a, n: os.path.join(W, t, a, n + '.png')
     kopfton = fell + 17
@@ -139,6 +139,10 @@ def bauen(gesicht, ohr, schwanz, kopf='kopf-rund', koerper='koerper-sitzend', ha
         rand_(ks, 14, 16); schatten(ks, dH, 20, 35, 1)
         teile.append(('kopfschmuck', kopfschmuck, ks, False))
     teile.append(('gesicht', gesicht, ge, False))
+    if pfoten:
+        pf = bauen_ebene(P('pfoten', ansicht, pfoten), 4, lambda rk: fell)
+        rand_(pf, 16, 20)
+        teile.append(('pfoten', pfoten, pf, False))
     hinten = [t for t in teile if t[1].endswith('__hinten')]
     vorne = [t for t in teile if t[1].endswith('__vorne')]
     mitte = [t for t in teile if t not in hinten and t not in vorne]
@@ -181,3 +185,34 @@ def pixel(g, a, box=None, Wd=114, Ht=116):
             else: v = 51
             v = min(v, 255); out[cy, cx] = (v, v, v, 255)
     return Image.fromarray(out, 'RGBA')
+
+
+def raster(g, a, cell, ox, oy, Wd, Ht):
+    """Wie pixel(), aber mit vorgegebenem Raster (gleicher Massstab fuer alle Posen)."""
+    al = np.round(a * 255)
+    out = np.zeros((Ht, Wd, 4), np.uint8)
+    for cy in range(Ht):
+        for cx in range(Wd):
+            x0, x1 = int(np.floor(ox + cx * cell)), int(np.floor(ox + (cx + 1) * cell))
+            y0, y1 = int(np.floor(oy + cy * cell)), int(np.floor(oy + (cy + 1) * cell))
+            x1 = max(x1, x0 + 1); y1 = max(y1, y0 + 1)
+            tot = (x1 - x0) * (y1 - y0)
+            xa, xb, ya, yb = max(x0, 0), min(x1, N), max(y0, 0), min(y1, N)
+            if xb <= xa or yb <= ya: continue
+            A = al[ya:yb, xa:xb]; G = g[ya:yb, xa:xb]
+            op = A >= 128; n_op = op.sum()
+            if n_op * 2 < tot: continue
+            dark = (op & (G <= 70)).sum()
+            if dark * 100 >= tot * 30: v = 51
+            elif n_op - dark > 0: v = int(round(G[op & (G > 70)].mean() / 17.0)) * 17
+            else: v = 51
+            v = min(v, 255); out[cy, cx] = (v, v, v, 255)
+    return out
+
+def standard_raster(g, a, Wd=114, Ht=116):
+    """Cell/Ursprung der normalen Evi (wie pixel())."""
+    al = np.round(a * 255); ys, xs = np.nonzero(al > 60)
+    minx, miny, maxx, maxy = xs.min(), ys.min(), xs.max(), ys.max()
+    w, h = maxx - minx + 1, maxy - miny + 1
+    cell = max(h / (Ht - 2), w / (Wd - 2))
+    return cell, minx - (Wd * cell - w) / 2.0, maxy + 1 - Ht * cell + cell

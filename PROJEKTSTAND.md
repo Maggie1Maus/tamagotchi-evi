@@ -5,6 +5,12 @@
 - Archiviert: alte Evi-Fassung `emotionen/evi-*.png`, lose Vorschaubilder und Bildprompts in `entwuerfe/evi/`, Ohr-Tests in `zeichnen/`, doppelte Vorschauen in `graustufen-vorschau/`, männliche Blätter (`maennlich/quellen`), die vier alten Pixel-Evi-Basisbilder, die lokale Evi-Emotionen-ZIP sowie die **Handy-App** (Code, Tests, Icons, `build-art.ps1`, `prepare_besuch.py`) mit ihren Sicherungen.
 - In `handy-app/` bleibt, was der Waveshare-Bau noch liest (siehe `CLAUDE.md`). Die Vorschau „handy-app“ in `.claude/launch.json` entfällt. Evis fertige Bilder in `handy-app/dist/img/` bleiben; zum Neubauen `build-art.ps1` samt Basisbildern aus dem Archiv zurückholen.
 
+## Neue erwachsene Evi im Spiel (28. November 2026) – zum Ausprobieren am Board
+
+- 12 der 19 Bilder der erwachsenen Evi kommen jetzt aus Evis eigenen Teilen: gluecklich, staunen, singen, traurig, muede, krank, schmutzig, hungrig, denken, gaehnen, beleidigt, garten-zeigen. Gebaut von `entwuerfe/evi/zeichnen/erwachsen/werkzeug/spiel-sprites.py` (Rezepte dort im Kopf) nach `entwuerfe/evi/graustufen-neu/Sprites/04-Erwachsen/`; `software/schritt-10/tools/make-evi-grau.py` nimmt diese Bilder vor der ZIP und schreibt `evigrau.h`. Jedes Bild hat die Groesse des alten Bildes; Massstab wie die normale Evi (nur garten-zeigen 76 %, passt sonst nicht in die kleine alte Flaeche).
+- **Bleiben alt (aus der ZIP):** schlafend, drehen, fenster, huepfen, laufen, garten-schnuppern, garten-untersuchen. **Ohne Thermometer** (krank) und **ohne Schmutzflecken/Stinklinien** (schmutzig, nur das Schmutz-Gesicht).
+- Baby, Teenager, Oma bleiben unveraendert. Neu bauen: erst `spiel-sprites.py`, dann `make-evi-grau.py`. Alle 18 PC-Pruefprogramme laufen durch; am Board noch nicht angesehen. `make-evi-grau.py` liest Garten-Groessen jetzt aus `pausiert-garten/` und laesst Garten-Bilder aus der Tabelle weg, solange der Garten pausiert ist.
+
 ## Evi neu aus eigenen Ebenen (27. November 2026)
 
 - **Ordner nach Altersstufen (27.11.):** `entwuerfe/evi/zeichnen/` hat jetzt `erwachsen/` (alles bisherige: basis, vorlagen, ergebnis, werkzeug, gesichter …), dazu leere, gleich aufgebaute `baby/`, `teenager/`, `senior/`. Pfade unten gelten für `erwachsen/`.
