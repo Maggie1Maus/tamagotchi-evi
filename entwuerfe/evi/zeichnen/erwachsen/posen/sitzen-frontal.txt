@@ -1,8 +1,8 @@
 # Pose: Evi sitzt und schaut nach vorn (Reihenfolge = von hinten nach vorn)
 ansicht   = frontal
-schwanz   = schwaenze/schwanz-buschel.png
+schwanz   = schwaenze/frontal/schwanz-buschel.png
 ohr       = ohren/frontal/ohr-buschel.png    (links gezeichnet, rechts gespiegelt)
-koerper   = koerper/koerper-sitzend.png
+koerper   = koerper/frontal/koerper-sitzend.png
 kopf      = koepfe/frontal/kopf-rund.png
 halsschmuck = halsschmuck/frontal/krause-evi.png
 gesicht   = gesichter/frontal/gesicht-neutral.png

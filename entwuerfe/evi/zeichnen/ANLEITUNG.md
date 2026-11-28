@@ -86,7 +86,7 @@ Reihenfolge pro neuer Stufe: 1. `vorlagen/` (Claude baut sie aus der Evi der Stu
 ## Wohin mit den fertigen Zeichnungen
 Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Figur an derselben Stelle wie in den Vorlagen). Alles liegt in `entwuerfe/evi/zeichnen/<stufe>/`.
 
-**Ansichten:** Was sich mit der Blickrichtung ändert (Kopf, Gesicht, Ohren, Halsschmuck), hat je einen Unterordner `frontal/` (von vorn, zuerst), `seite/`, `schnueffeln/` (leichte Draufsicht, Schnüffeln am Boden) und `hinten/`. Körper und Schwanz hängen von der Haltung ab, nicht von der Ansicht.
+**Ansichten:** Alle Teile haben je einen Unterordner `frontal/` (von vorn, zuerst), `seite/`, `schnueffeln/` (leichte Draufsicht, Schnüffeln am Boden) und `hinten/`.  Die Haltung (sitzend, laufen, schlafend …) steckt im Dateinamen, zum Beispiel `koerper/frontal/koerper-sitzend.png`.
 
 | Ordner | Inhalt | Dateinamen (Beispiele) |
 |---|---|---|
@@ -94,10 +94,9 @@ Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Fig
 | `gesichter/<ansicht>/` | Gesichter für Stimmungen | `gesicht-neutral.png`, `gesicht-gluecklich.png`, `gesicht-traurig.png`, `gesicht-muede.png`, `gesicht-krank.png` … |
 | `ohren/<ansicht>/` | Ohr-Varianten (nur linkes Ohr) | `ohr-buschel.png`, `ohr-spitz.png`, `ohr-haengend.png` |
 | `halsschmuck/<ansicht>/` | Krause, Schleife, Halsband … | `krause-evi.png`, `schleife.png`, `halsband.png` |
-| `koerper/` | Körper je Haltung | `koerper-sitzend.png`, `koerper-laufen.png`, `koerper-schlafend.png`, `koerper-huepfen.png` |
-| `schwaenze/` | Schwanz-Varianten | `schwanz-buschel.png`, `schwanz-duenn.png` |
-| `muster/<ansicht>/` | Fell-Muster fürs Gesicht (je Ansicht) | `muster-flecken-gesicht.png` |
-| `muster/` | Fell-Muster für den Körper (je Haltung) | `muster-flecken-koerper.png`, `muster-streifen-koerper.png` |
+| `koerper/<ansicht>/` | Körper je Haltung | `koerper-sitzend.png`, `koerper-laufen.png`, `koerper-schlafend.png`, `koerper-huepfen.png` |
+| `schwaenze/<ansicht>/` | Schwanz-Varianten | `schwanz-buschel.png`, `schwanz-duenn.png` |
+| `muster/<ansicht>/` | Fell-Muster für Gesicht und Körper | `muster-flecken-gesicht.png`, `muster-flecken-koerper.png`, `muster-streifen-koerper.png` |
 | `posen/` | Textdatei je Pose: welche Teile in welcher Reihenfolge | `sitzen-frontal.txt` (Beispiel liegt in `erwachsen/`) |
 
 Dazu in jeder Stufe: `vorlagen/` (Zeichenvorlagen), `ergebnis/` (fertige Zusammensetzungen) und bei `erwachsen/` das `werkzeug/`. Einen Ordner `basis/` gibt es nicht mehr: Evis Grundteile liegen jetzt einfach als erste Variante in den Teile-Ordnern. Die ChatGPT-Vorschläge für Gesichter liegen in `erwachsen/gesichter/frontal/vorschlaege-chatgpt/`.

@@ -5,4 +5,4 @@ param([string]$Gesicht='neutral',[string]$Ohr='buschel',[string]$Schwanz='busche
 Add-Type -AssemblyName System.Drawing
 Add-Type -Path (Join-Path $PSScriptRoot 'zusammensetzen.cs') -ReferencedAssemblies System.Drawing
 $w=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-[Zus]::Run("$w\koepfe\$Ansicht\kopf-$Kopf.png","$w\koerper\koerper-$Koerper.png","$w\halsschmuck\$Ansicht\$Hals.png","$w\gesichter\$Ansicht\gesicht-$Gesicht.png","$w\ohren\$Ansicht\ohr-$Ohr.png","$w\schwaenze\schwanz-$Schwanz.png","$w\ergebnis\$Ausgabe")
+[Zus]::Run("$w\koepfe\$Ansicht\kopf-$Kopf.png","$w\koerper\$Ansicht\koerper-$Koerper.png","$w\halsschmuck\$Ansicht\$Hals.png","$w\gesichter\$Ansicht\gesicht-$Gesicht.png","$w\ohren\$Ansicht\ohr-$Ohr.png","$w\schwaenze\$Ansicht\schwanz-$Schwanz.png","$w\ergebnis\$Ausgabe")
