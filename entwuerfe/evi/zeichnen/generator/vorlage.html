@@ -59,7 +59,7 @@ function fuelleAlles(){
  const box=$('slots');box.innerHTML='';
  SLOTS.forEach(([s,l])=>{const items=d.teile.filter(t=>t.slot===s&&!t.zustand);
   box.insertAdjacentHTML('beforeend',`<label>${l}</label><select data-s="${s}"></select>`);
-  const sel=box.lastElementChild;opt(sel,items.map(t=>[t.datei,t.name+(ursprung(t).length?'  ('+ursprung(t).join(', ')+')':'')]),(s.startsWith('muster')||s==='kopfschmuck'||s==='pfoten'));
+  const sel=box.lastElementChild;opt(sel,items.map(t=>[t.datei,t.name+(ursprung(t).length?'  ('+ursprung(t).join(', ')+')':'')]),(s.startsWith('muster')||s==='kopfschmuck'||s==='pfoten'||s==='halsschmuck'));
   if(!items.length){sel.disabled=true}sel.onchange=()=>{wahl[s]=sel.value;herkunft={};zeichne()}});
  box.insertAdjacentHTML('beforeend',`<label>Stimmung (Gesicht)</label><select data-s="gesicht"></select>`);
  const g=box.lastElementChild;opt(g,d.teile.filter(t=>t.slot==='gesicht').map(t=>[t.datei,t.name.replace('gesicht-','')]));g.onchange=()=>{wahl.gesicht=g.value;zeichne()};

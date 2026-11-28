@@ -8,5 +8,4 @@ koerper   = koerper/frontal/koerper-sitzend.png
 kopf      = koepfe/frontal/kopf-rund.png
 muster-koerper = muster/frontal/muster-sprenkel.png
 kopfschmuck = kopfschmuck/frontal/kopfschmuck-fuehler.png
-halsschmuck = halsschmuck/frontal/krause-evi.png
 gesicht   = gesichter/frontal/gesicht-neutral.png
