@@ -64,7 +64,7 @@ def bake(stufe, ansicht):
     kr0 = z.bauen_ebene(P('halsschmuck', L['halsschmuck'][0]), 4, lambda rk: -1., abdeckung=z.KRAUSE) if L['halsschmuck'] else None
     dK = z.dt(kr0.cover) if kr0 else None
     dB = z.dt(kb0.cover)
-    teile = []; boxen = []
+    teile = []; boxen = []; kombi = set()
     def add(typ, name, g, a, slot, mitUmriss=True):
         teil = dict(typ=typ, name=name.split('__')[0], zustand=bool(re.search(r'-(haengend|gesenkt)(__|$)', name)), datei=name, slot=slot, bild=klein(g, a),
                     schicht='vorne' if name.endswith('__vorne') else ('hinten' if name.endswith('__hinten') else ('aufkoerper' if name.endswith('__aufkoerper') else 'mitte')))
@@ -106,15 +106,19 @@ def bake(stufe, ansicht):
         add('kopfschmuck', n, ks.g, ks.a, 'kopfschmuck')
     for n in L['muster']:
         m = z.eigen(P('muster', n), z.LIN)
-        gesicht = 'gesicht' in n
-        if gesicht: m.a = m.a * kopf0.cover
-        elif 'koerper' in n: m.a = m.a * (kb0.cover | (kb0.a > 0))
-        else: m.a = m.a * (kopf0.cover | kb0.cover | (kb0.a > 0))      # Muster ueber Kopf und Koerper
-        add('muster', n, m.g, m.a, 'muster-gesicht' if gesicht else 'muster-koerper', mitUmriss=False)
+        gesicht, koerper = 'gesicht' in n, 'koerper' in n
+        if gesicht:
+            m.a = m.a * kopf0.cover; add('muster', n, m.g, m.a, 'muster-gesicht', mitUmriss=False)
+        elif koerper:
+            m.a = m.a * (kb0.cover | (kb0.a > 0)); add('muster', n, m.g, m.a, 'muster-koerper', mitUmriss=False)
+        else:   # Muster ueber Kopf und Koerper: zwei Ebenen, damit der Kopf die Koerperflecken nicht verdeckt
+            kombi.add(n)
+            a1 = m.a * (kb0.cover | (kb0.a > 0)); add('muster', n, m.g, a1, 'muster-koerper', mitUmriss=False)
+            a2 = m.a * kopf0.cover; add('muster', n, m.g, a2, 'muster-gesicht', mitUmriss=False)
     for n in L['gesichter']:
         ge = z.eigen(P('gesichter', n)); add('gesicht', n, ge.g, ge.a, 'gesicht', mitUmriss=False)
     box = [min(b[0] for b in boxen), min(b[1] for b in boxen), max(b[2] for b in boxen), max(b[3] for b in boxen)]
-    return dict(teile=teile, box=box, achse=axis)
+    return dict(teile=teile, box=box, achse=axis, kombi=sorted(kombi))
 
 def main():
     daten = {}
@@ -125,6 +129,8 @@ def main():
             b = bake(stufe, ansicht)
             if not b: continue
             b['tamagotchis'] = poseDateien(stufe, ansicht)
+            for rez in b['tamagotchis'].values():       # Muster ueber Kopf und Koerper gilt fuer beide Plaetze
+                if rez.get('muster-koerper') in b['kombi']: rez['muster-gesicht'] = rez['muster-koerper']
             daten.setdefault(stufe, {})[ansicht] = b
     vorlage = open(os.path.join(HIER, 'vorlage.html'), encoding='utf-8').read()
     seite = vorlage.replace('/*DATEN*/null', json.dumps(daten, ensure_ascii=False))

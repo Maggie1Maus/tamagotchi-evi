@@ -69,7 +69,6 @@ function laden(name){const r=D().tamagotchis[name]||{};wahl={...wahl};SLOTS.forE
  const g=document.querySelector('[data-s=gesicht]');if(!wahl.gesicht||!D().teile.find(t=>t.datei===wahl.gesicht&&t.slot==='gesicht')){const f=D().teile.find(t=>t.slot==='gesicht');wahl.gesicht=f?f.datei:''}zeichne()}
 function wuerfeln(){const d=D(),A=d.tamagotchis[$('e1').value]||{},B=d.tamagotchis[$('e2').value]||{};herkunft={};
  SLOTS.forEach(([s,l])=>{const von=Math.random()<.5?$('e1').value:$('e2').value;let v=(von===$('e1').value?A:B)[s]||'';let w=von;
-  if(Math.random()<.06){const alle=d.teile.filter(t=>t.slot===s);if(alle.length){v=alle[Math.floor(Math.random()*alle.length)].datei;w='Zufall'}}
   wahl[s]=v;herkunft[s]=w});zeichne()}
 function reihe(){const d=D(),l=[];[...SLOTS.map(x=>x[0]),'gesicht'].forEach(s=>{let t=d.teile.find(t=>t.slot===s&&t.datei===wahl[s]);
   if(t&&$('haengt').checked&&(s==='ohr'||s==='schwanz')){const z=d.teile.find(u=>u.slot===s&&u.zustand&&u.name===t.name+(s==='ohr'?'-haengend':'-gesenkt'));if(z)t=z}
