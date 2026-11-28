@@ -44,7 +44,10 @@ def alt_name(ordner, datei):
 
 z = zipfile.ZipFile(ZIP)
 eintraege, fehler, neue_bilder = [], 0, []
-for name in sorted(z.namelist()):
+alle = set(z.namelist())
+if NEU.exists():       # Bilder, die es nur als neue Zeichnung gibt (zum Beispiel ruhe der erwachsenen Evi)
+    alle |= {p.relative_to(NEU).as_posix() for p in NEU.rglob("*.png")}
+for name in sorted(alle):
     m = re.fullmatch(r"Sprites/([^/]+)/([^/]+)\.png", name)
     if not m:
         continue
@@ -54,6 +57,7 @@ for name in sorted(z.namelist()):
     neu = NEU / name
     if neu.exists():
         im = Image.open(neu).convert("LA"); neue_bilder.append(name)
+        if alt in groessen and im.size != groessen[alt]: pass
     else:
         im = Image.open(io.BytesIO(z.read(name))).convert("LA")
     if im.size != groessen[alt]:

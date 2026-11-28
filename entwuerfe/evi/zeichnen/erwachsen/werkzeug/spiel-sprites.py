@@ -19,7 +19,7 @@ SB, SG = 'schwanz-buschel', 'schwanz-buschel-gesenkt'
 K, KP, KV = 'koerper-sitzend', 'koerper-sitzend-ohne-pfote-links', 'koerper-sitzend-ohne-vorderpfoten'
 # Bild: (Gesicht, Ohren, Schwanz, Koerper, Pfoten). Thermometer und Schmutzflecken fehlen noch.
 REZEPTE = {
-    'gluecklich': ('gluecklich', OB, SB, K, None), 'staunen': ('staunen', OB, SB, K, None),
+    'ruhe': ('neutral', OB, SB, K, None), 'gluecklich': ('gluecklich', OB, SB, K, None), 'staunen': ('staunen', OB, SB, K, None),
     'singen': ('singen', OH, SB, K, None), 'traurig': ('traurig', OH, SG, K, None),
     'muede': ('muede', OH, SG, K, None), 'krank': ('krank', OH, SG, K, None),
     'schmutzig': ('schmutzig', OH, SG, K, None),
@@ -38,7 +38,8 @@ def main():
     for name, (ge, oh, sw, ko, pf) in REZEPTE.items():
         if nur and name not in nur: continue
         g, a = z.bauen('gesicht-' + ge, oh, sw, koerper=ko, pfoten=pf)
-        w, h = Image.open(io.BytesIO(zf.read(f'Sprites/04-Erwachsen/{name}.png'))).size
+        alt = 'gluecklich' if name == 'ruhe' else name            # ruhe gibt es in der ZIP nicht: Groesse von glücklich
+        w, h = Image.open(io.BytesIO(zf.read(f'Sprites/04-Erwachsen/{alt}.png'))).size
         ys, xs = np.nonzero(a * 255 > 60); x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
         cell = max((x1 - x0) / w, (y1 - y0) / h, cell0)          # nie groesser als die normale Evi
         ox = (x0 + x1) / 2 - w * cell / 2; oy = y1 - h * cell     # mittig, Fuesse unten
