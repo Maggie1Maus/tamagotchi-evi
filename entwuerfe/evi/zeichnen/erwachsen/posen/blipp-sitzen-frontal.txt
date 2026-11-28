@@ -1,0 +1,12 @@
+# Pose: Blipp sitzt und schaut nach vorn (Reihenfolge = von hinten nach vorn)
+# Blipp = Evis Kopf, Koerper, Krause und Gesicht, dazu Stitch-Ohren und Fuehler.
+# Schwanz: noch offen, vorerst Evis Buschelschwanz (bitte bestaetigen).
+# Hinweis: ohr-stitch.png enthaelt beide Ohren (links und rechts gezeichnet), nicht spiegeln.
+ansicht   = frontal
+schwanz   = schwaenze/frontal/schwanz-buschel.png
+ohr       = ohren/frontal/ohr-stitch.png
+koerper   = koerper/frontal/koerper-sitzend.png
+kopf      = koepfe/frontal/kopf-rund.png
+kopfschmuck = kopfschmuck/frontal/kopfschmuck-fuehler.png
+halsschmuck = halsschmuck/frontal/krause-evi.png
+gesicht   = gesichter/frontal/gesicht-neutral.png

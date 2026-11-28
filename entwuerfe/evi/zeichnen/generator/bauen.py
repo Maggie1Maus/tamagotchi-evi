@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.join(ZEICHNEN, 'erwachsen', 'werkzeug'))
 import zusammensetzen as z
 N = z.N; AUF = 1024                      # Teile werden auf 1024 x 1024 verkleinert eingebettet
 ANSICHTEN = ['frontal', 'seite', 'schnueffeln', 'hinten']
-TYPEN = ['koepfe', 'koerper', 'ohren', 'schwaenze', 'halsschmuck', 'gesichter', 'muster']
+TYPEN = ['koepfe', 'koerper', 'ohren', 'schwaenze', 'halsschmuck', 'kopfschmuck', 'gesichter', 'muster']
 SLOT_RANG = {'schwanz': 0, 'ohr': 1, 'koerper': 2, 'muster-koerper': 3, 'kopf': 4, 'muster-gesicht': 5, 'halsschmuck': 6, 'gesicht': 7}
 
 def pngs(ordner):
@@ -100,6 +100,10 @@ def bake(stufe, ansicht):
         kr = z.bauen_ebene(P('halsschmuck', n), 4, lambda rk: -1., abdeckung=z.KRAUSE)
         z.rand_(kr, 9, 18); z.schatten(kr, dH, 32, 55, 1)
         add('halsschmuck', n, kr.g, kr.a, 'halsschmuck')
+    for n in L['kopfschmuck']:
+        ks = z.bauen_ebene(P('kopfschmuck', n), 4, lambda rk: fell)
+        z.rand_(ks, 14, 16); z.schatten(ks, dH, 20, 35, 1)
+        add('kopfschmuck', n, ks.g, ks.a, 'kopfschmuck')
     for n in L['muster']:
         m = z.eigen(P('muster', n), z.LIN)
         gesicht = 'gesicht' in n

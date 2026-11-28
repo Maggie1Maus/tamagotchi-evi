@@ -91,7 +91,7 @@ def muster_ebene(f):
     e = eigen(f, LIN); return e
 
 def bauen(gesicht, ohr, schwanz, kopf='kopf-rund', koerper='koerper-sitzend', hals='krause-evi',
-          muster_koerper=None, muster_gesicht=None, ansicht='frontal', fell=FELL, ausgabe=None):
+          muster_koerper=None, muster_gesicht=None, kopfschmuck=None, ansicht='frontal', fell=FELL, ausgabe=None):
     """Alle Angaben sind Dateinamen ohne .png. Gibt (grau, alpha) zurueck, speichert RGBA wenn ausgabe gesetzt."""
     P = lambda t, a, n: os.path.join(W, t, a, n + '.png')
     kopfton = fell + 17
@@ -133,7 +133,12 @@ def bauen(gesicht, ohr, schwanz, kopf='kopf-rund', koerper='koerper-sitzend', ha
     if muster_gesicht:
         m = muster_ebene(P('muster', ansicht, muster_gesicht)); m.a = m.a * kp.cover
         teile.append(('m', muster_gesicht, m, False))
-    teile += [('hals', hals, kr, False), ('gesicht', gesicht, ge, False)]
+    teile.append(('hals', hals, kr, False))
+    if kopfschmuck:
+        ks = bauen_ebene(P('kopfschmuck', ansicht, kopfschmuck), 4, lambda rk: fell)
+        rand_(ks, 14, 16); schatten(ks, dH, 20, 35, 1)
+        teile.append(('kopfschmuck', kopfschmuck, ks, False))
+    teile.append(('gesicht', gesicht, ge, False))
     hinten = [t for t in teile if t[1].endswith('__hinten')]
     vorne = [t for t in teile if t[1].endswith('__vorne')]
     mitte = [t for t in teile if t not in hinten and t not in vorne]
