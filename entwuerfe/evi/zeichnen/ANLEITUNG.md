@@ -105,6 +105,8 @@ Dazu in jeder Stufe: `vorlagen/` (Zeichenvorlagen), `ergebnis/` (fertige Zusamme
 
 **Vorn oder hinten festlegen:** Endet ein Dateiname auf `__vorne` (zwei Unterstriche), liegt das Teil beim Zusammensetzen ganz vorn, vor Kopf, Krause und allem anderen. Endet er auf `__hinten`, liegt es ganz hinten. Beispiele: `ohr-schlapp__vorne.png`, `schleife__vorne.png`, `krause-evi__hinten.png`. Ohne Endung gilt die normale Reihenfolge (Schwanz, Ohren, Körper, Kopf, Krause, Gesicht). Das gilt für alle Teile und Ansichten.
 
+**Generator:** `generator/index.html` per Doppelklick im Browser öffnen. Er zeigt alle Teile aus den Ordnern, lässt sie mischen und würfelt aus zwei Elternteilen ein Kind (jedes Merkmal von einem der beiden, selten Zufall). Welche Teile zu welchem Tamagotchi gehören, liest er aus `posen/<name>-<haltung>-<ansicht>.txt` (zum Beispiel `klecksi-sitzen-frontal.txt`). Ein neues Tamagotchi braucht nur so eine kurze Textdatei. Nach neuen Teilen läuft `generator/bauen.py` (Python) und baut die Seite neu; das macht Claude.
+
 **Zusammensetzen:** `erwachsen/werkzeug/zusammensetzen.ps1` wählt die Teile über die Dateinamen, zum Beispiel `.\zusammensetzen.ps1 -Gesicht gluecklich -Hals schleife`. Ohne Angaben entsteht die normale Evi.
 
 **Namensregeln:** nur Kleinbuchstaben, keine Leerzeichen, Umlaute als `ae`, `oe`, `ue` (müde → `muede`, hüpfen → `huepfen`), Wörter mit Bindestrich trennen. Ein Teil pro Datei, kein Wort „neu“ oder Nummer im Namen; eine überarbeitete Version ersetzt einfach die alte Datei (der Verlauf bei GitHub hebt die alte auf).
