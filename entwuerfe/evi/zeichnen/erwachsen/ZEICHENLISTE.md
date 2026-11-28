@@ -58,3 +58,6 @@ Vorläufige Zuordnung (zum Ändern, sobald die Nutzerin etwas anderes will):
 ## Ebenen der Pfoten (28.11.)
 - `arme-verschraenkt__aufkoerper`: liegt unter der Krause (Arme sind teils verdeckt), aber über dem Körper.
 - `pfote-gesicht`, `pfote-finger` und `pfoten-hoch`: liegen ohne Endung ganz oben, also über Krause und Gesicht.
+
+## Stand 28.11. abends: laufen ist da
+`koerper/seite/koerper-laufen` und die Schwänze `schwanz-buschel-laufen`, `schwanz-duenn-laufen`, `schwanz-duenn-flecken-laufen` (alle in `seite/`). Kopf, Gesicht, Ohren und Krause werden aus `frontal` genommen und per Posen-Vorgabe verschoben/gedreht (Code dafür fehlt noch, wird gebaut).
