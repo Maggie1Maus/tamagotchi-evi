@@ -8,12 +8,12 @@ K = dict  # kurz
 FIG = [
  ('Evi',                    K(gesicht='gesicht-neutral',  ohr='ohr-buschel', schwanz='schwanz-buschel')),
  ('Evi gluecklich',         K(gesicht='gesicht-gluecklich', ohr='ohr-buschel', schwanz='schwanz-buschel')),
- ('Evi mit Schlappohren',   K(gesicht='gesicht-neutral',  ohr='ohr-schlapp', schwanz='schwanz-buschel')),
+ ('Evi mit Schlappohren',   K(gesicht='gesicht-neutral',  ohr='ohr-schlapp__vorne', schwanz='schwanz-buschel')),
  ('Evi, duenner Schwanz',   K(gesicht='gesicht-neutral',  ohr='ohr-buschel', schwanz='schwanz-duenn')),
- ('Klecksi',                K(gesicht='gesicht-neutral',  ohr='ohr-schlapp-flecken', schwanz='schwanz-duenn-flecken', muster_koerper='muster-flecken-koerper', muster_gesicht='muster-flecken-gesicht')),
- ('Klecksi traurig',        K(gesicht='gesicht-traurig',  ohr='ohr-schlapp-flecken', schwanz='schwanz-duenn-flecken', muster_koerper='muster-flecken-koerper', muster_gesicht='muster-flecken-gesicht')),
+ ('Klecksi',                K(gesicht='gesicht-neutral',  ohr='ohr-schlapp-flecken__vorne', schwanz='schwanz-duenn-flecken', muster_koerper='muster-flecken-koerper', muster_gesicht='muster-flecken-gesicht')),
+ ('Klecksi traurig',        K(gesicht='gesicht-traurig',  ohr='ohr-schlapp-flecken__vorne', schwanz='schwanz-duenn-flecken', muster_koerper='muster-flecken-koerper', muster_gesicht='muster-flecken-gesicht')),
  ('Buschelohr + Flecken',   K(gesicht='gesicht-staunen',  ohr='ohr-buschel', schwanz='schwanz-duenn-flecken', muster_koerper='muster-flecken-koerper')),
- ('Schlappohr, dunkler',    K(gesicht='gesicht-muede',    ohr='ohr-schlapp', schwanz='schwanz-buschel', muster_gesicht='muster-flecken-gesicht', fell=170.)),
+ ('Schlappohr, dunkler',    K(gesicht='gesicht-muede',    ohr='ohr-schlapp__vorne', schwanz='schwanz-buschel', muster_gesicht='muster-flecken-gesicht', fell=170.)),
 ]
 name = sys.argv[1] if len(sys.argv) > 1 else 'pruefbogen-1'
 bilder = []

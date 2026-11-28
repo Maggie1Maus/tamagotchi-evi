@@ -101,7 +101,7 @@ Jedes Teil ist **eine PNG-Datei** (2048 × 2048, durchsichtiger Hintergrund, Fig
 
 Dazu in jeder Stufe: `vorlagen/` (Zeichenvorlagen), `ergebnis/` (fertige Zusammensetzungen) und bei `erwachsen/` das `werkzeug/`. Einen Ordner `basis/` gibt es nicht mehr: Evis Grundteile liegen jetzt einfach als erste Variante in den Teile-Ordnern. Die ChatGPT-Vorschläge für Gesichter liegen in `erwachsen/gesichter/frontal/vorschlaege-chatgpt/`.
 
-**Ohren und Schwänze mit Flecken:** gibt es als eigene Datei mit Endung `-flecken` (`ohr-schlapp-flecken.png`, `schwanz-duenn-flecken.png`). Sie sind das normale Teil samt Flecken. Ohren dürfen beide Seiten enthalten (links und rechts gezeichnet, dann nicht spiegeln; vermerkt in der Pose).
+**Ohren und Schwänze mit Flecken:** gibt es als eigene Datei mit Endung `-flecken` (`ohr-schlapp-flecken__vorne.png`, `schwanz-duenn-flecken.png`). Sie sind das normale Teil samt Flecken. Ohren dürfen beide Seiten enthalten (links und rechts gezeichnet, dann nicht spiegeln; vermerkt in der Pose).
 
 **Vorn oder hinten festlegen:** Endet ein Dateiname auf `__vorne` (zwei Unterstriche), liegt das Teil beim Zusammensetzen ganz vorn, vor Kopf, Krause und allem anderen. Endet er auf `__hinten`, liegt es ganz hinten. Beispiele: `ohr-schlapp__vorne.png`, `schleife__vorne.png`, `krause-evi__hinten.png`. Ohne Endung gilt die normale Reihenfolge (Schwanz, Ohren, Körper, Kopf, Krause, Gesicht). Das gilt für alle Teile und Ansichten.
 
