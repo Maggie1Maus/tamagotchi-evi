@@ -31,7 +31,7 @@ small{opacity:.7}
  <label>Elternteil 1</label><select id="e1"></select>
  <label>Elternteil 2</label><select id="e2"></select>
  <div class="row"><button id="wuerfeln">Kind würfeln</button><button id="laden" class="z">Elternteil 1 laden</button></div>
- <div class="herk" id="herk"></div>
+ <label style="display:flex;gap:8px;align-items:center;opacity:1"><input type="checkbox" id="haengt" style="width:auto"> Traurige Haltung (Ohren und Schwanz hängend)</label><div class="herk" id="herk"></div>
  <hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
  <div id="slots"></div>
 </div>
@@ -57,7 +57,7 @@ function fuelleAlles(){
  const d=D(),tm=Object.keys(d.tamagotchis);
  opt($('e1'),tm.map(n=>[n,n]));opt($('e2'),tm.map(n=>[n,n]));if(tm[1])$('e2').value=tm[1];
  const box=$('slots');box.innerHTML='';
- SLOTS.forEach(([s,l])=>{const items=d.teile.filter(t=>t.slot===s);
+ SLOTS.forEach(([s,l])=>{const items=d.teile.filter(t=>t.slot===s&&!t.zustand);
   box.insertAdjacentHTML('beforeend',`<label>${l}</label><select data-s="${s}"></select>`);
   const sel=box.lastElementChild;opt(sel,items.map(t=>[t.datei,t.name+(ursprung(t).length?'  ('+ursprung(t).join(', ')+')':'')]),(s.startsWith('muster')||s==='kopfschmuck'));
   if(!items.length){sel.disabled=true}sel.onchange=()=>{wahl[s]=sel.value;herkunft={};zeichne()}});
@@ -71,7 +71,9 @@ function wuerfeln(){const d=D(),A=d.tamagotchis[$('e1').value]||{},B=d.tamagotch
  SLOTS.forEach(([s,l])=>{const von=Math.random()<.5?$('e1').value:$('e2').value;let v=(von===$('e1').value?A:B)[s]||'';let w=von;
   if(Math.random()<.06){const alle=d.teile.filter(t=>t.slot===s);if(alle.length){v=alle[Math.floor(Math.random()*alle.length)].datei;w='Zufall'}}
   wahl[s]=v;herkunft[s]=w});zeichne()}
-function reihe(){const d=D(),l=[];[...SLOTS.map(x=>x[0]),'gesicht'].forEach(s=>{const t=d.teile.find(t=>t.slot===s&&t.datei===wahl[s]);if(t)l.push(t)});
+function reihe(){const d=D(),l=[];[...SLOTS.map(x=>x[0]),'gesicht'].forEach(s=>{let t=d.teile.find(t=>t.slot===s&&t.datei===wahl[s]);
+  if(t&&$('haengt').checked&&(s==='ohr'||s==='schwanz')){const z=d.teile.find(u=>u.slot===s&&u.zustand&&u.name===t.name+(s==='ohr'?'-haengend':'-gesenkt'));if(z)t=z}
+  if(t)l.push(t)});
  const o=a=>RANG[a.slot],h=l.filter(t=>t.schicht==='hinten').sort((a,b)=>o(a)-o(b)),m=l.filter(t=>t.schicht==='mitte').sort((a,b)=>o(a)-o(b)),v=l.filter(t=>t.schicht==='vorne').sort((a,b)=>o(a)-o(b));return[...h,...m,...v]}
 async function zeichne(){
  document.querySelectorAll('#slots select').forEach(s=>{if(wahl[s.dataset.s]!==undefined)s.value=wahl[s.dataset.s]});
@@ -90,7 +92,7 @@ function pixel(){const teile=reihe(),W=114,H=116,k=1024/2048;
   const j=(cy*W+cx)*4;if(op*2<tot)continue;let v;if(dark*100>=tot*30)v=51;else if(op-dark>0)v=Math.min(255,Math.round(sum/(op-dark)/17)*17);else v=51;im.data[j]=im.data[j+1]=im.data[j+2]=v;im.data[j+3]=255}
  out.putImageData(im,0,0)}
 function dl(cv,w){const i=$('saveimg');i.src=cv.toDataURL('image/png');i.style.width=w+'px';i.hidden=false;$('savehint').hidden=false}
-$('stufe').onchange=fuelleAnsichten;$('ansicht').onchange=fuelleAlles;$('wuerfeln').onclick=wuerfeln;$('laden').onclick=()=>laden($('e1').value);
+$('haengt').onchange=zeichne;$('stufe').onchange=fuelleAnsichten;$('ansicht').onchange=fuelleAlles;$('wuerfeln').onclick=wuerfeln;$('laden').onclick=()=>laden($('e1').value);
 $('dlp').onclick=()=>dl($('pix'),342);$('dlg').onclick=()=>dl($('gross'),512);
 opt($('stufe'),stufen.map(s=>[s,s]));fuelleAnsichten();
 </script></body></html>

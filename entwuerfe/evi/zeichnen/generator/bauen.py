@@ -66,7 +66,7 @@ def bake(stufe, ansicht):
     dB = z.dt(kb0.cover)
     teile = []; boxen = []
     def add(typ, name, g, a, slot, mitUmriss=True):
-        teil = dict(typ=typ, name=name.split('__')[0], datei=name, slot=slot, bild=klein(g, a),
+        teil = dict(typ=typ, name=name.split('__')[0], zustand=bool(re.search(r'-(haengend|gesenkt)(__|$)', name)), datei=name, slot=slot, bild=klein(g, a),
                     schicht='vorne' if name.endswith('__vorne') else ('hinten' if name.endswith('__hinten') else 'mitte'))
         teile.append(teil)
         if mitUmriss:
@@ -107,7 +107,9 @@ def bake(stufe, ansicht):
     for n in L['muster']:
         m = z.eigen(P('muster', n), z.LIN)
         gesicht = 'gesicht' in n
-        m.a = m.a * (kopf0.cover if gesicht else (kb0.cover | (kb0.a > 0)))
+        if gesicht: m.a = m.a * kopf0.cover
+        elif 'koerper' in n: m.a = m.a * (kb0.cover | (kb0.a > 0))
+        else: m.a = m.a * (kopf0.cover | kb0.cover | (kb0.a > 0))      # Muster ueber Kopf und Koerper
         add('muster', n, m.g, m.a, 'muster-gesicht' if gesicht else 'muster-koerper', mitUmriss=False)
     for n in L['gesichter']:
         ge = z.eigen(P('gesichter', n)); add('gesicht', n, ge.g, ge.a, 'gesicht', mitUmriss=False)
