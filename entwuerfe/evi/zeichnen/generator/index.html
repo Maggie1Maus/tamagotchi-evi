@@ -4,8 +4,11 @@
 <style>
 :root{--bg:#f6f4f0;--fg:#222;--card:#fff;--line:#d8d3ca;--acc:#6b4fbb}
 @media (prefers-color-scheme:dark){:root{--bg:#1d1b1a;--fg:#eee;--card:#2a2725;--line:#47423e;--acc:#a78bfa}}
+body{background:var(--bg)}
+:root[data-theme=dark]{--bg:#1d1b1a;--fg:#eee;--card:#2a2725;--line:#47423e;--acc:#a78bfa;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.4 system-ui,sans-serif}
-main{max-width:1100px;margin:0 auto;padding:16px}
+main{max-width:1100px;margin:0 auto;padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1{font-size:1.4rem;margin:0 0 4px}p.s{margin:0 0 14px;opacity:.7}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
 @media(max-width:800px){.grid{grid-template-columns:1fr}}
@@ -34,7 +37,7 @@ small{opacity:.7}
 </div>
 <div class="card">
  <div class="bild"><canvas id="gross" width="1024" height="1024" style="width:340px;height:340px"></canvas><canvas id="pix" width="114" height="116"></canvas></div>
- <div class="row"><button id="dlp" class="z">Pixelbild speichern</button><button id="dlg" class="z">Großes Bild speichern</button></div>
+ <div class="row"><button id="dlp" class="z">Pixelbild zum Speichern zeigen</button><button id="dlg" class="z">Großes Bild zum Speichern zeigen</button></div><img id="saveimg" alt="" hidden style="margin-top:10px;max-width:100%;border:1px solid var(--line);border-radius:8px;image-rendering:pixelated"><p id="savehint" hidden><small>Bild lange drücken oder mit rechter Maustaste „Bild speichern“ wählen.</small></p>
  <p><small>Links groß, rechts als Pixelfassung (114 × 116, 16 Graustufen) wie später im Spiel. Alle Bilder im selben Maßstab.</small></p>
 </div></div></main>
 <script>
@@ -86,8 +89,8 @@ function pixel(){const teile=reihe(),W=114,H=116,k=1024/2048;
   let tot=(a1-a0)*(b1-b0),op=0,dark=0,sum=0;for(let y=Math.max(b0,0);y<Math.min(b1,1024);y++)for(let x=Math.max(a0,0);x<Math.min(a1,1024);x++){const i=(y*1024+x)*4;if(px[i+3]<128)continue;op++;if(px[i]<=70)dark++;else sum+=px[i]}
   const j=(cy*W+cx)*4;if(op*2<tot)continue;let v;if(dark*100>=tot*30)v=51;else if(op-dark>0)v=Math.min(255,Math.round(sum/(op-dark)/17)*17);else v=51;im.data[j]=im.data[j+1]=im.data[j+2]=v;im.data[j+3]=255}
  out.putImageData(im,0,0)}
-function dl(cv,n){const a=document.createElement('a');a.download=n;a.href=cv.toDataURL('image/png');a.click()}
+function dl(cv,w){const i=$('saveimg');i.src=cv.toDataURL('image/png');i.style.width=w+'px';i.hidden=false;$('savehint').hidden=false}
 $('stufe').onchange=fuelleAnsichten;$('ansicht').onchange=fuelleAlles;$('wuerfeln').onclick=wuerfeln;$('laden').onclick=()=>laden($('e1').value);
-$('dlp').onclick=()=>dl($('pix'),'tamagotchi-pixel.png');$('dlg').onclick=()=>dl($('gross'),'tamagotchi.png');
+$('dlp').onclick=()=>dl($('pix'),342);$('dlg').onclick=()=>dl($('gross'),512);
 opt($('stufe'),stufen.map(s=>[s,s]));fuelleAnsichten();
 </script></body></html>
