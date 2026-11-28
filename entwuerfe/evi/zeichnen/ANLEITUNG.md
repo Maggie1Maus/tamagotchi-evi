@@ -103,6 +103,8 @@ Dazu in jeder Stufe: `vorlagen/` (Zeichenvorlagen), `ergebnis/` (fertige Zusamme
 
 **Ohren und Schwänze mit Flecken:** gibt es als eigene Datei mit Endung `-flecken` (`ohr-schlapp-flecken.png`, `schwanz-duenn-flecken.png`). Sie sind das normale Teil samt Flecken. Ohren dürfen beide Seiten enthalten (links und rechts gezeichnet, dann nicht spiegeln; vermerkt in der Pose).
 
+**Vorn oder hinten festlegen:** Endet ein Dateiname auf `__vorne` (zwei Unterstriche), liegt das Teil beim Zusammensetzen ganz vorn, vor Kopf, Krause und allem anderen. Endet er auf `__hinten`, liegt es ganz hinten. Beispiele: `ohr-schlapp__vorne.png`, `schleife__vorne.png`, `krause-evi__hinten.png`. Ohne Endung gilt die normale Reihenfolge (Schwanz, Ohren, Körper, Kopf, Krause, Gesicht). Das gilt für alle Teile und Ansichten.
+
 **Zusammensetzen:** `erwachsen/werkzeug/zusammensetzen.ps1` wählt die Teile über die Dateinamen, zum Beispiel `.\zusammensetzen.ps1 -Gesicht gluecklich -Hals schleife`. Ohne Angaben entsteht die normale Evi.
 
 **Namensregeln:** nur Kleinbuchstaben, keine Leerzeichen, Umlaute als `ae`, `oe`, `ue` (müde → `muede`, hüpfen → `huepfen`), Wörter mit Bindestrich trennen. Ein Teil pro Datei, kein Wort „neu“ oder Nummer im Namen; eine überarbeitete Version ersetzt einfach die alte Datei (der Verlauf bei GitHub hebt die alte auf).

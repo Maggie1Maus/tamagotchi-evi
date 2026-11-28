@@ -121,18 +121,25 @@ def bauen(gesicht, ohr, schwanz, kopf='kopf-rund', koerper='koerper-sitzend', ha
     rand_(oh, 20, 24); schatten(oh, dH, 22, 45, 1)
     rand_(sw, 18, 30); schatten(sw, dB, 30, 75, 0.2)
     rand_(kr, 9, 18); schatten(kr, dH, 32, 55, 1)
-    g = np.zeros((N, N), np.float32); a = np.zeros((N, N), np.float32)
-    g, a = drauf(g, a, sw)
-    g, a = drauf(g, a, oh)
-    if not beide: g, a = drauf(g, a, oh, True, axis)
-    g, a = drauf(g, a, kb)
+    # Reihenfolge von hinten nach vorn. Endet ein Dateiname auf __vorne oder __hinten,
+    # liegt das Teil ganz vorn bzw. ganz hinten, egal was sonst die Regel waere.
+    teile = [('schwanz', schwanz, sw, False), ('ohr', ohr, oh, False)]
+    if not beide: teile.append(('ohr', ohr, oh, True))
+    teile.append(('koerper', koerper, kb, False))
     if muster_koerper:
-        m = muster_ebene(P('muster', ansicht, muster_koerper)); m.a = m.a * (kb.cover | (kb.a > 0)); g, a = drauf(g, a, m)
-    g, a = drauf(g, a, kp)
+        m = muster_ebene(P('muster', ansicht, muster_koerper)); m.a = m.a * (kb.cover | (kb.a > 0))
+        teile.append(('m', muster_koerper, m, False))
+    teile.append(('kopf', kopf, kp, False))
     if muster_gesicht:
-        m = muster_ebene(P('muster', ansicht, muster_gesicht)); m.a = m.a * (kp.cover); g, a = drauf(g, a, m)
-    g, a = drauf(g, a, kr)
-    g, a = drauf(g, a, ge)
+        m = muster_ebene(P('muster', ansicht, muster_gesicht)); m.a = m.a * kp.cover
+        teile.append(('m', muster_gesicht, m, False))
+    teile += [('hals', hals, kr, False), ('gesicht', gesicht, ge, False)]
+    hinten = [t for t in teile if t[1].endswith('__hinten')]
+    vorne = [t for t in teile if t[1].endswith('__vorne')]
+    mitte = [t for t in teile if t not in hinten and t not in vorne]
+    g = np.zeros((N, N), np.float32); a = np.zeros((N, N), np.float32)
+    for _, _, ebene, spiegeln in hinten + mitte + vorne:
+        g, a = drauf(g, a, ebene, spiegeln, axis)
     if ausgabe:
         v = np.clip(np.round(g), 0, 255).astype(np.uint8)
         Image.fromarray(np.dstack([v, v, v, np.round(a * 255).astype(np.uint8)]), 'RGBA').save(ausgabe)
